@@ -17,11 +17,6 @@ if angle < 0;  angle = angle + 360; end;
 % we use a zero-crossing laplacian of gaussian to ensure closed contours
 EDGE = edge(I, 'log', 0, sigma);
 
-% to handle directions that pass through lines at an angle, thicken lines
-% on diagonals
-EDGE = bwmorph(EDGE, 'diag');
-
-
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);
 warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
@@ -33,22 +28,20 @@ FEAT = zeros(size(EDGE));
 % if the angle is pointing up/down
 if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     % SCAN TO THE LEFT!
-    j = 0;
+    j = -1;
     colx = col + j;
     inimage = find(colx > 0);
     while ~isempty(inimage);
         rowx = row(inimage);
         colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        prev = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                FEAT(rowx(i),colx(i)) = 0;
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                FEAT(rowx(i), colx(i)) = prev + 1;
             end
-            %prev = FEAT(rowx(i), colx(i));
+            prev = FEAT(rowx(i), colx(i));
         end
         j = j-1;
         colx = col + j;
@@ -64,16 +57,14 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     while ~isempty(inimage);
         rowx = row(inimage);
         colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        prev = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                FEAT(rowx(i),colx(i)) = 0;
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                FEAT(rowx(i), colx(i)) = prev + 1;
             end
-            %prev = FEAT(rowx(i), colx(i));
+            prev = FEAT(rowx(i), colx(i));
         end
         j = j+1;
         colx = col + j;
@@ -84,22 +75,20 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
 % the angle is pointing left-right
 else
       % SCAN TO THE bottom!
-    j = 0;
+    j = -1;
     rowx = row + j;
     inimage = find(rowx > 0);
     while ~isempty(inimage);
         rowx = row(inimage) + j;
         colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        prev = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                FEAT(rowx(i),colx(i)) = 0;
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                FEAT(rowx(i), colx(i)) = prev + 1;
             end
-            %prev = FEAT(rowx(i), colx(i));
+            prev = FEAT(rowx(i), colx(i));
         end
         j = j-1;
         rowx = row + j;
@@ -115,16 +104,14 @@ else
     while ~isempty(inimage);
         rowx = row(inimage) + j;
         colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        prev = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                FEAT(rowx(i),colx(i)) = 0;
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                FEAT(rowx(i), colx(i)) = prev + 1;
             end
-            %prev = FEAT(rowx(i), colx(i));
+            prev = FEAT(rowx(i), colx(i));
         end
         j = j+1;
         rowx = row + j;
@@ -134,7 +121,7 @@ else
 end
 
 
-disp(['computing spedges for angle = ' num2str(angle)]);
+
 
 
 
@@ -153,9 +140,7 @@ disp(['computing spedges for angle = ' num2str(angle)]);
 % %     FEAT(row(i),col(i))
 % end
 %     
-
-%figure; imagesc(FEAT); axis image;
-
+figure; imagesc(FEAT); axis image;
 % 
 % A = zeros(size(I));
 % for i = 1:length(row)
@@ -164,11 +149,6 @@ disp(['computing spedges for angle = ' num2str(angle)]);
 % figure; imagesc(A > 0); axis image;
 
 %figure; imagesc(EDGE); axis image;
-
-
-function d = euclid(x,y)
-d = sum((x-y).^2).^.5;
-
 
 
 function [row, col] = linepoints(I,Angle)
@@ -183,7 +163,6 @@ function [row, col] = linepoints(I,Angle)
 % flip the sign of the angle (matlab y axis points down for images) and
 % convert to radians
 if Angle ~= 0
-    %angle = deg2rad(Angle);
     angle = deg2rad(360 - Angle);
 else
     angle = Angle;
@@ -231,23 +210,15 @@ row = round(liney); col = round(linex);
 % if the angle points to quadrant 2 or 3, we need to re-sort the elements 
 % of row and col so they increase in the direction of the angle
 
-if (270 <= Angle) || (Angle < 90)
+if (90 <= Angle) && (Angle < 180)
+    reverse_inds = length(row):-1:1;
+    row = row(reverse_inds);
+    col = col(reverse_inds);
+elseif (180 <= Angle) && (Angle < 270)
     reverse_inds = length(row):-1:1;
     row = row(reverse_inds);
     col = col(reverse_inds);
 end
-
-
-
-% if (90 <= Angle) && (Angle < 180)
-%     reverse_inds = length(row):-1:1;
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-% elseif (180 <= Angle) && (Angle < 270)
-%     reverse_inds = length(row):-1:1;
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-% end
 
 % if (0 <= Angle) && (Angle < 90)
 %     disp('okay! 0<=Angle<90');
