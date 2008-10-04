@@ -134,7 +134,7 @@ else
 end
 
 
-disp(['computing spedges for angle = ' num2str(angle)]);
+%disp(['computing spedges for angle = ' num2str(angle)]);
 
 
 
