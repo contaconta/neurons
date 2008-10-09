@@ -10,7 +10,7 @@ TRAIN_POS = 1688;   % number of positive examples in the training set
 TRAIN_NEG = 1688;   % number of negative examples in the training set
 TEST_POS  = 1688;   % number of positive examples in the test set
 TEST_NEG  = 1688;   % number of negative examples in the test set
-NORM      = 1;      % normalize the variance of image intensity?
+NORM      = 0;      % normalize the variance of image intensity?
 cascade_filenm = 'NUCLEUS_CASCADE_1688.mat';
 log_filenm = 'NUCLEUS_CASCADE_1688.log';
 

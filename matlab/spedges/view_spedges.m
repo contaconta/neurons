@@ -106,13 +106,14 @@ handles.I = mat2gray(handles.I);
 
 % compute the spedges
 handles.sp = spedges(handles.I, handles.angles, handles.sigma);
+handles.EDGE = handles.sp.edge;
 
 if get(handles.showedges, 'Value')  
     % get the edges image
-    handles.EDGE = edge(handles.I, 'log', 0, handles.sigma);
+    %handles.EDGE = edge(handles.I, 'log', 0, handles.sigma);
     % to handle directions that pass through lines at an angle, thicken lines
     % on diagonals
-    handles.EDGE = bwmorph(handles.EDGE, 'diag');   
+    %handles.EDGE = bwmorph(handles.EDGE, 'diag');   
     handles.I = imoverlay(handles.I, handles.EDGE, 'alpha', .5);
     handles.I = mat2gray(handles.I);
 end
@@ -238,7 +239,7 @@ y = repmat(y, [length(handles.sp.angle) 1]);
 
 disp(['selected point x = ' num2str(x(1)) '; y = ' num2str(y(1)) ';']);
 
-handles.sp
+%handles.sp
 
 sp1 = handles.sp.spedges(:,y(1),x(1)); sp1=squeeze(sp1); %bar(sp1);
 
@@ -247,7 +248,7 @@ for i = 1:length(handles.sp.angle)
     v(i) = sp1(i) * -sind(handles.sp.angle(i));
 end
 
-[handles.sp.angle' sp1 u' v']
+%[handles.sp.angle' sp1 u' v']
 hold on;
 %quiver(x,y,u',v');
 %quiver(x,y,u',v', 0);  % add the 0 to make the quivers NOT scaled down
