@@ -1,12 +1,44 @@
-function FEAT = spedge_dist(I, angle, sigma)
+function [FEAT, EDGE] = spedge_dist(varargin)
+%SPEDGE_DIST computes a spedge feature in a given direction
 %
+%   FEATURE = spedge_dist(I, ANGLE, SIGMA. METHOD)  computes a spedge 
+%   feature on a grayscale image I at angle ANGLE.  Each pixel in FEATURE 
+%   contains the distance to the nearest edge in direction ANGLE.  Edges 
+%   are computed using Laplacian of Gaussian zero-crossings (!!! in the 
+%   future we may add more methods for generating edges).  SIGMA specifies 
+%   the standard deviation of the edge filter.  METHOD specifies the type
+%   of distance measure to the nearest edge: 'euclidean', 'count', or
+%   'projection' (default).  'count' deterimines the distance by the number
+%   of pixels in the direction of ANGLE.  'projection' determines the
+%   distance along the x-axis or y-axis projection (depending on ANGLE).
 %
+%   [FEATURE, EDGE] = spedge_dist(I, ANGLE, SIGMA, 'count') computes spedges
+%   similarly, but instead of euclidean distance, counts the number of
+%   pixels in the direction ANGLE.  This is typically about 10x faster than
+%   computing the euclidean distance.  EDGE optionally returns the binary
+%   edge image used to compute the spedges.
 %
+%   Example:
+%   -------------------------
+%   I = imread('cameraman.tif');
+%   SPEDGE = spedge_dist(I,30,2,'count');
+%   imagesc(SPEDGE);  axis image;
 %
+%   Copyright © 2008 Kevin Smith
 %
-%
-%
-%
+%   See also SPEDGES, EDGE, VIEW_SPEDGES
+
+
+I = varargin{1};
+angle = varargin{2};
+sigma = varargin{3};
+METHOD = 'projection';
+if nargin > 3 
+    METHOD = varargin{4};
+    if ~(strcmp(METHOD,'count') || strcmp(METHOD, 'euclidean') || strcmp(METHOD,'projection'))
+        error('Please select a METHOD: count, euclidean, or projection');
+    end
+end
 
 %% build a binary image containing edges of I
 
@@ -16,6 +48,7 @@ if angle < 0;  angle = angle + 360; end;
 
 % we use a zero-crossing laplacian of gaussian to ensure closed contours
 EDGE = edge(I, 'log', 0, sigma);
+%EDGE = edge(I, 'sobel');
 
 % to handle directions that pass through lines at an angle, thicken lines
 % on diagonals
@@ -40,20 +73,37 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
         rowx = row(inimage);
         colx = col(inimage) + j;
         lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        if strcmp(METHOD,'count'); count = 0; end
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                % if rowx(i),colx(i) contains an edge
+%                 switch METHOD
+%                     case 'count'
+%                         count = 0;
+%                         FEAT(rowx(i),colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                         lastedge = [rowx(i) colx(i)];
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                        lastedge = [rowx(i) colx(i)];
+%                 end
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                % if rowx(i), colx(i) does not contain an edge
+%                 switch METHOD
+%                     case 'count'
+%                         count = count + 1;
+%                         FEAT(rowx(i), colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+%                 end
             end
-            %prev = FEAT(rowx(i), colx(i));
         end
         j = j-1;
         colx = col + j;
         inimage = find(colx > 0);
-        %keyboard;
     end
 
 
@@ -65,23 +115,40 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
         rowx = row(inimage);
         colx = col(inimage) + j;
         lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        if strcmp(METHOD,'count'); count = 0; end
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+                % if rowx(i),colx(i) contains an edge
+%                 switch METHOD
+%                     case 'count'
+%                         count = 0;
+%                         FEAT(rowx(i),colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                         lastedge = [rowx(i) colx(i)];
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                        lastedge = [rowx(i) colx(i)];
+%                 end
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+                % if rowx(i), colx(i) does not contain an edge
+%                 switch METHOD
+%                     case 'count'
+%                         count = count + 1;
+%                         FEAT(rowx(i), colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+%                 end
             end
-            %prev = FEAT(rowx(i), colx(i));
         end
         j = j+1;
         colx = col + j;
         inimage = find(colx <= size(I,2));
-        %keyboard;
     end
    
-% the angle is pointing left-right
+% the angle is pointing left-right (-pi/4 > angle > pi/4) or (3pi/4 > angle > 5pi/4)
 else
       % SCAN TO THE bottom!
     j = 0;
@@ -91,20 +158,35 @@ else
         rowx = row(inimage) + j;
         colx = col(inimage);
         lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        if strcmp(METHOD, 'count'); count = 0; end
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+%                 switch METHOD
+%                     case 'count'
+%                         count = 0;
+%                         FEAT(rowx(i),colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                         lastedge = [rowx(i) colx(i)];
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                        lastedge = [rowx(i) colx(i)];
+%                 end
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                 switch METHOD
+%                     case 'count'
+%                         count = count + 1;
+%                         FEAT(rowx(i), colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+%                 end
             end
-            %prev = FEAT(rowx(i), colx(i));
         end
         j = j-1;
         rowx = row + j;
         inimage = find(rowx > 0);
-        %keyboard;
     end
 
 
@@ -116,54 +198,43 @@ else
         rowx = row(inimage) + j;
         colx = col(inimage);
         lastedge = [rowx(1) colx(1)];
-        %prev = 0;
+        if strcmp(METHOD, 'count'); count = 0; end
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
-                lastedge = [rowx(i) colx(i)];
+%                 switch METHOD
+%                     case 'count'
+%                         count = 0;
+%                         FEAT(rowx(i),colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i),colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                         lastedge = [rowx(i) colx(i)];
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                        lastedge = [rowx(i) colx(i)];
+%                 end
             else
-                FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                 switch METHOD
+%                     case 'count'
+%                         count = count + 1;
+%                         FEAT(rowx(i), colx(i)) = count;
+%                     case 'euclidean'
+%                         FEAT(rowx(i), colx(i)) = euclid(lastedge, [rowx(i) colx(i)]);
+%                     case 'projection'
+                        FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+%                 end
             end
-            %prev = FEAT(rowx(i), colx(i));
         end
         j = j+1;
         rowx = row + j;
         inimage = find(rowx <= size(I,1));
-        %keyboard;
     end
 end
 
 
-%disp(['computing spedges for angle = ' num2str(angle)]);
-
-
-
-% FEAT = double(~EDGE);
-% % FEAT = zeros(size(EDGE));
-% prev = 0;
-% for i = 1:length(row);
-%     if EDGE(row(i),col(i)) == 1
-%         %disp('edge')
-%         FEAT(row(i),col(i)) = 0;
-%     else
-%         %disp('no edge')
-%         FEAT(row(i), col(i)) = prev + 1;
-%     end
-%     prev = FEAT(row(i), col(i));
-% %     FEAT(row(i),col(i))
-% end
-%     
-
 %figure; imagesc(FEAT); axis image;
 
-% 
-% A = zeros(size(I));
-% for i = 1:length(row)
-%     A(row(i), col(i)) = i; 
-% end
-% figure; imagesc(A > 0); axis image;
 
-%figure; imagesc(EDGE); axis image;
+
 
 
 function d = euclid(x,y)
@@ -236,36 +307,6 @@ if (270 <= Angle) || (Angle < 90)
     row = row(reverse_inds);
     col = col(reverse_inds);
 end
-
-
-
-% if (90 <= Angle) && (Angle < 180)
-%     reverse_inds = length(row):-1:1;
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-% elseif (180 <= Angle) && (Angle < 270)
-%     reverse_inds = length(row):-1:1;
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-% end
-
-% if (0 <= Angle) && (Angle < 90)
-%     disp('okay! 0<=Angle<90');
-% elseif (90 <= Angle) && (Angle < 180)
-%     reverse_inds = [length(row):-1:1];
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-%     disp('dunno! 90<=Angle<180');
-% elseif (180 <= Angle) && (Angle < 270)
-%     reverse_inds = [length(row):-1:1];
-%     row = row(reverse_inds);
-%     col = col(reverse_inds);
-%     disp('dunno! 180<=Angle<270');
-% else
-%     disp('dunno! 270<=Angle<360');
-% end
-
-
 
 
 
