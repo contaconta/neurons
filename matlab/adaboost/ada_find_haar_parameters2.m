@@ -1,7 +1,7 @@
-function [WEAK, PRE] = vj_find_haar_parameters2(h_ind, training_labels, PRE, WEAK, w)
-%VJ_FIND_HAAR_PARAMETERS deteremines WEAK classifier threshold, min error, polarity
+function [WEAK, PRE] = ada_find_haar_parameters2(h_ind, training_labels, PRE, WEAK, w)
+%ADA_FIND_HAAR_PARAMETERS deteremines WEAK classifier threshold, min error, polarity
 %
-%   [TRAIN, PRE] = vj_find_haar_parameters(h_ind, TRAIN, train_list, PRE, WEAK, w)
+%   [TRAIN, PRE] = ada_find_haar_parameters(h_ind, TRAIN, train_list, PRE, WEAK, w)
 %   uses training examples from the structure in TRAIN to 
 %   deteremine the optimal threshold and polarity (minimizing classification 
 %   error) for the WEAK classifier specified by 'h_ind'.  Also requires the 
@@ -9,7 +9,7 @@ function [WEAK, PRE] = vj_find_haar_parameters2(h_ind, training_labels, PRE, WEA
 %
 %
 %   Copyright © 2008 Kevin Smith
-%   See also VJ_TRAIN, VJ_ADABOOST, VJ_DEFINE_CLASSIFIERS, BIGMATRIX_GET_ROW
+%   See also ADA_ADABOOST
 
 
 % initialize some variables to make loops faster by preallocating memory

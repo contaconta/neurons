@@ -1,8 +1,8 @@
-function [C, h] = vj_classify_strong(CLASSIFIER, II, offset, threshold)
-%VJ_CLASSIFY_STRONG returns the classification result of a boosted classifier
+function [C, h] = ada_classify_strong(CLASSIFIER, II, offset, threshold)
+%ADA_CLASSIFY_STRONG returns the classification result of a boosted classifier
 %
-%   h = vj_classify_weak(CLASSIFIER, II, offset, threshold) given a boosted 
-%   CLASSIFIER and a queary integral image II, returns the boosted 
+%   [C, h] = ada_classify_weak(CLASSIFIER, II, offset, threshold) given a 
+%   boosted CLASSIFIER and a query integral image II, returns the boosted 
 %   classification result (C = 1 for class 1 or C = 0 for class 0). II is
 %   assumed to be the IMSIZE used to define the weak classifiers.  Many 
 %   weak classification hypotheses are used to build a strong classfier 
@@ -10,12 +10,12 @@ function [C, h] = vj_classify_strong(CLASSIFIER, II, offset, threshold)
 %   Threshold adjusts the sensitivity of the classifier ( > 1 is more 
 %   selective, < 1 is more permissive).
 %  
-%   Example: using vj_classify_strong to classify a query image.
+%   Example: using ada_classify_strong to classify a query image.
 %   -----------------------------------------------
-%   C = vj_classify_strong(CLASSIFIER, II, [0 0])
+%   C = ada_classify_strong(CLASSIFIER, II, [0 0])
 %
 %   Copyright © 2008 Kevin Smith
-%   See also VJ_ADABOOST
+%   See also ADA_ADABOOST
 
 x = offset(1);
 y = offset(2);
@@ -33,9 +33,7 @@ if size(II,2) ~= 1
     II = II(:);
 end
 
-%IIs = repmat(II, [1 size(CLASSIFIER.fast,1)]);
-f = vj_fast_haar_response(CLASSIFIER.fast, II);
-%f = (CLASSIFIER.fast * II)';
+f = ada_fast_haar_response(CLASSIFIER.fast, II);
 h = (CLASSIFIER.polarity .* f) < (CLASSIFIER.polarity .* CLASSIFIER.theta);
 
 

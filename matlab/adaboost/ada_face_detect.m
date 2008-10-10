@@ -1,4 +1,4 @@
-function detections = vj_face_detect(I, DETECTOR, DELTA, SCALE_FACTOR, D)
+function detections = ada_face_detect(I, DETECTOR, DELTA, SCALE_FACTOR, D)
 %
 %
 %
@@ -12,10 +12,10 @@ end
 
 if strcmp(DETECTOR(1).type, 'CASCADE');
     FACESIZE = DETECTOR(1).CLASSIFIER.IMSIZE;
-    classify = @vj_classify_cascade;
+    classify = @ada_classify_cascade;
 else
     FACESIZE = CLASSIFIER.IMSIZE;
-    classify = @vj_classify_strong;
+    classify = @ada_classify_strong;
 end
 
 

@@ -1,4 +1,4 @@
-function CLASSIFIER = vj_classifier_init(T, WEAK)
+function CLASSIFIER = ada_classifier_init(T, WEAK)
 %
 %
 %

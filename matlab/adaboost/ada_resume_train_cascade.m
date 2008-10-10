@@ -1,4 +1,4 @@
-%function vj_train_cascade( )
+%function ada_train_cascade( )
 
 
 % parameters
@@ -28,22 +28,22 @@ cascade_filenm = 'CASCADE_6000.mat';
 % examples from the current cascade (selected at random from full images)
 train0 = [datapath '/Data/face_databases/non-face_uncropped/'];
 disp('...updating the TRAIN set with negative examples which cause false positives');
-TRAIN = vj_cascade_collect_data(train1, train0, TRAIN, CASCADE, 'size', IMSIZE, ...
+TRAIN = ada_cascade_collect_data(train1, train0, TRAIN, CASCADE, 'size', IMSIZE, ...
                 'normalize', 1, 'data_limit', [TRAIN_POS TRAIN_NEG]);
 
 validation0 = [datapath '/Data/face_databases/non-face_uncropped/'];
 disp('...updating the VALIDATION set with negative examples which cause false positives');
-VALIDATION = vj_cascade_collect_data(validation1, validation0, VALIDATION, CASCADE, 'size', IMSIZE, ...
+VALIDATION = ada_cascade_collect_data(validation1, validation0, VALIDATION, CASCADE, 'size', IMSIZE, ...
                 'normalize', 1, 'data_limit', [TEST_POS TEST_NEG]);
 
 % unfortunately we must precompute haar responses over all of the TRAIN set again
 disp(['...precomputing the haar-like feature responses of each classifier on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                       
-PRE = vj_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath);
+PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath);
 
 % define a set of haar-like weak classifiers over the standard image size
 if ~ exist('WEAK', 'var');
     tic; disp('...defining the weak haar-like classifiers.');
-    WEAK = vj_define_weak_classifiers(IMSIZE, 'types', [1 2 3 5]); toc; 
+    WEAK = ada_define_weak_classifiers(IMSIZE, 'types', [1 2 3 5]); toc; 
 end
 
 % train the cascade
@@ -71,14 +71,14 @@ while (Fi > Ftarget)
         % train the next weak classifier for the strong classifier of stage i
         disp(['...CASCADE stage ' num2str(i) ' training classifier hypothesis ti=' num2str(ti) '.']);
         if ti == 1
-            CASCADE(i).CLASSIFIER = vj_adaboost(PRE, TRAIN, WEAK, ti);
+            CASCADE(i).CLASSIFIER = ada_adaboost(PRE, TRAIN, WEAK, ti);
         else
-            CASCADE(i).CLASSIFIER = vj_adaboost(PRE, TRAIN, WEAK, ti, CASCADE(i).CLASSIFIER);
+            CASCADE(i).CLASSIFIER = ada_adaboost(PRE, TRAIN, WEAK, ti, CASCADE(i).CLASSIFIER);
         end
         
         % adjust the threshold for the current classifier until we find one
         % which gives a satifactory detection rate (this changes the false alarm rate)
-        [CASCADE, Fi, Di]  = vj_cascade_select_threshold(CASCADE, i, VALIDATION, dmin);
+        [CASCADE, Fi, Di]  = ada_cascade_select_threshold(CASCADE, i, VALIDATION, dmin);
 
         % save the cascade to a file in case something bad happens and we need to restart
         save(cascade_filenm, 'CASCADE');
@@ -97,15 +97,15 @@ while (Fi > Ftarget)
     % examples from the current cascade (selected at random from full images)
     train0 = [datapath '/Data/face_databases/non-face_uncropped/'];
     disp('...updating the TRAIN set with negative examples which cause false positives');
-    TRAIN = vj_cascade_collect_data(train1, train0, TRAIN, CASCADE, 'size', IMSIZE, ...
+    TRAIN = ada_cascade_collect_data(train1, train0, TRAIN, CASCADE, 'size', IMSIZE, ...
                     'normalize', 1, 'data_limit', [TRAIN_POS TRAIN_NEG]);
                 
     validation0 = [datapath '/Data/face_databases/non-face_uncropped/'];
     disp('...updating the VALIDATION set with negative examples which cause false positives');
-    VALIDATION = vj_cascade_collect_data(validation1, validation0, VALIDATION, CASCADE, 'size', IMSIZE, ...
+    VALIDATION = ada_cascade_collect_data(validation1, validation0, VALIDATION, CASCADE, 'size', IMSIZE, ...
                     'normalize', 1, 'data_limit', [TEST_POS TEST_NEG]);
     
     % unfortunately we must precompute haar responses over all of the TRAIN set again
     disp(['...precomputing the haar-like feature responses of each classifier on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                       
-    PRE = vj_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath);
+    PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath);
 end

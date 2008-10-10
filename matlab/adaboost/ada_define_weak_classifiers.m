@@ -1,7 +1,7 @@
-function WEAK = vj_define_weak_classifiers(varargin)
-%VJ_DEFINE_CLASSIFIERS defines a set of weak haar like classifiers.
+function WEAK = ada_define_weak_classifiers(varargin)
+%ADA_DEFINE_CLASSIFIERS defines a set of weak haar like classifiers.
 %
-%   WEAK = vj_define_classifiers(IMSIZE, ...) constructs a set of weak 
+%   WEAK = ada_define_classifiers(IMSIZE, ...) constructs a set of weak 
 %   haar-like classifiers that define the difference between image regions  
 %   [from Viola-Jones IJCV 2004].  IMSIZE = [WIDTH HEIGHT] is the standard 
 %   size of the images used for training and testing. Optional argument
@@ -36,12 +36,12 @@ function WEAK = vj_define_weak_classifiers(varargin)
 %   Defines & plots weak classifiers in WEAK for a 13x13 image using haar 
 %   types 2,4,5 with min horizontal size of 6 and max of 13 with 3 pixel steps.  
 %   -----------------
-%   WEAK = vj_define_classifiers([13 13], 'disp', 'types', [2,4,5], ...
+%   WEAK = ada_define_classifiers([13 13], 'disp', 'types', [2,4,5], ...
 %                                'H_LIMITS', [6 3 13]);
 %
 %   Copyright 2008 Kevin Smith
 %
-%   See also VJ_TRAIN, VJ_PLOT_HAAR_FEATURE
+%   See also ADA_PLOT_HAAR_FEATURE
 
 
 % define parameters
@@ -117,7 +117,7 @@ if ismember(1, TYPES)
                     %keyboard; 
                     
                     if D   %plot the classifier
-                         vj_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
+                         ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
                     c_num = c_num + 1;
                 end
@@ -168,7 +168,7 @@ if ismember(2, TYPES)
                     
                     
                     if D % plot the classifier
-                        vj_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
+                        ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
                     c_num = c_num + 1;
                 end
@@ -223,7 +223,7 @@ if ismember(3, TYPES)
                     
                     
                     if D % plot the classifier
-                        vj_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
+                        ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
                     c_num = c_num + 1;
                 end
@@ -277,7 +277,7 @@ if ismember(4, TYPES)
                     
                     
                     if D % plot the classifier
-                        vj_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
+                        ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
                     c_num = c_num + 1;
                 end
@@ -332,7 +332,7 @@ if ismember(5, TYPES)
                     
                     % plot the classifier
                     if D
-                        vj_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
+                        ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
                     c_num = c_num + 1;
                 end
@@ -349,7 +349,7 @@ LAST_CLASSIFIER = find(WEAK.descriptor(:,1) == 0,1);
 WEAK.descriptor = WEAK.descriptor(1:LAST_CLASSIFIER-1,:);
 WEAK.fast = WEAK.fast(1:LAST_CLASSIFIER-1,:);
 
-% define the other parameters of the weak classifier which we will use in vj_adaboost
+% define the other parameters of the weak classifier which we will use in ada_adaboost
 num_classifiers = size(WEAK.descriptor,1);
 WEAK.theta = zeros(num_classifiers, 1);
 WEAK.minerr = zeros(num_classifiers, 1);
