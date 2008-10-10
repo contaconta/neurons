@@ -1,8 +1,8 @@
-function TRAIN = vj_cascade_collect_data(varargin)
-%VJ_COLLECT_DATA organizes training images for viola-jones
+function TRAIN = ada_cascade_collect_data(varargin)
+%ADA_COLLECT_DATA organizes training images for viola-jones
 %
-%   TRAIN = vj_collect_data(path1, path0, ...) 
-%   TRAIN = vj_collect_data(path1, path0, TRAIN, CASCADE, ...) 
+%   TRAIN = ada_collect_data(path1, path0, ...) 
+%   TRAIN = ada_collect_data(path1, path0, TRAIN, CASCADE, ...) 
 %   collects and processes training images found in path1 (positive training 
 %   class) and path0 (negative training class).  Class 0 training data is 
 %   collected from path0 by selecting a random subwindow of a random image.
@@ -25,18 +25,18 @@ function TRAIN = vj_cascade_collect_data(varargin)
 %   pass TRAIN, and the positive examples must be collected.
 %   --------------
 % 
-%   TRAIN = vj_cascasde_collect_data(path1, path0, 'size', [12 12], ...
+%   TRAIN = ada_cascasde_collect_data(path1, path0, 'size', [12 12], ...
 %           'normalize', 0, 'initialize', 'data_limit', [100 100]);
 %
 %
 %   Example 2: now that TRAIN exists, we update new class 0 examples
 %   -----------------------------------------------------------------
-%   TRAIN = vj_cascasde_collect_data(path1, path0, TRAIN, CASCADE, ...
+%   TRAIN = ada_cascasde_collect_data(path1, path0, TRAIN, CASCADE, ...
 %                   'size', [12 12], 'normalize', 0, 'data_limit', [100 100]);
 %
 %   Copyright 2008 Kevin Smith
 %
-%   See also STRUCT, VJ_TRAIN, INTEGRAL_IMAGE, VJ_ADABOOST
+%   See also STRUCT, INTEGRAL_IMAGE, ADA_ADABOOST
  
 %% define parameters
 path1 = varargin{1};                % positive example path
@@ -198,7 +198,7 @@ while length(N) < NEG_LIM
         N(length(N)).II    = II(:); %#ok<AGROW>
         N(length(N)).class = 0; %#ok<AGROW>
     else
-        if vj_classify_cascade(CASCADE, II, [0 0])      % = 1 is a false positive
+        if ada_classify_cascade(CASCADE, II, [0 0])      % = 1 is a false positive
             N(length(N)+1).Image = EXAMPLE; %#ok<AGROW>
             N(length(N)).II    = II(:); %#ok<AGROW>
             N(length(N)).class = 0; %#ok<AGROW>

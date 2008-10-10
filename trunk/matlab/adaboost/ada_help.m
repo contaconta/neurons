@@ -1,3 +1,3 @@
-function vj_help()
+function ada_help()
 
 % nothing yet

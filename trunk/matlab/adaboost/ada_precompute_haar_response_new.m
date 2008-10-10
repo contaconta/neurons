@@ -1,7 +1,7 @@
-function PRE = vj_precompute_haar_response_new(TRAIN, WEAK, filenm, matpath,PRE)
-%VJ_PRECOMPUTE_HAAR_RESPONSE precomputes and stores haar feature responses
+function PRE = ada_precompute_haar_response_new(TRAIN, WEAK, filenm, matpath,PRE)
+%ADA_PRECOMPUTE_HAAR_RESPONSE precomputes and stores haar feature responses
 %
-%   m = vj_precompute_haar_response(TRAIN, WEAK, filenm) takes a struct TRAIN
+%   m = ada_precompute_haar_response(TRAIN, WEAK, filenm) takes a struct TRAIN
 %   containing the training data and a struct WEAK containing the weak
 %   haar-like features and precomputes the responses of each feature to
 %   each piece of training data.  The results are stored in PRE: haar
@@ -11,12 +11,11 @@ function PRE = vj_precompute_haar_response_new(TRAIN, WEAK, filenm, matpath,PRE)
 %   Example:  To get retreive a row vector containing the feature responses
 %   for feature F over the whole training set, use
 %   ------------------------------------------------------------------
-%   [f_response, PRE] = bigmatrix_get_row(PRE, feature_index);
 %
 %
 %   Copyright 2008 Kevin Smith
 %
-%   See also STRUCT, VJ_TRAIN, INTEGRAL_IMAGE
+%   See also STRUCT, ADA_TRAIN_CASCADE, INTEGRAL_IMAGE
 
 
 %-----------------------------------------------------------
@@ -47,7 +46,7 @@ j = 1;
 
 for i = 1:size(WEAK.descriptor,1)
     
-    f_responses(j,:) = vj_fast_haar_response(WEAK.fast(i,:), IIs);
+    f_responses(j,:) = ada_fast_haar_response(WEAK.fast(i,:), IIs);
     
     if mod(i,block) == 0
         PRE.store_rows(f_responses, [i-block+1 i]);

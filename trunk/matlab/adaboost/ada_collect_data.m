@@ -1,7 +1,7 @@
-function TRAIN = vj_collect_data(varargin)
-%VJ_COLLECT_DATA organizes training images for viola-jones
+function TRAIN = ada_collect_data(varargin)
+%ADA_COLLECT_DATA organizes training images for viola-jones
 %
-%   TRAIN = vj_collect_data(path1, path0, ...) collects and processes 
+%   TRAIN = ada_collect_data(path1, path0, ...) collects and processes 
 %   training images found in path1 (positive training class) and path0
 %   (negative training class).  The data is stored into struct TRAIN for
 %   use in other vj modules.  Optional argument 'SAVE' will save TRAIN to
@@ -19,12 +19,12 @@ function TRAIN = vj_collect_data(varargin)
 %   TRAIN.mat and returns a struct TRAIN containing the training data.
 %   --------------
 % 
-%   TRAIN = vj_collect_data(path1, path0, 'size', [12 12], 'save', ...
+%   TRAIN = ada_collect_data(path1, path0, 'size', [12 12], 'save', ...
 %           'TRAIN.mat', 'normalize', 0, 'data_limit', [100 100]);
 %
 %   Copyright 2008 Kevin Smith
 %
-%   See also STRUCT, VJ_TRAIN, INTEGRAL_IMAGE, VJ_ADABOOST
+%   See also STRUCT, ADA_TRAIN, INTEGRAL_IMAGE, ADA_ADABOOST
  
 
 
