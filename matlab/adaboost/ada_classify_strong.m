@@ -17,6 +17,7 @@ function [C, h] = ada_classify_strong(CLASSIFIER, II, offset, threshold)
 %   Copyright © 2008 Kevin Smith
 %   See also ADA_ADABOOST
 
+%% handle input parameters
 x = offset(1);
 y = offset(2);
 
@@ -27,13 +28,26 @@ elseif nargin < 4
     threshold = 1;
 end
 
-
+%% vectorize the intergral image if it is not already
 if size(II,2) ~= 1
     II = II(y+1:y+CLASSIFIER.IMSIZE(2), x+1:x+CLASSIFIER.IMSIZE(1));
     II = II(:);
 end
 
-f = ada_fast_haar_response(CLASSIFIER.fast, II);
+
+%% find the responses of the weak learners
+
+% learner_types = unique(CLASSIFIER.learner_type);
+% 
+% 
+% 
+% for i = 1:length(learner_types)
+%     type = learner_types{i};
+%     
+
+    
+%f = ada_fast_haar_response(CLASSIFIER.fast, II);
+f =  ada_haar_response({CLASSIFIER.haar(:).hinds}, {CLASSIFIER.haar(:).hvals}, II);
 h = (CLASSIFIER.polarity .* f) < (CLASSIFIER.polarity .* CLASSIFIER.theta);
 
 

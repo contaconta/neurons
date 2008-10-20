@@ -31,20 +31,24 @@ for t = 1:length(TYPES)
         params = PARAMS{t}; %#ok<FNDSB>
 
         % call the function to define haar wavelets and pass them to WEAK
-        haars = ada_define_haar_wavelets(params{:});
-        field = 'haars';
+        haars = ada_haar_define(params{:});
 
         % set the wavelet definitions to a field ('haars', 'haars_1', etc)
         field = namenewfield(WEAK, 'haars');
         WEAK.(field) = haars;
 
 
-        WEAK.polarity   = [WEAK.polarity; ones(length(WEAK.(field)),1)]; 
-        WEAK.error      = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        WEAK.theta      = [WEAK.theta; zeros(length(WEAK.(field)),1)];
-        index_map       = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
-        WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response}};
+        %WEAK.polarity           = [WEAK.polarity; ones(length(WEAK.(field)),1)]; 
+        WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
+        %WEAK.theta              = [WEAK.theta; zeros(length(WEAK.(field)),1)];
+        index_map               = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
+        WEAK.ptr(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
+        WEAK.ptr(index_map,2)   = num2cell(1:length(WEAK.(field)))';
+        WEAK.ptr(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
+        WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_classify}};
         clear haars;
+        
+        WEAK = orderfields(WEAK);
     end
 
     %% add spedge weak learners

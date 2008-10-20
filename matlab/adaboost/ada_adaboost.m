@@ -35,28 +35,68 @@ for t = tmin:T
     w = w ./sum(w);
     
     %% 2. train weak learners for optimal class separation
-    [WEAK, PRE] = ada_train_weak_learners(WEAK, TRAIN);
+    [WEAK, PRE] = ada_train_weak_learners(WEAK, TRAIN, PRE, w);
         
     
-    %% 3. Use the best WEAK classifier as the 't' hypothesis in the Strong CLASSIFIER
-    [BEST_err, BEST_feature] = min(WEAK.minerr);
+    %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
+    [BEST_err, BEST_learner] = min(WEAK.error);
     
-    CLASSIFIER.feature_index(t)         = BEST_feature; 
-    CLASSIFIER.feature_descriptor(t,:)  = WEAK.descriptor(BEST_feature, :); 
-    CLASSIFIER.fast(t,:)                = WEAK.fast(BEST_feature,:);
-    CLASSIFIER.polarity(t)              = WEAK.polarity(BEST_feature); 
-    CLASSIFIER.theta(t)                 = WEAK.theta(BEST_feature); 
-    CLASSIFIER.alpha(t)                 = log( (1 - BEST_err) / BEST_err );
+    CLASSIFIER.feature_index(t) = BEST_learner; 
+    CLASSIFIER.alpha(t)         = log( (1 - BEST_err) / BEST_err );
+    weak_classifier             = WEAK.(WEAK.ptr{BEST_learner,1})(WEAK.ptr{BEST_learner,2});
+    learner_ind                 = WEAK.ptr{BEST_learner,3};
+    field                       = WEAK.learners{learner_ind}{1};
+    %response_function           = WEAK.learners{learner_ind}{5};
+    classification_function     = WEAK.learners{learner_ind}{6};
+    CLASSIFIER.learner_type{t}  = field;
+    
+    if ~isfield(CLASSIFIER, field)
+        % this is the first weak_classifier of its type in CLASSIFIER
+        CLASSIFIER.(field)(1) = weak_classifier;
+    else
+        % append the weak_classifier to existing list of this type
+        CLASSIFIER.(field)(length(CLASSIFIER.(field))+1) = weak_classifier;
+    end
+        
     beta = BEST_err/ (1 - BEST_err);      % beta is between [0, 1]
-    disp(['...selected weak classifier ' num2str(BEST_feature) ' as t=' num2str(t)  '  [polarity = ' num2str(CLASSIFIER.polarity(t)) ' theta = ' num2str(CLASSIFIER.theta(t))  ']' ]);
+    %disp(['...selected ' field ' learner ' num2str(BEST_learner) ' as t=' num2str(t)  '  [polarity = ' num2str(CLASSIFIER.polarity(t)) ' theta = ' num2str(CLASSIFIER.theta(t))  ']' ]);
+    disp(['...selected learner ' num2str(BEST_learner) ' (' field ') as t=' num2str(t) ]);
     
     %% 4. Update the training weight vector according to misclassifications
     IIs = [TRAIN(:).II];                    % vectorize the integral images
-    f = ada_fast_haar_response(CLASSIFIER.fast(t,:), IIs);
-    h = (CLASSIFIER.polarity(t)*ones(size(f)) .* f) <  ((CLASSIFIER.polarity(t)*ones(size(f))) .* (CLASSIFIER.theta(t)*ones(size(f))));
+    keyboard;
+    h = classification_function(weak_classifier, IIs);
     e = abs( h - [TRAIN(:).class] );
     w = w .* (beta * ones(size(w))).^(1 - e);
     CLASSIFIER.w = w;   
     clear IIs beta e f h    
 end
+
+
+
+
+
+
+% %% 3. Use the best WEAK classifier as the t-th CLASSIFIER hypothesis 
+%     [BEST_err, BEST_feature] = min(WEAK.error);
+%     
+%     CLASSIFIER.feature_index(t)         = BEST_feature; 
+%     CLASSIFIER.feature_descriptor(t,:)  = WEAK.descriptor(BEST_feature, :); 
+%     CLASSIFIER.fast(t,:)                = WEAK.fast(BEST_feature,:);
+%     CLASSIFIER.polarity(t)              = WEAK.polarity(BEST_feature); 
+%     CLASSIFIER.theta(t)                 = WEAK.theta(BEST_feature); 
+%     CLASSIFIER.alpha(t)                 = log( (1 - BEST_err) / BEST_err );
+%     beta = BEST_err/ (1 - BEST_err);      % beta is between [0, 1]
+%     disp(['...selected weak classifier ' num2str(BEST_feature) ' as t=' num2str(t)  '  [polarity = ' num2str(CLASSIFIER.polarity(t)) ' theta = ' num2str(CLASSIFIER.theta(t))  ']' ]);
+%     
+%     %% 4. Update the training weight vector according to misclassifications
+%     IIs = [TRAIN(:).II];                    % vectorize the integral images
+%     f = ada_fast_haar_response(CLASSIFIER.fast(t,:), IIs);
+%     h = (CLASSIFIER.polarity(t)*ones(size(f)) .* f) <  ((CLASSIFIER.polarity(t)*ones(size(f))) .* (CLASSIFIER.theta(t)*ones(size(f))));
+%     e = abs( h - [TRAIN(:).class] );
+%     w = w .* (beta * ones(size(w))).^(1 - e);
+%     CLASSIFIER.w = w;   
+%     clear IIs beta e f h    
+% end
+
 

@@ -27,9 +27,17 @@ if nargin < 3
 end
 BYTESIZE = 250000000;
 
+% get a list of haar-like features
+haar_list = [];
+for i = 1:length(WEAK.learners)
+    if strcmp('haar', WEAK.learners{i}{1})
+        haar_list = [haar_list WEAK.learners{i}{3}];
+    end
+end
+
 if isempty(PRE)
     % initialize the bigarray for the first go
-    PRE = bigarray(length(WEAK.haars), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
+    PRE = bigarray(length(haar_list), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
 end
 
 %--------------------------------------------------------------------------
@@ -40,13 +48,14 @@ end
 block = round(BYTESIZE / (length(TRAIN)*8)); %1000;
 IIs = [TRAIN(:).II];                        % vectorized integral images
 f_responses = zeros(block,length(TRAIN));   % preallocated haar response matrix
-W = wristwatch('start', 'end', length(WEAK.haars), 'every', 10000, 'text', '    ...precomputed haar ');
+W = wristwatch('start', 'end', length(haar_list), 'every', 10000, 'text', '    ...precomputed haar ');
 j = 1;
 
-for i = 1:length(WEAK.haars)
-    
-    %f_responses(j,:) = ada_fast_haar_response(WEAK.fast(i,:), IIs);
-    f_responses(j,:) = ada_haar_response(WEAK.haars(i).hinds, WEAK.haars(i).hvals, IIs);
+
+for i = haar_list
+    field = WEAK.ptr{i,1};
+    ind = WEAK.ptr{i,2};
+    f_responses(j,:) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, IIs);
     
     if mod(i,block) == 0
         PRE.store_rows(f_responses, [i-block+1 i]);

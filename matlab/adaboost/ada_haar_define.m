@@ -1,4 +1,4 @@
-function HAAR = ada_define_haar_wavelets(varargin)
+function HAAR = ada_haar_define(varargin)
 %ADA_DEFINE_CLASSIFIERS defines a set of weak haar like classifiers.
 %
 %   WEAK = ada_define_classifiers(IMSIZE, ...) constructs a set of weak 
@@ -106,33 +106,23 @@ if ismember('haar1', TYPES)
                     HAAR(c_num).descriptor(8:9) = [x+w-1 y+h-1];
             
                     if (x > 1) && (y > 1)
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x-1))     = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals -1];
                     end
                     if x > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x-1))   = 1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 1];
                     end
                     if y > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w/2-1)) = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w-1))   = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x+w/2-1) sub2ind(IMSIZE, y-1, x+w-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals +2 -1];
 
                     end
                     
-                    
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w/2-1))   = -2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w-1))     = 1;
                     HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h-1, x+w/2-1) sub2ind(IMSIZE, y+h-1, x+w-1)];
                     HAAR(c_num).hvals = [HAAR(c_num).hvals -2  1];
-                    
-
-%                     % transpose the hvals to make elementwise
-%                     % multiplication faster when computing feature value
-%                     HAAR(c_num).hvals = HAAR(c_num).hvals';
+                    HAAR(c_num).polarity = 1;
+                    HAAR(c_num).theta = 0;
                     
                     if D   %plot the classifier
                          ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
@@ -169,32 +159,23 @@ if ismember('haar2', TYPES)
                     HAAR(c_num).descriptor(8:9) = [x+w-1 y+h-1];
         
                     if (x > 1) && (y > 1)
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x-1))     = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals -1];
                     end
                     if x > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/2-1, x-1))   = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1,   x-1))   = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/2-1, x-1) sub2ind(IMSIZE, y+h-1,   x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 2 -1];
                     end
                     if y > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w-1)) = +1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x+w-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 1];
                     end
                     
-                    
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/2-1, x+w-1))   = -2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w-1))     = 1;
                     HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/2-1, x+w-1) sub2ind(IMSIZE, y+h-1, x+w-1)];
                     HAAR(c_num).hvals = [HAAR(c_num).hvals -2 1];
+                    HAAR(c_num).polarity = 1;
+                    HAAR(c_num).theta = 0;
 
-%                     % transpose the hvals to make elementwise
-%                     % multiplication faster when computing feature value
-%                     HAAR(c_num).hvals = HAAR(c_num).hvals';
-                    
                     if D % plot the classifier
                         ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
@@ -231,34 +212,23 @@ if ismember('haar3', TYPES)
 
                     
                     if (x > 1) && (y > 1)
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x-1))     = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals -1];
                     end
                     if x > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x-1))   = 1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 1];
                     end
                     if y > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w/3-1)) = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+2*w/3-1)) = -2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w-1))   = 1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x+w/3-1) sub2ind(IMSIZE, y-1, x+2*w/3-1) sub2ind(IMSIZE, y-1, x+w-1)]; 
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 2 -2 1];
                     end
                     
-                    
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w/3-1))   = -2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+2*w/3-1))   = +2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w-1))     = -1;
                     HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h-1, x+w/3-1) sub2ind(IMSIZE, y+h-1, x+2*w/3-1) sub2ind(IMSIZE, y+h-1, x+w-1)];
                     HAAR(c_num).hvals = [HAAR(c_num).hvals -2 2 -1];
-                    
-%                     % transpose the hvals to make elementwise
-%                     % multiplication faster when computing feature value
-%                     HAAR(c_num).hvals = HAAR(c_num).hvals';
-                    
+                    HAAR(c_num).polarity = 1;
+                    HAAR(c_num).theta = 0;
+
                     if D % plot the classifier
                         ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
@@ -294,34 +264,23 @@ if ismember('haar4', TYPES)
                     HAAR(c_num).descriptor(12:13) = [x+w-1 y+h-1];
 
                     if (x > 1) && (y > 1)
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x-1))     = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals -1];
                     end
                     if x > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/3-1, x-1))   = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+2*h/3-1, x-1)) = -2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x-1))   = 1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/3-1, x-1) sub2ind(IMSIZE, y+2*h/3-1, x-1) sub2ind(IMSIZE, y+h-1, x-1)]; 
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 2 -2 1];
                     end
                     if y > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w-1)) = 1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x+w-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 1];
                     end
-                    
-                    
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/3-1, x+w-1))   = -2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+2*h/3-1, x+w-1))   = +2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w-1))     = -1;
+
                     HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/3-1, x+w-1) sub2ind(IMSIZE, y+2*h/3-1, x+w-1) sub2ind(IMSIZE, y+h-1, x+w-1)];
                     HAAR(c_num).hvals = [HAAR(c_num).hvals -2 2 1];
-                    
-%                     % transpose the hvals to make elementwise
-%                     % multiplication faster when computing feature value
-%                     HAAR(c_num).hvals = HAAR(c_num).hvals';
-                    
+                    HAAR(c_num).polarity = 1;
+                    HAAR(c_num).theta = 0;
+
                     if D % plot the classifier
                         ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
                     end
@@ -360,34 +319,23 @@ if ismember('haar5', TYPES)
                     HAAR(c_num).descriptor(16:17) = [x+w/2-1 y+h-1];
 
                     if (x > 1) && (y > 1)
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x-1))     = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals -1];
                     end
                     if x > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/2-1, x-1))   = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1,   x-1))   = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/2-1, x-1) sub2ind(IMSIZE, y+h-1,   x-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 2 -1];
                     end
                     if y > 1
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w/2-1)) = +2;
-                        %WEAK.fast(c_num, sub2ind(IMSIZE, y-1, x+w-1)) = -1;
                         HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y-1, x+w/2-1) sub2ind(IMSIZE, y-1, x+w-1)];
                         HAAR(c_num).hvals = [HAAR(c_num).hvals 2 -1];
                     end
                     
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/2-1, x+w/2-1))   = -4;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h/2-1, x+w-1))   = 2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w/2-1))   = 2;
-                    %WEAK.fast(c_num, sub2ind(IMSIZE, y+h-1, x+w-1))     = -1;
                     HAAR(c_num).hinds = [HAAR(c_num).hinds sub2ind(IMSIZE, y+h/2-1, x+w/2-1) sub2ind(IMSIZE, y+h/2-1, x+w-1) sub2ind(IMSIZE, y+h-1, x+w/2-1) sub2ind(IMSIZE, y+h-1, x+w-1)];
                     HAAR(c_num).hvals = [HAAR(c_num).hvals -4 2 2 -1];
-                    
-%                     % transpose the hvals to make elementwise
-%                     % multiplication faster when computing feature value
-%                     HAAR(c_num).hvals = HAAR(c_num).hvals';
-                    
+                    HAAR(c_num).polarity = 1;
+                    HAAR(c_num).theta = 0;
+
                     % plot the classifier
                     if D
                         ada_plot_haar_feature(WEAK.descriptor(c_num,:), IMSIZE);
@@ -403,16 +351,3 @@ end
 % get rid of the wasted space from the memory allocation (was used to speed things up)
 LAST_CLASSIFIER = c_num - 1;
 HAAR = HAAR(1:LAST_CLASSIFIER);
-
-% get rid of the wasted space from the memory allocation (was used to speed things up)
-%LAST_CLASSIFIER = find(WEAK.descriptor(:,1) == 0,1);
-%WEAK.descriptor = WEAK.descriptor(1:LAST_CLASSIFIER-1,:);
-%WEAK.fast = WEAK.fast(1:LAST_CLASSIFIER-1,:);
-
-
-% define the other parameters of the weak classifier which we will use in ada_adaboost
-%num_classifiers = size(WEAK.descriptor,1);
-%WEAK.theta = zeros(num_classifiers, 1);
-%WEAK.minerr = zeros(num_classifiers, 1);
-%WEAK.polarity = ones(num_classifiers, 1);
-%WEAK.IMSIZE = IMSIZE;
