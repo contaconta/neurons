@@ -43,12 +43,21 @@ for t = tmin:T
     
     CLASSIFIER.feature_index(t) = BEST_learner; 
     CLASSIFIER.alpha(t)         = log( (1 - BEST_err) / BEST_err );
-    weak_classifier             = WEAK.(WEAK.ptr{BEST_learner,1})(WEAK.ptr{BEST_learner,2});
-    learner_ind                 = WEAK.ptr{BEST_learner,3};
+    weak_classifier             = WEAK.(WEAK.list{BEST_learner,1})(WEAK.list{BEST_learner,2});
+    learner_ind                 = WEAK.list{BEST_learner,3};
     field                       = WEAK.learners{learner_ind}{1};
     %response_function           = WEAK.learners{learner_ind}{5};
     classification_function     = WEAK.learners{learner_ind}{6};
     CLASSIFIER.learner_type{t}  = field;
+    
+    % add the weak classification function to the list of classification functions
+    if isempty(CLASSIFIER.functions)
+        CLASSIFIER.functions    = {field classification_function};
+    elseif ~ismember(field, CLASSIFIER.functions(:,1))
+        CLASSIFIER.functions    = [CLASSIFIER.functions ; {field classification_function}];
+    end
+    
+    
     
     if ~isfield(CLASSIFIER, field)
         % this is the first weak_classifier of its type in CLASSIFIER
@@ -64,7 +73,6 @@ for t = tmin:T
     
     %% 4. Update the training weight vector according to misclassifications
     IIs = [TRAIN(:).II];                    % vectorize the integral images
-    keyboard;
     h = classification_function(weak_classifier, IIs);
     e = abs( h - [TRAIN(:).class] );
     w = w .* (beta * ones(size(w))).^(1 - e);

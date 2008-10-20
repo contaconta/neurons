@@ -10,7 +10,7 @@ CTEST.CLASSIFIER.haar(1).hvals = [];
 
 for i = 1:length(CTEST.CLASSIFIER.feature_index)
     f_ind = CTEST.CLASSIFIER.feature_index(i);
-    a = WEAK_NEW.(WEAK_NEW.ptr{f_ind,1})(WEAK_NEW.ptr{f_ind,2});
+    a = WEAK_NEW.(WEAK_NEW.list{f_ind,1})(WEAK_NEW.list{f_ind,2});
     CTEST.CLASSIFIER.haar(i).descriptor = a.descriptor;
     CTEST.CLASSIFIER.haar(i).hinds = a.hinds;
     CTEST.CLASSIFIER.haar(i).hvals = a.hvals;

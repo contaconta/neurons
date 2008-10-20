@@ -20,6 +20,7 @@ training_labels = [TRAIN(:).class];
 
 for l = 1:length(WEAK.learners)
     learner_type        = WEAK.learners{l}{1};
+    field               = WEAK.learners{l}{2};
     map                 = WEAK.learners{l}{3};
     num_learners        = length(map);
     learning_function   = WEAK.learners{l}{4};
@@ -27,7 +28,7 @@ for l = 1:length(WEAK.learners)
     
     if strcmp(learner_type, 'haar')
         for i = 1:num_learners
-            [PRE, WEAK.error(map(i)), WEAK.theta(map(i)), WEAK.polarity(map(i))] = ...
+            [PRE, WEAK.error(map(i)), WEAK.(field)(i).theta, WEAK.(field)(i).polarity] = ...
                                    learning_function(map(i), training_labels, PRE, WEAK, w);
             W = wristwatch(W, 'update', map(i));
         end

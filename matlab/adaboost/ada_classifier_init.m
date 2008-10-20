@@ -17,3 +17,4 @@ CLASSIFIER.w =                      [];
 CLASSIFIER.IMSIZE =                 WEAK.IMSIZE;
 CLASSIFIER.type =                   'SINGLE';  % specify if this is a cascade or single classifier
 CLASSIFIER.learner_type             = {};
+CLASSIFIER.functions                = {};
