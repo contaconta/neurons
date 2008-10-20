@@ -1,4 +1,4 @@
-function PRE = ada_precompute_haar_response_new(TRAIN, WEAK, filenm, matpath,PRE)
+function PRE = ada_precompute_haar_response(TRAIN, WEAK, filenm, matpath,PRE)
 %ADA_PRECOMPUTE_HAAR_RESPONSE precomputes and stores haar feature responses
 %
 %   m = ada_precompute_haar_response(TRAIN, WEAK, filenm) takes a struct TRAIN
@@ -29,7 +29,7 @@ BYTESIZE = 250000000;
 
 if isempty(PRE)
     % initialize the bigarray for the first go
-    PRE = bigarray(size(WEAK.descriptor,1), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
+    PRE = bigarray(length(WEAK.haars), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
 end
 
 %--------------------------------------------------------------------------
@@ -40,10 +40,10 @@ end
 block = round(BYTESIZE / (length(TRAIN)*8)); %1000;
 IIs = [TRAIN(:).II];                        % vectorized integral images
 f_responses = zeros(block,length(TRAIN));   % preallocated haar response matrix
-W = wristwatch('start', 'end', size(WEAK.descriptor,1), 'every', 10000, 'text', '    ...precomputed haar ');
+W = wristwatch('start', 'end', length(WEAK.haars), 'every', 10000, 'text', '    ...precomputed haar ');
 j = 1;
 
-for i = 1:size(WEAK.descriptor,1)
+for i = 1:length(WEAK.haars)
     
     %f_responses(j,:) = ada_fast_haar_response(WEAK.fast(i,:), IIs);
     f_responses(j,:) = ada_haar_response(WEAK.haars(i).hinds, WEAK.haars(i).hvals, IIs);

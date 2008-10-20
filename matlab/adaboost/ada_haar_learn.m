@@ -1,7 +1,7 @@
-function [WEAK, PRE] = ada_find_haar_parameters2(h_ind, training_labels, PRE, WEAK, w)
-%ADA_FIND_HAAR_PARAMETERS deteremines WEAK classifier threshold, min error, polarity
+function [PRE, minerr, theta, pol] = ada_haar_learn(h_ind, training_labels, PRE, WEAK, w)
+%ADA_HAAR_LEARN finds parameters for optimal class separation
 %
-%   [TRAIN, PRE] = ada_find_haar_parameters(h_ind, TRAIN, train_list, PRE, WEAK, w)
+%   [TRAIN, PRE] = ada_haar_learn(h_ind, TRAIN, train_list, PRE, WEAK, w)
 %   uses training examples from the structure in TRAIN to 
 %   deteremine the optimal threshold and polarity (minimizing classification 
 %   error) for the WEAK classifier specified by 'h_ind'.  Also requires the 
@@ -60,46 +60,10 @@ for q=1:length(fsorted)
 end
 
 % find 'q' that gives the minimum error and correspoinding polarity
-[WEAK.minerr(h_ind), q_ind]   = min(err);
-WEAK.theta(h_ind)           = fsorted(q_ind);
-WEAK.polarity(h_ind)        = polarity(q_ind);
+[minerr, q_ind] = min(err);
+theta           = fsorted(q_ind);
+pol             = polarity(q_ind);
 
 
 
-
-
-
-
-
-% %%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%5
-% %stuck1 = 84039; 
-% stuck1 = 0;
-% stuck2 = 6851;
-% if (h_ind == stuck2 ) || (h_ind == stuck1)
-% 
-%     if h_ind == stuck1; stuck = stuck1; end
-%     if h_ind == stuck2; stuck = stuck2; end
-%     
-%     disp(['selected q_ind=' num2str(q_ind)]);
-%     figure; 
-%     subplot(2,3,1);
-%     bar(fsorted); xlabel('Sorted Training Example Indexes'); xlim([1 length(training_labels)]); ylabel('Feature Response'); title(['Sorted Responses For Haar-Like Feature #' num2str(stuck) ' on Training Set']);
-%     line([q_ind q_ind], [-0.6 0.6], 'LineWidth', 2, 'Color', [.8 0 0], 'LineStyle', '--');
-%     subplot(2,3,2);
-%     bar(inds); xlabel('Sorted Training Example Indexes'); xlim([1 length(training_labels)]); ylabel('Training Label Index'); title(['Example Indexes Sorted by For Haar-Like Feature Response #' num2str(stuck)]);
-%     line([q_ind q_ind], [0 length(training_labels)], 'LineWidth', 2, 'Color', [.8 0 0], 'LineStyle', '--');
-%     subplot(2,3,3);
-%     bar(wsorted);  xlabel('Sorted Training Example Indexes'); xlim([1 length(training_labels)]); ylabel('Weight'); title(['Example Weights Sorted By Feature Response #' num2str(stuck)]);
-%     line([q_ind q_ind], [0 max(wsorted)], 'LineWidth', 2, 'Color', [.8 0 0], 'LineStyle', '--');
-%     subplot(2,3,4);
-%     bar(polarity);  xlabel('Sorted Training Example Indexes'); xlim([1 length(training_labels)]); ylabel('Polarity'); title('Weak Classifier Search For Polarity');
-%     line([q_ind q_ind], [-1 1], 'LineWidth', 2, 'Color', [.8 0 0], 'LineStyle', '--');
-%     subplot(2,3,5);
-%     bar(err); xlabel('Sorted Training Example Indexes'); xlim([1 length(training_labels)]); ylabel('Weak Classifier Error'); title('Search for Weak Classifier Threshold, Theta');
-%     line([q_ind q_ind], [0 0.6], 'LineWidth', 2, 'Color', [.8 0 0], 'LineStyle', '--');
-%     %subplot(2,3,6);
-%     %plot(spostemp, 'b-'); hold on; plot(snegtemp, 'r-');xlim([1 length(training_labels)]);
-%     
-%     keyboard;
-% end
 
