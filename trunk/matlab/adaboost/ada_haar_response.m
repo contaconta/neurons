@@ -1,4 +1,4 @@
-function f = ada_haar_response(finds, fvals, II)
+function f = ada_haar_response(hinds, hvals, II)
 %ADA_FAST_HAAR_RESPONSE returns the haar feature response from and integral image
 %
 %   RESPONSE = ada_fast_haar_response(f,II) takes a row vector feature
@@ -28,13 +28,23 @@ function f = ada_haar_response(finds, fvals, II)
 %   See also INTEGRAL_IMAGE, ADA_CLASSIFY_STRONG
 
 
+%% if we have many Integral Images, but a single feature!
+if ~iscell(hinds)
+    f = hvals * II(hinds,:);
+
+%% if we have a single integral image, but many features!
+else
+    IIcell = repmat(II, size(hinds));
+    IIcell = num2cell(IIcell,1);
+    
+    f = cellfun(@cell_haar_response, hinds, hvals, IIcell);
+end
+
+
+%% the same function, but called as a cellfun
+function f = cell_haar_response(hinds, hvals, II)
+f = hvals * II(hinds,:);
+
+
 
 %f = sum( fvals.*II(finds,:), 1);
-
-f = fvals * II(finds,:);
-
-
-
-
-
-

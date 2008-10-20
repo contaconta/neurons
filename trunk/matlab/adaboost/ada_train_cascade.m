@@ -21,13 +21,14 @@ VALIDATION = ada_collect_data(validation1, validation0, 'size', IMSIZE, 'normali
 
 % define a set of haar-like weak classifiers over the standard image size
 tic; disp('...defining the haar-like weak classifiers.');
-WEAK = ada_define_weak_classifiers(IMSIZE, 'types', [1 2 3 5]); toc; 
-                    
+WEAK = ada_define_weak_classifiers(IMSIZE, {'haar', 'haar', 'haar', 'haar'}, {{IMSIZE, 'type', {'haar1'}}, {IMSIZE, 'type', {'haar2'}}, {IMSIZE, 'type', {'haar3'}}, {IMSIZE, 'type', {'haar5'}}});
+toc; 
+
 %precompute the haar-like feature responses for each classifier over the
 %training set and store them in a bigmatrix, PRE.
 disp('...precomputing the haar-like feature responses of each classifier ');
 disp(['   on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                        
-PRE = ada_precompute_haar_response_new(TRAIN, WEAK, temp_filenm, temppath, []);
+PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
 
 
 %% train the cascade
