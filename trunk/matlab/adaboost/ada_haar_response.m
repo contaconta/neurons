@@ -46,5 +46,3 @@ function f = cell_haar_response(hinds, hvals, II)
 f = hvals * II(hinds,:);
 
 
-
-%f = sum( fvals.*II(finds,:), 1);

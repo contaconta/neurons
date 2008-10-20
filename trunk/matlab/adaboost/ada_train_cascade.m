@@ -9,7 +9,7 @@ versioninfo;
 % prepare the log file
 logfile(log_filenm, 'erase');                   % clear the log file
 logfile(log_filenm, 'header', {appname, ['Version ' version], ['by ' author ', ' email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['Started at ' datestr(now)],'-----------------------------------'});
-logfile(log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'polarity', 'theta', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
+logfile(log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
 
 % collect the training data into a struct
 tic; disp('...collecting and processing the TRAIN data set.');
@@ -77,7 +77,7 @@ while (Fi > Ftarget)
         % ===============================================================
         
         % write training results to the log file
-        logfile(log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) CASCADE(i).CLASSIFIER.polarity(ti) CASCADE(i).CLASSIFIER.theta(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr]);
+        logfile(log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr]);
         
         % save the cascade to a file in case something bad happens and we need to restart
         save(cascade_filenm, 'CASCADE');
@@ -105,7 +105,7 @@ while (Fi > Ftarget)
      
     % we must precompute haar responses over all of the TRAIN set again
     disp(['...precomputing the haar-like feature responses of each classifier on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                       
-    PRE = ada_precompute_haar_response_new(TRAIN, WEAK, temp_filenm, temppath, PRE);
+    PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, PRE);
 end
 
 

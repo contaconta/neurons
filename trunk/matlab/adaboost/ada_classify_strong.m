@@ -35,29 +35,34 @@ if size(II,2) ~= 1
 end
 
 
-%% find the responses of the weak learners
+%% find the classification results of the weak learners
 
-% learner_types = unique(CLASSIFIER.learner_type);
-% 
-% 
-% 
-% for i = 1:length(learner_types)
-%     type = learner_types{i};
-%     
+learner_types = unique(CLASSIFIER.learner_type);
 
+for i = 1:length(learner_types)
+    type = learner_types{i};    
+    classification_function =  CLASSIFIER.functions{find(strcmp(CLASSIFIER.functions, type),1), 2};  
+    h = classification_function(CLASSIFIER.(type), II);
+end
+
+%h = ada_haar_classify(CLASSIFIER.haar, II);
     
-%f = ada_fast_haar_response(CLASSIFIER.fast, II);
-f =  ada_haar_response({CLASSIFIER.haar(:).hinds}, {CLASSIFIER.haar(:).hvals}, II);
-h = (CLASSIFIER.polarity .* f) < (CLASSIFIER.polarity .* CLASSIFIER.theta);
 
 
-% the final strong classifier is computed by the weighted sum of the weak
+%% compute the strong classification
+% the strong classification is computed by the weighted sum of the weak
 % classification results.  if this is > .5 * sum(alpha), it is class 1,
-% otherwise it is class 0.  'threshold' (default = 1) allows us to adjust 
-% the sensitivity of the classifier
+% otherwise it is class 0.  varying 'threshold' (default = 1) adjusts 
+% the sensitivity of the strong classifier
 
 if sum(CLASSIFIER.alpha.*h) >= (.5*threshold) * sum(CLASSIFIER.alpha) 
     C = 1;   %disp(['... boosted classification result C = ' num2str( sum(CLASSIFIER.alpha.*h)/sum(CLASSIFIER.alpha)) ' > .5  --->  Class 1']); 
 else
     C = 0;   %disp(['... boosted classification result C = ' num2str( sum(CLASSIFIER.alpha.*h)/sum(CLASSIFIER.alpha)) ' < .5  --->  Class 0']);
 end
+
+
+%f = ada_fast_haar_response(CLASSIFIER.fast, II);
+%f =  ada_haar_response({CLASSIFIER.haar(:).hinds}, {CLASSIFIER.haar(:).hvals}, II);
+%h = (CLASSIFIER.polarity .* f) < (CLASSIFIER.polarity .* CLASSIFIER.theta);
+

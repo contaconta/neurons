@@ -53,8 +53,8 @@ j = 1;
 
 
 for i = haar_list
-    field = WEAK.ptr{i,1};
-    ind = WEAK.ptr{i,2};
+    field = WEAK.list{i,1};
+    ind = WEAK.list{i,2};
     f_responses(j,:) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, IIs);
     
     if mod(i,block) == 0

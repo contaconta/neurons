@@ -1,6 +1,6 @@
-%%-------------------------------------------------------------------------
-%% PARAMETERS
-%%-------------------------------------------------------------------------
+%-------------------------------------------------------------------------
+% PARAMETERS
+%-------------------------------------------------------------------------
 
 fmax = .3;          % maximum false positive rate for any classifier in the cascade
 dmin = .99;         % minimum detection rate for any classifier in the cascade
@@ -15,9 +15,9 @@ cascade_filenm = 'CASCADE_500.mat';    % filename to store your learned cascade
 log_filenm = 'CASCADE_500.log';
 
 
-%%-------------------------------------------------------------------------
-%% PATH INFORMATION
-%%-------------------------------------------------------------------------
+%-------------------------------------------------------------------------
+% PATH INFORMATION
+%-------------------------------------------------------------------------
 
 % path and filename to temporary storage
 temppath =      [pwd '/mat/'];  temp_filenm = 'BIGARRAY_';

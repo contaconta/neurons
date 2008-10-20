@@ -37,14 +37,11 @@ for t = 1:length(TYPES)
         field = namenewfield(WEAK, 'haars');
         WEAK.(field) = haars;
 
-
-        %WEAK.polarity           = [WEAK.polarity; ones(length(WEAK.(field)),1)]; 
         WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        %WEAK.theta              = [WEAK.theta; zeros(length(WEAK.(field)),1)];
         index_map               = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
-        WEAK.ptr(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        WEAK.ptr(index_map,2)   = num2cell(1:length(WEAK.(field)))';
-        WEAK.ptr(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
+        WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
+        WEAK.list(index_map,2)   = num2cell(1:length(WEAK.(field)))';
+        WEAK.list(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
         WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_classify}};
         clear haars;
         
@@ -58,11 +55,6 @@ for t = 1:length(TYPES)
     end
 end
 
-
-% % clear the empty first cell entry in WEAK.learners
-% if isempty(WEAK.learners{1})
-%     WEAK.learners(1) = [];
-% end
 
 
 
