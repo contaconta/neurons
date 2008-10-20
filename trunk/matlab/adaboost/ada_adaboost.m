@@ -28,21 +28,15 @@ else
     w = CLASSIFIER.w;
 end
 
-training_labels = [TRAIN(:).class];
 
 %% train the strong classifier as a series of T weak classifiers
 for t = tmin:T
     %% 1. Normalize the weights
     w = w ./sum(w);
-    wstring = ['       t=' num2str(t) '/' num2str(T) ' optimized feature '];
-    W = wristwatch('start', 'end', size(WEAK.descriptor,1), 'every', 10000, 'text', wstring);
     
-    %% 2. find the optimal class separating theta and minerr for each feature
-    for i = 1:(size(WEAK.descriptor,1))
-        %[WEAK, PRE] = ada_find_haar_parameters(i, TRAIN, PRE, WEAK, w);
-        [WEAK, PRE] = ada_find_haar_parameters2(i, training_labels, PRE, WEAK, w);
-        W = wristwatch(W, 'update', i);
-    end
+    %% 2. train weak learners for optimal class separation
+    [WEAK, PRE] = ada_train_weak_learners(WEAK, TRAIN);
+        
     
     %% 3. Use the best WEAK classifier as the 't' hypothesis in the Strong CLASSIFIER
     [BEST_err, BEST_feature] = min(WEAK.minerr);
