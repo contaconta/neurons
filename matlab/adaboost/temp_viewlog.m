@@ -5,12 +5,12 @@ function temp_viewlog(log_filenm)
 DATA = logfile(log_filenm, 'read');
 
 
-Di = DATA(:,6);
-Fi = DATA(:,7);
-di = DATA(:,8);
-fi = DATA(:,9);
-dit = DATA(:,10);
-fit = DATA(:,11);
+Di = DATA(:,4);
+Fi = DATA(:,5);
+di = DATA(:,6);
+fi = DATA(:,7);
+dit = DATA(:,8);
+fit = DATA(:,9);
 stages = DATA(:,1);
 
 

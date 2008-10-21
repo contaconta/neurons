@@ -189,7 +189,7 @@ while length(N) < NEG_LIM
         EXAMPLE = imnormalize('image', EXAMPLE);
     end
     II = integral_image(EXAMPLE);
-
+    TEMP.II = II;                       % II needs to be passed to classify as a field of a structure.
 
     % 7. use the CASCADE to classify the randomly selected example, and keep it
     %    if it produces a false positive
@@ -198,7 +198,7 @@ while length(N) < NEG_LIM
         N(length(N)).II    = II(:); %#ok<AGROW>
         N(length(N)).class = 0; %#ok<AGROW>
     else
-        if ada_classify_cascade(CASCADE, II, [0 0])      % = 1 is a false positive
+        if ada_classify_cascade(CASCADE, TEMP, [0 0])      % = 1 is a false positive
             N(length(N)+1).Image = EXAMPLE; %#ok<AGROW>
             N(length(N)).II    = II(:); %#ok<AGROW>
             N(length(N)).class = 0; %#ok<AGROW>

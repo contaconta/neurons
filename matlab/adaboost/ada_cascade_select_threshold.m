@@ -11,7 +11,7 @@ C = zeros(size(gt));                % init a vector for our cascade results
 % COLLECT THE MISCLASSIFICATIONS THAT MAKE IT THROUGH CASCADE(1:i-1)
 if i > 1
     for j=1:length(VALIDATION); 
-        C(j) = ada_classify_cascade(CASCADE(1:i-1), VALIDATION(j).II, [0 0]);
+        C(j) = ada_classify_cascade(CASCADE(1:i-1), VALIDATION(j), [0 0]);
     end   
     [TPs FPs] = rocstats(C, gt, 'TPlist', 'FPlist');  
     PASSTHROUGHS = VALIDATION([TPs; FPs]);
@@ -39,7 +39,7 @@ while (low <= high) && (iterations < MAX_ITERATIONS)
     THRESH = (low + high) /2;
     CASCADE(i).threshold = THRESH;
     for j=1:length(PASSTHROUGHS); 
-        C(j) = ada_classify_strong(CASCADE(i).CLASSIFIER, PASSTHROUGHS(j).II, [0 0], THRESH);
+        C(j) = ada_classify_strong(CASCADE(i).CLASSIFIER, PASSTHROUGHS(j), [0 0], THRESH);
     end    
     [CASCADE(i).di CASCADE(i).fi fps] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist'); 
     Fi = prod([CASCADE(:).fi]);
