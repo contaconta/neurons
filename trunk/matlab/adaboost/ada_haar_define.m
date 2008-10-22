@@ -1,6 +1,10 @@
 function HAAR = ada_haar_define(varargin)
 %ADA_DEFINE_CLASSIFIERS defines a set of weak haar like classifiers.
 %
+%   REWRITE!!!!!
+%   a = ada_haar_define(IMSIZE, 'type', {'haar1', 'haar2'});
+%   a = 1x23423 struct with fields: descriptor, hinds, hvals, polarity, theta
+%
 %   WEAK = ada_define_classifiers(IMSIZE, ...) constructs a set of weak 
 %   haar-like classifiers that define the difference between image regions  
 %   [from Viola-Jones IJCV 2004].  IMSIZE = [WIDTH HEIGHT] is the standard 

@@ -20,8 +20,6 @@ PARAMS = varargin{3};
 %% define the general parameters of a weak learner
 WEAK.IMSIZE = IMSIZE;
 WEAK.error = [];
-WEAK.polarity = [];
-WEAK.theta = [];
 WEAK.learners = {};
 
 for t = 1:length(TYPES)
@@ -33,7 +31,7 @@ for t = 1:length(TYPES)
         % call the function to define haar wavelets and pass them to WEAK
         haars = ada_haar_define(params{:});
 
-        % set the wavelet definitions to a field ('haars', 'haars_1', etc)
+        % set the feature definitions to a field of WEAK('haars', 'haars_1', etc)
         field = namenewfield(WEAK, 'haars');
         WEAK.(field) = haars;
 
@@ -45,22 +43,42 @@ for t = 1:length(TYPES)
         WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_classify}};
         clear haars;
         
-        WEAK = orderfields(WEAK);
+        
     end
 
     %% add spedge weak learners
     if strcmp('spedge', TYPES(t))
+        params = PARAMS{t};
+        
+        spedge = ada_spedge_define(params{:});
+        
+        field = namenewfield(WEAK, 'spedge');
+        WEAK.(field) = spedge;
+        
+        WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
+        index_map               = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
+        WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
+        WEAK.list(index_map,2)   = num2cell(1:length(WEAK.(field)))';
+        WEAK.list(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
+        WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_classify}};
+        clear spedge;
 
 
     end
 end
 
+WEAK = orderfields(WEAK);
 
 
 
 
 
-%% namenewfield
+
+
+
+
+
+%% ===== namenewfield ===========================================================
 function newfield = namenewfield(STRUCT, field)
 
 if isfield(STRUCT, field)

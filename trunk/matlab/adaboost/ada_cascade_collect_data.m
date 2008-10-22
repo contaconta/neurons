@@ -51,6 +51,9 @@ INIT = 0;                           % collect positive data when init =1
 Amu = 1; Asig = .025;               % aspect ratio mean and covariance
 opt = 1;
 LOW_VARIANCE_THRESH = .3;           % minimum variance of FP example
+% spedges paramaters
+angles = 0:30:360-30;
+sigma = 2;
 
 %% handle optional arguments
 
@@ -112,11 +115,12 @@ if INIT
                 I = imnormalize('image', I);
             end
             II = integral_image(I);
-           
+            sp = spedges(I, angles, sigma);
 
             P(count).Image = I; %#ok<AGROW>
-            P(count).II    = II(:); %#ok<AGROW>
-            P(count).class = 1; %#ok<AGROW>
+            P(count).II    = II(:); 
+            P(count).sp = sp.spedges;
+            P(count).class = 1; 
             count = count + 1;
         end
     end
@@ -189,18 +193,22 @@ while length(N) < NEG_LIM
         EXAMPLE = imnormalize('image', EXAMPLE);
     end
     II = integral_image(EXAMPLE);
+    sp = spedges(I, angles, sigma);
     TEMP.II = II;                       % II needs to be passed to classify as a field of a structure.
-
+    TEMP.sp = sp.spedges;
+    
     % 7. use the CASCADE to classify the randomly selected example, and keep it
     %    if it produces a false positive
     if INIT
         N(length(N)+1).Image = EXAMPLE; %#ok<AGROW>
         N(length(N)).II    = II(:); %#ok<AGROW>
+        N(length(N)).sp = sp.spedges;
         N(length(N)).class = 0; %#ok<AGROW>
     else
         if ada_classify_cascade(CASCADE, TEMP, [0 0])      % = 1 is a false positive
             N(length(N)+1).Image = EXAMPLE; %#ok<AGROW>
             N(length(N)).II    = II(:); %#ok<AGROW>
+            N(length(N)).sp = sp.spedges;
             N(length(N)).class = 0; %#ok<AGROW>
         else
             %disp('keep searching.');

@@ -8,7 +8,7 @@ versioninfo;
 
 % prepare the log file
 logfile(log_filenm, 'erase');                 
-logfile(log_filenm, 'header', {appname, ['Version ' version], ['by ' author ', ' email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['Started at ' datestr(now)],'-----------------------------------'});
+logfile(log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
 
 % collect the training set
@@ -21,7 +21,7 @@ VALIDATION = ada_collect_data(validation1, validation0, 'size', IMSIZE, 'normali
 
 % define the weak learners
 tic; disp('...defining the haar-like weak classifiers.');
-WEAK = ada_define_weak_classifiers(IMSIZE, {'haar', 'haar', 'haar', 'haar'}, {{IMSIZE, 'type', {'haar1'}}, {IMSIZE, 'type', {'haar2'}}, {IMSIZE, 'type', {'haar3'}}, {IMSIZE, 'type', {'haar5'}}});
+WEAK = ada_define_weak_classifiers(IMSIZE, learner_list, learner_params);
 toc; 
 
 % precompute haar responses for each classifier over TRAIN, and store them in a bigmatrix, PRE.
