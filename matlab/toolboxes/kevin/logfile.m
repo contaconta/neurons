@@ -70,7 +70,7 @@ switch action
     case 'header'
         %% write a header to the log file
         if exist(filenm, 'file')
-            IN = input(['The log file ' filenm ' already exists.  Writing a header will erase its contents.  Procees [Y/n]?'], 's');
+            IN = input(['The log file ' filenm ' already exists.  Writing a header will erase its contents.  Proceed [Y/n]?'], 's');
             if ~strcmp(IN, 'Y')
                 return;
             end

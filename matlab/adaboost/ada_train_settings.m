@@ -2,16 +2,38 @@
 % PARAMETERS
 %-------------------------------------------------------------------------
 
-fmax = .3;          % maximum false positive rate for any classifier in the cascade
-dmin = .99;         % minimum detection rate for any classifier in the cascade
-Ftarget = 1e-5;     % Target false positive rate for the cascade
-IMSIZE = [24 24];   % standard size for face images
-TRAIN_POS = 500;    % number of positive examples in the training set
-TRAIN_NEG = 500;    % number of negative examples in the training set
-TEST_POS =  500;    % number of positive examples in the test set
-TEST_NEG  = 500;    % number of negative examples in the test set
-NORM      = 1;      % normalize the variance of image intensity?
+IMSIZE      = [24 24];  % standard image size used for training & classification
+fmax        = .3;      	% maximum false positive rate for any cascade stage
+dmin        = .99;    	% minimum detection rate for any cascade stage
+Ftarget     = 1e-5;     % target false positive rate for the entire cascade
+TRAIN_POS   = 500;      % number of positive examples in the training set
+TRAIN_NEG   = 500;      % number of negative examples in the training set
+TEST_POS    = 500;      % number of positive examples in the test set
+TEST_NEG    = 500;      % number of negative examples in the test set
+NORM        = 1;        % normalize image intensity variance?
 
+%-------------------------------------------------------------------------
+% WEAK LEARNERS
+%-------------------------------------------------------------------------
+
+% list of the types of learners to use
+learner_list = {'haar', 'spedge'};
+
+% a list of the parameters passed to the weak learner definition functions, 
+% in same order as learner_list.
+learner_params = { {IMSIZE, 'type', {'haar1', 'haar2', 'haar3', 'haar5'}}, ...
+                   {IMSIZE, 0:30:360-30} };
+
+% % list of the types of learners to use
+% learner_list = {'haar', 'haar', 'haar', 'haar'};
+% 
+% % a list of the parameters passed to the weak learner definition functions, 
+% % in same order as learner_list.
+% learner_params = { {IMSIZE, 'type', {'haar1'}}, ... 
+%                    {IMSIZE, 'type', {'haar2'}}, ...
+%                    {IMSIZE, 'type', {'haar3'}}, ...
+%                    {IMSIZE, 'type', {'haar5'}}   };
+                     
 
 %-------------------------------------------------------------------------
 % FILES & PATH INFORMATION
@@ -35,4 +57,5 @@ validation1 =   [datapath '/Data/face_databases/EPFL-CVLAB_faceDB/test/face/'];
 validation0 =   [datapath '/Data/face_databases/EPFL-CVLAB_faceDB/test/non-face/'];
 % path to collection of images used to find new false positives for validation
 update0 =       [datapath '/Data/face_databases/EPFL-CVLAB_faceDB/non-face_uncropped_images/'];
-    
+% append the path to the spedges features 
+path(path, [pwd '/../spedges/']);    

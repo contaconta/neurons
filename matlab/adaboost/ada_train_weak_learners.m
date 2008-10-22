@@ -34,17 +34,12 @@ for l = 1:length(WEAK.learners)
         end
     end
     
-    
+    if strcmp(learner_type, 'spedge')
+        for i = 1:num_learners
+            [WEAK.error(map(i)), WEAK.(field)(i).theta, WEAK.(field)(i).polarity] = ...
+                                   learning_function(map(i), TRAIN, WEAK, w);
+            W = wristwatch(W, 'update', map(i));
+        end
+    end
     
 end
-
-
-
-
-
-
-% for i = 1:(size(WEAK.descriptor,1))
-%     %[WEAK, PRE] = ada_find_haar_parameters2(i, training_labels, PRE, WEAK, w);
-% 
-%     W = wristwatch(W, 'update', i);
-% end

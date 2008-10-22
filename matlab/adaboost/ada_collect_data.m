@@ -38,6 +38,9 @@ POS_LIM = Inf;
 NEG_LIM = Inf;
 V = 0;
 TRAIN = [];
+% spedges paramaters
+angles = 0:30:360-30;
+sigma = 2;
  
 % handle optional arguments
 if nargin > 2;
@@ -91,10 +94,12 @@ for i = 1:length(d)
             I = imnormalize('image', I);
         end
         II = integral_image(I);
+        sp = spedges(I, angles, sigma);
 
         TRAIN(length(TRAIN)+1).Image = I; %#ok<AGROW>
-        TRAIN(length(TRAIN)).II    = II(:); %#ok<AGROW>
-        TRAIN(length(TRAIN)).class = 1; %#ok<AGROW>
+        TRAIN(length(TRAIN)).II    = II(:); 
+        TRAIN(length(TRAIN)).sp = sp.spedges;
+        TRAIN(length(TRAIN)).class = 1;
         count = count + 1;       
     end
 end
@@ -127,10 +132,12 @@ for i = 1:length(d)
             I = imnormalize('image', I);
         end
         II = integral_image(I);
+        sp = spedges(I, angles, sigma);
 
         TRAIN(length(TRAIN)+1).Image = I; %#ok<AGROW>
-        TRAIN(length(TRAIN)).II    = II(:); %#ok<AGROW>
-        TRAIN(length(TRAIN)).class = 0; %#ok<AGROW>
+        TRAIN(length(TRAIN)).II    = II(:); 
+        TRAIN(length(TRAIN)).sp = sp.spedges;
+        TRAIN(length(TRAIN)).class = 0;
         count = count + 1;       
     end
 end
