@@ -18,7 +18,8 @@ for i = 1:IMSIZE(1)
         for k = 1:length(angles);
             
             % [angle, r, c]
-            SP(c_num).descriptor = [k i j];
+            %SP(c_num).descriptor = [k i j];
+            SP(c_num).index = sub2ind([length(angles) IMSIZE(1) IMSIZE(2)], k,i,j);
             SP(c_num).polarity = 1;
             SP(c_num).theta = 0;
 

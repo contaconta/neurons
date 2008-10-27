@@ -25,8 +25,8 @@ if angle < 0;  angle = angle + 360; end;
 
 
 % we use a zero-crossing laplacian of gaussian to ensure closed contours
-%EDGE = edge(I, 'log', 0, sigma);
-EDGE = edge(I, 'sobel');
+EDGE = edge(I, 'log', 0, sigma);
+%EDGE = edge(I, 'sobel');
 
 % to handle directions that pass through lines at an angle, thicken lines
 % on diagonals

@@ -1,5 +1,5 @@
-function WEAK = ada_define_weak_classifiers(varargin)
-%ADA_DEFINE_CLASSIFIERS defines a set of weak haar like classifiers.
+function WEAK = ada_define_weak_learners(LEARNERS)
+%ADA_DEFINE_LEARNERS defines a set of weak haar like classifiers.
 %
 %   WEAK = ada_define_classifiers(IMSIZE, ...) constructs a set of weak 
 %
@@ -13,23 +13,22 @@ function WEAK = ada_define_weak_classifiers(varargin)
 
 
 %% handle input parameters
-IMSIZE = varargin{1};
-TYPES = varargin{2};
-PARAMS = varargin{3};
+% IMSIZE = varargin{1};
+% LEARNERS 
+% TYPES = varargin{2};
+% PARAMS = varargin{3};
 
 %% define the general parameters of a weak learner
-WEAK.IMSIZE = IMSIZE;
+WEAK.IMSIZE = LEARNERS(1).IMSIZE;
 WEAK.error = [];
 WEAK.learners = {};
 
-for t = 1:length(TYPES)
+for t = 1:length(LEARNERS)
     %% add haar wavelet weak learners
-    if strcmp('haar', TYPES(t))
-        % get the passed parameters
-        params = PARAMS{t}; %#ok<FNDSB>
-
+    if strcmp('haar', LEARNERS(t).feature_type)
+        
         % call the function to define haar wavelets and pass them to WEAK
-        haars = ada_haar_define(params{:});
+        haars = ada_haar_define(LEARNERS(t).IMSIZE, 'shapes', LEARNERS(t).shapes);
 
         % set the feature definitions to a field of WEAK('haars', 'haars_1', etc)
         field = namenewfield(WEAK, 'haars');
@@ -47,10 +46,9 @@ for t = 1:length(TYPES)
     end
 
     %% add spedge weak learners
-    if strcmp('spedge', TYPES(t))
-        params = PARAMS{t};
+    if strcmp('spedge', LEARNERS(t).feature_type)
         
-        spedge = ada_spedge_define(params{:});
+        spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles);
         
         field = namenewfield(WEAK, 'spedge');
         WEAK.(field) = spedge;

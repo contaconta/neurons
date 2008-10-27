@@ -11,19 +11,19 @@ function CLASSIFIER = ada_adaboost(varargin)
 %
 %
 %   Copyright © 2008 Kevin Smith
-%   See also ADA_COLLECT_DATA, ADA_DEFINE_CLASSIFIERS
+%   See also ADA_DEFINE_CLASSIFIERS, ADA_TRAIN_WEAK_LEARNERS
 
 
 %% set parameters and handle input arguments
-PRE = varargin{1}; TRAIN = varargin{2}; WEAK = varargin{3}; T = varargin{4};
+PRE = varargin{1}; TRAIN = varargin{2}; WEAK = varargin{3}; T = varargin{4}; LEARNERS = varargin{5};
 
 % either start or resume training, CLASSIFIER, w need to be passed or
 % initialized. start_t is the index of the first weak learner.
-if nargin == 4
+if nargin == 5
     start_t = 1; w = ones(1,length(TRAIN)) ./ length(TRAIN); 
     CLASSIFIER = ada_classifier_init(T, WEAK);
 else
-    CLASSIFIER = varargin{5};  
+    CLASSIFIER = varargin{6};  
     start_t = length(CLASSIFIER.feature_index) + 1;  w = CLASSIFIER.w;
 end
 
@@ -65,8 +65,15 @@ for t = start_t:T
         CLASSIFIER.functions    = [CLASSIFIER.functions ; {field classification_function}];
     end
 
-    
-        
+    %%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%
+    tmpstring =[];
+    for i = 1:length(WEAK.learners)
+        [m1, v1] = min(WEAK.error(WEAK.learners{i}{3}));
+        s = ['best ' WEAK.learners{i}{1} ': ' num2str(v1) ' err=' num2str(m1) '   '];
+        tmpstring = [tmpstring s];
+    end
+    disp(tmpstring);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %disp(['...selected ' field ' learner ' num2str(BEST_learner) ' as t=' num2str(t)  '  [polarity = ' num2str(CLASSIFIER.polarity(t)) ' theta = ' num2str(CLASSIFIER.theta(t))  ']' ]);
     disp(['...selected learner ' num2str(BEST_learner) ' (' field ') as t=' num2str(t) ]);
