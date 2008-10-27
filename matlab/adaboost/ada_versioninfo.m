@@ -14,6 +14,7 @@ disp(['  version ' INFO.version ]);
 disp(['  by ' INFO.author ]);
 disp(['  ' INFO.email ]);
 disp (' ');
+disp(['  DATASETS from ' DATASETS.filelist]);
 disp(['  ' INFO.copyright ]);
 disp(['  started on ' datestr(now)]);
 disp( ' ');

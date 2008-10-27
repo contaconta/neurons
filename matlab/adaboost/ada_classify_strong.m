@@ -47,13 +47,15 @@ learner_types = unique(CLASSIFIER.learner_type);
 
 for i = 1:length(learner_types)
     type = learner_types{i};    
-    classification_function =  CLASSIFIER.functions{find(strcmp(CLASSIFIER.functions, type),1), 2};  
-    h = classification_function(CLASSIFIER.(type), DATA, offset, CLASSIFIER.IMSIZE);
+    classification_function =  CLASSIFIER.functions{find(strcmp(CLASSIFIER.functions, type),1), 2}; 
+    %keyboard;
+    h_part = classification_function(CLASSIFIER.(type), DATA, offset, CLASSIFIER.IMSIZE);
+    h(find(strcmp(CLASSIFIER.learner_type, type))) = h_part;
 end
 
 %h = ada_haar_classify(CLASSIFIER.haar, II);
     
-
+%keyboard
 
 %% compute the strong classification
 % the strong classification is computed by the weighted sum of the weak

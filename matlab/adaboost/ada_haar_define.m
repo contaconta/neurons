@@ -12,12 +12,12 @@ function HAAR = ada_haar_define(varargin)
 %   'types' followed by a vector (default [1 2 3 4 5]) specifies which haar-like
 %   classifier types to use. Each type is defined by a vector of length 17:
 %
-%   vert     horiz      trip V    trip H   checker
+%   vert2    horz2      vert3     horz3   checker   
 %   ###--|   ######    ###---###  ######   ###--|   ######
 %   ###  |   ######    ###   ###  |    |   ###  |   ##  ##
 %   ###  |   |    |    ###   ###  |    |   |  ###   ##  ##
 %   ###__|   |____|    ###---###  ######   |__###   ######
-%   type 1   type 2      type 3   type 4   type 5   type 6 (not implemented)
+%                                                   (not implemented)
 %
 %   1:      type
 %   2-3:    first white UL coordinate (x,y)
@@ -60,15 +60,15 @@ HAAR(BIG_SAFE_NUMBER).hvals = [];
 %WEAK.descriptor = zeros([BIG_SAFE_NUMBER 17]);      % preallocate descriptor space
 %WEAK.fast = zeros(BIG_SAFE_NUMBER, prod(IMSIZE));   % preallocate fast descriptor space
 
-TYPES = [1 2 3 4 5];
+SHAPES = [1 2 3 4 5];
 c_num = 1;                                  % the weak classifier index
 tic; 
 
 
 % handle optional arguments
 for i = 2:nargin
-    if strcmp(varargin{i}, 'type')
-        TYPES = varargin{i+1};
+    if strcmp(varargin{i}, 'shapes')
+        SHAPES = varargin{i+1};
     end
     if strcmp(varargin{i}, 'v')
         V = 1;
@@ -92,7 +92,7 @@ end
 % VERTICAL HAAR FEATURE
 %==========================================================================
 
-if ismember('haar1', TYPES)
+if ismember('vert2', SHAPES)
     MIN_W = max(2,quant(U_MIN_W,2));            	% min feature width
     MIN_H = U_MIN_H;                                % min feature height
     W_STEP = max(2,quant(U_STEP_W,2));              % feature width size step
@@ -136,7 +136,7 @@ if ismember('haar1', TYPES)
             end
         end
     end
-    if V; disp(['...haar1 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
+    if V; disp(['...vert2 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
 end
 
 
@@ -145,7 +145,7 @@ end
 % HORIZONTAL HAAR FEATURE
 %==========================================================================
 
-if ismember('haar2', TYPES)
+if ismember('horz2', SHAPES)
     MIN_W = U_MIN_W;                                % min feature width
     MIN_H = max(2,quant(U_MIN_H,2));                % min feature height
     W_STEP = U_STEP_W;                              % feature width size step
@@ -188,14 +188,14 @@ if ismember('haar2', TYPES)
             end
         end
     end
-    if V; disp(['...haar2 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
+    if V; disp(['...horz2 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
 end
 
 %==========================================================================
 % TRIPLE VERTICLE HAAR FEATURE
 %==========================================================================
 
-if ismember('haar3', TYPES)
+if ismember('vert3', SHAPES)
     MIN_W = max(3,quant(U_MIN_W,3));            	% min feature width
     MIN_H = U_MIN_H;                                % min feature height
     W_STEP = max(3,quant(U_STEP_W,3));              % feature width size step
@@ -241,14 +241,14 @@ if ismember('haar3', TYPES)
             end
         end
     end
-    if V; disp(['...haar3 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
+    if V; disp(['...vert3 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
 end
 
 %==========================================================================
 % TRIPLE HORIZONTAL HAAR FEATURE
 %==========================================================================
 
-if ismember('haar4', TYPES)
+if ismember('horz3', SHAPES)
     MIN_W = U_MIN_W;                                % min feature width
     MIN_H = max(3,quant(U_MIN_H,3));                % min feature height
     W_STEP = U_STEP_W;                              % feature width size step
@@ -293,7 +293,7 @@ if ismember('haar4', TYPES)
             end
         end
     end
-    if V; disp(['...haar4 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
+    if V; disp(['...horz3 classifiers defined in ' num2str(toc) ' seconds']); tic; end;
 end
 
 
@@ -301,7 +301,7 @@ end
 % 4-rectangle HAAR FEATURE
 %==========================================================================
 
-if ismember('haar5', TYPES)
+if ismember('checker', SHAPES)
     MIN_W = max(2,quant(U_MIN_W,2));                % min feature width
     MIN_H = max(2,quant(U_MIN_H,2));                % min feature height
     W_STEP = max(2,quant(U_STEP_W,2));              % feature width size step
@@ -349,7 +349,7 @@ if ismember('haar5', TYPES)
             end
         end
     end
-    if V; disp(['...haar5 classifiers defined in ' num2str(toc) ' seconds']); end;
+    if V; disp(['...checker classifiers defined in ' num2str(toc) ' seconds']); end;
 end
 
 % get rid of the wasted space from the memory allocation (was used to speed things up)
