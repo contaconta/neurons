@@ -23,10 +23,10 @@ tic; disp('...defining the weak learners.');
 WEAK = ada_define_weak_learners(LEARNERS); toc; 
 
 % precompute haar responses for each classifier over TRAIN, and store them in a bigmatrix, PRE.
-disp('...precomputing the haar-like feature responses of each classifier ');
-disp(['   on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                        
-PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
-% PRE = [];
+% disp('...precomputing the haar-like feature responses of each classifier ');
+% disp(['   on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                        
+% PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
+ PRE = [];
 
 %% train the cascade
 
@@ -101,8 +101,8 @@ while (Fi > Ftarget)
     VALIDATION = ada_collect_data(DATASETS, LEARNERS, 'validation', 'update', VALIDATION, CASCADE);
      
 %     % we must re-precompute haar responses over TRAIN set because it has changed
-    disp(['...precomputing the haar-like feature responses of each classifier on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                       
-    PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, PRE);
+%     disp(['...precomputing the haar-like feature responses of each classifier on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                       
+%     PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, PRE);
 end
 
 
