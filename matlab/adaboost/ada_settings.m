@@ -6,8 +6,8 @@ IMSIZE          = [24 24];  % standard image size used for training & classifica
 fmax            = .3;      	% maximum false positive rate for any cascade stage
 dmin            = .99;    	% minimum detection rate for any cascade stage
 Ftarget         = 1e-5;     % target false positive rate for the entire cascade
-TRAIN_POS       = 1688;     % number of positive examples in the training set
-TRAIN_NEG       = 2000;     % number of negative examples in the training set
+TRAIN_POS       = 1000;     % number of positive examples in the training set
+TRAIN_NEG       = 1000;     % number of negative examples in the training set
 VALIDATION_POS  = 1000;     % number of positive examples in the validation set
 VALIDATION_NEG  = 1000;     % number of negative examples in the validation set
 NORM            = 0;        % normalize image intensity variance?
@@ -28,29 +28,29 @@ path(path, [pwd '/../spedges/']);       % append the path to the spedges feature
 % WEAK LEARNERS
 %-------------------------------------------------------------------------
 
-%LEARNERS(1).feature_type    = 'haar';
-%LEARNERS(1).IMSIZE          = IMSIZE;
-%LEARNERS(1).shapes          = {'vert2', 'horz2', 'vert3', 'checker'};
+% LEARNERS(1).feature_type    = 'haar';
+% LEARNERS(1).IMSIZE          = IMSIZE;
+% LEARNERS(1).shapes          = {'vert2', 'horz2', 'vert3', 'checker'};
 
 LEARNERS(1).feature_type    = 'spedge';
 LEARNERS(1).IMSIZE          = IMSIZE;
 LEARNERS(1).angles          = 0:30:360-30;
 LEARNERS(1).sigma           = .1;  %2;
 
-% LEARNERS(2).feature_type    = 'spedge';
-% LEARNERS(2).IMSIZE          = IMSIZE;
-% LEARNERS(2).angles          = 0:30:360-30;
-% LEARNERS(2).sigma           = 1.5;  %2;
-% 
-% LEARNERS(3).feature_type    = 'spedge';
-% LEARNERS(3).IMSIZE          = IMSIZE;
-% LEARNERS(3).angles          = 0:30:360-30;
-% LEARNERS(3).sigma           = 2;  %2;
-% 
-% LEARNERS(4).feature_type    = 'spedge';
-% LEARNERS(4).IMSIZE          = IMSIZE;
-% LEARNERS(4).angles          = 0:30:360-30;
-% LEARNERS(4).sigma           = 3;  %2;
+LEARNERS(2).feature_type    = 'spedge';
+LEARNERS(2).IMSIZE          = IMSIZE;
+LEARNERS(2).angles          = 0:30:360-30;
+LEARNERS(2).sigma           = 1.5;  %2;
+
+LEARNERS(3).feature_type    = 'spedge';
+LEARNERS(3).IMSIZE          = IMSIZE;
+LEARNERS(3).angles          = 0:30:360-30;
+LEARNERS(3).sigma           = 2;  %2;
+
+LEARNERS(4).feature_type    = 'spedge';
+LEARNERS(4).IMSIZE          = IMSIZE;
+LEARNERS(4).angles          = 0:30:360-30;
+LEARNERS(4).sigma           = 3;  %2;
 
 %-------------------------------------------------------------------------
 % TRAINING & VALIDATION DATA SETS
