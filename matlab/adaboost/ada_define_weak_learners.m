@@ -48,7 +48,7 @@ for t = 1:length(LEARNERS)
     %% add spedge weak learners
     if strcmp('spedge', LEARNERS(t).feature_type)
         
-        spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles);
+        spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).sigma);
         
         field = namenewfield(WEAK, 'spedge');
         WEAK.(field) = spedge;

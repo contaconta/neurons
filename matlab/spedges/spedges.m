@@ -1,14 +1,14 @@
-function A = spedges(I, angles, sigma)
+function A = spedges(I, angles, sigmas)
 %SPEDGES computes spedge features along ANGLES
 %
-%   FEATURES = spedges(I, ANGLE, SIGMA)  computes spedge features on a 
+%   FEATURES = spedges(I, ANGLE, SIGMAS)  computes spedge features on a 
 %   grayscale image I at angles defined by ANGLES (given as a vector, eg.
 %   [0 90 180 270]).  FEATURES contains a stack of images, each
 %   corresponding to an angle in ANGLES. Each pixel in FEATURES(i,:,:) 
 %   contains the distance to the nearest edge in the direction of 
 %   ANGLES(i).  Edges are computed using Laplacian of Gaussian 
 %   zero-crossings (!!! in the future we may add more methods for 
-%   generating edges).  SIGMA specifies the standard deviation of the edge 
+%   generating edges).  SIGMAS specifies the standard deviation(s) of the edge 
 %   filter.  
 %
 %   Example:
@@ -23,8 +23,11 @@ function A = spedges(I, angles, sigma)
 %   See also SPEDGE_DIST, EDGE, VIEW_SPEDGES
 
 A.angle = angles;
+A.sigmas = sigmas;
 
 for i = 1:length(angles)
-    [A.spedges(i,:,:), A.edge] = spedge_dist(I, angles(i),sigma);   
+    for s = 1:length(sigmas)
+        [A.spedges(i,s,:,:), A.edge] = spedge_dist(I, angles(i),sigmas(s));   
+    end
 end
 
