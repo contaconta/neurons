@@ -98,10 +98,11 @@ if nargin > 3
     d = ada_trainingfiles(DATASETS.filelist, 'update', '-');   
     
     % randomly sample from the update set to generate a FP_LIST
-    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM);
+    FP_LIST = get_old_FPs(SET, DETECTOR);
+    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST);
     if ~success
         disp('    ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
-        FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS);
+        FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST);
     end
     
     
@@ -126,11 +127,12 @@ SET = orderfields(SET);
 
 
 
-function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM)
+function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST)
 
-success = 0;  FP_LIST = [];  find_rate = 1;
+success = 0;  find_rate = 1;
 FIND_RATE_LIMIT = .0001;                        %  minimum rate to find FP examples
 attempts = 1;
+disp('   ...randomly scanning for FP examples');
 
 while length(FP_LIST) < NEG_LIM
     % 1. randomly select a file from the list
@@ -210,9 +212,8 @@ success = 1;
 disp(['   ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
 
 
-function FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS)
+function FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST)
 
-FP_LIST = [];
 
 for file_ind = 1:length(d)
         
@@ -291,10 +292,24 @@ end
 
 
 
+function FP_LIST = get_old_FPs(SET, DETECTOR)
 
+disp('   ...collecting FPs from previous data set');
 
+FP_LIST = [];
+N = SET([SET.class] == 0);
 
+for i = 1:length(N)
 
+    C = ada_classify_cascade(DETECTOR,  N(i), [0 0]);
+
+    if C
+        FP_LIST = [FP_LIST N(i)];
+    end
+    
+end
+
+disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
 
 
 
