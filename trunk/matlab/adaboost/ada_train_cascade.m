@@ -1,4 +1,4 @@
-%% load the parameters and path information
+% load the parameters and path information
 % ----------
 ada_settings; 
 ada_versioninfo;
@@ -25,8 +25,8 @@ WEAK = ada_define_weak_learners(LEARNERS); toc;
 % precompute haar responses for each classifier over TRAIN, and store them in a bigmatrix, PRE.
 % disp('...precomputing the haar-like feature responses of each classifier ');
 % disp(['   on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                        
-% PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
- PRE = [];
+ PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
+% PRE = [];
 
 %% train the cascade
 

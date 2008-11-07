@@ -31,7 +31,9 @@ end
 %% train the strong classifier as a series of T weak classifiers
 for t = start_t:T
     %% 1. Normalize the weights
-    w = w ./sum(w);
+    %w = w ./sum(w);
+    w([TRAIN.class] == 1) = .5 * (w([TRAIN.class]==1) /sum(w([TRAIN.class]==1)));
+    w([TRAIN.class] == 0) = .5 * (w([TRAIN.class]==0) /sum(w([TRAIN.class]==0)));
     
     %% 2. train weak learners for optimal class separation
     [WEAK, PRE] = ada_train_weak_learners(WEAK, TRAIN, PRE, w);

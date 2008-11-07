@@ -20,10 +20,10 @@ figure; hold on;
 
 plot(Di, 'b-', 'LineWidth',2);
 plot(Fi, 'r-', 'LineWidth',2);
-plot(di, 'b-.');
-plot(fi, 'r-.');
-plot(dit, 'c-.');
-plot(fit, 'm-.');
+plot(di, 'b-');
+plot(fi, 'r-');
+plot(dit, 'c-');
+plot(fit, 'm-');
 legend('Overall Detection Rate D_i', 'Overall False Positive Rate F_i', 'Stage Detection Rate d_i', 'Stage False Positive Rate f_i', 'Training Data d_i', 'Training Data f_i');
 xlabel('# of Weak Learners');
 ylabel('Detection Rate / False Positive Rate');
