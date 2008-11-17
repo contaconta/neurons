@@ -21,7 +21,7 @@ rand('twister', 100);       % seed the random variable
 cascade_filenm  = 'CASCADE_SPEDGE1000.mat';    % filename to store the cascaded classifier
 log_filenm      = 'CASCADE_SPEDGE1000.log';    % filename to store the log file    
 temppath        = [pwd '/mat/'];        % temporary storage path
-temp_filenm     = 'BIGARRAY_';      	% temporary storage filename
+temp_filenm     = 'MATLAB_PRECOMPUTED_FEATURES.dat';      	% temporary storage filename
 path(path, [pwd '/../spedges/']);       % append the path to the spedges features 
 
 %-------------------------------------------------------------------------

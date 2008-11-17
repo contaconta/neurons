@@ -1,8 +1,11 @@
+n = regexp(datestr(now), '\w+', 'match');
+n1 = strcat('Copyright © ', ' ', n(3), ' ', ' Kevin Smith');
+
 INFO.appname     = 'Adaboost Image Detection Matlab Toolbox';
 INFO.version     = '0.6';
 INFO.author      = 'Kevin Smith';
 INFO.email       = 'kevin.smith@epfl.ch';
-INFO.copyright   = 'Copyright © 2008 Kevin Smith';
+INFO.copyright   = n1{1};
 
 
 
