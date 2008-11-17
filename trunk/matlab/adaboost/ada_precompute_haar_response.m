@@ -22,10 +22,11 @@ function PRE = ada_precompute_haar_response(TRAIN, WEAK, filenm, matpath,PRE)
 % define a path and filename for our memory map file
 %-----------------------------------------------------------
 if nargin < 3
-    filenm = 'MATLAB_MEMMAP_';
+    filenm = 'MATLAB_PRECOMPUTED_FEATURES.mat';
     matpath = [pwd '/mat/'];
 end
 BYTESIZE = 250000000;
+%BYTESIZE = 100000000;
 
 % get a list of haar-like features
 haar_list = [];
@@ -37,7 +38,8 @@ end
 
 if isempty(PRE)
     % initialize the bigarray for the first go
-    PRE = bigarray(length(haar_list), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
+    %PRE = bigarray(length(haar_list), length(TRAIN), 'filename', filenm, 'bytes', BYTESIZE, 'path', matpath, 'type', 'matlab .mat file');
+    PRE = bigmatrix(length(TRAIN), length(haar_list), 'filename', filenm, 'memory', BYTESIZE);
 end
 
 %--------------------------------------------------------------------------
@@ -58,13 +60,14 @@ for i = haar_list
     f_responses(j,:) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, IIs);
     
     if mod(i,block) == 0
-        PRE.store_rows(f_responses, [i-block+1 i]);
+        PRE.storeCols(f_responses', i-block+1:i);
+        %PRE.store_rows(f_responses, [i-block+1 i]);
         j = 0;
     end
     W = wristwatch(W, 'update', i);
     j = j + 1;
 end
-PRE.store_rows(f_responses, [i-j+2 i]);
-PRE.force_save;
+% PRE.store_rows(f_responses, [i-j+2 i]);
+% PRE.force_save;
 
 
