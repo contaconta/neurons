@@ -1,4 +1,4 @@
-function SET = ada_collect_data(DATASETS, LEARNERS, set_type, varargin)
+function SET = ada_collect_data(DATASETS, set_type, varargin)
 %ADA_COLLECT_DATA organizes training images for viola-jones
 %
 %   SET = ada_collect_data(path1, path0, ...) collects and processes 
@@ -24,17 +24,16 @@ function SET = ada_collect_data(DATASETS, LEARNERS, set_type, varargin)
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
 
-
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
-if nargin == 3
-    for c = 1:2
+if nargin == 2
+    for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
         if c == 1
             d = ada_trainingfiles(DATASETS.filelist, set_type, '+', POS_LIM);
-            SET(length(d)).Image = [];
+            %SET.Images(length(d)) = [];
         else
             d = ada_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
-            SET(length(SET) + length(d)).Image = [];
+            %SET.Images(length(SET) + length(d)) = [];
         end
 
         % add each image file to SET, format it, normalize it, and compute features
@@ -64,21 +63,68 @@ if nargin == 3
                 I = imnormalize('image', I);
             end
 
-            SET(count).Image = I;
-            if c == 1; SET(count).class = 1; end
-            if c == 2; SET(count).class = 0; end
+            SET.Images(:,:,count) = I;
+            if c == 1; SET.class(count) = 1; end
+            if c == 2; SET.class(count) = 0; end
 
-            % append the appropriate features
-            for l = 1:length(LEARNERS)
-                if strcmp(LEARNERS(l).feature_type, 'haar')
-                    II = integral_image(I);
-                    SET(count).II = II(:);
-                end
-                if strcmp(LEARNERS(l).feature_type, 'spedge')
-                    sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
-                    SET(count).sp = sp.spedges(:);
-                end
-            end
+           
+                    
+%                 if strcmp(WEAK.learners{1}{1}, 'haar')
+%                     II = integral_image(I);   
+%                     
+%                     
+%                     
+%                 end
+%                 
+%                 if strcmp(WEAK.learners{1}{1}, 'spedge')
+%                     sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
+%                     spbar = sp.spedges(:);
+%                 end
+%             end
+                
+%             for j = 1:length(WEAK.list)
+% 
+%                 if strcmp(WEAK.list{j,1}, 'haar')
+%                     field = WEAK.list{j,1};
+%                     ind = WEAK.list{j,2};
+%                     RESPONSES(j) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, II);
+%                 end
+% 
+%                 if strcmp(WEAK.list{j,1}, 'spedge')
+%                     %field = WEAK.list{j,1};
+%                     ind = WEAK.list{j,2};
+%                     RESPONSES(j) = spbar(ind);
+%                 end
+%             end
+                
+                    
+%                     haar_list = [];
+%                     for i = 1:length(WEAK.learners)
+%                         if strcmp('haar', WEAK.learners{i}{1})
+%                             haar_list = [haar_list WEAK.learners{i}{3}];
+%                         end
+%                     end
+%                     
+%                     for i = haar_list
+%                         field = WEAK.list{i,1};
+%                         ind = WEAK.list{i,2};
+%                         f_responses(j,:) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, IIs);
+%                     
+%                     
+%                     RESPONSES(WEAK.learners{l}{3}) = II(:);
+%                     %SET(count).II = II(:);
+%                     %SET.responses.storeCols(II(:),count);
+%                 end
+%                 if strcmp(LEARNERS(l).feature_type, 'spedge')
+%                     sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
+%                     %SET(count).sp = sp.spedges(:);
+%                     %SET.responses.storeCols(sp.spedges(:),count);
+%                     RESPONSES(WEAK.learners{l}{3}) = sp.spedges(:);
+%                 end
+            %end
+            
+            
+            
             count = count + 1;       
         end
     end
@@ -86,7 +132,7 @@ end
 
 
 %% update collection: NEGATIVE examples are updated with False Positives
-if nargin > 3
+if nargin > 6
 
     SET = varargin{2};
     DETECTOR = varargin{3};

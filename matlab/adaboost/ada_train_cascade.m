@@ -6,26 +6,30 @@ ada_versioninfo;
 
 %% preparation
 
-% prepare the log file
-logfile(log_filenm, 'erase');logfile(log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
-logfile(log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
-
-% collect the training set
-tic; disp('...collecting and processing the TRAIN data set.');
-TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train');toc;
-
-% collect the validation set
-tic; disp('...collecting and processing the VALIDATION data set.');
-VALIDATION = ada_collect_data(DATASETS, LEARNERS, 'validation');toc;
+% initialize the log file
+logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
 
 % define the weak learners
 tic; disp('...defining the weak learners.');
 WEAK = ada_define_weak_learners(LEARNERS); toc; 
 
+% collect the training set
+tic; disp('...collecting and processing the TRAIN data set.');
+TRAIN = ada_collect_data(DATASETS, 'train');toc;
+TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
+
+return
+
+% collect the validation set
+tic; disp('...collecting and processing the VALIDATION data set.');
+VALIDATION = ada_collect_data(DATASETS, 'validation');toc;
+VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
+
 % precompute haar responses for each classifier over TRAIN, and store them in a bigmatrix, PRE.
 % disp('...precomputing the haar-like feature responses of each classifier ');
 % disp(['   on the ' num2str(length(TRAIN)) ' training images (this may take quite some time).']);                        
-PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
+%PRE = ada_precompute_haar_response(TRAIN, WEAK, temp_filenm, temppath, []);
 % PRE = [];
 
 %% train the cascade
