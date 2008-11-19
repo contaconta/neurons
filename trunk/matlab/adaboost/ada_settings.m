@@ -18,10 +18,12 @@ rand('twister', 100);       % seed the random variable
 % FILES & PATH INFORMATION
 %-------------------------------------------------------------------------
 
-cascade_filenm  = 'CASCADE_SPEDGE1000.mat';    % filename to store the cascaded classifier
-log_filenm      = 'CASCADE_SPEDGE1000.log';    % filename to store the log file    
-temppath        = [pwd '/mat/'];        % temporary storage path
-temp_filenm     = 'MATLAB_PRECOMPUTED_FEATURES.dat';      	% temporary storage filename
+FILES.cascade_filenm  = 'CASCADE_SPEDGE1000.mat';           % filename to store the cascaded classifier
+FILES.log_filenm      = 'CASCADE_SPEDGE1000.log';           % filename to store the log file    
+FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
+FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
+FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
+FILES.memory          = 100000000;                          % size of memory to use in bytes for each bigmatrix 
 path(path, [pwd '/../spedges/']);       % append the path to the spedges features 
 
 %-------------------------------------------------------------------------
