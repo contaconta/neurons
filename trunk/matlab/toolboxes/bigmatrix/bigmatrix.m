@@ -3,6 +3,13 @@
 %   note: cols are faster, but must be sequential.  rows are slower, but
 %   can have breaks row_inds = [1 2 5 6]
 %
+%   B = bigmatrix(2000, 60000, 'filename', 'temp.dat', 'memory', 100000000, 'precision', 'single');
+%   B.store(data, row, col);
+%   B.storeCols(data, cols);
+%   B.storeRows(data, rows);
+%   data = B.get(row, col);
+%   data = B.getCols(cols);
+%   data = B.getRows(rows);
 %
 %   Copyright © 2008 Kevin Smith
 %
@@ -10,30 +17,40 @@
 
 
 
-%% class properties defined
-classdef bigmatrix 
+%% class properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+classdef bigmatrix < handle
    properties
-        filename = []
-%         bigarray_size = [];
-%         block_size = [];
-%         num_blocks = [];
-%         row_bounds = {};
-        rows = 0;
-        cols = 0;
-        memory_footprint = 333000000;
-        data = [];
-        fid =[];
-     
+        filename = 'temp.dat';                  % name of the file to store the BIGMATRIX (default = temp.dat)
+        rows = 0;                               % the number of rows in the BIGMATRIX (default = 0)
+        cols = 0;                               % the number of cols in the BIGMATRIX (default = 0)
+        memory_footprint = 333000000;           % the amount of RAM the BIGMATRIX can use (default 333MB)
+        precision = 'double'                    % the precision of the data stored in the BIGMATRIX (default = 'double')
+        bytes = 8;                              % the number of bytes used for this precision (double = 8, single = 4)
+   end
+   properties (SetObservable = true)
+        rowCache = [];                          % a cache of recently accessed rows of the BIGMATRIX
+        colCache = [];                          % a cache of recently accessed columns of the BIGMATRIX
+        colCacheLims = [1 1];                   % the first and last col indexes in the colCache
+        rowCacheLims = [1 1];                   % the first and last row indexes in the rowCache
+        refreshRowCacheFlag = 0;                % flag indicating that the rowCache needs to be refreshed
+        refreshColCacheFlag = 0;                % flag indicating that the colCache needs to be refreshed
+        fid =[];                                % the file identifier for the storage file
    end% properties
 
    
-   %% class methods defined 
+   
    methods
        
-        %% the constructor method
+        %% the constructor method %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Constructs a new BIGMATRIX object.  User must specify the number
+        % of ROWS and the number of COLS that the BIGMATRIX storage file
+        % will contain.  This number cannot currently be changed.
+        % Opionally, the filename of the storage file may be specified, the
+        % precision of the data, and the amount of RAM the BIGMATRIX
+        % should consume may be specified.
         function obj = bigmatrix(varargin)
             obj.rows = varargin{1}; obj.cols = varargin{2};
-            obj.filename = 'temp.dat';
+            NEW = 1;
             
             for i = 3:nargin
                 if strcmp(varargin{i}, 'filename')
@@ -42,42 +59,94 @@ classdef bigmatrix
                 if strcmp(varargin{i}, 'memory')
                     obj.memory_footprint = varargin{i+1};
                 end
-            end
-            
-            obj.fid = fopen(obj.filename, 'w');
-            frewind(obj.fid);
-            
-            bytes_needed = obj.rows * obj.cols * 4;
-            bytes_used = 0;
-            
-            % if the memory footprint is not enough to store the whole
-            % array, break it into chunks and write zeros to the file.
-            if obj.memory_footprint < bytes_needed
-                
-                while bytes_used < bytes_needed
-                
-                    bytes_to_write = min(obj.memory_footprint, bytes_needed - bytes_used);
-                    
-                    A = zeros([bytes_to_write/4 1]);
-                    fwrite(obj.fid, A, 'single');
-                    
-                    disp(['writing ' num2str(bytes_to_write) ' bytes to ' obj.filename ]);
-                    
-                    bytes_used = bytes_used + bytes_to_write;
-                    clear A;
+                if strcmp(varargin{i}, 'precision')
+                    obj.precision = varargin{i+1};
+                    switch obj.precision
+                        case 'single'
+                            obj.bytes = 4;
+                        case 'double'
+                            obj.bytes = 8;
+                        otherwise 
+                            error('unsupported precision type');
+                    end                    
                 end
-            else
-                A = zeros(obj.rows, obj.cols, 'single');   
-                fwrite(obj.fid, A, 'float');
-                obj.data = A;
+                if strcmp(varargin{i}, 'open');
+                    NEW = 0;
+                end
             end
+            
+            % we are creating a new storage file.
+            if NEW
+                obj.fid = fopen(obj.filename, 'w');
+                frewind(obj.fid);
+
+                % if it is a new file, fill the file with zeros
+                bytes_needed = obj.rows * obj.cols * obj.bytes;
+                bytes_used = 0;
+
+                % if the memory footprint is not enough to store the whole
+                % array, break it into chunks and write zeros to the file.
+                if obj.memory_footprint < bytes_needed
+
+                    while bytes_used < bytes_needed
+
+                        bytes_to_write = min(obj.memory_footprint, bytes_needed - bytes_used);
+
+                        A = zeros([bytes_to_write/obj.bytes 1]);
+                        fwrite(obj.fid, A, obj.precision);
+
+                        disp(['writing ' num2str(bytes_to_write) ' bytes to ' obj.filename ]);
+
+                        bytes_used = bytes_used + bytes_to_write;
+                        clear A;
+                    end
+                else
+                    A = zeros(obj.rows, obj.cols, obj.precision);   
+                    fwrite(obj.fid, A, 'float');
+                    obj.data = A;
+                end
                 
+                obj.rowCache = zeros(1,obj.cols);
+                obj.colCache = zeros(obj.rows,1);
+                fclose(obj.fid);   
+            
+            % we are opening a previously created storage file.    
+            else
+                obj.rowCache = obj.getRowsFromFile(1);
+                obj.colCache = obj.getColsFromFile(1);
+                obj.fid = fopen(obj.filename, 'r');
+                fclose(obj.fid);
+            end
+        end
+            
+        %% store (single element) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Stores a single element specified by DATA to the storage file at
+        % the location specified by row, col.
+        function store(obj, data, row, col)
+            if ~isequal(size(data), [length(row) length(col)])
+                error('error: the size of the data is not [1 1]');
+            end
+            if col > obj.cols
+                error('error: the col index is out of bounds');
+            end
+            if row > obj.rows
+                error('error: the row index is out of bounds');
+            end
+           
+            obj.fid = fopen(obj.filename, 'r+');
+            position = ( (row-1) + obj.rows*(col-1) )* obj.bytes;
+            fseek(obj.fid, position, 'bof');
+            fwrite(obj.fid, data, obj.precision);
+            
             fclose(obj.fid);
             
-                
+            obj.refreshRowCacheFlag = 1;         % we have changed stored data, cache should be refreshed
+            obj.refreshColCacheFlag = 1;
         end
         
-        %% store rows
+        %% storeRows %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Stores row data contained in DATA to the rows of the storage file
+        % specified by row_inds.
         function storeRows(obj, data, row_inds)
             
             if size(data,1) ~= length(row_inds)
@@ -93,21 +162,21 @@ classdef bigmatrix
             obj.fid = fopen(obj.filename, 'r+');
             
             for i = 1:length(row_inds);
-                seek_bytes = (row_inds(i)-1)*4;
+                seek_bytes = (row_inds(i)-1)*obj.bytes;
                 fseek(obj.fid, seek_bytes, 'bof');
-                fwrite(obj.fid, data(i,1), 'single');
-                fwrite(obj.fid, data(i,2:size(data,2)), 'single', (obj.cols-1)*4);
+                fwrite(obj.fid, data(i,1), obj.precision);
+                fwrite(obj.fid, data(i,2:size(data,2)), obj.precision, (obj.rows-1)*obj.bytes);
             end
 
             fclose(obj.fid);
-           
-            
-            % if it is part of obj.data, update that as well
-            
+            obj.refreshRowCacheFlag = 1;         % we have changed stored data, cache should be refreshed
+            obj.refreshColCacheFlag = 1;
         end
         
         
-        %% store cols
+        %% storeCols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Stores column data contained in DATA to the columns of the
+        % storage file specified by col_inds.
         function storeCols(obj, data, col_inds )
             
             if size(data,2) ~= length(col_inds)
@@ -118,308 +187,233 @@ classdef bigmatrix
                 error('error: the number of rows in data does not match the number of rows in the bigmatrix');
             end
             
-            
             % store it to the file
             obj.fid = fopen(obj.filename, 'r+');
-            fseek(obj.fid, (col_inds(1)-1)*obj.rows*4, 'bof');
-            fwrite(obj.fid, data, 'single');
+            fseek(obj.fid, (col_inds(1)-1)*obj.rows*obj.bytes, 'bof');
+            fwrite(obj.fid, data, obj.precision);
             fclose(obj.fid);
-            
-            % if it is part of obj.data, update that as well
+            obj.refreshRowCacheFlag = 1;         % we have changed stored data, cache should be refreshed
+            obj.refreshColCacheFlag = 1;
         end
         
-        %% getRows
-        function data = getRows(obj, row_inds)
+        
+        %% get (single element) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Retrieves a single element specified by row, col from the storage 
+        % file and returns it as DATA.
+        function data = getdataFromFile(obj, row, col)
+        
+            if col > obj.cols
+                error('error: the col index is out of bounds');
+            end
+            if row > obj.rows
+                error('error: the row index is out of bounds');
+            end
             
-            obj.fid = fopen(obj.filename, 'r+');
-            
-            data = zeros([length(row_inds), obj.cols]);
-            
-            for i = 1:length(row_inds);
-                seek_bytes = (row_inds(i)-1)*4;
-                fseek(obj.fid, seek_bytes, 'bof');
-                data(i,:) = fread(obj.fid, [1 obj.cols], 'single', (obj.cols-1)*4 );
-                %fwrite(obj.fid, data(i,1), 'single');
-                %fwrite(obj.fid, data(i,2:size(data,2)), 'single', (obj.cols-1)*4);
+            % update the caches
+            obj.updateColCache(col);
+            obj.updateRowCache(row);
+           
+            if inColCache(col)
+                % it's in the colCache, don't need to do a file read
+                data = obj.colCache(row, col - obj.colCacheLims(1) + 1);
+                
+            elseif inRowCache(row)
+                % it's in the rowCache, don't need to do a file read
+                data = obj.rowCache(row - obj.rowCacheLims(1) + 1, col);
+                
+            else     
+                % otherwise read it from the file
+                obj.fid = fopen(obj.filename, 'r+');
+                position = ( (row-1) + obj.rows*(col-1) )* obj.bytes;
+                fseek(obj.fid, position, 'bof');
+                data = fread(obj.fid, 1, obj.precision);
             end
             
             fclose(obj.fid);
-            
-            % store the rows in the current data
-            
         end
         
-        %% getCols
-        function data = getCols(obj, col_inds)
+        %% getColsFromFile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Retrieves columns specified by col_inds from the storage file and
+        % returns them as DATA.
+        function data = getColsFromFile(obj, col_inds)
             
             obj.fid = fopen(obj.filename, 'r+');
-            fseek(obj.fid, (col_inds(1)-1)*obj.rows*4, 'bof'); 
-            data = fread(obj.fid, [obj.rows length(col_inds)], 'float');
+            fseek(obj.fid, (col_inds(1)-1)*obj.rows*obj.bytes, 'bof'); 
+            data = fread(obj.fid, [obj.rows length(col_inds)], obj.precision);
             fclose(obj.fid);
-            
-            % store the cols we have in current data.
         end
-    
         
+        %% updateColCache %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Updates the columns cache so that the block containing "col" is
+        % now in the columns cache.
+        function updateColCache(obj,col)
+            
+            if ~obj.inColCache(col)  || obj.refreshColCacheFlag
+                if (col > obj.cols) || (col < 1)
+                    error(['error: row is out of bounds. bigmatrix dims [' num2str(obj.rows) ' ' num2str(obj.cols) ']']);     
+                end
+
+                % determine the size of the cache, the first and last index
+                block = round ( (obj.memory_footprint/2) / (obj.rows * obj.bytes) );
+                blocks = 1:block: obj.cols;
+                [h,ind] = find(1:block:obj.cols <= col, 1, 'last');
+                first = blocks(ind);
+                last = min(first + block - 1, obj.cols);
+
+                % update the cache with data from the storage file
+                disp(['updating the colCache with cols ' num2str(first) ':' num2str(last)]);
+                obj.colCache = obj.getColsFromFile(first:last);
+                obj.colCacheLims = [first last];
+                obj.refreshColCacheFlag = 0;
+            else
+                disp(['col ' num2str(col) ' is already in the cache.']);
+            end
+        end
+        
+        %% inColCache %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Returns 1 if the requested col is currently in the columns cache, 
+        % a 0 if it is not.
+        function B = inColCache(obj, col)
+            
+            lowlim = ones(size(col))*obj.colCacheLims(1);
+            upperlim = ones(size(col))*obj.colCacheLims(2);
+            
+            B = (lowlim <= col) & (col <= upperlim);
+        end
+        
+        
+        %% getCols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        function data = getCols(obj, col_inds)
+ 
+            % allocate space for DATA
+            data = zeros(obj.rows, length(col_inds));
+            
+            % update the colCache so it contains the first column we want
+            obj.updateColCache(col_inds(1));
+            
+            % get the columns in the colCache and put them in DATA
+            data_cols = obj.inColCache(col_inds);
+            if ~isempty(find(data_cols,1))
+                cached_cols = col_inds(data_cols);
+                data(:,data_cols) = obj.colCache(:,cached_cols - obj.colCacheLims(1) +1);
+                disp(['columns [' num2str(cached_cols) '] found in the colCache']);
+            end
+            
+            % retrieve the missing columns from the file and put them in DATA
+            if ~isempty(find(~data_cols,1))
+                file_col_inds = col_inds(~data_cols);
+                data(:, ~data_cols) = obj.getColsFromFile(file_col_inds);
+                disp(['columns [' num2str(file_col_inds) '] retrieved from ' num2str(obj.filename)]);
+            end
+            
+            % PREVIOUSLY UPDATED THE CACHE AFTER GETTING THE DATA
+%             % update the colCache to it contains the last column we
+%             % grabbed from the file
+%             obj.updateColCache(col_inds(length(col_inds)));
+            
+        end
+        
+        %% getRowsFromFile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Retrieves the rows specified by row_inds from the storage file
+        % and returns them as DATA.  YOU SHOULD NEVER USE THIS METHOD FOR
+        % MANY REPEATED READS - IT IS MUCH FASTER TO USE GETROWS, WHICH
+        % USES THE CACHE AND READS DATA MUCH FASTER VIA GETCOLSFROMFILE
+        function data = getRowsFromFile(obj, row_inds)
+            
+            obj.fid = fopen(obj.filename, 'r+');
+            
+            data = zeros([length(row_inds), obj.cols], obj.precision);
+            
+            for i = 1:length(row_inds);
+                seek_bytes = (row_inds(i)-1)*obj.bytes;
+                fseek(obj.fid, seek_bytes, 'bof');
+                data(i,:) = fread(obj.fid, [1 obj.cols], obj.precision, (obj.rows-1)*obj.bytes);
+            end
+            
+            fclose(obj.fid);
+        end
+        
+        %% updateRowCache %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        function updateRowCache(obj, row)
+        
+            if ~obj.inRowCache(row) || obj.refreshRowCacheFlag
+                if (row > obj.rows) || (row < 1)
+                    error(['error: row is out of bounds. bigmatrix dims [' num2str(obj.rows) ' ' num2str(obj.cols) ']']);
+                end
+
+                % determine the size of the cache, the first and last row index
+                block = round ( (obj.memory_footprint/2) / (obj.cols * obj.bytes) );
+                blocks = 1:block: obj.rows;
+                [h,ind] = find(1:block:obj.rows <= row, 1, 'last');
+                first_row = blocks(ind);
+                last_row = min(first_row + block - 1, obj.rows);
+
+                % because it is faster to read in columns, we will scan the
+                % file in columns and fill in the appropriate rows as we go.
+                
+                % first we need to determine the # of columns we can fit in memory
+                block = round ( (obj.memory_footprint/2) / (obj.rows * obj.bytes) );
+                blocks = 1:block: obj.cols;
+                
+                for i = blocks
+                    first_col = i;
+                    last_col = min(first_col + block - 1, obj.cols);
+                    disp(['reading cols [' num2str(first_col) ':' num2str(last_col) ']' ]);
+                    obj.colCache = obj.getColsFromFile(first_col:last_col);
+                    obj.colCacheLims = [first_col last_col];
+                    
+                    obj.rowCache(1:last_row-first_row+1, first_col:last_col) = obj.colCache(first_row:last_row,:);
+                end
+                
+                % update the cache with data from the storage file
+                disp(['updating the rowCache with rows ' num2str(first_row) ':' num2str(last_row)]);
+                obj.rowCacheLims = [first_row last_row];
+                obj.refreshRowCacheFlag = 0;
+                obj.refreshColCacheFlag = 0;
+            else
+                disp(['row ' num2str(row) ' is already in the cache.']);
+            end
+        
+        end
+        
+        
+        %% inRowCache %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+        % Returns 1's if the requested rows are currently in the rows cache, 
+        % or 0's if they are not.
+        function B = inRowCache(obj,rows)
+            lowlim = ones(size(rows))*obj.rowCacheLims(1);
+            upperlim = ones(size(rows))*obj.rowCacheLims(2);
+            
+            B = (lowlim <= rows) & (rows <= upperlim);
+        end
+
+
+        %% getRows %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        function data = getRows(obj, row_inds)
+ 
+            % allocate space for DATA
+            data = zeros(length(row_inds), obj.cols);
+            
+            % update the rowCache so it contains the first row we want
+            obj.updateRowCache(row_inds(1));
+            
+            % get the columns in the colCache and put them in DATA
+            data_rows = obj.inRowCache(row_inds);
+            if ~isempty(find(data_rows,1))
+                cached_rows = row_inds(data_rows);
+                data(data_rows,:) = obj.rowCache(cached_rows - obj.rowCacheLims(1) +1,:);
+                disp(['rows [' num2str(cached_rows) '] found in the rowCache']);
+            end
+            
+            % retrieve the missing columns from the file and put them in DATA
+            if ~isempty(find(~data_rows,1))
+                file_row_inds = row_inds(~data_rows);
+                data(~data_rows,:) = obj.getRowsFromFile(file_row_inds);
+                disp(['rows [' num2str(file_row_inds) '] retrieved from ' num2str(obj.filename)]);
+            end
+        end
+        
+
    end %methods
 end %classdef
        
-
-% fid = fopen('alphabet.txt', 'r');
-% c = fread(fid, '2*char=>char', 2);    % Skip 2 bytes per read
-
-% fid = fopen(B.filename, 'r');
-% frewind(fid); fread(fid, [5 5], 'float')
-% fseek(fid, 4, 'bof'); fread(fid, [5 1], '*single', 4*4)
-% frewind(fid); fread(fid, [5 2], '*single')
-
-
-
-           %A = [1 2 3 4 5]' * [1 1 1 1 1];   %  [1 2 3 4 5] * ones(5);
-            
-%             count = 1;
-%             for i= 1:5
-%                 for j = 1:5
-%                     A(i,j) = count;
-%                     count = count + 1;
-%                 end
-%             end
-
-%             A = zeros(rows, columns, 'single');    
-% 
-%             obj.data = A;
-%             
-%             fwrite(obj.fid, A, 'float');
-            
-
-
-
-
-
-% 
-% 
-%         %% the constructor method
-%         function BA = bigarray(varargin)
-%             total_rows = varargin{1};
-%             num_columns = varargin{2};
-%             BA.prefix = 'BIGARRAY_'; BA.path = [pwd '/'];
-%             bytesize = 250000000; BA.type = 'matlab .mat file';
-%             
-%             for i = 3:nargin
-%                 if strcmp(varargin{i}, 'filename')
-%                     BA.prefix = varargin{i+1};
-%                 end
-%                 if strcmp(varargin{i}, 'path')
-%                     BA.path = varargin{i+1};
-%                 end
-%                 if strcmp(varargin{i}, 'bytes')
-%                     bytesize = varargin{i+1};
-%                 end
-%                 if strcmp(varargin{i}, 'type')
-%                     BA.type = varargin{i+1};
-%                 end
-%             end
-%             
-%             BA.bigarray_size = [total_rows num_columns];
-%             rows_per_block = round(bytesize / (num_columns*8));
-%             BA.block_size = [rows_per_block num_columns];
-%             BA.num_blocks = ceil(total_rows/rows_per_block);
-%             
-%             if BA.num_blocks == 1
-%                 if strcmp(BA.type, 'memmapfile')
-%                     BA.filenames{1} = [BA.path BA.prefix num2str(1) '.dat'];
-%                 else 
-%                     BA.filenames{1} = [BA.path BA.prefix num2str(1) '.mat'];
-%                 end
-%                 BA.row_bounds{1} = [1 total_rows];
-%                 BA.allocate(BA.filenames{1});
-%             else
-%                 for i = 1:BA.num_blocks
-%                     if i ~= BA.num_blocks
-%                         if strcmp(BA.type, 'memmapfile')
-%                             BA.filenames{i} = [BA.path BA.prefix num2str(i) '.dat'];
-%                         else 
-%                             BA.filenames{i} = [BA.path BA.prefix num2str(i) '.mat'];
-%                         end
-%                         BA.row_bounds{i} = [1 BA.block_size(1)] + BA.block_size(1)*(i-1);
-%                         BA.allocate(BA.filenames{i});
-%                     else
-%                         if strcmp(BA.type, 'memmapfile')
-%                             BA.filenames{i} = [BA.path BA.prefix num2str(i) '.dat'];
-%                         else 
-%                             BA.filenames{i} = [BA.path BA.prefix num2str(i) '.mat'];
-%                         end
-%                         previous_row = (i-1)*BA.block_size(1);
-%                         BA.row_bounds{i} = [1 total_rows - previous_row] + BA.block_size(1)*(i-1);
-%                         BA.allocate(BA.filenames{i});
-%                     end
-%                 end
-%             end
-%             if strcmp(BA.type, 'memmapfile')
-%                 BA.memmap = memmapfile(BA.filenames{1}, 'Offset', 0, 'Writable', true,      ...    
-%                 'Format', {'double' BA.block_size 'x'});
-%                 BA.block_data = 'unused - needed for matlab .mat type'; BA.loaded_block = 'unused - needed for matlab .mat type';
-%             else
-%                 load(BA.filenames{1}); BA.block_data = D;  clear D;     
-%                 BA.loaded_block = 1;
-%                 BA.memmap = 'unused - needed for memmapfile type';
-%             end
-%         end
-%        
-%         %% the get_rows method
-%         function mat1 = get_rows(varargin)  % (BA, row_lims)
-%             BA = varargin{1};  row_lims = varargin{2}; nosave = 0;
-%             if nargin == 3; if strcmp('nosave', varargin{3}); nosave = 1; end; end
-%             mat1 = []; 
-%             
-%             % if only 1 row is requested
-%             if (row_lims(1) == row_lims(2)) || max(size(row_lims)) == 1
-%                 block = ceil(row_lims(1)/BA.block_size(1));
-%                 r = row_lims(1) - (block-1)*BA.block_size(1);
-%                 if strcmp(BA.type, 'memmapfile')
-%                     if ~strcmp(BA.memmap.filename, BA.filenames{block})
-%                         BA.memmap.filename = BA.filenames{block};
-%                     end
-%                     mat1 = BA.memmap.data.x(r,:);
-%                 else
-%                     if BA.loaded_block ~= block
-%                         if ~nosave
-%                             D = BA.block_data; save(BA.filenames{BA.loaded_block},'D'); clear D;
-%                         end
-%                         load(BA.filenames{block}); BA.block_data = D;  clear D;
-%                         BA.loaded_block = block;
-%                     end
-%                     mat1 = BA.block_data(r,:);
-%                 end
-%                 
-%             % if multiple rows are requested
-%             else
-%                 firstblock = ceil(row_lims(1)/BA.block_size(1));
-%                 lastblock = ceil(row_lims(2)/BA.block_size(1));
-%                 for i = firstblock:lastblock
-%                     if (i == firstblock) && (i == lastblock)
-%                         r1 = row_lims(1) - (i-1)*BA.block_size(1);
-%                         r2 = row_lims(2) - (i-1)*BA.block_size(1);
-%                     elseif (i == firstblock)
-%                         r1 = row_lims(1) - (i-1)*BA.block_size(1);
-%                         r2 = BA.block_size(1);
-%                     elseif (i == lastblock)
-%                         r1 = 1;
-%                         r2 = row_lims(2) - (i-1)*BA.block_size(1);
-%                     else
-%                         r1 = 1;
-%                         r2 = BA.block_size(1);
-%                     end
-% 
-%                     if strcmp(BA.type, 'memmapfile')
-%                         if ~strcmp(BA.memmap.filename, BA.filenames{i})
-%                             BA.memmap.filename = BA.filenames{i};
-%                         end
-%                         mat1 = [mat1; BA.memmap.data.x(r1:r2,:)];
-%                     else
-%                         if BA.loaded_block ~= i
-%                             if ~nosave
-%                                 D = BA.block_data; save(BA.filenames{BA.loaded_block},'D'); clear D;
-%                             end
-%                             load(BA.filenames{i}); BA.block_data = D;  clear D;
-%                             BA.loaded_block = i;
-%                         end
-%                         mat1 = [mat1; BA.block_data(r1:r2,:)];
-%                     end
-%                 end
-%             end
-%         end
-% 
-%         %% the store_rows method
-%         function store_rows(BA, mat, row_lims)
-% 
-%             firstblock = ceil(row_lims(1)/BA.block_size(1));
-%             lastblock = ceil(row_lims(2)/BA.block_size(1));
-%             mat_top_row = 1;
-%             
-%             for i = firstblock:lastblock
-%                 if (i == firstblock) && (i == lastblock)
-%                     r1 = row_lims(1) - (i-1)*BA.block_size(1);
-%                     r2 = row_lims(2) - (i-1)*BA.block_size(1);
-%                 elseif (i == firstblock)
-%                     r1 = row_lims(1) - (i-1)*BA.block_size(1);
-%                     r2 = BA.block_size(1);
-%                 elseif (i == lastblock)
-%                     r1 = 1;
-%                     r2 = row_lims(2) - (i-1)*BA.block_size(1);
-%                 else
-%                     r1 = 1;
-%                     r2 = BA.block_size(1);
-%                 end
-%                 if strcmp(BA.type, 'memmapfile')
-%                     if ~strcmp(BA.memmap.filename, BA.filenames{i})
-%                         BA.memmap.filename = BA.filenames{i};
-%                     end
-%                     BA.memmap.data.x(r1:r2,:) = mat(mat_top_row:mat_top_row+r2-r1,:);
-%                     mat_top_row = mat_top_row + r2 -r1 + 1;
-%                 else
-%                     if BA.loaded_block ~= i
-%                         D = BA.block_data; save(BA.filenames{BA.loaded_block},'D'); clear D;
-%                         load(BA.filenames{i}); BA.block_data = D;  clear D;
-%                         BA.loaded_block = i;
-%                     end
-%                     BA.block_data(r1:r2,:) = mat(mat_top_row:mat_top_row+r2-r1,:);
-%                     mat_top_row = mat_top_row + r2 -r1 + 1;
-%                 end
-%             end
-%         end
-%         
-%         %% the force_save method
-%         function force_save(BA,a) %#ok<INUSD>
-%             if ~strcmp(BA.type, 'memmapfile')
-%                 D = BA.block_data; save(BA.filenames{BA.loaded_block},'D'); clear D; %#ok<NASGU>
-%             end
-%         end
-%         
-%         %% the cleanup method
-%         function cleanup(BA)
-%             if strcmp(BA.type, 'memmapfile')
-%                 for i = 1:length(BA.filenames)
-%                     cmd = ['rm ' BA.filenames{i}];
-%                     system(cmd);
-%                 end
-%             else
-%                 for i = 1:length(BA.filenames)
-%                     cmd = ['rm ' BA.filenames{i}];
-%                     system(cmd);
-%                 end
-%             end
-%         end
-%         
-%         %% the allocate method
-%         function allocate(BA, filename)
-%             if strcmp(BA.type, 'memmapfile')
-%                 ELEMENTS_NEEDED = prod(BA.block_size);
-%                 BYTES = ELEMENTS_NEEDED*8;
-%                 if exist(filename, 'file')
-%                     d = dir(filename);
-%                     if BYTES == d.bytes
-%                         disp(['...' filename ' already exists and is correct size!']);
-%                         return
-%                     end
-%                 end
-%                 disp(['... allocating memory-mapped file ' filename ]);
-%                 fid = fopen(filename,'w+');
-%                 block = 1000;
-%                 for i = 1:BA.block_size(1)
-%                     if mod(i,block) ==0
-%                         fwrite(fid, zeros([block BA.block_size(2)]), 'double'); 
-%                         ELEMENTS_NEEDED = ELEMENTS_NEEDED - block*BA.block_size(2);
-%                     end
-%                 end
-%                 fwrite(fid, zeros([ELEMENTS_NEEDED 1]), 'double'); 
-%                 fclose(fid);
-%             else
-%                 disp(['... allocating matlab .mat file ' filename ]);
-%                 D = zeros(BA.block_size); %#ok<NASGU>
-%                 save(filename, 'D');
-%             end
-%         end
-%         
-%    end% methods
-% end% classdef
