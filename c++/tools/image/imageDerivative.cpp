@@ -39,7 +39,7 @@ static char args_doc[] = "imageDerivative image";
 /* The options we understand. */
 static struct argp_option options[] = {
   {"orthogonal",   't',  0, 0, "if the flag is tagged, it calculates the 'orthogonal' masks (i.e. go_)"},
-  {"orthogonal",   'n',  0, 0, "if the flag is tagged, it calculates the 'normalized' gaussian (i.e. gn_)"},
+  {"normalized",   'n',  0, 0, "if the flag is tagged, it calculates the 'normalized' gaussian (i.e. gn_)"},
   {"order_x",      'x',  "2", 0, "the order of the derivative in the x direction"},
   {"order_y",      'y',  "0", 0, "the order of the derivative in the y direction"},
   {"file",         'f',  "out.jpg", 0, "output filename"},
@@ -127,6 +127,9 @@ int main(int argc, char **argv) {
          " ->o_x: %i\n ->o_y: %i\n ->sigma: %f\n ->output_file:%s\n",
          arguments.filename_image.c_str(),  arguments.orthogonal,
          arguments.o_x, arguments.o_y, arguments.sigma, arguments.output_file.c_str());
+#ifdef WITH_OPENMP
+	printf("We should be doing parallel processing\n");
+#endif
 
   Image<float>* img = new Image<float>(arguments.filename_image);
 

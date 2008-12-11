@@ -27,12 +27,6 @@ using namespace std;
 int tick = 0;
 
 
-
-
-
-
-
-
 void
 on_drawing3D_realize                   (GtkWidget       *widget,
                                         gpointer         user_data)

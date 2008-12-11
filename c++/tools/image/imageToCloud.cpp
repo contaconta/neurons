@@ -260,9 +260,9 @@ void sampleWidthNormalization(arguments &args)
       if(args.save_negative)
         {
           printf("Should generate the negative points\n");
-          Image<uchar>* mask = NULL;
+          Image<float>* mask = NULL;
           if(args.name_mask != ""){
-            mask = new Image<uchar>(args.name_mask);
+            mask = new Image<float>(args.name_mask);
           }
           //Creates the random number generator
           int nNegativePoints = 0;
@@ -461,9 +461,9 @@ int main(int argc, char **argv) {
       // they will be taken as random from the clear points
       if(args.save_negative)
         {
-          Image<uchar>* mask = NULL;
+          Image<float>* mask = NULL;
           if(args.name_mask != ""){
-            mask = new Image<uchar>(args.name_mask);
+            mask = new Image<float>(args.name_mask);
           }
           //Creates the random number generator
           int nNegativePoints = 0;
@@ -478,10 +478,10 @@ int main(int argc, char **argv) {
           while(nNegativePoints < limitNegative){
             x = (int)floor(gsl_rng_uniform(r)*img->width);
             y = (int)floor(gsl_rng_uniform(r)*img->height);
-            // if(mask!=NULL){
-              // if(mask->at(x,y) < 100)
-                // continue;
-            // }
+            if(mask!=NULL){
+              if(mask->at(x,y) < 100)
+                continue;
+            }
             if(img->at(x,y) > 100){
               indexes[0] = x;
               indexes[1] = y;

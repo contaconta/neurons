@@ -37,6 +37,7 @@ public:
   Parser(string filename, string oneCharTokens, bool filenameIsFile = true);
 
   string getNextToken();
+  vector< string > getAllTokens();
 };
 
 

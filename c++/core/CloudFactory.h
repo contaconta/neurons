@@ -31,6 +31,12 @@ public:
       return new Cloud<Point2Do>(filename);
     else if( s == "Point2Dot>")
       return new Cloud<Point2Dot>(filename);
+    else if( s == "Point3Do>")
+      return new Cloud<Point3Do>(filename);
+    else if( s == "Point3Dt>")
+      return new Cloud<Point3Dt>(filename);
+    else if( s == "Point3Dot>")
+      return new Cloud<Point3Dot>(filename);
     else{
       printf("CloudFactory:: not such type of point %s\n", s.c_str());
       return NULL;

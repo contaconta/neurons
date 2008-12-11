@@ -36,11 +36,13 @@ static char args_doc[] = "sigma order";
 
 /* The options we understand. */
 static struct argp_option options[] = {
+  {"normalized",   'n',  0, 0, "if the flag is tagged, it calculates the 'normalized' mask"},
   { 0 }
 };
 
 struct arguments
 {
+  bool normalized;
   char* args[2];
 };
 
@@ -55,6 +57,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
 
   switch (key)
     {
+    case 'n':
+      argments->normalized = true;
+      break;
 
     case ARGP_KEY_ARG:
       if (state->arg_num >= 2)
@@ -90,11 +95,13 @@ int main(int argc, char **argv) {
   // printf("Gaussian mask of sigma = %f(%s) and order = %i (%s)\n", sigma,
          // arguments.args[0], order, arguments.args[1]);
 
+  double en = 1;
+  if(arguments.normalized){
+    en = Mask::energy1DGaussianMask(order, sigma);
+  }
   vector< float > mask = Mask::gaussian_mask(order, sigma, true);
-  double en = Mask::energy1DGaussianMask(order, sigma);
   for(int i = 0; i < mask.size(); i++){
     std::cout << mask[i]/en << " ";
   }
   std::cout << std::endl;
-
 }

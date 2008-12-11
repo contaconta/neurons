@@ -29,6 +29,13 @@ string getNameFromPath(string path){
   return path.substr(path.find_last_of("/\\")+1);
 }
 
+string getNameFromPathWithoutExtension(string path){
+  string nameWith =  path.substr(path.find_last_of("/\\")+1);
+  string nameWithout = nameWith.substr(0,nameWith.find_last_of("."));
+  return nameWithout;
+}
+
+
 string getExtension(string path){
   return path.substr(path.find_last_of(".")+1);
 }
@@ -38,9 +45,24 @@ string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,
                          string directory)
 {
-
   return "";
 }
+
+int   getFileSize(string path)
+{
+  ifstream is;
+  is.open(path.c_str(), ios::binary);
+  if(is.fail()){
+    is.close();
+    printf("Error getting the size of %s\n",path.c_str());
+    return false;
+  }
+  is.seekg(0, ios::end);
+  int size = is.tellg();
+  is.close();
+  return size;
+}
+
 
 vector< vector< double > > loadMatrix(string filename)
 {
@@ -119,4 +141,30 @@ int dfactorial_n(int n){
     n = n-2;
   }
   return ret;
+}
+
+
+bool isNumber(string s){
+  std::istringstream inpStream(s);
+  double inValue = 0.0;
+  if(inpStream >> inValue)
+    return true;
+  else
+    return false;
+}
+
+
+void saveVectorDouble(vector< double > &vc, string filename){
+  std::ofstream out(filename.c_str());
+  for(int i = 0; i < vc.size(); i++)
+    out << vc[i] << std::endl;
+  out.close();
+}
+
+
+void saveFloatVector( vector< float >& vc, string filename){
+  std::ofstream out(filename.c_str());
+  for(int i = 0; i < vc.size(); i++)
+    out << vc[i] << std::endl;
+  out.close();
 }

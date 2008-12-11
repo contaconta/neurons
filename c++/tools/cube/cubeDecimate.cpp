@@ -48,7 +48,7 @@ static struct argp_option options[] = {
   {"windowxy" ,  'w',  "int", 0,"width and height of the window"},
   {"windowz" ,   'z',  "int", 0,"depth of the window"},
   {"logscale",   'o',  0, 0, "Do the decimation in a log scale"},
-  {"cloud"   ,   'c',  0, 0, "save the points as a cloud instead of as list of indexes"},
+  {"not-cloud"   ,   'c',  0, 0, "save the points as a list of indexes instead of a cloud"},
   { 0 }
 };
 
@@ -93,7 +93,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
       argments->windowz = atoi(arg);
       break;
     case 'c':
-      argments->saveAsCloud = true;
+      argments->saveAsCloud = false;
       break;
 
     case ARGP_KEY_ARG:
@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
   arguments.windowz = 10;
   arguments.flag_layer = 0;
   arguments.flag_log = 0;
-  arguments.saveAsCloud = false;
+  arguments.saveAsCloud = true;
 
   argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
@@ -170,10 +170,14 @@ int main(int argc, char **argv) {
   if(arguments.saveAsCloud){
     Cloud<Point3D >* cd = new Cloud<Point3D>();
     vector< vector< double > > idxs = loadMatrix(arguments.args[1]);
+    // vector< int > indexes(3);
+    // vector< float > micrometers(3);
     for(int i = 0; i < idxs.size(); i++){
+
       Point3D* pt = new Point3D( idxs[i][0],
                                  idxs[i][1],
                                  idxs[i][2]);
+
       cd->points.push_back( pt );
     }
     cd->saveToFile(arguments.args[1]);

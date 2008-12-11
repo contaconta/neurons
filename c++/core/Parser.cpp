@@ -94,3 +94,16 @@ string Parser::getNextToken()
       return s;
     }
 }
+
+
+
+vector< string > Parser::getAllTokens()
+{
+  vector< string > tokens;
+  string tk = getNextToken();
+  while(tk!=""){
+    tokens.push_back(tk);
+    tk = getNextToken();
+  }
+  return tokens;
+}

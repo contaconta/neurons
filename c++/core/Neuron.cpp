@@ -1459,15 +1459,16 @@ void Neuron::save(string filename)
 void Neuron::renderInImage(Image<float>* img,
                            Image<float>* theta,
                            Image<float>* width,
-                           float min_width)
+                           float min_width,
+                           float width_scale)
 {
   img->put_all(255);
   printf("  going for segments [");
   for(int i = 0; i < axon.size(); i++){
-    renderSegmentInImage(axon[i], img, theta, width, min_width);
+    renderSegmentInImage(axon[i], img, theta, width, min_width, width_scale);
   }
   for(int i = 0; i < dendrites.size(); i++){
-    renderSegmentInImage(dendrites[i], img, theta, width, min_width);
+    renderSegmentInImage(dendrites[i], img, theta, width, min_width, width_scale);
     printf("#"); fflush(stdout);
   }
   printf("  ]\n");
@@ -1476,23 +1477,23 @@ void Neuron::renderInImage(Image<float>* img,
 void Neuron::renderSegmentInImage
 (NeuronSegment* segment, Image<float>* img,
  Image<float>* theta, Image<float>* width,
- float min_width )
+ float min_width,float width_scale)
 {
   if(segment->parent != NULL){
     NeuronPoint* p1 = &segment->parent->points[segment->parent->points.size()-1];
     NeuronPoint* p2 = &segment->points[0];
     if((p1->coords[3] > min_width) &&
        (p2->coords[3] > min_width) )
-      renderEdgeInImage(p1, p2, img, theta, width);
+      renderEdgeInImage(p1, p2, img, theta, width, width_scale);
   }
 
   for(int i = 1; i < segment->points.size(); i++){
     if((segment->points[i-1].coords[3] > min_width) &&
        (segment->points[i].coords[3]   > min_width) )
-      renderEdgeInImage(&segment->points[i-1], &segment->points[i], img, theta, width);
+      renderEdgeInImage(&segment->points[i-1], &segment->points[i], img, theta, width, width_scale);
   }
   for(int i = 0; i < segment->childs.size(); i++)
-    renderSegmentInImage(segment->childs[i], img, theta, width, min_width);
+    renderSegmentInImage(segment->childs[i], img, theta, width, min_width, width_scale);
 
 }
 
@@ -1502,7 +1503,8 @@ void Neuron::renderEdgeInImage
 (NeuronPoint* _p1, NeuronPoint* _p2,
  Image<float>* img,
  Image<float>* theta,
- Image<float>* width_img)
+ Image<float>* width_img,
+ float width_scale)
 {
   //This is a hack to convert the rendering from neuron coordinates to micrometers
   //We will create the points p1 and p2 with the coordinates of _p1 and _p2 in global
@@ -1552,7 +1554,7 @@ void Neuron::renderEdgeInImage
   //We assume that voxelWidth aprox voxelheight aprox voxelDepth = 0.8
 //   radius = (int)(radius/0.8);
 //   float width = (width_microm / 0.8);
-  float width = width_microm;
+  float width = width_microm*width_scale;
   for(int y = (int)max(0.0, indexes_orig[1]-radius); 
       y < min(double(img->height), indexes_orig[1]+radius);
       y++)
@@ -1576,9 +1578,9 @@ void Neuron::renderEdgeInImage
                 dist_calc = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
 
                 // Calculates the distance from the point to the middle of the edge
-                d_p_indexes_origin = sqrt( (x-indexes_orig[0]) * (x-indexes_orig[0]) + 
+                d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0]) + 
                                            (y-indexes_orig[1]) * (y-indexes_orig[1]) );
-                if((dist_calc < width) && (d_p_indexes_origin < p2p1length_2) )
+                if((dist_calc <= width) && (d_p_indexes_origin < p2p1length_2*1.2) )
                   {
                     img->put(x,y,0);
                     // printf("x=%i y=%i\n", x, y);
@@ -1587,7 +1589,7 @@ void Neuron::renderEdgeInImage
                                             p2->coords[0]-p1->coords[0]);
                       theta->put(x,y,theta_v);
                     }
-                    if(!(width==NULL)){
+                    if(!(width_img==NULL)){
                       float w = (p2->coords[3] + p1->coords[3])/2;
                       width_img->put(x,y,w);
                     }

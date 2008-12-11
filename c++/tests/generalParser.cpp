@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Parser.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ class Map
 public:
   virtual void  print(ostream &out)=0;
   virtual float eval()=0;
+  virtual string type()=0;
 };
 
 //Constant
@@ -34,8 +36,13 @@ class Cst: public Map{
   float value;
 public:
   Cst(float v) : value(v) {}
+  Cst(string str){
+    std::istringstream inpStream(str);
+    inpStream >> value;
+  }
   void print(ostream &o) { o << value; }
   float eval() { return value; }
+  string type(){return "Cst";}
 };
 
 
@@ -46,6 +53,7 @@ public:
   Name(string n) : name(n) {}
   void print(ostream &o) { o << name; }
   float eval() { return 0; }
+  string type(){return "Name";}
 };
 
 //Multiplication
@@ -56,7 +64,20 @@ public:
   void print(ostream &out) {
     f1->print(out); out << " * "; f2->print(out);}
   float eval() {return f1->eval() * f2->eval();}
+  string type(){return "Mult";}
 };
+
+//Adittion
+class Add: public Map{
+  Map *f1, *f2;
+public:
+  Add(Map* g1, Map* g2) : f1(g1), f2(g2) {}
+  void print(ostream &out) {
+    f1->print(out); out << " + "; f2->print(out);}
+  float eval() {return f1->eval() + f2->eval();}
+  string type(){return "Add";}
+};
+
 
 //Sine
 class Sin: public Map{
@@ -66,24 +87,32 @@ public:
   void print(ostream &out) {
     out << "sin(";  f1->print(out); out << ")";}
   float eval() {return sin(f1->eval());}
+  string type(){return "Sin";}
 };
 
 Parser* psc;
 string oneCharTokens = ",+-*/()";
 
+
+//FIXME
 int positionOperatorWithPriority(string s)
 {
   Parser* psc = new Parser(s, oneCharTokens, false);
+  vector< string > tokens = psc->getAllTokens();
 
-  int idx = 0;
   int min_idx = 0;
   float level = 0;
   float min_level = 100;
-  string tk = psc->getNextToken();
+  string tk;
 
-  while(tk != ""){
+  // while(tk != ""){
+  for(int idx = 0; idx < tokens.size(); idx++){
+    tk = tokens[idx];
+
+    // Prints the tokens and the levels
     // std::cout << idx << ": l: " << level << " : " << min_level << " : " << tk << std::endl;
     // std::cout << idx << ": " << tk << std::endl;
+
     if((tk == "+") || (tk == "-")){
       if(level + 0.4 < min_level){
         min_level = level+0.4;
@@ -108,14 +137,17 @@ int positionOperatorWithPriority(string s)
         min_level = level;
         min_idx   = idx;
       }
-      tk = psc->getNextToken();
+      //To avoid incrementing twice the level
+      tk = tokens[++idx];
       if(tk != "("){
-        std::cout << "Error, operation without (\n" << std::endl;
+        std::cout << "Error, " << tk << " "
+                  << " without (\n" << std::endl;
         exit(0);
       }
+      ++idx;
     }
-    tk = psc->getNextToken();
-    idx+=1;
+    // tk = psc->getNextToken();
+    // idx+=1;
   }
   return min_idx;
 }
@@ -124,49 +156,60 @@ int positionOperatorWithPriority(string s)
 Map* parseString(string s)
 {
 
+  // Find the idx of the token that has the priority
   int split = positionOperatorWithPriority(s);
   Parser* psc = new Parser(s, oneCharTokens, false);
+  vector< string > tokens = psc->getAllTokens();
 
   //If we are in a leave or in an operator with just one argument
+  //FIXME -> erase the parenthesis at the end, problem with multiple enclosing parenthesis
   if(split == 0){
-    string tk = psc->getNextToken();
-    // Elliminates the parenthesis at the beginning
+    string tk = tokens[0];
+    // Elliminates the parenthesis at the beginning and at the end
+    int idx_p = 0;
     while( tk == "("){
-      tk = psc->getNextToken();
+      tk = tokens[++idx_p];
+    }
+    if (isNumber(tk)){
+      return new Cst(tk);
     }
     if( tk == "sin"){
-      string rest = "";
-      while(tk != ""){
-        tk = psc->getNextToken();
-        rest = rest + tk + " ";
-
+      if(tokens[++idx_p] != "("){
+        std::cout << "Error, operation without (\n" << std::endl;
+        exit(0);
       }
+      string rest = "";
+      int level = 0;
+      while(!((tokens[++idx_p] == ")") && (level == 0))){
+        tk = tokens[idx_p];
+        rest = rest + tk + " ";
+        if(tk == "(")
+          level ++;
+        if(tk == ")")
+          level --;
+      }
+      std::cout << "Inside Sin " << rest << std::endl;
       return new Sin( parseString(rest) );
     }
-    else{
-      return new Name(tk);
-    }
+
+    //Final case, we do not know what it is
+    return new Name(tk);
   }
 
   if(split != 0){
     string left;
     string right;
-    string op;
+    string op = tokens[split];
     int idx = 0;
-    string tk = psc->getNextToken();
-    while( tk != ""){
-      if(idx < split){
-        left = left + " " + tk;
-      }
-      if( idx == split)
-        op = tk;
-      if(idx > split)
-        right = right + " " + tk;
-      tk = psc->getNextToken();
-      idx++;
-    }
+    for(int i = 0; i < split; i++)
+      left = left + tokens[i];
+    for(int i = split+1; i < tokens.size(); i++)
+      right = right + tokens[i];
     if(op=="*"){
       return new Mult(parseString(left), parseString(right));
+    }
+    if(op=="+"){
+      return new Add(parseString(left), parseString(right));
     }
   }
 
@@ -181,19 +224,25 @@ int main(int argc, char **argv) {
   Parser* psc = new Parser(eq,
                    oneCharTokens,false);
   int idx = 0;
-  string s = psc->getNextToken();
-  while( s != ""){
-    std::cout << idx << ": " << s << std::endl;
-    s = psc->getNextToken();
-    idx++;
-  }
+  vector< string > tokens = psc->getAllTokens();
+  for(int i = 0; i < tokens.size(); i++)
+    std::cout << idx++ << " " << tokens[i] << std::endl;
+
+
+  // string s = psc->getNextToken();
+  // while( s != ""){
+    // std::cout << idx << ": " << s << std::endl;
+    // s = psc->getNextToken();
+    // idx++;
+  // }
 
 
   Map* root = parseString(eq);
   root->print(std::cout);
+  printf(" = %f\n", root->eval());
 
 
   // Map* root = parseString();
   // root->print(std::cout);
-  // std::cout << std::endl;
+  std::cout << std::endl;
 }

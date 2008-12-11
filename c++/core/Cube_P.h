@@ -61,8 +61,15 @@ public:
 
   virtual void load_texture_brick(int row, int col)=0;
 
+  virtual void draw()=0;
+
   virtual void draw
   (float rotx, float roty, float nPlanes, int min_max, int microm_voxels)=0;
+
+  virtual void draw
+  (int x0, int y0, int z0, int x1, int y1, int z1,
+   float rotx, float roty, float nPlanes, int min_max, float threshold)=0;
+
 
   virtual void draw_layer_tile_XY(float depth, int color=0)=0;
 
@@ -72,13 +79,13 @@ public:
 
   virtual void min_max(float* min, float* max)=0;
 
+  virtual Cube_P* threshold(float threshold, string output = "output")=0;
+
   virtual void print_statistics(string name = "")=0;
 
   virtual void histogram(string name = "")=0;
 
   virtual void save_as_image_stack(string dirname)=0;
-
-  virtual void draw()=0;
 
   virtual  vector< vector< int > > decimate
    (float threshold, int window_xy = 8, int window_z = 3, string filemane = "",

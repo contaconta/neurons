@@ -41,6 +41,7 @@ static struct argp_option options[] = {
   {"output", 'o', "output.jpg", 0, "name of the rendered image mask"},
   {"scale", 's', "scale.jpg", 0, "saves the scale of the dendrite in that file"},
   {"min_width", 'w', "0",         0, "minimum width in micrometers of the dendrites to be drawn"},
+  {"width_scale", 'S', "0",         0, "if we want to multiply the thickness of the segments in the image drawn"},
   {"neuron_displacement", 'd', 0, 0, "in the case the asc file is created for volumes (centered in (0,0)), as in the case of neurons"},
   {"neuron_scale", 'c', "scale", 0, "in the case the asc file needs to be scaled (as in the case of the neurons)"},
   { 0 }
@@ -54,6 +55,7 @@ struct arguments
   string output_name;
   string neuron_name;
   float  min_width;
+  float width_scale;
   bool   displace_neuron;
   float    neuron_scale;
 };
@@ -82,6 +84,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case 's':
       argments->scale_file = arg;
+      break;
+    case 'S':
+      argments->width_scale = atof(arg);
       break;
     case 'w':
       argments->min_width = atof(arg);
@@ -122,6 +127,7 @@ int main(int argc, char **argv) {
   arguments.min_width = 0;
   arguments.displace_neuron = false;
   arguments.neuron_scale = 0;
+  arguments.width_scale = 1.0;
 
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
@@ -129,6 +135,7 @@ int main(int argc, char **argv) {
   int save_orientation = (arguments.orientation_file == "");
   int save_scale       = (arguments.scale_file == "");
   float min_width = arguments.min_width;
+  float width_scale = arguments.width_scale;
 
   Image<float>* orig = new Image<float>(arguments.image_name);
   Neuron* neuron = new Neuron(arguments.neuron_name);
@@ -161,7 +168,7 @@ int main(int argc, char **argv) {
   if(arguments.scale_file != "")
     scale = orig->create_blank_image_float(arguments.scale_file);
 
-  neuron->renderInImage(rendered, orientation, scale, min_width);
+  neuron->renderInImage(rendered, orientation, scale, min_width, width_scale );
 
   rendered->save();
   if(arguments.orientation_file != "")

@@ -142,8 +142,8 @@ void Graph<P,E>::prim(){
                 }
             }
         }
-      if(i%(cloud.points.size()/100)==0)
-        { printf("#"); fflush(stdout);}
+      // if(i%max(cloud.points.size()/100,1)==0)
+        // { printf("#"); fflush(stdout);}
     }
 
   printf("]\n");

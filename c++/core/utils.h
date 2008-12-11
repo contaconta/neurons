@@ -27,6 +27,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
 
 #include "Mask.h"
 
@@ -38,11 +39,16 @@ string getDirectoryFromPath(string path);
 
 string getNameFromPath(string path);
 
+string getNameFromPathWithoutExtension(string path);
+
 string getExtension(string path);
 
 string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,
                          string directory = "");
+
+//returns the file size in bytes
+int   getFileSize(string path);
 
 vector< vector< double > > loadMatrix(string filename);
 
@@ -55,6 +61,14 @@ int dfactorial_n(int n);
 
 /** Returns the combinatorial of two integers.*/
 double combinatorial(int over, int under);
+
+bool isNumber(string s);
+
+/** Saves a vector of doubles to a file*/
+void saveVectorDouble(vector< double >& vc, string filename);
+
+void saveFloatVector( vector< float >& vc, string filename);
+
 
 // This class will be used to plot vectors using matlab from the C++ code.
 

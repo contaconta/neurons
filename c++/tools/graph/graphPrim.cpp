@@ -23,7 +23,6 @@
 #include "Cloud.h"
 
 using namespace std;
-
 /** Variables for the arguments.*/
 const char *argp_program_version =
   "graphPrim 0.1";

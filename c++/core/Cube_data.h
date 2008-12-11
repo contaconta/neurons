@@ -3,9 +3,9 @@ void Cube<T,U>::load_parameters(string filenameParams)
  {
    filenameVoxelData = "";
 
-   directory = filenameParams.substr(0,filenameParams.find_last_of("/\\")+1);
+   directory = getDirectoryFromPath(filenameParams);
 
-   filenameParameters = filenameParams.substr(filenameParams.find_last_of("/\\")+1);
+   filenameParameters = getNameFromPath(filenameParams);
 
 
    std::ifstream file(filenameParams.c_str());
@@ -44,13 +44,28 @@ void Cube<T,U>::load_parameters(string filenameParams)
          printf("Cube<T,U>::load_parameters: Attribute %s and value %s not known\n", name.c_str(), attribute.c_str());
      }
 
+   //This is usually because it is an old cube file (has no type and
+   //no indication of where is the cubeFile)
+   if(filenameVoxelData == ""){
+     filenameVoxelData = getNameFromPathWithoutExtension(filenameParams) + ".vl";
+     int size = getFileSize(directory + filenameVoxelData);
+     if(  size == cubeDepth*cubeHeight*cubeWidth)
+       type = "uchar";
+     else if ( size == 4*cubeDepth*cubeHeight*cubeWidth)
+       type = "float";
+     else{
+       printf("Unable to guess the type inside the file. Exiting\n");
+       exit(0);
+     }
+   }
+
+
    //  #if debug
    printf("Cube parameters:\n");
    printf("  directory %s, parameters %s\n", directory.c_str(), filenameParameters.c_str());
    printf("  cubeWidth %i cubeHeight %i cubeDepth %i\n", cubeWidth, cubeHeight, cubeDepth);
    printf("  voxelWidth %f voxelHeight %f voxelDepth %f\n", voxelWidth, voxelHeight, voxelDepth);
    printf("  x_offset %f y_offset %f z_offset %f\n", x_offset, y_offset, z_offset);
-
    //  #endif
  }
 
@@ -727,21 +742,30 @@ void Cube<T,U>::save_as_image_stack(string dirname)
 }
 
 template <class T, class U>
-void Cube<T,U>::createMIPImage(string filename)
+void Cube<T,U>::createMIPImage(string filename, bool minMax)
 {
   if(filename == "")
     filename = "MIP.jpg";
   if(type == "uchar")
     {
       IplImage* output = cvCreateImage(cvSize(cubeWidth, cubeHeight), IPL_DEPTH_8U, 1);
-      uint minimum_intensity = 255;
+      uint minimum_intensity;
+      if(!minMax)
+        minimum_intensity = 255;
+      else
+        minimum_intensity = 0;
       printf("creatingMIPImage [");
       for(int y = 0; y < cubeHeight; y++){
         for(int x = 0; x < cubeWidth; x++){
-          minimum_intensity = 255;
+          if(!minMax)
+            minimum_intensity = 255;
+          else
+            minimum_intensity = 0;
           for(int z = 0; z < cubeDepth; z++)
             {
-              if(this->at(x,y,z) < minimum_intensity)
+              if( (this->at(x,y,z) < minimum_intensity) && !minMax)
+                minimum_intensity = (uint)this->at(x,y,z);
+              if( (this->at(x,y,z) > minimum_intensity) && minMax)
                 minimum_intensity = (uint)this->at(x,y,z);
             }
           output->imageData[y*output->widthStep + x] = minimum_intensity;
@@ -762,14 +786,29 @@ void Cube<T,U>::createMIPImage(string filename)
     Image<float>* output = dm->create_blank_image_float(filename);
     output->put_all(0);
     float minimum_intensity = 1e8;
+    if(!minMax)
+      minimum_intensity = 1e8;
+    else
+      minimum_intensity = -1e8;
+
     for(int y = 0; y < cubeHeight; y++){
       for(int x = 0; x < cubeWidth; x++){
-        minimum_intensity = 1e8;
+        if(!minMax)
+          minimum_intensity = 1e8;
+        else
+          minimum_intensity = -1e8;
         for(int z = 0; z < cubeDepth; z++)
           {
             if((this->at(x,y,z)!=0) &&
-               (this->at(x,y,z) < minimum_intensity)
-               )
+               (this->at(x,y,z) < minimum_intensity) && 
+               !minMax)
+              {
+                minimum_intensity = this->at(x,y,z);
+                output->put(x,y,minimum_intensity);
+              }
+            if((this->at(x,y,z)!=0) &&
+               (this->at(x,y,z) > minimum_intensity) && 
+               minMax)
               {
                 minimum_intensity = this->at(x,y,z);
                 output->put(x,y,minimum_intensity);
@@ -797,18 +836,20 @@ void Cube<T,U>::micrometersToIndexes(vector< float >& micrometers, vector< int >
 template <class T, class U>
 void Cube<T,U>::indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers)
 {
-//   micrometers[0] = (float)(-parentCubeWidth*voxelWidth/2 + indexes[0]*voxelWidth + colOffset*cubeWidth*voxelWidth);
-//   micrometers[1] = (float)(parentCubeHeight*voxelHeight/2 - indexes[1]*voxelHeight - rowOffset*cubeHeight*voxelHeight);
-//   micrometers[2] = (float)(-parentCubeDepth*voxelDepth/2 + indexes[2]*voxelDepth);
+  // micrometers[0] = (float)(-((int)cubeWidth)*voxelWidth/2   
+                           // + indexes[0]*voxelWidth  + x_offset);
+  // micrometers[1] = (float)( ((int)cubeHeight)*voxelHeight/2 
+                            // - indexes[1]*voxelHeight - y_offset);
+  // micrometers[2] = (float)(-((int)cubeDepth)*voxelDepth/2   
+                           // + indexes[2]*voxelDepth  + z_offset);
   micrometers[0] = (float)(-((int)cubeWidth)*voxelWidth/2   
-                           + indexes[0]*voxelWidth  + x_offset);
+                           + indexes[0]*voxelWidth);
   micrometers[1] = (float)( ((int)cubeHeight)*voxelHeight/2 
-                            - indexes[1]*voxelHeight - y_offset);
+                            - indexes[1]*voxelHeight);
   micrometers[2] = (float)(-((int)cubeDepth)*voxelDepth/2   
-                           + indexes[2]*voxelDepth  + z_offset);
-//   printf("     %i %i %i\n",(int)cubeWidth, (int)cubeHeight, (int)cubeDepth);
-//   printf("     %f %f %f\n",voxelWidth, voxelHeight, voxelDepth);
-//   printf("     %f %f %f\n",x_offset, y_offset, z_offset);
+                           + indexes[2]*voxelDepth);
+
+
 }
 
 template <class T, class U>
@@ -1119,6 +1160,37 @@ void Cube<T,U>::cut_cube(int x0, int y0, int z0, int x1, int y1, int z1, string 
 
   delete output;
 }
+
+template <class T, class U>
+Cube<T,U>*  Cube<T,U>::duplicate_clean(string name)
+{
+  string vl = ".vl";
+  string nfo = ".nfo";
+
+  Cube<T,U>* toReturn = new Cube<T,U>();
+  toReturn->cubeHeight = cubeHeight;
+  toReturn->cubeDepth  = cubeDepth;
+  toReturn->cubeWidth  = cubeWidth;
+  toReturn->voxelHeight = voxelHeight;
+  toReturn->voxelDepth  = voxelDepth;
+  toReturn->voxelWidth  = voxelWidth;
+  toReturn->x_offset = x_offset;
+  toReturn->y_offset = y_offset;
+  toReturn->z_offset = z_offset;
+  toReturn->directory = directory;
+  if(sizeof(T)==1)
+    toReturn->type = "uchar";
+  else
+    toReturn->type = "float";
+  toReturn->filenameVoxelData = name + vl;
+  toReturn->save_parameters(this->directory + name + nfo);
+  toReturn->create_volume_file(this->directory + name + vl);
+  toReturn->load_volume_data(this->directory + name + vl);
+
+  return toReturn;
+}
+
+
 
 template <class T, class U>
 Cube<float,double>*  Cube<T,U>::create_blank_cube(string name)

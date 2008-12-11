@@ -8,6 +8,7 @@
 #include "VisibleE.h"
 #include "Edge.h"
 #include "EdgeW.h"
+#include "Edge2W.h"
 
 using namespace std;
 

@@ -345,6 +345,7 @@ void unProjectMouseAsc(int mouse_lsat_x, int mouse_last_y)
   vector< float > neuron_coords(4);
   neuronita->micrometersToNeuron(new_coords,neuron_coords);
 
+  printf("unProjectMouseAsc\n");
 
   // ACTION!
   //If the neuron is modified, the previous will be saved in the following name
@@ -563,6 +564,7 @@ void unProjectMouseAsc(int mouse_lsat_x, int mouse_last_y)
     neuronita->save(neuron_name);
     on_drawing3D_expose_event(drawing3D, NULL, NULL);
     need_redraw = false;
+    printf("need_redraw stuff\n");
   }
 }
 
@@ -585,6 +587,7 @@ void exposeAsc
   glPopMatrix();
   glEnable(GL_DEPTH_TEST);
 }
+
 
 
 
