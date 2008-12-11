@@ -10,9 +10,9 @@ QT += opengl
 CONFIG += console
 
 # Input
-FORMS += main.ui
-HEADERS += Stage.h
-SOURCES += main.cpp Stage.cpp
+FORMS += main.ui CubeDialog.ui
+HEADERS += Stage.h CubeDialog.h
+SOURCES += main.cpp Stage.cpp CubeDialog.cpp
 
 
 # External libraries
