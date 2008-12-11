@@ -287,19 +287,22 @@ public:
   void renderInImage(Image<float>* img,
                      Image<float>* theta = NULL,
                      Image<float>* width = NULL,
-                     float min_width = 0);
+                     float min_width = 0,
+                     float width_scale = 1.0);
 
   /**Draws the segment between P1 and P2 in the image with radius width*/
   void renderEdgeInImage
   (NeuronPoint* p1, NeuronPoint* p2,
    Image<float>* img,
    Image<float>* theta = NULL,
-   Image<float>* width = NULL);
+   Image<float>* width = NULL,
+   float width_scale = 1.0);
 
   void renderSegmentInImage
   (NeuronSegment* segment, Image<float>* img,
    Image<float>* theta = NULL, Image<float>* width = NULL,
-   float min_width = 0);
+   float min_width = 0,
+   float width_scale = 1.0);
 
   /** Calculates the average length of the edge in the neuron.*/
   void getEdgeDistance(NeuronSegment* segment, int& nEdges, double& distances);

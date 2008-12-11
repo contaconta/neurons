@@ -979,56 +979,89 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
 
   sprintf(vol_name, "aguet_%02.2f_%02.2f", sigma_xy, sigma_z);
   Cube<float,double>* aguet_l = create_blank_cube(vol_name);
-  sprintf(vol_name, "aguet_x_%02.2f_%02.2f", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_x = create_blank_cube(vol_name);
-  sprintf(vol_name, "aguet_y_%02.2f_%02.2f", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_y = create_blank_cube(vol_name);
-  sprintf(vol_name, "aguet_z_%02.2f_%02.2f", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_z = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_theta", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_theta = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_phi", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_phi = create_blank_cube(vol_name);
 
-  gsl_vector *eign = gsl_vector_alloc (3);
-  gsl_matrix *evec = gsl_matrix_alloc (3, 3);
 
-  gsl_eigen_symmv_workspace* w2 =  gsl_eigen_symmv_alloc (3);
 
-  float l1 = 0;
-  float l2 = 0;
-  float l3 = 0;
+  int nthreads = 1;
+#ifdef WITH_OPENMP
+  nthreads = omp_get_max_threads();
+  printf("Cube<T,U>::calculate_aguet: using %i threads\n", nthreads);
+#endif
 
-  double data[9];
-
-  int higher_eival = 0;
   printf("Cube<T,U>::calculate_aguet [");
   fflush(stdout);
 
+  //Initialization of the places where each thread will work
+  vector< gsl_vector* > eign(nthreads);
+  vector< gsl_matrix* > evec(nthreads);
+  vector< gsl_eigen_symmv_workspace* > w2(nthreads);
+  for(int i = 0; i < nthreads; i++){
+    eign[i] = gsl_vector_alloc (3);
+    evec[i] = gsl_matrix_alloc (3, 3);
+    w2[i]   = gsl_eigen_symmv_alloc (3);
+  }
+
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
   for(int z = margin; z < cubeDepth-margin; z++){
+    int tn = omp_get_thread_num();
+    //Variables defined in the loop for easy parallel processing
+    float l1,l2,l3, theta, phi, r;
+    double data[9];
+    int higher_eival = 0;
+
     for(int y = margin; y < cubeHeight-margin; y++){
       for(int x = margin; x < cubeWidth-margin; x++){
+        // data[0] = -2.0*gxx->at(x,y,z)/3.0
+          // + gyy->at(x,y,z)
+          // + gzz->at(x,y,z);
+        // data[1] = -5.0*gxy->at(x,y,z)/3.0;
+        // data[2] = -5.0*gxz->at(x,y,z)/3.0;
+        // data[3] = data[1];
+        // data[4] = gxx->at(x,y,z)
+          // - 2.0*gyy->at(x,y,z)/3.0
+          // + gzz->at(x,y,z);
+        // data[5] = -5.0*gyz->at(x,y,z)/3.0;
+        // data[6] = data[2];
+        // data[7] = data[5];
+        // data[8] = -2.0*gzz->at(x,y,z)/3.0
+          // + gyy->at(x,y,z)
+          // + gxx->at(x,y,z);
+
+        //There is an screwed sign in the computation of gy, therefore
+        // the inversion of all the coefficients with one derivative
+        // in y
 
         data[0] = -2.0*gxx->at(x,y,z)/3.0
           + gyy->at(x,y,z)
           + gzz->at(x,y,z);
-        data[1] = -5.0*gxy->at(x,y,z)/3.0;
+        data[1] = 5.0*gxy->at(x,y,z)/3.0;
         data[2] = -5.0*gxz->at(x,y,z)/3.0;
         data[3] = data[1];
         data[4] = gxx->at(x,y,z)
           - 2.0*gyy->at(x,y,z)/3.0
           + gzz->at(x,y,z);
-        data[5] = -5.0*gyz->at(x,y,z)/3.0;
+        data[5] = 5.0*gyz->at(x,y,z)/3.0;
         data[6] = data[2];
         data[7] = data[5];
         data[8] = -2.0*gzz->at(x,y,z)/3.0
           + gyy->at(x,y,z)
           + gxx->at(x,y,z);
 
+
         gsl_matrix_view M
           = gsl_matrix_view_array (data, 3, 3);
 
-        gsl_eigen_symmv (&M.matrix, eign, evec, w2);
+        gsl_eigen_symmv (&M.matrix, eign[tn], evec[tn], w2[tn]);
 
-        l1 = gsl_vector_get (eign, 0);
-        l2 = gsl_vector_get (eign, 1);
-        l3 = gsl_vector_get (eign, 2);
+        l1 = gsl_vector_get (eign[tn], 0);
+        l2 = gsl_vector_get (eign[tn], 1);
+        l3 = gsl_vector_get (eign[tn], 2);
 
         if( (l1>=l2)&&(l1>=l3)){
           higher_eival = 0;
@@ -1042,9 +1075,172 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
           higher_eival = 2;
           aguet_l->put(x,y,z,l3);
         }
-        aguet_x->put(x,y,z,evec->data[higher_eival*3+0]);
-        aguet_y->put(x,y,z,evec->data[higher_eival*3+1]);
-        aguet_z->put(x,y,z,evec->data[higher_eival*3+2]);
+
+        r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival)*
+                 gsl_matrix_get(evec[tn],0,higher_eival)+
+                 gsl_matrix_get(evec[tn],1,higher_eival)*
+                 gsl_matrix_get(evec[tn],1,higher_eival)+
+                 gsl_matrix_get(evec[tn],2,higher_eival)*
+                 gsl_matrix_get(evec[tn],2,higher_eival)
+                 );
+
+        theta = atan2(gsl_matrix_get(evec[tn],1,higher_eival),
+                      gsl_matrix_get(evec[tn],0,higher_eival));
+        phi   = acos(gsl_matrix_get(evec[tn],2,higher_eival)/r);
+
+        aguet_theta->put(x,y,z,theta);
+        aguet_phi->put(x,y,z,theta);
+      }
+    }
+    printf("#");fflush(stdout);
+  }
+  printf("]\n");
+}
+
+
+
+template <class T, class U>
+void Cube<T,U>::calculate_aguet_flat(float sigma_xy, float sigma_z)
+{
+
+  if(sigma_z == 0) sigma_z = sigma_xy;
+
+  char vol_name[1024];
+
+  vector< float > Mask0, Mask1;
+  gaussian_mask_second(sigma_xy, Mask0, Mask1);
+  // int margin = Mask0.size()/2;
+  int margin = 0;
+
+  calculate_second_derivates(sigma_xy, sigma_z);
+
+  //Load the input of the hessian
+  sprintf(vol_name, "%sgxx_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxx = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgxy_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxy = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgxz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxz = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgyy_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gyy = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgyz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gyz = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgzz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gzz = new Cube<float,double>(vol_name);
+
+  sprintf(vol_name, "aguet_%02.2f_%02.2f", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_l = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_theta", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_theta = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_phi", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_phi = create_blank_cube(vol_name);
+
+
+
+  int nthreads = 1;
+#ifdef WITH_OPENMP
+  nthreads = omp_get_max_threads();
+  printf("Cube<T,U>::calculate_aguet: using %i threads\n", nthreads);
+#endif
+
+  printf("Cube<T,U>::calculate_aguet [");
+  fflush(stdout);
+
+  //Initialization of the places where each thread will work
+  vector< gsl_vector* > eign(nthreads);
+  vector< gsl_matrix* > evec(nthreads);
+  vector< gsl_eigen_symmv_workspace* > w2(nthreads);
+  for(int i = 0; i < nthreads; i++){
+    eign[i] = gsl_vector_alloc (3);
+    evec[i] = gsl_matrix_alloc (3, 3);
+    w2[i]   = gsl_eigen_symmv_alloc (3);
+  }
+
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
+  for(int z = margin; z < cubeDepth-margin; z++){
+    int tn = omp_get_thread_num();
+    //Variables defined in the loop for easy parallel processing
+    float l1,l2,l3, theta, phi, r;
+    double data[9];
+    int higher_eival = 0;
+
+    for(int y = margin; y < cubeHeight-margin; y++){
+      for(int x = margin; x < cubeWidth-margin; x++){
+        // data[0] = -2.0*gxx->at(x,y,z)/3.0
+          // + gyy->at(x,y,z)
+          // + gzz->at(x,y,z);
+        // data[1] = -5.0*gxy->at(x,y,z)/3.0;
+        // data[2] = -5.0*gxz->at(x,y,z)/3.0;
+        // data[3] = data[1];
+        // data[4] = gxx->at(x,y,z)
+          // - 2.0*gyy->at(x,y,z)/3.0
+          // + gzz->at(x,y,z);
+        // data[5] = -5.0*gyz->at(x,y,z)/3.0;
+        // data[6] = data[2];
+        // data[7] = data[5];
+        // data[8] = -2.0*gzz->at(x,y,z)/3.0
+          // + gyy->at(x,y,z)
+          // + gxx->at(x,y,z);
+
+        //There is an screwed sign in the computation of gy, therefore
+        // the inversion of all the coefficients with one derivative
+        // in y
+
+        data[0] = 4.0*gxx->at(x,y,z)
+          - gyy->at(x,y,z)
+          - gzz->at(x,y,z);
+        data[1] = 5.0*gxy->at(x,y,z);
+        data[2] = 5.0*gxz->at(x,y,z);
+        data[3] = data[1];
+        data[4] = -gxx->at(x,y,z)
+          + 4.0*gyy->at(x,y,z)
+          - gzz->at(x,y,z);
+        data[5] = 5.0*gyz->at(x,y,z);
+        data[6] = data[2];
+        data[7] = data[5];
+        data[8] = 4.0*gzz->at(x,y,z)
+          - gyy->at(x,y,z)
+          - gxx->at(x,y,z);
+
+
+        gsl_matrix_view M
+          = gsl_matrix_view_array (data, 3, 3);
+
+        gsl_eigen_symmv (&M.matrix, eign[tn], evec[tn], w2[tn]);
+
+        l1 = gsl_vector_get (eign[tn], 0);
+        l2 = gsl_vector_get (eign[tn], 1);
+        l3 = gsl_vector_get (eign[tn], 2);
+
+        if( (l1>=l2)&&(l1>=l3)){
+          higher_eival = 0;
+          aguet_l->put(x,y,z,l1);
+        }
+        if( (l2>=l1)&&(l2>=l3)){
+          higher_eival = 1;
+          aguet_l->put(x,y,z,l2);
+        }
+        if( (l3>=l2)&&(l3>=l1)){
+          higher_eival = 2;
+          aguet_l->put(x,y,z,l3);
+        }
+
+        r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival)*
+                 gsl_matrix_get(evec[tn],0,higher_eival)+
+                 gsl_matrix_get(evec[tn],1,higher_eival)*
+                 gsl_matrix_get(evec[tn],1,higher_eival)+
+                 gsl_matrix_get(evec[tn],2,higher_eival)*
+                 gsl_matrix_get(evec[tn],2,higher_eival)
+                 );
+
+        theta = atan2(gsl_matrix_get(evec[tn],1,higher_eival),
+                      gsl_matrix_get(evec[tn],0,higher_eival));
+        phi   = acos(gsl_matrix_get(evec[tn],2,higher_eival)/r);
+
+        aguet_theta->put(x,y,z,theta);
+        aguet_phi->put(x,y,z,theta);
       }
     }
     printf("#");fflush(stdout);
@@ -1224,7 +1420,9 @@ vector< vector< int > > Cube<T,U>::decimate_layer
 
 
 template <class T, class U>
-vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int window_z,  string filename, bool save_boosting_response)
+vector< vector< int > > Cube<T,U>::decimate
+(float threshold, int window_xy, int window_z,
+ string filename, bool save_boosting_response)
 {
 
   vector< vector < int > > toReturn;
@@ -1238,27 +1436,19 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
   printf("Cube<T,U>::decimate Creating the map[\n");
 
   int min_layer = 0;
-  int max_layer = (int)cubeDepth;
+  int max_layer = (int)cubeDepth-1;
   for(int z = 0; z < min_layer; z++)
     for(int y = 0; y < cubeHeight; y++)
       for(int x = 0; x < cubeWidth; x++)
         visitedPoints[x + y*cubeWidth + z*cubeWidth*cubeHeight] = true;
 
-  for(int z = max_layer; z < cubeDepth; z++)
+  for(int z = max_layer+1; z < cubeDepth; z++)
     for(int y = 0; y < cubeHeight; y++)
       for(int x = 0; x < cubeWidth; x++)
         visitedPoints[x + y*cubeWidth + z*cubeWidth*cubeHeight] = true;
 
-  T min_value = 255;
-  T max_value = 0;
-  for(int z = min_layer; z < max_layer; z++)
-    for(int y = 0; y < cubeHeight; y++)
-      for(int x = 0; x < cubeWidth; x++){
-        if(at(x,y,z) > max_value)
-          max_value = at(x,y,z);
-        if(at(x,y,z) < min_value)
-          min_value = at(x,y,z);
-      }
+  float min_value, max_value;
+  min_max(&min_value, &max_value);
 
   if(sizeof(T) == 1)
     printf("Cube with max_value = %u and min_value = %u\n", max_value, min_value);
@@ -1270,15 +1460,20 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
 
   int position;
 
-  while((current_threshold > min_value) && (current_threshold > threshold - step_size)){
+  while(
+        (current_threshold > min_value) &&
+        (current_threshold > threshold - step_size)
+        ){
+
     if( fabs(threshold - current_threshold) < step_size)
       current_threshold = threshold;
 
     valueToCoords.erase(valueToCoords.begin(), valueToCoords.end() );
 
-    for(int z = min_layer; z < max_layer; z++){
-      for(int y = window_xy*2; y < cubeHeight-window_xy*2; y++){
-        for(int x = window_xy*2; x < cubeWidth-window_xy*2; x++)
+    // Find the non-visited points above the threshold
+    for(int z = min_layer; z <= max_layer; z++){
+      for(int y = 0; y < cubeHeight; y++){
+        for(int x = 0; x < cubeWidth; x++)
           {
             position = x + y*cubeWidth + z*cubeWidth*cubeHeight;
             if( (this->at(x,y,z) > current_threshold) &&
@@ -1288,16 +1483,17 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
               }
           }
       }
-      printf("iteration %02i and %07i points\r", z, valueToCoords.size()); fflush(stdout);
+      printf("Threshold: %f, Layer %02i and %07i points\r",
+             current_threshold, z, valueToCoords.size()); fflush(stdout);
     }
 
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
     T min_value_it = (*iter).first;
-    if(sizeof(T)==1)
-      printf("\nCube<T,U>:: threshold: %u min_value = %u[", current_threshold, min_value_it);
-    else
-      printf("\nCube<T,U>:: threshold: %f min_value = %f[", current_threshold, min_value_it);
-    fflush(stdout);
+    // if(sizeof(T)==1)
+      // printf("\nCube<T,U>:: threshold: %u min_value = %u[", current_threshold, min_value_it);
+    // else
+      // printf("\nCube<T,U>:: threshold: %f min_value = %f[", current_threshold, min_value_it);
+    // fflush(stdout);
 
     typename multimap< T, int >::reverse_iterator riter = valueToCoords.rbegin();
     int pos;
@@ -1310,16 +1506,14 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
     for( riter = valueToCoords.rbegin(); riter != valueToCoords.rend(); riter++)
       {
         counter++;
-//         if(counter%print_step == 0)
-//           printf("#");fflush(stdout);
         pos = (*riter).second;
         if(visitedPoints[pos] == true)
           continue;
         z_p = pos / (cubeWidth*cubeHeight);
         y_p = (pos - z_p*cubeWidth*cubeHeight)/cubeWidth;
         x_p = pos - z_p*cubeWidth*cubeHeight - y_p*cubeWidth;
-        //       printf("%i %i %i %i \n", pos, x_p, y_p, z_p);
-        for(int z = max(z_p-window_z,min_layer); z < min(z_p+window_z, (int)max_layer); z++)
+
+        for(int z = max(z_p-window_z,min_layer); z <= min(z_p+window_z, (int)max_layer); z++)
           for(int y = max(y_p-window_xy,0); y < min(y_p+window_xy, (int)cubeHeight); y++)
             for(int x = max(x_p-window_xy,0); x < min(x_p+window_xy, (int)cubeWidth); x++)
               visitedPoints[x + y*cubeWidth + z*cubeWidth*cubeHeight] = true;
@@ -1329,7 +1523,6 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
         coords[2] = z_p;
         toReturn.push_back(coords);
       }
-    printf("] %i \n", toReturn.size());
     current_threshold = current_threshold - step_size;
   }
 
@@ -1338,7 +1531,6 @@ vector< vector< int > > Cube<T,U>::decimate(float threshold, int window_xy, int 
       printf("Cube<T,U>::decimating : saving the points in %s\n", filename.c_str());
       std::ofstream out(filename.c_str());
       vector< float > coordsMicrom(3);
-
       for(int i = 0; i < toReturn.size(); i++){
         indexesToMicrometers(toReturn[i], coordsMicrom);
         out << coordsMicrom[0] << " " << coordsMicrom[1] << " " << coordsMicrom[2];
@@ -1688,4 +1880,24 @@ void Cube<T,U>::min_max(float* min, float* max)
     printf("#");fflush(stdout);
   }
   printf("]\n");
+}
+
+
+template <class T, class U>
+Cube_P*  Cube<T,U>::threshold(float thres, string outputName)
+{
+  Cube<T,U>* result = duplicate_clean(outputName);
+
+  #pragma omp parallel for
+  for(int z = 0; z < cubeDepth; z++)
+    for(int y = 0; y < cubeHeight; y++)
+      for(int x = 0; x < cubeWidth; x++)
+        if( at(x,y,z) > thres)
+          result->put(x,y,z, at(x,y,z));
+        else
+          //This is done for negative threshold (that might arise)
+          result->put(x,y,z, thres);
+
+  return (Cube_P*)result;
+
 }

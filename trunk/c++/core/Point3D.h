@@ -17,6 +17,8 @@ public:
 
   vector< float > coords;
 
+  int type;
+
   Point3D();
 
   Point3D(float x, float y, float z=0);

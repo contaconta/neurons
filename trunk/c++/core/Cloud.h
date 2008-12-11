@@ -11,8 +11,8 @@ class Cloud : public Cloud_P
 public:
 
   //Points in the cloud
-  vector< T* > points;
-
+  // vector< T* > points;
+  
   Cloud() : Cloud_P() {}
 
   Cloud(string filename);
@@ -29,8 +29,8 @@ public:
 template <class T>
  Cloud<T>::Cloud(string filename) : Cloud_P()
 {
-  assert(fileExists(filename));
-  loadFromFile(filename);
+  if (fileExists(filename))
+    loadFromFile(filename);
 }
 
 template <class T>

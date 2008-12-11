@@ -76,6 +76,8 @@ public:
 
   Image<T>*     create_blank_image(string name);
 
+  Image<T>*     copy(string name);
+
   void convolve_horizontally(vector<float>& mask, Image<float>* output);
 
   void convolve_vertically  (vector<float>& mask, Image<float>* output);
@@ -147,8 +149,8 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
     printf("Error getting the image %s\n", filename.c_str());
     exit(0);
   }
-  directory = filename.substr(0,filename.find_last_of("/\\")+1);
-  name = filename.substr(filename.find_last_of("/\\")+1);
+  directory = getDirectoryFromPath(filename);
+  name = getNameFromPath(filename);
   name_raw = directory + name.substr(0,name.find_last_of(".")) + ".raw";
 
   width = img->width;
@@ -212,6 +214,7 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
 
 //   name = filename;
 }
+
 
 template<class T>
 T Image<T>::at(int x, int y){
@@ -469,6 +472,20 @@ Image<T>* Image<T>::create_blank_image(string name)
   Image<T>* imag = new Image<T>(name);
   return imag;
 }
+
+template<class T>
+Image<T>* Image<T>::copy(string name)
+{
+//   printf("Name: %s %i %i\n", name.c_str(), width, height);
+  IplImage* img = cvCreateImage(cvSize(width,height), IPL_DEPTH_8U, 3);
+  cvSaveImage(name.c_str(),img);
+  Image<T>* imag = new Image<T>(name);
+  for(int x = 0; x < width; x++)
+    for(int y = 0; y < height; y++)
+      imag->put(x,y,at(x,y));
+  return imag;
+}
+
 
 
 template<class T>

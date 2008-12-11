@@ -18,20 +18,21 @@ Y s                    |/            |/
 
 */
 
-
 #ifndef CUBE_H_
 #define CUBE_H_
 
 // #define ulong unsigned long long
 
 #include "neseg.h"
-
 #include "Image.h"
 #include "polynomial.h"
 #include "utils.h"
 #include "VisibleE.h"
 #include "Cube_P.h"
+#ifdef WITH_OPENMP
 
+#include <omp.h>
+#endif
 
 #define CUBE_MAX_X 10000
 #define CUBE_MAX_Y 10000
@@ -194,8 +195,8 @@ public:
   void save_as_image_stack(string filename = "");
 
   /** Creates the MIP image of the cube.*/
-  void createMIPImage(string filename = "");
-
+  void createMIPImage(string filename = "", bool minMax = 0); //0 stands for minimum intensity projection
+  
   /** Converts from coordinates in micrometers to a position in indexes.*/
   void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
@@ -236,6 +237,9 @@ public:
   void cut_cube(int x0, int y0, int z0, int x1, int y1, int z1, string name);
 
   void print_size();
+
+  /** Duplicates the cube and puts it all in 0.*/
+  Cube<T,U>* duplicate_clean(string filename);
 
   /** Creates a blank cube with the same dimensions and float type.*/
   Cube<float,double>* create_blank_cube(string filename);
@@ -434,6 +438,7 @@ public:
 
   /** Calculates the measure of Aguet05.*/
   void calculate_aguet(float sigma_xy, float sigma_z = 0);
+  void calculate_aguet_flat(float sigma_xy, float sigma_z = 0);
 
   /** Creates three new volumes with the eigenvalues ordered.*/
   void order_eigen_values(float sigma_xy, float sigma_z);
@@ -468,6 +473,8 @@ public:
   void get_ROC_curve
   (string volume_nfo, string volume_positive, string volume_negative,
    string output_file = "ROC.txt", int nPoints = 100);
+
+  Cube_P* threshold(float thres, string outputName="output");
 
 };
 

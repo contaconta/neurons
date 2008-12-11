@@ -24,19 +24,19 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  if(argc!=3){
-    printf("Usage: cubeMIP <volume.nfo> <outputImage_absolute_path>\n");
+  if(argc!=4){
+    printf("Usage: cubeMIP <volume.nfo> <outputImage_absolute_path> <minMax{0,1}>\n");
     exit(0);
   }
 
   Cube<uchar, ulong>* test = new Cube<uchar,ulong>(argv[1]);
   if(test->type == "uchar"){
     Cube<uchar, ulong>* source = new Cube<uchar,ulong>(argv[1]);
-    source->createMIPImage(argv[2]);
+    source->createMIPImage(argv[2], atoi(argv[3]));
   }
   else {
     Cube<float, double>* source = new Cube<float,double>(argv[1]);
-    source->createMIPImage(argv[2]);
+    source->createMIPImage(argv[2], atoi(argv[3]));
   }
 
 }

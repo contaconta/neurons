@@ -46,12 +46,12 @@ void setUpVolumeMatrices()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(fovy3D, aspect3D, zNear3D, zFar3D);
-  glScalef(1.0,1.0,-1.0);
+  glScalef(1.0,1.0,1.0);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glScalef(1, 1, 1);
-  glTranslatef(disp3DX,disp3DY,disp3DZ);
+  glTranslatef(disp3DX,disp3DY,-disp3DZ);
   glRotatef(rot3DX,1,0,0);
   glRotatef(rot3DY,0,1,0);
 
@@ -216,9 +216,12 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       setUpVolumeMatrices();
       if(drawCube_flag){
         /* cube->draw(rot3DX,rot3DY,200,3*flag_minMax,0); */
-        for(int i = 0; i < toDraw.size(); i++)
+        for(int i = 0; i < toDraw.size(); i++){
           toDraw[i]->draw();
+          setUpVolumeMatrices();
+        }
       }
+      setUpVolumeMatrices();
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
@@ -288,10 +291,18 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
 
     if(drawCube_flag){
-      for(int i = 0; i < toDraw.size(); i++)
+      for(int i = 0; i < toDraw.size(); i++){
+        setUpVolumeMatrices();
+        glViewport ((GLsizei)0,(GLsizei)0,
+                    (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
         toDraw[i]->draw();
+      }
 /*       cube->draw(rot3DX,rot3DY,200,flag_minMax,0); */
+      setUpVolumeMatrices();
+      glViewport ((GLsizei)0,(GLsizei)0,
+                  (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
       glEnable(GL_BLEND);
+      setUpVolumeMatrices();
       cube->draw_layer_tile_XY(layerToDrawXY,1);
       cube->draw_layer_tile_XZ(layerToDrawXZ,1);
       cube->draw_layer_tile_YZ(layerToDrawYZ,1);

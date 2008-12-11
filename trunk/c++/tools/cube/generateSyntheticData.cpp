@@ -76,9 +76,6 @@ void generate_lines(){
   idx1[0] = 20; idx1[1] = 20; idx1[2] = 108;
   idx2[0] = 108; idx2[1] = 20; idx2[2] = 20 ;
   cube->render_cylinder(idx1, idx2, 5);
-
-
-
 }
 
 

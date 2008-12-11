@@ -51,7 +51,8 @@ cloud.o: ../core/Cube_image.h ../core/Cloud.h ../core/Cloud_P.h
 cloud.o: ../core/Point.h ../core/Point2D.h ../core/Point2Do.h
 cloud.o: ../core/Point2Dot.h ../core/Point3D.h
 dfactorial.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
-generalParser.o: ../core/Parser.h
+generalParser.o: ../core/Parser.h ../core/utils.h ../core/Mask.h
+generalParser.o: ../core/polynomial.h
 graph.o: ../core/CubeFactory.h ../core/Cube.h ../core/neseg.h ../core/Image.h
 graph.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
 graph.o: ../core/Object.h ../core/utils.h ../core/Mask.h ../core/Cube_P.h
