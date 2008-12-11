@@ -3,9 +3,9 @@
 
 
 //Drawing libraries
-#ifdef WITH_GLEW
+// #ifdef WITH_GLEW
 #include <GL/glew.h>
-#endif
+// #endif
 #include <GL/glut.h>
 
 // This is a computer vision program, isn't it?

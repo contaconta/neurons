@@ -1,5 +1,6 @@
 #ifndef STAGE_H_
 #define STAGE_H_
+#include <glew.h>
 
 #include <QGLWidget>
 #include "Axis.h"
