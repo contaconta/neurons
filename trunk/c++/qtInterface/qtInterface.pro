@@ -16,5 +16,5 @@ SOURCES += main.cpp Stage.cpp
 
 
 # External libraries
-LIBS += -L../lib/ -lneseg -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml  
+LIBS += -L../lib/ -lneseg -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml
 INCLUDEPATH = ../core /usr/include /usr/include/opencv /usr/include/GL

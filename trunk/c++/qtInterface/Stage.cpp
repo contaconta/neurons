@@ -1,9 +1,11 @@
-#include <glew.h>
+
+
+#include "Stage.h"
 
 #include <QtGui>
 #include <QtOpenGL>
 
-#include "Stage.h"
+
 
 Stage::Stage(QWidget* parent) : QGLWidget(parent)
 {
@@ -43,7 +45,7 @@ void Stage::initializeGL()
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
   }
 
-  Cube_P* cube = CubeFactory::load("/media/neurons/tests2/cut.nfo");
+  Cube_P* cube = CubeFactory::load("/media/data/neuron/cut.nfo");
   cube->load_texture_brick(0,0);
   actors.push_back(cube);
 
