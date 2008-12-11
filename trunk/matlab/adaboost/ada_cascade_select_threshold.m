@@ -4,14 +4,15 @@ function [CASCADE, Fi, Di]  = ada_cascade_select_threshold(CASCADE, i, VALIDATIO
 
 
 CASCADE(i).threshold = 2;           % set the initial sensitivity threshold
-gt = [VALIDATION(:).class]';        % the validation ground truth 
+%gt = [VALIDATION(:).class]';        % the validation ground truth 
+gt = [VALIDATION.class]';        % the validation ground truth 
 C = zeros(size(gt));                % init a vector for our cascade results
 
 
 % COLLECT THE MISCLASSIFICATIONS THAT MAKE IT THROUGH CASCADE(1:i-1)
 if i > 1
-    for j=1:length(VALIDATION); 
-        C(j) = ada_classify_cascade(CASCADE(1:i-1), VALIDATION(j), [0 0]);
+    for j=1:length(VALIDATION.class); 
+        C(j) = ada_classify_cascade(CASCADE(1:i-1), VALIDATION, j);
     end   
     [TPs FPs] = rocstats(C, gt, 'TPlist', 'FPlist');  
     PASSTHROUGHS = VALIDATION([TPs; FPs]);
@@ -38,9 +39,11 @@ while (low <= high) && (iterations < MAX_ITERATIONS)
     iterations = iterations + 1;
     THRESH = (low + high) /2;
     CASCADE(i).threshold = THRESH;
-    for j=1:length(PASSTHROUGHS); 
-        C(j) = ada_classify_strong(CASCADE(i).CLASSIFIER, PASSTHROUGHS(j), [0 0], THRESH);
-    end    
+%     for j=1:length(PASSTHROUGHS); 
+%         C(j) = ada_classify_strong(CASCADE(i).CLASSIFIER, PASSTHROUGHS, j, THRESH);
+%     end  
+    C = ada_classify_set(CASCADE(i), VALIDATION, THRESH);
+    
     [CASCADE(i).di CASCADE(i).fi fps] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist'); 
     Fi = prod([CASCADE(:).fi]);
     Di = prod([CASCADE(:).di]);

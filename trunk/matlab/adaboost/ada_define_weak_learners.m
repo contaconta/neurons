@@ -35,11 +35,11 @@ for t = 1:length(LEARNERS)
         WEAK.(field) = haars;
 
         WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        index_map               = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
+        index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
         WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        WEAK.list(index_map,2)   = num2cell(1:length(WEAK.(field)))';
-        WEAK.list(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
-        WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_classify}};
+        WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))))';
+        WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
+        WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_trclassify1, @ada_haar_trclassify2}};
         clear haars;
         
         
@@ -54,11 +54,11 @@ for t = 1:length(LEARNERS)
         WEAK.(field) = spedge;
         
         WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        index_map               = sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1);
+        index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
         WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        WEAK.list(index_map,2)   = num2cell(1:length(WEAK.(field)))';
-        WEAK.list(index_map,3)   = num2cell( repmat(t, [length(WEAK.(field)),1]));
-        WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_classify}};
+        WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))) )';
+        WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
+        WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_trclassify1, @ada_spedge_trclassify2}};
         clear spedge;
 
 

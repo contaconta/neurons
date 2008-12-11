@@ -1,4 +1,4 @@
-function [C, h] = ada_classify_strong(CLASSIFIER, DATA, offset, threshold)
+function [C, h] = ada_classify_strong(CLASSIFIER, DATA, example_index, threshold)
 %ADA_CLASSIFY_STRONG returns the classification result of a boosted classifier
 %
 %   [C, h] = ada_classify_weak(CLASSIFIER, DATA, offset, threshold) given a 
@@ -17,16 +17,6 @@ function [C, h] = ada_classify_strong(CLASSIFIER, DATA, offset, threshold)
 %   Copyright © 2008 Kevin Smith
 %   See also ADA_ADABOOST
 
-% %% handle input parameters
-% x = offset(1);
-% y = offset(2);
-% 
-% if nargin < 3
-%     x = 0;  y = 0;
-%     threshold = 1;
-% elseif nargin < 4
-%     threshold = 1;
-% end
 
 if nargin < 3
     threshold = 1;
@@ -34,28 +24,42 @@ elseif nargin < 4
     threshold = 1;
 end
 
-% %% vectorize the intergral image if it is not already
-% if size(II,2) ~= 1
-%     II = II(y+1:y+CLASSIFIER.IMSIZE(2), x+1:x+CLASSIFIER.IMSIZE(1));
-%     II = II(:);
-% end
+
 
 
 %% find the classification results of the weak learners
 
+% learner_types = unique(CLASSIFIER.learner_type);
+% 
+% for i = 1:length(learner_types)
+%     type = learner_types{i};    
+%     classification_function =  CLASSIFIER.functions{find(strcmp(CLASSIFIER.functions, type),1), 2}; 
+%     %keyboard;
+%     h_part = classification_function(CLASSIFIER.feature_index(t), weak_classifier, TRAIN)';
+%     %h_part = classification_function(CLASSIFIER.(type), DATA, offset, CLASSIFIER.IMSIZE);
+%     h(find(strcmp(CLASSIFIER.learner_type, type))) = h_part;
+% end
+
+
+%keyboard; 
+
+%f = DATA.responses.getRows(example_index);
+%f = f(CLASSIFIER.feature_index);
+
 learner_types = unique(CLASSIFIER.learner_type);
 
-for i = 1:length(learner_types)
-    type = learner_types{i};    
+for l = 1:length(learner_types)
+    type = CLASSIFIER.learner_type{l};
+    inds = CLASSIFIER.feature_index(strcmp(CLASSIFIER.learner_type, type));
     classification_function =  CLASSIFIER.functions{find(strcmp(CLASSIFIER.functions, type),1), 2}; 
-    %keyboard;
-    h_part = classification_function(CLASSIFIER.(type), DATA, offset, CLASSIFIER.IMSIZE);
-    h(find(strcmp(CLASSIFIER.learner_type, type))) = h_part;
+    %learner = CLASSIFIER.(type);
+    h_part = classification_function(inds, CLASSIFIER.(type), DATA);
+    h(strcmp(CLASSIFIER.learner_type, type)) = h_part;
 end
 
 %h = ada_haar_classify(CLASSIFIER.haar, II);
     
-%keyboard
+keyboard
 
 %% compute the strong classification
 % the strong classification is computed by the weighted sum of the weak
@@ -70,7 +74,7 @@ else
 end
 
 
-%f = ada_fast_haar_response(CLASSIFIER.fast, II);
-%f =  ada_haar_response({CLASSIFIER.haar(:).hinds}, {CLASSIFIER.haar(:).hvals}, II);
-%h = (CLASSIFIER.polarity .* f) < (CLASSIFIER.polarity .* CLASSIFIER.theta);
-
+% %% function to make a classification decsision for a single weak learner
+% function h = decision(f, polarity, theta)
+% 
+% h = polarity * f < polarity * theta;

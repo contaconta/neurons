@@ -1,4 +1,4 @@
-function [error, theta, pol] = ada_spedge_learn(i, field, TRAIN, PRE, WEAK, w)
+function [error, theta, pol] = ada_spedge_learn(i, training_labels, SET, w)
 %
 %
 %
@@ -8,10 +8,10 @@ function [error, theta, pol] = ada_spedge_learn(i, field, TRAIN, PRE, WEAK, w)
 %
 
 
-f = ada_spedge_response(WEAK.(field)(i).index, PRE);
+%f = ada_spedge_response(WEAK.(field)(i).index, PRE);
+f = SET.responses.getCols(i);                   % retreive responses of feature i to training set
 err = zeros(size(f)); 
 polarity = zeros(size(err)); 
-training_labels = [TRAIN(:).class];
 
 %% sort the responses, and similarly sort the labels and weights
 [fsorted, inds] = sort(f);                      % sorted ascending feature responses
@@ -32,8 +32,6 @@ for q=1:length(fsorted)
     % set, this can cause a problem when selecting a threshold if you keep 
     % accumulating the error (within a block of repeated values).  For a
     % given feature response, there should be only 1 error value!
-    
-
     if (q>1) && (fsorted(q) == fsorted(q-1))
         err(q) = err(q-1); polarity(q) = polarity(q-1);
     else
