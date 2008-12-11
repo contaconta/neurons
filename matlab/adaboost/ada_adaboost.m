@@ -15,29 +15,29 @@ function CLASSIFIER = ada_adaboost(varargin)
 
 
 %% set parameters and handle input arguments
-PRE = varargin{1}; TRAIN = varargin{2}; WEAK = varargin{3}; T = varargin{4}; LEARNERS = varargin{5};
+TRAIN = varargin{1}; WEAK = varargin{2}; T = varargin{3}; LEARNERS = varargin{4};
 
 % either start or resume training, CLASSIFIER, w need to be passed or
 % initialized. start_t is the index of the first weak learner.
-if nargin == 5
-    start_t = 1; w = ones(1,length(TRAIN)) ./ length(TRAIN); 
+if nargin == 4
+    start_t = 1; w = ones(1,length(TRAIN.class)) ./ length(TRAIN.class); 
     CLASSIFIER = ada_classifier_init(T, WEAK);
 else
-    CLASSIFIER = varargin{6};  
-    start_t = length(CLASSIFIER.feature_index) + 1;  w = CLASSIFIER.w;
+   CLASSIFIER = varargin{5};  
+   start_t = length(CLASSIFIER.feature_index) + 1;  w = CLASSIFIER.w;
 end
 
 
 %% train the strong classifier as a series of T weak classifiers
 for t = start_t:T
     %% 1. Normalize the weights
-    %w = w ./sum(w);
-    w([TRAIN.class] == 1) = .5 * (w([TRAIN.class]==1) /sum(w([TRAIN.class]==1)));
-    w([TRAIN.class] == 0) = .5 * (w([TRAIN.class]==0) /sum(w([TRAIN.class]==0)));
+    % normalize so each class has weight = 0.5
+    w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
+    w(TRAIN.class == 0) = .5 * (w(TRAIN.class==0) /sum(w(TRAIN.class==0)));
     
     %% 2. train weak learners for optimal class separation
-    [WEAK, PRE] = ada_train_weak_learners(WEAK, TRAIN, PRE, w);
-        
+    %WEAK = ada_train_weak_learners(WEAK, TRAIN, double(w));
+    WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
     
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
@@ -49,6 +49,7 @@ for t = start_t:T
     weak_classifier             = WEAK.(WEAK.list{BEST_learner,1})(WEAK.list{BEST_learner,2});
     learner_ind                 = WEAK.list{BEST_learner,3};
     field                       = WEAK.learners{learner_ind}{1};
+    %classification_function     = WEAK.learners{learner_ind}{6};
     classification_function     = WEAK.learners{learner_ind}{6};
     CLASSIFIER.learner_type{t}  = field;
     
@@ -67,26 +68,35 @@ for t = start_t:T
         CLASSIFIER.functions    = [CLASSIFIER.functions ; {field classification_function}];
     end
 
+%     %%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%
+%     tmpstring =[];
+%     for i = 1:length(WEAK.learners)
+%         [m1, v1] = min(WEAK.error(WEAK.learners{i}{3}));
+%         s = ['best ' WEAK.learners{i}{1} ': ' num2str(v1) ' err=' num2str(m1) '   '];
+%         tmpstring = [tmpstring s];
+%     end
+%     disp(tmpstring);
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     %%%%%%%%%%%%%%%%%%% DEBUG %%%%%%%%%%%%%%%%%%%%
-    tmpstring =[];
     for i = 1:length(WEAK.learners)
         [m1, v1] = min(WEAK.error(WEAK.learners{i}{3}));
-        s = ['best ' WEAK.learners{i}{1} ': ' num2str(v1) ' err=' num2str(m1) '   '];
-        tmpstring = [tmpstring s];
+        if m1 == min(WEAK.error); prestr = '     ✓ '; else prestr = '       '; end
+        s = [prestr 'best ' WEAK.learners{i}{1} ' error: ' num2str(m1) ', feature index: ' num2str(v1)];
+        disp(s);
     end
-    disp(tmpstring);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    %disp(['...selected learner ' num2str(BEST_learner) ' (' field ') as t=' num2str(t) ]);
     
-    %disp(['...selected ' field ' learner ' num2str(BEST_learner) ' as t=' num2str(t)  '  [polarity = ' num2str(CLASSIFIER.polarity(t)) ' theta = ' num2str(CLASSIFIER.theta(t))  ']' ]);
-    disp(['...selected learner ' num2str(BEST_learner) ' (' field ') as t=' num2str(t) ]);
     
     %% 4. Update the training weight vector according to misclassifications
-    
     % get selected weak learner's classification results for the TRAIN set
-    h = classification_function(weak_classifier, TRAIN, [0 0], CLASSIFIER.IMSIZE);
-
+    %h = classification_function(weak_classifier, TRAIN, [0 0], CLASSIFIER.IMSIZE);
+    h = classification_function(CLASSIFIER.feature_index(t), weak_classifier, TRAIN)';
+    
     % reweight misclassified examples to be more important (& store)
-    e = abs( h - [TRAIN(:).class] );
+    e = abs( h - TRAIN(:).class);
     w = w .* (beta * ones(size(w))).^(1 - e);
     CLASSIFIER.w = w;   
     

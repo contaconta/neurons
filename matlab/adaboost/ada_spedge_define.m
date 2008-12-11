@@ -20,8 +20,8 @@ for i = 1:IMSIZE(1)
             for s = 1:length(sigmas);
                 % [angle, r, c]
                 %SP(c_num).descriptor = [k i j];
-                SP(c_num).index = sub2ind([length(angles) length(sigmas) IMSIZE(1) IMSIZE(2)], k,s,i,j);
-                SP(c_num).polarity = 1;
+                SP(c_num).index = single(sub2ind([length(angles) length(sigmas) IMSIZE(1) IMSIZE(2)], k,s,i,j));
+                SP(c_num).polarity = single(1);
                 SP(c_num).theta = 0;
 
                 c_num = c_num + 1;

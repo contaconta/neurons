@@ -1,7 +1,7 @@
 function f = ada_haar_response(hinds, hvals, II)
 %ADA_FAST_HAAR_RESPONSE returns the haar feature response from and integral image
 %
-%   RESPONSE = ada_fast_haar_response(f,II) takes a row vector feature
+%   RESPONSE = ada_fast_haar_response(hinds, hvals,II) takes a row vector feature
 %   'f' and a column vectorized integral image II (e.g. II = II(:)) and 
 %   returns the haar-like feature response of the feature to integral image.  
 %   The response is defined as the difference in intensity between dark and 

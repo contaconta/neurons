@@ -4,12 +4,13 @@
 %   can have breaks row_inds = [1 2 5 6]
 %
 %   B = bigmatrix(2000, 60000, 'filename', 'temp.dat', 'memory', 100000000, 'precision', 'single');
-%   B.store(data, row, col);
-%   B.storeCols(data, cols);
-%   B.storeRows(data, rows);
-%   data = B.get(row, col);
-%   data = B.getCols(cols);
-%   data = B.getRows(rows);
+%   B.store(data, row, col);            % stores a single element
+%   B.storeBlock(data, rows, cols);     % must be consecutive rows, cols!
+%   B.storeCols(data, cols);            % must be consecutive rows, cols!
+%   B.storeRows(data, rows);            % must be consecutive rows, cols!
+%   data = B.get(row, col);             % gets a single element
+%   data = B.getCols(cols);             % gets a column (or list of columns)
+%   data = B.getRows(rows);             % gets a row (or list of rows)
 %
 %   Copyright © 2008 Kevin Smith
 %
@@ -95,7 +96,7 @@ classdef bigmatrix < handle
                         A = zeros([bytes_to_write/obj.bytes 1]);
                         fwrite(obj.fid, A, obj.precision);
 
-                        disp(['writing ' num2str(bytes_to_write) ' bytes to ' obj.filename ]);
+                        disp(['    ...writing ' num2str(bytes_to_write) ' bytes to ' obj.filename ]);
 
                         bytes_used = bytes_used + bytes_to_write;
                         clear A;
@@ -145,7 +146,7 @@ classdef bigmatrix < handle
         end
         
         %% storeRows %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Stores row data contained in DATA to the rows of the storage file
+        % Stores row data contained in DATA to the CONSECUTIVE rows of the storage file
         % specified by row_inds.
         function storeRows(obj, data, row_inds)
             
@@ -175,7 +176,7 @@ classdef bigmatrix < handle
         
         
         %% storeCols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Stores column data contained in DATA to the columns of the
+        % Stores column data contained in DATA to CONSECUTIVE columns of the
         % storage file specified by col_inds.
         function storeCols(obj, data, col_inds )
             
@@ -195,6 +196,39 @@ classdef bigmatrix < handle
             obj.refreshRowCacheFlag = 1;         % we have changed stored data, cache should be refreshed
             obj.refreshColCacheFlag = 1;
         end
+        
+        
+        %% storeBlock %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Stores a block of data contained in DATA to the CONSECUTIVE rows and columns
+        % specified by row_inds and col_inds
+        function storeBlock(obj, data, row_inds, col_inds)
+            
+            if ~isequal(size(data), [length(row_inds) length(col_inds)])
+                error('error: the size of the data does not match the row and column indexes');
+            end
+            
+            if (row_inds(1) < 1) || (row_inds(length(row_inds)) > obj.rows)
+                error('error: the row_inds do not fit in the bounds of the bigmatrix.');
+            end
+            
+            if (col_inds(1) < 1) || (col_inds(length(col_inds)) > obj.cols)
+                error('error: the col_inds do not fit in the bounds of the bigmatrix.');
+            end
+            
+            obj.fid = fopen(obj.filename, 'r+');
+            
+            for j = 1:length(col_inds);
+                seek_bytes = (col_inds(j)-1)*obj.rows*obj.bytes + (row_inds(1)-1)*obj.bytes;
+                fseek(obj.fid, seek_bytes, 'bof');
+                coldata = data(:,j);
+                fwrite(obj.fid, coldata, obj.precision);
+            end
+            
+            fclose(obj.fid);
+            obj.refreshRowCacheFlag = 1;         % we have changed stored data, cache should be refreshed
+            obj.refreshColCacheFlag = 1;
+        end
+        
         
         
         %% get (single element) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,12 +295,12 @@ classdef bigmatrix < handle
                 last = min(first + block - 1, obj.cols);
 
                 % update the cache with data from the storage file
-                disp(['updating the colCache with cols ' num2str(first) ':' num2str(last)]);
+                %disp(['updating the colCache with cols ' num2str(first) ':' num2str(last)]);
                 obj.colCache = obj.getColsFromFile(first:last);
                 obj.colCacheLims = [first last];
                 obj.refreshColCacheFlag = 0;
             else
-                disp(['col ' num2str(col) ' is already in the cache.']);
+                %disp(['col ' num2str(col) ' is already in the cache.']);
             end
         end
         
@@ -296,14 +330,14 @@ classdef bigmatrix < handle
             if ~isempty(find(data_cols,1))
                 cached_cols = col_inds(data_cols);
                 data(:,data_cols) = obj.colCache(:,cached_cols - obj.colCacheLims(1) +1);
-                disp(['columns [' num2str(cached_cols) '] found in the colCache']);
+                %disp(['columns [' num2str(cached_cols) '] found in the colCache']);
             end
             
             % retrieve the missing columns from the file and put them in DATA
             if ~isempty(find(~data_cols,1))
                 file_col_inds = col_inds(~data_cols);
                 data(:, ~data_cols) = obj.getColsFromFile(file_col_inds);
-                disp(['columns [' num2str(file_col_inds) '] retrieved from ' num2str(obj.filename)]);
+                %disp(['columns [' num2str(file_col_inds) '] retrieved from ' num2str(obj.filename)]);
             end
             
             % PREVIOUSLY UPDATED THE CACHE AFTER GETTING THE DATA
@@ -358,7 +392,7 @@ classdef bigmatrix < handle
                 for i = blocks
                     first_col = i;
                     last_col = min(first_col + block - 1, obj.cols);
-                    disp(['reading cols [' num2str(first_col) ':' num2str(last_col) ']' ]);
+                    %disp(['reading cols [' num2str(first_col) ':' num2str(last_col) ']' ]);
                     obj.colCache = obj.getColsFromFile(first_col:last_col);
                     obj.colCacheLims = [first_col last_col];
                     
@@ -366,12 +400,12 @@ classdef bigmatrix < handle
                 end
                 
                 % update the cache with data from the storage file
-                disp(['updating the rowCache with rows ' num2str(first_row) ':' num2str(last_row)]);
+                %disp(['updating the rowCache with rows ' num2str(first_row) ':' num2str(last_row)]);
                 obj.rowCacheLims = [first_row last_row];
                 obj.refreshRowCacheFlag = 0;
                 obj.refreshColCacheFlag = 0;
             else
-                disp(['row ' num2str(row) ' is already in the cache.']);
+                %disp(['row ' num2str(row) ' is already in the cache.']);
             end
         
         end
@@ -402,15 +436,39 @@ classdef bigmatrix < handle
             if ~isempty(find(data_rows,1))
                 cached_rows = row_inds(data_rows);
                 data(data_rows,:) = obj.rowCache(cached_rows - obj.rowCacheLims(1) +1,:);
-                disp(['rows [' num2str(cached_rows) '] found in the rowCache']);
+                %disp(['rows [' num2str(cached_rows) '] found in the rowCache']);
             end
             
             % retrieve the missing columns from the file and put them in DATA
             if ~isempty(find(~data_rows,1))
                 file_row_inds = row_inds(~data_rows);
                 data(~data_rows,:) = obj.getRowsFromFile(file_row_inds);
-                disp(['rows [' num2str(file_row_inds) '] retrieved from ' num2str(obj.filename)]);
+                %disp(['rows [' num2str(file_row_inds) '] retrieved from ' num2str(obj.filename)]);
             end
+        end
+        
+        
+        
+        %% get %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % a simple function to get a single entry from the
+        % bigmatrix
+        function data = get(obj, row, col)
+            
+            % update the colCache so it contains the first column we want
+            obj.updateColCache(col);
+            
+            % get the columns in the colCache and put them in DATA
+            data_col = obj.inColCache(col);
+            if ~isempty(find(data_col,1))
+                cached_cols = col(data_col);
+                data = obj.colCache(row,cached_cols - obj.colCacheLims(1) +1);
+            end
+            
+            % retrieve the missing columns from the file and put them in DATA
+            if ~isempty(find(~data_col,1))
+                data = getdataFromFile(row, col);
+            end
+            
         end
         
 

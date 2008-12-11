@@ -1,7 +1,7 @@
-function [PRE, minerr, theta, pol] = ada_haar_learn(h_ind, training_labels, PRE, WEAK, w)
+function  [minerr, theta, pol] = ada_haar_learn(h_ind, training_labels, SET, w)
 %ADA_HAAR_LEARN finds parameters for optimal class separation
 %
-%   [TRAIN, PRE] = ada_haar_learn(h_ind, TRAIN, train_list, PRE, WEAK, w)
+%   [TRAIN, PRE] = ada_haar_learn(h_ind, training_labels, SET, w)
 %   uses training examples from the structure in TRAIN to 
 %   deteremine the optimal threshold and polarity (minimizing classification 
 %   error) for the WEAK classifier specified by 'h_ind'.  Also requires the 
@@ -17,8 +17,7 @@ err = zeros([1 length(training_labels)]);  %f = zeros(size(err));
 polarity = zeros(size(err)); 
 
 % look up and sort the feature responses for feature 'h_ind' over the training set
-%[f, PRE] = bigmatrix_get_row(PRE, h_ind);
-f = PRE.get_rows([h_ind h_ind], 'nosave');      % retreive the feature responses
+f = SET.responses.getCols(h_ind);               % retreive responses of feature h_ind to training set
 [fsorted, inds] = sort(f);                      % sorted ascending feature responses
 lsorted = training_labels(inds);                % labels sorted according to above
 wsorted = w(inds);                              % weights sorted according to above
@@ -31,8 +30,6 @@ SNEG = 0;                                       % Running sum of class 0 example
 
 
 % loop through the sorted list, updating SPOS and SNEG, and computing the ERROR
-spostemp = zeros(size(w));
-snegtemp = zeros(size(w));
 for q=1:length(fsorted)
     
     % if your feature has the same value for many examples in the training
@@ -57,6 +54,8 @@ for q=1:length(fsorted)
     else
         SNEG = SNEG + wsorted(q);
     end
+    
+    
 end
 
 % find 'q' that gives the minimum error and correspoinding polarity

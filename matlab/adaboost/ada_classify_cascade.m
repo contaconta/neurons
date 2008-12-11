@@ -1,4 +1,4 @@
-function C = ada_classify_cascade(CASCADE, DATA, offset)
+function C = ada_classify_cascade(CASCADE, DATA, example_index)
 %C = ada_classify_cascade(CASCADE, DATA, offset)
 %
 %  DATA contains integral images, spedges, etc...
@@ -6,15 +6,16 @@ function C = ada_classify_cascade(CASCADE, DATA, offset)
 %
 %
 
-if nargin == 2
-    offset = [0 0 ];
-end
+% if nargin == 2
+%     offset = [0 0 ];
+% end
 
 C = 0;
 
 
 for i = 1:length(CASCADE)    
-    if ~ada_classify_strong(CASCADE(i).CLASSIFIER, DATA, offset, CASCADE(i).threshold)
+    %if ~ada_classify_strong(CASCADE(i).CLASSIFIER, DATA, offset, CASCADE(i).threshold)
+    if ~ada_classify_strong(CASCADE(i).CLASSIFIER, DATA, example_index, CASCADE(i).threshold);
         %disp(['rejected at stage ' num2str(i)]);
         return
     end    
