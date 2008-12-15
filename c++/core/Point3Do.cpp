@@ -49,6 +49,7 @@ void Point3Do::draw(float width){
 }
 
 void Point3Do::save(ostream &out){
+  // printf("Point3Do::save\n");
   for(int i = 0; i < 3; i++)
     out << coords[i] << " ";
   out << theta << " " << phi << std::endl;

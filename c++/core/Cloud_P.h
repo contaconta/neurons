@@ -21,7 +21,7 @@ class Cloud_P : public VisibleE
 {
  public:
 
-  // vector< Point* > points;
+  vector< Point* > points;
 
   Cloud_P() : VisibleE(){}
 

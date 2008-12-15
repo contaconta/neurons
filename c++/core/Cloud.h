@@ -11,7 +11,7 @@ class Cloud : public Cloud_P
 public:
 
   // Points in the cloud
-  vector< T* > points;
+  // vector< T* > points;
   
   Cloud() : Cloud_P() {}
 

@@ -159,4 +159,5 @@ core/Point3Dot.o core/Point3Dot.d: core/Point3Dot.cpp core/Point3Dot.h core/nese
   /usr/include/gsl/gsl_matrix_char.h /usr/include/gsl/gsl_linalg.h \
   /usr/include/gsl/gsl_mode.h /usr/include/gsl/gsl_permutation.h \
   /usr/include/gsl/gsl_blas.h /usr/include/gsl/gsl_blas_types.h \
-  /usr/include/gsl/gsl_cblas.h core/Point.h core/Visible.h core/Object.h
+  /usr/include/gsl/gsl_cblas.h core/Point3Do.h core/Point.h \
+  core/Visible.h core/Object.h
