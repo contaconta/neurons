@@ -127,29 +127,34 @@ int main(int argc, char **argv) {
     // cl = dynamic_cast< Cloud<Point3D> > (cl);
     for(int i = 0; i < points.size(); i++){
       if(cube == NULL)
-        cl->points.push_back(new Point3D(points[i][0],points[i][1], points[i][2]));
+        cl->points.push_back(new Point3D(points[i][0],points[i][1],
+                                         points[i][2]));
       else{
         indexes[0] = points[i][0];
         indexes[1] = points[i][1];
         indexes[2] = points[i][2];
         cube->indexesToMicrometers(indexes, micrometers);
-        cl->points.push_back(new Point3D(micrometers[0],micrometers[1], micrometers[2]));
+        cl->points.push_back(new Point3D(micrometers[0],micrometers[1],
+                                         micrometers[2]));
       }
     }
 
     if(arguments.flag_doubleWeights){
-      Graph<Point3D,Edge2W<Point3D> >* gr = new Graph<Point3D,Edge2W<Point3D> >(cl);
+      Graph<Point3D,Edge2W<Point3D> >* gr =
+        new Graph<Point3D,Edge2W<Point3D> >(cl);
       for(int i = 0; i < edges.size(); i++){
         Edge2W<Point3D>* e =
           new Edge2W<Point3D>(&gr->cloud.points,
-                              edges[i][0], edges[i][1], edges[i][3], edges[i][4]);
-        gr->eset.edges.push_back(e) ;
+                              edges[i][0], edges[i][1],
+                              edges[i][3], edges[i][4]);
+        gr->eset.edges.push_back(e);
       }
       gr->eset.v_radius = 2.0;
       gr->saveToFile(string(arguments.args[2]));
     }
     else{
-      Graph<Point3D,Edge<Point3D> >* gr = new Graph<Point3D,Edge<Point3D> >(cl);
+      Graph<Point3D,Edge<Point3D> >* gr =
+        new Graph<Point3D,Edge<Point3D> >(cl);
       for(int i = 0; i < edges.size(); i++)
         gr->eset.addEdge(edges[i][0], edges[i][1]);
       gr->saveToFile(string(arguments.args[2]));
@@ -172,22 +177,24 @@ int main(int argc, char **argv) {
       }
     }
     if(arguments.flag_doubleWeights){
-      Graph<Point3Dt,Edge2W<Point3Dt> >* gr = new Graph<Point3Dt,Edge2W<Point3Dt> >(cl);
+      Graph<Point3Dt,Edge2W<Point3Dt> >* gr =
+        new Graph<Point3Dt,Edge2W<Point3Dt> >(cl);
       for(int i = 0; i < edges.size(); i++){
         Edge2W<Point3Dt>* e =
           new Edge2W<Point3Dt>(&gr->cloud.points,
-                               edges[i][0], edges[i][1], edges[i][3], edges[i][4]);
+                               edges[i][0], edges[i][1],
+                               edges[i][3], edges[i][4]);
         gr->eset.edges.push_back(e) ;
       }
       gr->eset.v_radius = 2.0;
       gr->saveToFile(string(arguments.args[2]));
     }
     else{
-      Graph<Point3Dt,Edge<Point3Dt> >* gr = new Graph<Point3Dt,Edge<Point3Dt> >(cl);
+      Graph<Point3Dt,Edge<Point3Dt> >* gr =
+        new Graph<Point3Dt,Edge<Point3Dt> >(cl);
       for(int i = 0; i < edges.size(); i++)
         gr->eset.addEdge(edges[i][0], edges[i][1]);
       gr->saveToFile(string(arguments.args[2]));
     }
   }
-
 }

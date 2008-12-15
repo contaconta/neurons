@@ -10,13 +10,14 @@ class Graph : public Graph_P
 {
 public:
   EdgeSet<P, E> eset;
-  Cloud<P>   cloud;
+//   Cloud<P>   cloud;
+  Cloud_P cloud;
 
   Graph() : Graph_P(){}
 
   Graph(string filename);
 
-  Graph(Cloud<P>* cl);
+  Graph(Cloud_P* cl);
 
   bool load(istream &in);
 
@@ -24,7 +25,7 @@ public:
 
   void draw();
 
-  double distanceEuclidean(P* p1, P* p2);
+  double distanceEuclidean(Point* p1, Point* p2);
 
   // Calculates the Minimum spanning tree using prim algorithm
   void prim();
@@ -43,7 +44,7 @@ Graph<P,E>::Graph(string filename) : Graph_P(){
 }
 
 template< class P, class E>
-Graph<P,E>::Graph(Cloud<P>* cl) : Graph_P(){
+Graph<P,E>::Graph(Cloud_P* cl) : Graph_P(){
   v_saveVisibleAttributes = true;
   this->cloud = *cl;
   eset.setPointVector(&cloud.points);
@@ -93,7 +94,7 @@ void Graph<P,E>::draw(){
 }
 
 template< class P, class E>
-double Graph<P,E>::distanceEuclidean(P* p1, P* p2){
+double Graph<P,E>::distanceEuclidean(Point* p1, Point* p2){
   return p1->distanceTo(p2);
 }
 

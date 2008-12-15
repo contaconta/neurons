@@ -49,6 +49,19 @@ public:
   }
 };
 
+class C : public A
+{
+public:
+  int x;
+
+  C(){x=3;}
+
+  void print(){
+    printf("C: x=%i\n",x);
+  }
+};
+
+
 
 void printv(vector< Up* > v){
   for(int i = 0; i < v.size(); i++)
@@ -61,10 +74,13 @@ int main(int argc, char **argv) {
   // Up* up = new Up();
   A*  a = new A();
   B*  b = new B();
+  A*  c = new C();
+
   vector< Up* > v;
   // v.push_back(up);
   v.push_back(a);
   v.push_back(b);
+  v.push_back(c);
   printv(v);
 
 }

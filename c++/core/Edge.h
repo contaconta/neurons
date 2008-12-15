@@ -11,11 +11,11 @@ public:
 
   int p0;
   int p1;
-  vector< P* >* points;
+  vector< Point* >* points;
 
   Edge(){ p0=-1; p1=-1;}
 
-  Edge(vector< P* >* _points, int _p0, int _p1);
+  Edge(vector< Point* >* _points, int _p0, int _p1);
 
   void draw();
 
@@ -30,7 +30,7 @@ public:
 };
 
 template< class P>
-Edge<P>::Edge(vector< P* >* _points, int _p0, int _p1) : Visible(){
+Edge<P>::Edge(vector< Point* >* _points, int _p0, int _p1) : Visible(){
   p0 = _p0;
   p1 = _p1;
   points = _points;
@@ -38,8 +38,8 @@ Edge<P>::Edge(vector< P* >* _points, int _p0, int _p1) : Visible(){
 
 template< class P>
 void Edge<P>::draw(){
-  P* pp0 = (*points)[p0];
-  P* pp1 = (*points)[p1];
+  P* pp0 = dynamic_cast<P*>((*points)[p0]);
+  P* pp1 = dynamic_cast<P*>((*points)[p1]);
   glBegin(GL_LINES);
   glVertex3f(pp0->coords[0],pp0->coords[1],pp0->coords[2]);
   glVertex3f(pp1->coords[0],pp1->coords[1],pp1->coords[2]);

@@ -3,7 +3,7 @@
 
 #include "Edge.h"
 
-template < class P=Point>
+template < class P>
 class Edge2W : public Edge< P >
 {
 public:
@@ -13,13 +13,7 @@ public:
 
   Edge2W() : Edge< P >() {w1=-1; w2=-1;}
 
-  Edge2W(vector< P* >* _points, int _p0, int _p1, double _w1, double _w2) :
-    Edge< P >(_points, _p0, _p1)
-  {
-    w1 = _w1;
-    w2 = _w2;
-  }
-
+  Edge2W(vector< Point* >* _points, int _p0, int _p1, double _w1, double _w2);
 
   void draw();
 
@@ -32,6 +26,15 @@ public:
   }
 
 };
+
+template< class P>
+Edge2W<P>::Edge2W
+(vector< Point* >* _points, int _p0, int _p1, double _w1, double _w2) :
+  Edge< P >(_points, _p0, _p1)
+{
+  w1 = _w1;
+  w2 = _w2;
+}
 
 
 template< class P>

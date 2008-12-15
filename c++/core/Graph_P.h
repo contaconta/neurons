@@ -20,6 +20,8 @@ class Graph_P : public VisibleE
 
   Graph_P() : VisibleE(){}
 
+  virtual void prim() = 0;
+
 };
 
 

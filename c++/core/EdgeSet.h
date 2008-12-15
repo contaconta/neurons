@@ -17,7 +17,7 @@ class EdgeSet : public VisibleE
 {
 public:
 
-  vector< P* >* points;
+  vector< Point* >* points;
 
   //Points in the cloud
   vector< E* > edges;
@@ -26,7 +26,7 @@ public:
 
   EdgeSet(string filename);
 
-  void setPointVector(vector< P* >* _points);
+  void setPointVector(vector< Point* >* _points);
 
   void draw();
 
@@ -112,7 +112,7 @@ void EdgeSet<P,E>::draw()
 }
 
 template< class P, class E>
-void EdgeSet<P,E>::setPointVector(vector< P* >* _points)
+void EdgeSet<P,E>::setPointVector(vector< Point* >* _points)
 {
   points = _points;
   for(int i = 0; i < edges.size(); i++)

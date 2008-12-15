@@ -46,28 +46,30 @@ clean :
 cloud.o: ../core/CubeFactory.h ../core/Cube.h ../core/neseg.h ../core/Image.h
 cloud.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
 cloud.o: ../core/Object.h ../core/utils.h ../core/Mask.h ../core/Cube_P.h
-cloud.o: ../core/Cube_data.h ../core/Cube_display.h ../core/Cube_aux.h
-cloud.o: ../core/Cube_image.h ../core/Cloud.h ../core/Cloud_P.h
-cloud.o: ../core/Point.h ../core/Point2D.h ../core/Point2Do.h
-cloud.o: ../core/Point2Dot.h ../core/Point3D.h
+cloud.o: ../core/Cube_data.h ../core/Cube_display.h
+cloud.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
+cloud.o: ../core/Cloud.h ../core/Cloud_P.h ../core/Point.h ../core/Point2D.h
+cloud.o: ../core/Point2Do.h ../core/Point2Dot.h ../core/Point3D.h
+cloud.o: ../core/Point3Dt.h ../core/Point3Do.h ../core/Point3Dot.h
 dfactorial.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
 generalParser.o: ../core/Parser.h ../core/utils.h ../core/Mask.h
 generalParser.o: ../core/polynomial.h
 graph.o: ../core/CubeFactory.h ../core/Cube.h ../core/neseg.h ../core/Image.h
 graph.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
 graph.o: ../core/Object.h ../core/utils.h ../core/Mask.h ../core/Cube_P.h
-graph.o: ../core/Cube_data.h ../core/Cube_display.h ../core/Cube_aux.h
-graph.o: ../core/Cube_image.h ../core/Graph.h ../core/Cloud.h
-graph.o: ../core/Cloud_P.h ../core/Point.h ../core/Point2D.h
-graph.o: ../core/Point2Do.h ../core/Point2Dot.h ../core/Point3D.h
-graph.o: ../core/EdgeSet.h ../core/Edge.h ../core/EdgeW.h ../core/Graph_P.h
-graph.o: ../core/GraphFactory.h
+graph.o: ../core/Cube_data.h ../core/Cube_display.h
+graph.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
+graph.o: ../core/Graph.h ../core/Cloud.h ../core/Cloud_P.h ../core/Point.h
+graph.o: ../core/Point2D.h ../core/Point2Do.h ../core/Point2Dot.h
+graph.o: ../core/Point3D.h ../core/Point3Dt.h ../core/Point3Do.h
+graph.o: ../core/Point3Dot.h ../core/EdgeSet.h ../core/Edge.h ../core/EdgeW.h
+graph.o: ../core/Edge2W.h ../core/Graph_P.h ../core/GraphFactory.h
 hermitePolynomials.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
 hermitePolynomials.o: ../core/Cube.h ../core/neseg.h ../core/Image.h
 hermitePolynomials.o: ../core/VisibleE.h ../core/Visible.h ../core/Object.h
 hermitePolynomials.o: ../core/Cube_P.h ../core/Cube_data.h
-hermitePolynomials.o: ../core/Cube_display.h ../core/Cube_aux.h
-hermitePolynomials.o: ../core/Cube_image.h
+hermitePolynomials.o: ../core/Cube_display.h ../core/Cube_drawBetween.h
+hermitePolynomials.o: ../core/Cube_aux.h ../core/Cube_image.h
 matlabControl.o: ../core/utils.h ../core/Mask.h ../core/polynomial.h
 neuronToMicrometers.o: ../core/Image.h ../core/neseg.h ../core/polynomial.h
 neuronToMicrometers.o: ../core/VisibleE.h ../core/Visible.h ../core/Object.h
@@ -75,5 +77,6 @@ neuronToMicrometers.o: ../core/utils.h ../core/Mask.h
 point.o: ../core/CubeFactory.h ../core/Cube.h ../core/neseg.h ../core/Image.h
 point.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
 point.o: ../core/Object.h ../core/utils.h ../core/Mask.h ../core/Cube_P.h
-point.o: ../core/Cube_data.h ../core/Cube_display.h ../core/Cube_aux.h
-point.o: ../core/Cube_image.h ../core/Point3D.h ../core/Point.h
+point.o: ../core/Cube_data.h ../core/Cube_display.h
+point.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
+point.o: ../core/Point3D.h ../core/Point.h
