@@ -207,7 +207,7 @@ int main(int argc, char **argv) {
   T2 = gsl_rng_default;
   r = gsl_rng_alloc (T2);
 
-  vector< int > points = pointsBellowThreshold(cborig, 250);
+  vector< int > points = pointsBellowThreshold(cborig, 100);
 
   // Positive points
   for(int i = 0; i < args.number_points; i++){

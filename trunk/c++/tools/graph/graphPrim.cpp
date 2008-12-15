@@ -21,6 +21,7 @@
 #include <argp.h>
 #include "Graph.h"
 #include "Cloud.h"
+#include "CloudFactory.h"
 
 using namespace std;
 /** Variables for the arguments.*/
@@ -97,9 +98,11 @@ int main(int argc, char **argv) {
           arguments.args[0], arguments.args[1]);
 
   //Code starts here
-  Cloud<Point3D>* cl = new Cloud<Point3D>(arguments.args[0]);
+//   Cloud_P* cl = CloudFactory::load(arguments.args[0]);
+  Cloud<Point3Dt>* cl = new Cloud<Point3Dt>(arguments.args[0]);
+//   Graph_P* gr = GraphFactory
 
-  Graph<Point3D,Edge<Point3D> >* gr = new Graph<Point3D,Edge<Point3D> >(cl);
+  Graph<Point3Dt,Edge<Point3Dt> >* gr = new Graph<Point3Dt,Edge<Point3Dt> >(cl);
   gr->prim();
   gr->saveToFile(string(arguments.args[1]));
 }

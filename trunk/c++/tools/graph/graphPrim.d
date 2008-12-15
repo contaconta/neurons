@@ -164,4 +164,5 @@ tools/graph/graphPrim.o tools/graph/graphPrim.d: tools/graph/graphPrim.cpp /usr/
   core/Point2D.h core/Point2Do.h core/Point2Dot.h core/Point3D.h \
   core/Point3Dt.h core/Point3Do.h core/Point3Dot.h core/utils.h \
   core/Mask.h core/polynomial.h core/VisibleE.h core/EdgeSet.h \
-  core/Edge.h core/EdgeW.h core/Edge2W.h core/Graph_P.h core/Cloud.h
+  core/Edge.h core/EdgeW.h core/Edge2W.h core/Graph_P.h core/Cloud.h \
+  core/CloudFactory.h

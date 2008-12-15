@@ -42,7 +42,6 @@ public:
       return NULL;
     }
   }
-
 };
 
 
