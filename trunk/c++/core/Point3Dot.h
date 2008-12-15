@@ -6,12 +6,12 @@
 #include <vector>
 #include <fstream>
 
-#include "Point.h"
+#include "Point3Do.h"
 
 using namespace std;
 
 /** A point in 3D*/
-class Point3Dot : public Point
+class Point3Dot : public Point3Do
 {
 public:
 

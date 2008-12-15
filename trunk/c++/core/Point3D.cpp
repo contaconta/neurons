@@ -29,6 +29,7 @@ void Point3D::draw(float width){
 }
 
 void Point3D::save(ostream &out){
+  // printf("Point3D::save\n");
   for(int i = 0; i < 2; i++)
     out << coords[i] << " ";
   out << coords[2] << std::endl;
