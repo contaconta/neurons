@@ -12,7 +12,7 @@ public:
 
   EdgeW() : Edge< P >() {w=-1;}
 
-  EdgeW(vector< P* >* _points, int _p0, int _p1, double _w) :
+  EdgeW(vector< Point* >* _points, int _p0, int _p1, double _w=-1) :
     Edge< P >(_points, _p0, _p1)
   {
     w = _w;

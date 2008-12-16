@@ -15,14 +15,7 @@ class Point3Dot : public Point3Do
 {
 public:
 
-  vector< float > coords;
-
-  float theta;
-
-  float phi;
-
   int type; //-1 or 1 according to the class
-
 
   Point3Dot();
 
