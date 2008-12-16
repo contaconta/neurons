@@ -13,7 +13,7 @@ public:
 
   Edge2W() : Edge< P >() {w1=-1; w2=-1;}
 
-  Edge2W(vector< Point* >* _points, int _p0, int _p1, double _w1, double _w2);
+  Edge2W(vector< Point* >* _points, int _p0, int _p1, double _w1=1, double _w2=0);
 
   void draw();
 

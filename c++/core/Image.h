@@ -585,8 +585,8 @@ void Image<T>::draw()
       min_val = 255;
       max_val = 0;
     } else{
-      min_val = 1e6;
-      max_val = -1e6;
+      min_val = 1e3;
+      max_val = -1e3;
     }
     for(int x = 0; x < width; x++)
       for(int y = 0; y < height; y++){

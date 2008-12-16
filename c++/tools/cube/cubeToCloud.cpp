@@ -189,16 +189,24 @@ int main(int argc, char **argv) {
   Cloud_P* cloud;
   if(args.save_orientation && args.save_type){
     cloud = new Cloud< Point3Dot >();
-    mode = c3Dot;}
+    mode = c3Dot;
+    printf("Mode = 3Dot\n");
+  }
   if(args.save_orientation && !args.save_type){
     cloud = new Cloud< Point3Do >();
-    mode = c3Do;}
+    mode = c3Do;
+    printf("Mode = 3Do\n");
+  }
   if(!args.save_orientation && args.save_type){
     cloud = new Cloud< Point3Dt >();
-    mode = c3Dt;}
+    mode = c3Dt;
+    printf("Mode = 3Dt\n");
+  }
   if(!args.save_orientation && !args.save_type){
     cloud = new Cloud< Point3D >();
-    mode = c3D;}
+    mode = c3D;
+    printf("Mode = 3D\n");
+  }
 
   // Random number generation
   const gsl_rng_type * T2;
@@ -238,7 +246,8 @@ int main(int argc, char **argv) {
                                               micr[1], micr[2],
                                               theta->at(idx[0], idx[1], idx[2]),
                                               phi->at(idx[0], idx[1], idx[2]),1
-                                              ));
+                                              )
+                                );
         break;
       }
   }
@@ -272,8 +281,9 @@ int main(int argc, char **argv) {
         cloud->points.push_back(new Point3Dot(micr[0],
                                               micr[1], micr[2],
                                               theta->at(idx[0], idx[1], idx[2]),
-                                              phi->at(idx[0], idx[1], idx[2]),-1
-                                              ));
+                                              phi->at(idx[0], idx[1], idx[2]),
+                                              -1)
+                                );
         break;
       }
 
