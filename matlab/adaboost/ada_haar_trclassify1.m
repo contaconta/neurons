@@ -3,7 +3,7 @@ function h = ada_haar_trclassify1(feature_index, weak_learner, SET)
 %   Training classification - classify the entire training SET for a given
 %   weak learner
 %
-%   h = ada_haar_trclassify1(weak_learner, SET, IMSIZE)
+%   h = ada_haar_trclassify1(feature_index, weak_learner, SET)
 %
 %
 %

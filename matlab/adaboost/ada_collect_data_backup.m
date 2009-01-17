@@ -13,10 +13,8 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 %   [POS_EXAMPLES NEG_EXAMPLES] from the training set.  Optional argument
 %   'v' for verbose output.
 %
-%   TRAIN       = ada_collect_data(DATASETS, 'train');
-%   VALIDATION  = ada_collect_data(DATASETS, 'validation')
-%   TRAIN       = ada_collect_data(DATASETS, 'update', TRAIN, CASCADE, LEARNERS);
-%   VALIDATION  = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
+%   TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train');
+%   TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train', 'update', TRAIN, CASCADE);
 %
 %   Copyright 2008 Kevin Smith
 %
@@ -27,7 +25,7 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 count = 1;
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
-if  ~strcmp(set_type, 'update')   %nargin == 2
+if nargin == 2
     for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
         if c == 1
@@ -133,36 +131,29 @@ if  ~strcmp(set_type, 'update')   %nargin == 2
 end
 
 
-%% update collection: NEGATIVE examples are updated with False Positives.
-%% also:  PRECOMPUTE the feature responses to these new examples.
-if strcmp(set_type, 'update')
+%% update collection: NEGATIVE examples are updated with False Positives
+if nargin > 6
 
-    SET = varargin{1};
-    DETECTOR = varargin{2};
-    LEARNERS = varargin{3};
+    SET = varargin{2};
+    DETECTOR = varargin{3};
     DELTA = DATASETS.delta;     % how many pixels to skip by default when scanning
+    
+    %% task 1: build a collection of false positive training images
     
     % construct a list of files to search in
     d = ada_trainingfiles(DATASETS.filelist, 'update', '-');   
     
-    % find a list of the current set of True Negatives in the data set
-    TN_LIST = get_true_negatives(SET, DETECTOR);
-    
-
-    % <===== HERE IS WHERE I NEED TO WORK FROM!!!
-    
-    
-    % randomly sample from the update set to replace the True Negatives
-    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, []);
+    % randomly sample from the update set to generate a FP_LIST
+    FP_LIST = get_old_FPs(SET, DETECTOR);
+    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST);
     if ~success
         disp('    ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
         FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST);
     end
     
-        keyboard;
     
     
-    % randomly select negative examples
+    %% task 2: randomly select up to NEG_LIM new NEGATIVE examples
     NUM_EXAMPLES = min(NEG_LIM, length(FP_LIST));
     inds = randsample(1:length(FP_LIST),NUM_EXAMPLES);      % sample with replacement from FP_LIST
     
@@ -175,22 +166,12 @@ if strcmp(set_type, 'update')
 end  
     
         
-
-%% alphabetize the fields of the set
 SET = orderfields(SET);   
 
 
+%% SUB - FUNCTIONS
 
 
-
-
-
-
-
-
-
-
-% SUB - FUNCTIONS
 
 function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST)
 
@@ -277,11 +258,6 @@ success = 1;
 disp(['   ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
 
 
-
-
-
-
-
 function FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST)
 
 
@@ -358,51 +334,28 @@ end
 
 
 
-function TN_LIST = get_true_negatives(SET, DETECTOR)
-
-C = ada_classify_set(DETECTOR, SET);
-
-TN_LIST = (C == SET.class) .* ~SET.class;
-
-TN_LIST = find(TN_LIST);
-
-disp(['   ...found ' num2str(length(TN_LIST)) ' TNs and ' num2str( length(find(SET.class == 0)) - length(TN_LIST)) ' FPs in previous data set ']);
-
-
 
 
 
 
 function FP_LIST = get_old_FPs(SET, DETECTOR)
 
-% disp('   ...collecting FPs from previous data set');
-% 
-% FP_LIST = [];
-% N = SET([SET.class] == 0);
-% 
-% for i = 1:length(N)
-% 
-%     %C = ada_classify_cascade(DETECTOR,  N(i), [0 0]);
-%     C = ada_classify_set(DETECTOR, SET);
-% 
-%     if C
-%         FP_LIST = [FP_LIST N(i)];
-%     end
-%     
-% end
-% 
-% disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
+disp('   ...collecting FPs from previous data set');
 
+FP_LIST = [];
+N = SET([SET.class] == 0);
 
+for i = 1:length(N)
 
-C = ada_classify_set(DETECTOR, SET);
+    C = ada_classify_cascade(DETECTOR,  N(i), [0 0]);
 
-FP_LIST = (C ~= SET.class) .* ~SET.class;
-
-FP_LIST = find(FP_LIST);
+    if C
+        FP_LIST = [FP_LIST N(i)];
+    end
+    
+end
 
 disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
-
 
 
 

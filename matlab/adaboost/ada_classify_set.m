@@ -68,6 +68,8 @@ for s = 1:length(CASCADE)
 end
 
 
+
+
 %% each contains a row vector of weak classifications given responses in f
 function h = weak_classify(CLASSIFIER, f)
 
