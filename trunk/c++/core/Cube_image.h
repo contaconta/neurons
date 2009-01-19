@@ -620,8 +620,6 @@ void Cube<T,U>::calculate_derivative
   this->convolve_horizontally(mask_x, output, true);
   output->convolve_vertically(mask_y, tmp,    true);
   tmp->convolve_depth(        mask_z, output, true);
-
-
 }
 
 

@@ -45,7 +45,17 @@ string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,
                          string directory)
 {
-  return "";
+  string ret = directory + "/g";
+  for(int i = 0; i < order_x; i++)
+    ret = ret + "x";
+  for(int i = 0; i < order_y; i++)
+    ret = ret + "y";
+  for(int i = 0; i < order_z; i++)
+    ret = ret + "z";
+  char buff[512];
+  sprintf(buff, "_%.02f_%.02f.nfo", sigma_x, sigma_z);
+  ret = ret + buff;
+  return ret;
 }
 
 int   getFileSize(string path)
@@ -159,6 +169,34 @@ void saveVectorDouble(vector< double > &vc, string filename){
   for(int i = 0; i < vc.size(); i++)
     out << vc[i] << std::endl;
   out.close();
+}
+
+vector< double > readVectorDouble(string filename){
+  assert(fileExists(filename));
+  std::ifstream in(filename.c_str());
+  if(!in.good())
+    {
+      printf("readVectorDouble::The file %s can not be opened\n",filename.c_str());
+      exit(0);
+    }
+  vector< double > toReturn;
+  string s;
+  while(getline(in,s))
+    {
+      stringstream ss(s);
+      double d;
+      while(!ss.fail()){
+        ss >> d;
+        if(!ss.fail()){
+          toReturn.push_back(d);
+        }
+      }
+    }
+
+  in.close();
+  return toReturn;
+
+
 }
 
 
