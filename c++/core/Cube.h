@@ -61,6 +61,7 @@ public:
   unsigned int wholeTextureTrue;
   GLuint wholeTextureDepth;
 
+  string fileParams;
 
   int fildes;
 

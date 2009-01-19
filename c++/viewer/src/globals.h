@@ -9,7 +9,7 @@ double zNear3D = 30;
 double zFar3D = 1000;
 double disp3DX = 0;
 double disp3DY = 0;
-double disp3DZ = 1000;
+double disp3DZ = 200;
 double rot3DX = 0;
 double rot3DY = 0;
 

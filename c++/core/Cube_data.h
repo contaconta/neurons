@@ -1,6 +1,9 @@
 template <class T, class U>
 void Cube<T,U>::load_parameters(string filenameParams)
  {
+
+   fileParams = filenameParams;
+
    filenameVoxelData = "";
 
    directory = getDirectoryFromPath(filenameParams);

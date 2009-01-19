@@ -67,6 +67,8 @@ bool isNumber(string s);
 /** Saves a vector of doubles to a file*/
 void saveVectorDouble(vector< double >& vc, string filename);
 
+vector< double > readVectorDouble(string filename);
+
 void saveFloatVector( vector< float >& vc, string filename);
 
 

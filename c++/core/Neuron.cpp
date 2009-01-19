@@ -1737,6 +1737,8 @@ void Neuron::renderEdgeInCube
   vector<int> p2p0(3);
   int p1p0mod = 0;
   int dot_p1p0p2p1;
+  float p2p1length_2 = sqrt(p2p1mod)/2;
+  float d_p_indexes_origin;
 
   //We assume that voxelWidth aprox voxelheight aprox voxelDepth = 0.8
 //   radius = (int)(radius/0.8);
@@ -1767,7 +1769,11 @@ void Neuron::renderEdgeInCube
 
                 dist_calc = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
 
-                if(dist_calc < width){
+                // Calculates the distance from the point to the middle of the edge
+                d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0]) + 
+                                           (y-indexes_orig[1]) * (y-indexes_orig[1]) );
+                if((dist_calc <= width) && (d_p_indexes_origin < p2p1length_2*1.2) )
+                  {
                   cube->put(x,y,z,0);
                   if(theta!=NULL){
                     float theta_v = atan2((p2->coords[1]-p1->coords[1]),
