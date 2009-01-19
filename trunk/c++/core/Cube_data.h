@@ -1201,6 +1201,10 @@ Cube<float,double>*  Cube<T,U>::create_blank_cube(string name)
   string vl = ".vl";
   string nfo = ".nfo";
 
+  if(fileExists(this->directory + name + nfo) &&
+     fileExists(this->directory + name + vl))
+    return new Cube<float, double>(this->directory + name + nfo);
+
   Cube<float,double>* toReturn = new Cube<float,double>();
   toReturn->cubeHeight = cubeHeight;
   toReturn->cubeDepth  = cubeDepth;
