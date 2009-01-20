@@ -407,6 +407,8 @@ void Cube<T,U>::convolve_depth(vector< float >& mask, Cube<float,double>* output
         for(q = -mask_side; q <=mask_side; q++){
           if(z+q<0)
             result+=this->at(x,y,0)*mask[mask_side + q];
+          else if (z+q >= cubeDepth)
+            result+=this->at(x,y,cubeDepth-1)*mask[mask_side + q];
           else
             result += this->at(x,y,z+q)*mask[mask_side + q];
         }
@@ -425,6 +427,8 @@ void Cube<T,U>::convolve_depth(vector< float >& mask, Cube<float,double>* output
         for(q = -mask_side; q <=mask_side; q++){
           if(z+q >= cubeDepth)
             result+=this->at(x,y,cubeDepth-1)*mask[mask_side + q];
+          else if(z+q<0)
+            result+=this->at(x,y,0)*mask[mask_side + q];
           else
             result += this->at(x,y,z+q)*mask[mask_side + q];
         }
