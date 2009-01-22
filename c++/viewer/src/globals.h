@@ -1,6 +1,13 @@
 #ifndef GLOBAL_VARIABLES_FILE_H_
 #define GLOBAL_VARIABLES_FILE_H_
 
+#include "Neuron.h"
+#include "CubeFactory.h"
+#include "CloudFactory.h"
+#include "GraphFactory.h"
+#include "utils.h"
+#include "Axis.h"
+#include "Contour.h"
 
 //Camera parameters
 double fovy3D = 60;
@@ -72,7 +79,7 @@ enum NeuronPointActions{
 
 int   ascEditor_action = 0;
 float asc_point_width = 1.0;
-bool  ascEditor2D = false; 
+bool  ascEditor2D = false;
 
 
 
@@ -82,7 +89,8 @@ MOD_VIEWER ---- the mode per default.
 MOD_ASCEDITOR - to edit asc files
 */
 enum MayorMode { MOD_VIEWER,
-                 MOD_ASCEDITOR };
+                 MOD_ASCEDITOR,
+                 MOD_CONTOUREDITOR};
 
 int majorMode = MOD_VIEWER;
 
@@ -120,11 +128,27 @@ string volume_name;
 /** Objects that are there.*/
 vector< string >    objectNames;
 vector< VisibleE* > toDraw;
+vector< Contour<Point>* > lContours;
 
 // Parameters
 int argcp;
 char ** argvp;
 
+// Shaders
+GLuint shader_v = 0; // vertex shader id
+GLuint shader_f = 0; // fragment shader id
+GLuint shader_p = 0; // program shader id
 
+// Control of the contours editor
+
+enum ContourPointActions{
+  CPA_SELECT,
+  CPA_ADD_POINTS,
+  CPA_NONE
+};
+
+ContourPointActions contourEditor_action = CPA_SELECT;
+
+Contour<Point>* currentContour = 0;
 
 #endif

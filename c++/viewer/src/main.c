@@ -46,7 +46,8 @@ static struct argp_option options[] = {
   {"verbose"   ,  'v', 0, 0,  "Produce verbose output" },
   {"projection",  'p', 0, 0,
    "Toogles to maximum projection" },
-  {"ascEditor",   'e', 0, 0, "Turns the ascEditor mode on"}, 
+  {"ascEditor",   'e', 0, 0, "Turns the ascEditor mode on"},
+  {"contourEditor",   'c', 0, 0, "Turns the contourEditor mode on"},
   { 0 }
 };
 
@@ -68,6 +69,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case 'e':
       majorMode = MOD_ASCEDITOR;
+      break;
+    case 'c':
+      majorMode = MOD_CONTOUREDITOR;
       break;
 
     case ARGP_KEY_ARG:
@@ -155,6 +159,10 @@ main (int argc, char *argv[])
   if(majorMode == MOD_ASCEDITOR){
     GtkWidget* controlsAsc = create_ascEditControls();
     gtk_widget_show (controlsAsc);
+  }
+  else if(majorMode == MOD_CONTOUREDITOR){
+    GtkWidget* contoursEditor = create_ascEditControlsContours();
+    gtk_widget_show (contoursEditor);
   }
 
 

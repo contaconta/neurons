@@ -2,7 +2,7 @@
 
 Point3D::Point3D() : Point()
 {
-  coords.resize(3);
+  //coords.resize(3);
 }
 
 

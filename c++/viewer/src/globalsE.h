@@ -7,6 +7,7 @@
 #include "GraphFactory.h"
 #include "utils.h"
 #include "Axis.h"
+#include "Contour.h"
 
 //Camera parameters
 extern double fovy3D;
@@ -94,7 +95,8 @@ MOD_VIEWER ---- the mode per default.
 MOD_ASCEDITOR - to edit asc files
 */
 enum MayorMode { MOD_VIEWER,
-                 MOD_ASCEDITOR };
+                 MOD_ASCEDITOR,
+                 MOD_CONTOUREDITOR};
 
 extern int majorMode;
 
@@ -111,11 +113,28 @@ extern string volume_name;
 
 extern vector< string >    objectNames;
 extern vector< VisibleE* > toDraw;
+extern vector< Contour<Point>* > lContours;
 
 
 // Parameters
 extern int argcp;
 extern char **argvp;
+
+// Shaders
+extern GLuint shader_v; // vertex shader id
+extern GLuint shader_f; // fragment shader id
+extern GLuint shader_p; // program shader id
+
+// Contours
+enum ContourPointActions{
+  CPA_SELECT,
+  CPA_ADD_POINTS,
+  CPA_NONE
+};
+
+extern ContourPointActions contourEditor_action;
+
+extern Contour<Point>* currentContour;
 
 
 #endif

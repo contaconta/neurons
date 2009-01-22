@@ -27,7 +27,7 @@
 void undo()
 {
   string neuron_name_save = neuron_name + ".save";
-  
+
   // Resets the neuron
   neuronita->axon.resize(0);
   neuronita->dendrites.resize(0);
@@ -364,7 +364,7 @@ void unProjectMouseAsc(int mouse_lsat_x, int mouse_last_y)
     neuronita->save(neuron_name_save);
     if(last_point != NULL){
       printf("P_name: %s P_parent: %s P_parent_kids %i\n",
-             last_point->name.c_str(), last_point->parent->name.c_str(), 
+             last_point->name.c_str(), last_point->parent->name.c_str(),
              last_point->parent->childs.size());
         neuronita->applyRecursiveOffset
           (last_point->parent,
@@ -567,9 +567,6 @@ void unProjectMouseAsc(int mouse_lsat_x, int mouse_last_y)
     printf("need_redraw stuff\n");
   }
 }
-
-
-
 
 void exposeAsc
 (GtkWidget       *widget,

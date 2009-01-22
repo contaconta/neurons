@@ -223,3 +223,39 @@ on_move_closer_point_clicked           (GtkButton       *button,
 void
 on_delete_segment_from_point_clicked   (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_shaders_toggled                     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_select_shaders_changed              (GtkComboBox     *combobox,
+                                        gpointer         user_data);
+
+void
+on_shaders_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_select_shaders_changed              (GtkComboBox     *combobox,
+                                        gpointer         user_data);
+
+void
+on_add_contour_point_clicked           (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_create_contour_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_save_contour_clicked                (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_clear_contour_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_remove_contour_clicked              (GtkButton       *button,
+                                        gpointer         user_data);

@@ -181,7 +181,6 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
 void unProjectMouse()
 {
 
-
   GLint viewport[4];
   GLdouble mvmatrix[16], projmatrix[16];
   GLdouble wx, wy, wz;
@@ -217,6 +216,9 @@ void unProjectMouse()
   if(majorMode == MOD_ASCEDITOR){
     unProjectMouseAsc(mouse_last_x, mouse_last_y);
   }
+  if(majorMode == MOD_CONTOUREDITOR){
+    unProjectMouseContour(mouse_last_x, mouse_last_y);
+  }
 
 }
 
@@ -238,7 +240,10 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
   mouse_last_y=y;
   if( mouse_buttons[2] )
   {
-    disp3DZ -= (float) 0.20f * diffx;
+    if( mouse_buttons[1] )
+        disp3DZ -= (float) 1.0f * diffx;
+    else
+        disp3DZ -= (float) 0.20f * diffx;
     on_drawing3D_expose_event(widget, NULL, user_data);
   }
   else
@@ -391,3 +396,93 @@ on_drawing3D_scroll_event              (GtkWidget       *widget,
   return FALSE;
 }
 
+//-------------------------------------------------
+// SHADERS
+
+void
+on_shaders_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget* ascSelectShaders = create_ascSelectShaders();
+    gtk_widget_show (ascSelectShaders);
+}
+
+char *shaders_textFileRead(char *fn)
+{
+	FILE *fp;
+	char *content = NULL;
+
+	int count=0;
+
+	if (fn != NULL) {
+		fp = fopen(fn,"rt");
+
+		if (fp != NULL) {
+
+      fseek(fp, 0, SEEK_END);
+      count = ftell(fp);
+      rewind(fp);
+
+			if (count > 0) {
+				content = (char *)malloc(sizeof(char) * (count+1));
+				count = fread(content,sizeof(char),count,fp);
+				content[count] = '\0';
+			}
+			fclose(fp);
+		}
+	}
+	return content;
+}
+
+void shaders_activation(gint active)
+{
+    if(active!=0)
+    {
+        char *vs = NULL,*fs = NULL,*fs2 = 0;
+
+        shader_v = glCreateShader(GL_VERTEX_SHADER);
+        shader_f = glCreateShader(GL_FRAGMENT_SHADER);
+
+        vs = shaders_textFileRead("../shaders/edge.vert");
+        fs = shaders_textFileRead("../shaders/edge.frag");
+
+        const char * ff = fs;
+        const char * vv = vs;
+
+        glShaderSource(shader_v, 1, &vv,0);
+        glShaderSource(shader_f, 1, &ff,0);
+
+        free(vs);
+        free(fs);
+
+        glCompileShader(shader_v);
+        glCompileShader(shader_f);
+
+        shader_p = glCreateProgram();
+        glAttachShader(shader_p, shader_f);
+        glAttachShader(shader_p, shader_v);
+
+        glLinkProgram(shader_p);
+        glUseProgram(shader_p);
+	}
+	else
+	{
+		glLinkProgram(0);
+		glUseProgram(0);
+
+		glDeleteShader(shader_v);
+		glDeleteShader(shader_f);
+		glDeleteProgram(shader_p);
+	}
+}
+
+void
+on_select_shaders_changed              (GtkComboBox     *combobox,
+                                        gpointer         user_data)
+{
+    gint active = gtk_combo_box_get_active(combobox);
+    shaders_activation(active);
+    // Set filterId used by the fragment shader
+    GLint filterId = glGetUniformLocation(shader_p,"filterId");
+    glUniform1i(filterId,active);
+}

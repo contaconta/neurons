@@ -15,7 +15,7 @@ class Point3D : public Point
 {
 public:
 
-  vector< float > coords;
+  vector< float > coordsV;
 
   int type;
 

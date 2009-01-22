@@ -4,3 +4,5 @@
 
 GtkWidget* create_ascEditor (void);
 GtkWidget* create_ascEditControls (void);
+GtkWidget* create_ascSelectShaders (void);
+GtkWidget* create_ascEditControlsContours (void);

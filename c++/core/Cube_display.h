@@ -211,7 +211,7 @@ void Cube<T,U>::load_texture_brick(int row, int col)
 //                     texels[depth_z + depth_y + x] = 0;
 //                   }
 //                   else{
-                    texels[depth_z + depth_y + x] = 
+                    texels[depth_z + depth_y + x] =
                       (this->at(col_offset+x,row_offset+y,z) - min_texture)
                       / (max_texture - min_texture);
 //                   }
@@ -221,7 +221,7 @@ void Cube<T,U>::load_texture_brick(int row, int col)
           fflush(stdout);
         }
       printf("]\n");
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE, 
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE,
                    texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE,
                    GL_FLOAT, texels);
 
@@ -1679,7 +1679,7 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
   glBegin(GL_LINES);
 
   glEnd();
-  
+
   //Draws the coordinates
 }
 
