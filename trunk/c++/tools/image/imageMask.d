@@ -165,4 +165,7 @@ tools/image/imageMask.o tools/image/imageMask.d: tools/image/imageMask.cpp /usr/
   core/ascParser2.h core/Neuron.h core/Cube.h core/Image.h core/Cube_P.h \
   /usr/lib/gcc/i486-linux-gnu/4.2.4/include/omp.h core/Cube_data.h \
   core/Cube_display.h core/Cube_drawBetween.h core/Cube_aux.h \
-  core/Cube_image.h /usr/include/argp.h
+  core/Cube_image.h core/CloudFactory.h core/Cloud.h core/Cloud_P.h \
+  core/Point.h core/Point2D.h core/Point2Do.h core/Point2Dot.h \
+  core/Point3D.h core/Point3Dt.h core/Point3Do.h core/Point3Dot.h \
+  /usr/include/argp.h

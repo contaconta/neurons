@@ -18,6 +18,9 @@ class ascParser2;
 #include "VisibleE.h"
 #include "Image.h"
 #include "utils.h"
+#include "CloudFactory.h"
+#include "Cloud_P.h"
+#include "Cube_P.h"
 
 using namespace std;
 //using std::string;
@@ -266,7 +269,8 @@ public:
                     Cube<float,double>* theta = NULL,
                     Cube<float,double>* phi = NULL,
                     Cube<float,double>* scale = NULL,
-                    float min_width = 0);
+                    float min_width = 0,
+                    float renderScale = 1.0);
 
   /**Draws the segment between P1 and P2 in the cube with radius width*/
   void renderEdgeInCube
@@ -274,14 +278,16 @@ public:
    Cube<uchar,ulong>* cube,
    Cube<float,double>* theta = NULL,
    Cube<float,double>* phi = NULL,
-   Cube<float,double>* scale = NULL);
+   Cube<float,double>* scale = NULL,
+   float renderScale = 1.0);
 
   void renderSegmentInCube
   (NeuronSegment* segment, Cube<uchar,ulong>* cube,
    Cube<float, double>* theta = NULL,
    Cube<float, double>* phi = NULL,
    Cube<float,double>* scale = NULL,
-   float min_width = 0);
+   float min_width = 0,
+   float renderScale = 1.0);
 
   /** Draws the dendrite in an image.*/
   void renderInImage(Image<float>* img,
@@ -343,18 +349,31 @@ public:
   void micrometersToNeuron(vector< float > micromCoords, vector< float > &neuronCoords);
 
   /** Gets some points and edges to train EM on them */
-  void toCloud
+  void toCloudOld
   (string points_file,
    string edges_file,
    float width_samples,
    Cube<uchar, ulong>* cube);
 
-  void toCloud(std::ofstream& points,
+  void toCloudOld(std::ofstream& points,
                std::ofstream& edges,
                float width_sampled,
                NeuronSegment* segment,
                Cube<uchar, ulong>* cube,
                int& last_point_number);
+
+  Cloud_P* toCloud(string cloudName,
+               bool saveOrientation=false,
+               bool saveType=false,
+               Cube_P* cubeLimit = NULL);
+
+
+  void toCloud(NeuronSegment* segment,
+               Cloud_P* cloud,
+               bool saveOrientation = false,
+               bool saveType = false,
+               Cube_P* cubeLimit = NULL);
+
 
   /** To parse the neuron.*/
   ascParser2* asc;

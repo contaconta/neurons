@@ -1606,16 +1606,17 @@ void Neuron::renderInCube
  Cube<float, double>* theta,
  Cube<float, double>* phi,
  Cube<float, double>* scale,
- float min_width
+ float min_width,
+ float renderScale
  )
 {
   positive_mask->put_all(255);
   printf("  going for segments [");
   for(int i = 0; i < axon.size(); i++){
-    renderSegmentInCube(axon[i], positive_mask, theta, phi, scale,  min_width);
+    renderSegmentInCube(axon[i], positive_mask, theta, phi, scale,  min_width, renderScale);
   }
   for(int i = 0; i < dendrites.size(); i++){
-    renderSegmentInCube(dendrites[i], positive_mask, theta, phi, scale,  min_width);
+    renderSegmentInCube(dendrites[i], positive_mask, theta, phi, scale,  min_width, renderScale);
     printf("#"); fflush(stdout);
   }
   printf("  ]\n");
@@ -1685,18 +1686,136 @@ NeuronSegment* Neuron::splitSegment(NeuronSegment* toSplit, int pointIdx)
   return toSplit->childs[1];
 }
 
+// void Neuron::renderEdgeInCube
+// (NeuronPoint* _p1, NeuronPoint* _p2,
+ // Cube<uchar,ulong>* cube,
+ // Cube<float,double>* theta,
+ // Cube<float,double>* phi,
+ // Cube<float, double>* scale,
+ // float renderScale
+// )
+// {
+  // //This is a hack to convert the rendering from neuron coordinates to micrometers
+  // //We will create the points p1 and p2 with the coordinates of _p1 and _p2 in global
+  // // micrometers and not in neuron ones.
+  // NeuronPoint* p1 = new NeuronPoint();
+  // NeuronPoint* p2 = new NeuronPoint();
+
+  // this->neuronToMicrometers(_p1->coords, p1->coords);
+  // this->neuronToMicrometers(_p2->coords, p2->coords);
+
+  // double seglen = sqrt(
+    // (p1->coords[0]-p2->coords[0])*(p1->coords[0]-p2->coords[0]) +
+    // (p1->coords[1]-p2->coords[1])*(p1->coords[1]-p2->coords[1]) +
+    // (p1->coords[2]-p2->coords[2])*(p1->coords[2]-p2->coords[2]) );
+
+  // //Calculates the medium point
+  // vector< float > micrometers(3);
+  // micrometers[0] = (p1->coords[0]+p2->coords[0])/2;
+  // micrometers[1] = (p1->coords[1]+p2->coords[1])/2;
+  // micrometers[2] = (p1->coords[2]+p2->coords[2])/2;
+  // vector< int > indexes_orig(3);
+  // cube->micrometersToIndexes(micrometers, indexes_orig);
+
+  // vector<int> p1idx(3);
+  // cube->micrometersToIndexes(p1->coords, p1idx);
+  // vector<int> p2idx(3);
+  // cube->micrometersToIndexes(p2->coords, p2idx);
+
+  // double dist_calc = 0;
+  // vector<int> p2p1(3);
+  // p2p1[0] = p2idx[0] - p1idx[0];
+  // p2p1[1] = p2idx[1] - p1idx[1];
+  // p2p1[2] = p2idx[2] - p1idx[2];
+  // int p2p1mod =
+    // p2p1[0]*p2p1[0] +
+    // p2p1[1]*p2p1[1] +
+    // p2p1[2]*p2p1[2];
+  // vector<int> p1p0(3);
+  // vector<int> p2p0(3);
+  // int p1p0mod = 0;
+  // int dot_p1p0p2p1;
+  // float p2p1length_2 = sqrt(p2p1mod)/2;
+  // float d_p_indexes_origin;
+
+  // double width_microm = renderScale*(p1->coords[3] + p2->coords[3])/2;
+  // double width_indexes = 3*width_microm/(cube->voxelWidth + cube->voxelHeight + cube->voxelDepth);
+  // // double radius = 5*sqrt((seglen/2)*(seglen/2) + (width_microm/2)*(width_microm/2));
+  // double radius = 5*(p2p1length_2 +  width_microm);
+
+  // //We assume that voxelWidth aprox voxelheight aprox voxelDepth = 0.8
+// //   radius = (int)(radius/0.8);
+// //   float width = (width_microm / 0.8);
+  // float width = width_microm;
+  // for(int z = (int)max(0.0, indexes_orig[2]-radius);
+      // z < min(double(cube->cubeDepth), indexes_orig[2]+radius);
+      // z++)
+    // for(int y = (int)max(0.0, indexes_orig[1]-radius); 
+        // y < min(double(cube->cubeHeight), indexes_orig[1]+radius);
+        // y++)
+      // for(int x = (int)max(0.0, indexes_orig[0]-radius); 
+              // x < min(double(cube->cubeWidth), indexes_orig[0]+radius);
+              // x++)
+              // {
+                // //Calculates the distance between the point [x,y,z] and
+                // // the edge between p1 and p2
+                // p1p0[0] = p1idx[0]-x;
+                // p1p0[1] = p1idx[1]-y;
+                // p1p0[2] = p1idx[2]-z;
+                // p1p0mod = p1p0[0]*p1p0[0] +
+                          // p1p0[1]*p1p0[1] +
+                          // p1p0[2]*p1p0[2];
+                // p2p0[0] = p2idx[0]-x;
+                // p2p0[1] = p2idx[1]-y;
+                // p2p0[2] = p2idx[2]-z;
+                // dot_p1p0p2p1 = p1p0[0]*p2p1[0] + p1p0[1]*p2p1[1] + p1p0[2]*p2p1[2];
+
+                // dist_calc = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
+
+                // // Calculates the distance from the point to the middle of the edge
+                // d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0]) + 
+                                           // (y-indexes_orig[1]) * (y-indexes_orig[1]) );
+                // if((dist_calc <= width)  &&
+                   // (d_p_indexes_origin < p2p1length_2*1.2) )
+                  // {
+                  // cube->put(x,y,z,0);
+                  // if(theta!=NULL){
+                    // float theta_v = atan2((p2->coords[1]-p1->coords[1]),
+                                          // p2->coords[0]-p1->coords[0]);
+                    // theta->put(x,y,z,theta_v);
+                  // }
+                  // if(phi!=NULL){
+                    // float r_phi = sqrt(
+                                       // (p2->coords[0]-p1->coords[0])*
+                                       // (p2->coords[0]-p1->coords[0]) +
+                                       // (p2->coords[1]-p1->coords[1])*
+                                       // (p2->coords[1]-p1->coords[1]) +
+                                       // (p2->coords[2]-p1->coords[2])*
+                                       // (p2->coords[2]-p1->coords[2])
+                                       // );
+                    // float phi_v = acos((p2->coords[2]-p1->coords[2])/r_phi);
+                    // phi->put(x,y,z,phi_v);
+                  // }
+                  // if(scale!=NULL)
+                    // scale->put(x,y,z,(p1->coords[3] + p2->coords[3])/2);
+                // }
+              // }
+// }
+
 void Neuron::renderEdgeInCube
 (NeuronPoint* _p1, NeuronPoint* _p2,
  Cube<uchar,ulong>* cube,
  Cube<float,double>* theta,
  Cube<float,double>* phi,
- Cube<float, double>* scale
+ Cube<float, double>* scale,
+ float renderScale
 )
 {
-
   //This is a hack to convert the rendering from neuron coordinates to micrometers
   //We will create the points p1 and p2 with the coordinates of _p1 and _p2 in global
   // micrometers and not in neuron ones.
+  //names: p0 -> point to add or not, pm-> point in the middle
+
   NeuronPoint* p1 = new NeuronPoint();
   NeuronPoint* p2 = new NeuronPoint();
 
@@ -1708,100 +1827,111 @@ void Neuron::renderEdgeInCube
     (p1->coords[1]-p2->coords[1])*(p1->coords[1]-p2->coords[1]) +
     (p1->coords[2]-p2->coords[2])*(p1->coords[2]-p2->coords[2]) );
 
-  double width_microm = (p1->coords[3] + p2->coords[3])/2;
-  double radius = 5*sqrt((seglen/2)*(seglen/2) + (width_microm/2)*(width_microm/2));
-
   //Calculates the medium point
-  vector< float > micrometers(3);
-  micrometers[0] = (p1->coords[0]+p2->coords[0])/2;
-  micrometers[1] = (p1->coords[1]+p2->coords[1])/2;
-  micrometers[2] = (p1->coords[2]+p2->coords[2])/2;
-  vector< int > indexes_orig(3);
-  cube->micrometersToIndexes(micrometers, indexes_orig);
+  vector< float > pm(3);
+  pm[0] = (p1->coords[0]+p2->coords[0])/2;
+  pm[1] = (p1->coords[1]+p2->coords[1])/2;
+  pm[2] = (p1->coords[2]+p2->coords[2])/2;
 
-  vector<int> p1idx(3);
-  cube->micrometersToIndexes(p1->coords, p1idx);
-  vector<int> p2idx(3);
-  cube->micrometersToIndexes(p2->coords, p2idx);
+  vector< int > pmi(3);
+  cube->micrometersToIndexes(pm, pmi);
+  vector<int> p1i(3);
+  cube->micrometersToIndexes(p1->coords, p1i);
+  vector<int> p2i(3);
+  cube->micrometersToIndexes(p2->coords, p2i);
 
-  double dist_calc = 0;
-  vector<int> p2p1(3);
-  p2p1[0] = p2idx[0] - p1idx[0];
-  p2p1[1] = p2idx[1] - p1idx[1];
-  p2p1[2] = p2idx[2] - p1idx[2];
-  int p2p1mod =
-    p2p1[0]*p2p1[0] +
-    p2p1[1]*p2p1[1] +
-    p2p1[2]*p2p1[2];
-  vector<int> p1p0(3);
-  vector<int> p2p0(3);
-  int p1p0mod = 0;
-  int dot_p1p0p2p1;
-  float p2p1length_2 = sqrt(p2p1mod)/2;
-  float d_p_indexes_origin;
+  //Width in micrometers of the segment
+  float width  = (p1->coords[3] + p2->coords[3])/2;
+  //The search radius in micrometers, we assume isotropy in micrometers
+  float radius = 1.5*renderScale*sqrt(seglen*seglen/4 + width*width);
+  int radius_x = ceil(double(radius)/cube->voxelWidth);
+  int radius_y = ceil(double(radius)/cube->voxelHeight);
+  int radius_z = ceil(double(radius)/cube->voxelDepth);
 
-  //We assume that voxelWidth aprox voxelheight aprox voxelDepth = 0.8
-//   radius = (int)(radius/0.8);
-//   float width = (width_microm / 0.8);
-  float width = width_microm;
-  for(int z = (int)max(0.0, indexes_orig[2]-radius);
-      z < min(double(cube->cubeDepth), indexes_orig[2]+radius);
-      z++)
-    for(int y = (int)max(0.0, indexes_orig[1]-radius); 
-        y < min(double(cube->cubeHeight), indexes_orig[1]+radius);
-        y++)
-      for(int x = (int)max(0.0, indexes_orig[0]-radius); 
-              x < min(double(cube->cubeWidth), indexes_orig[0]+radius);
-              x++)
-              {
-                //Calculates the distance between the point [x,y,z] and
-                // the edge between p1 and p2
-                p1p0[0] = p1idx[0]-x;
-                p1p0[1] = p1idx[1]-y;
-                p1p0[2] = p1idx[2]-z;
-                p1p0mod = p1p0[0]*p1p0[0] +
-                          p1p0[1]*p1p0[1] +
-                          p1p0[2]*p1p0[2];
-                p2p0[0] = p2idx[0]-x;
-                p2p0[1] = p2idx[1]-y;
-                p2p0[2] = p2idx[2]-z;
-                dot_p1p0p2p1 = p1p0[0]*p2p1[0] + p1p0[1]*p2p1[1] + p1p0[2]*p2p1[2];
+  cube->put_value_in_line(0, p1i[0],p1i[1],p1i[2],
+                          p2i[0],p2i[1],p2i[2]);
 
-                dist_calc = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
+  cube->put_value_in_ellipsoid(0, p1i[0],p1i[1],p1i[2],
+                               ceil(renderScale*p1->coords[3]/cube->voxelWidth),
+                               ceil(renderScale*p1->coords[3]/cube->voxelHeight),
+                               ceil(renderScale*p1->coords[3]/cube->voxelDepth));
+  cube->put_value_in_ellipsoid(0, p2i[0],p2i[1],p2i[2],
+                               ceil(renderScale*p2->coords[3]/cube->voxelWidth),
+                               ceil(renderScale*p2->coords[3]/cube->voxelHeight),
+                               ceil(renderScale*p2->coords[3]/cube->voxelDepth));
 
-                // Calculates the distance from the point to the middle of the edge
-                d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0]) + 
-                                           (y-indexes_orig[1]) * (y-indexes_orig[1]) );
-                if((dist_calc <= width) && (d_p_indexes_origin < p2p1length_2*1.2) )
-                  {
-                  cube->put(x,y,z,0);
-                  if(theta!=NULL){
-                    float theta_v = atan2((p2->coords[1]-p1->coords[1]),
-                                          p2->coords[0]-p1->coords[0]);
-                    theta->put(x,y,z,theta_v);
-                  }
-                  if(phi!=NULL){
-                    float r_phi = sqrt(
-                                       (p2->coords[0]-p1->coords[0])*
-                                       (p2->coords[0]-p1->coords[0]) +
-                                       (p2->coords[1]-p1->coords[1])*
-                                       (p2->coords[1]-p1->coords[1]) +
-                                       (p2->coords[2]-p1->coords[2])*
-                                       (p2->coords[2]-p1->coords[2])
-                                       );
-                    float phi_v = acos((p2->coords[2]-p1->coords[2])/r_phi);
-                    phi->put(x,y,z,phi_v);
-                  }
-                  if(scale!=NULL)
-                    scale->put(x,y,z,(p1->coords[3] + p2->coords[3])/2);
-                }
-              }
+  vector< int > p0i(3);
+  vector< float > p0(3);
+  vector< float > pmp0(3);
+  vector< float > pmp2u(3);
+  vector< float > p0v(3);
+  pmp2u[0] = p2->coords[0] - pm[0];
+  pmp2u[1] = p2->coords[1] - pm[1];
+  pmp2u[2] = p2->coords[2] - pm[2];
+  float pmp2v = sqrt(pmp2u[0]*pmp2u[0] + pmp2u[1]*pmp2u[1] +
+                     pmp2u[2]*pmp2u[2]);
+  pmp2u[0] = pmp2u[0]/pmp2v;   pmp2u[1] = pmp2u[1]/pmp2v;   pmp2u[2] = pmp2u[2]/pmp2v;
+  float pmp0xpmp2u;
+  float vertDist;
+
+  for(int z = (int)max(0, pmi[2]-radius_z);
+      z < min((int)cube->cubeDepth, pmi[2]+radius_z);
+      z++){
+    for(int y = (int)max(0, pmi[1]-radius_y);
+        y < min((int)cube->cubeHeight, pmi[1]+radius_y);
+        y++){
+      for(int x = (int)max(0, pmi[0]-radius_x);
+          x < min((int)cube->cubeWidth, pmi[0]+radius_x);
+          x++)
+        {
+          p0i[0]=x;p0i[1]=y;p0i[2]=z;
+          cube->indexesToMicrometers(p0i, p0);
+          pmp0[0] = p0[0]-pm[0];
+          pmp0[1] = p0[1]-pm[1];
+          pmp0[2] = p0[2]-pm[2];
+          //Computes the projecton of the point in the line of the p2pm
+          pmp0xpmp2u = pmp0[0]*pmp2u[0] + pmp0[1]*pmp2u[1] + pmp0[2]*pmp2u[2];
+          //If it is too far in the projection of the line, do nothing
+          if(fabs(pmp0xpmp2u) > 1.2*seglen/2)
+            continue;
+          //Computes the vertical distance between the point and the line
+          p0v[0] = pmp0[0] - pmp0xpmp2u*pmp2u[0];
+          p0v[1] = pmp0[1] - pmp0xpmp2u*pmp2u[1];
+          p0v[2] = pmp0[2] - pmp0xpmp2u*pmp2u[2];
+          vertDist = sqrt(p0v[0]*p0v[0] + p0v[1]*p0v[1] + p0v[2]*p0v[2]);
+          if( vertDist > width*renderScale)
+            continue;
+          cube->put(x,y,z,0);
+          if(theta!=NULL){
+            float theta_v = atan2((p2->coords[1]-p1->coords[1]),
+                                  p2->coords[0]-p1->coords[0]);
+            theta->put(x,y,z,theta_v);
+          }
+          if(phi!=NULL){
+            float r_phi = sqrt(
+                               (p2->coords[0]-p1->coords[0])*
+                               (p2->coords[0]-p1->coords[0]) +
+                               (p2->coords[1]-p1->coords[1])*
+                               (p2->coords[1]-p1->coords[1]) +
+                               (p2->coords[2]-p1->coords[2])*
+                               (p2->coords[2]-p1->coords[2])
+                               );
+            float phi_v = acos((p2->coords[2]-p1->coords[2])/r_phi);
+            phi->put(x,y,z,phi_v);
+          }
+          if(scale!=NULL)
+            scale->put(x,y,z,(p1->coords[3] + p2->coords[3])/2);
+        }
+    }
+  }
 }
+
+
 
 void Neuron::renderSegmentInCube
 (NeuronSegment* segment, Cube<uchar,ulong>* cube,
  Cube<float, double>* theta, Cube<float, double>* phi,
- Cube<float, double>* scale, float min_width
+ Cube<float, double>* scale, float min_width, float renderScale
 )
 {
 
@@ -1814,40 +1944,44 @@ void Neuron::renderSegmentInCube
     NeuronPoint* p2 = &segment->points[0];
     if((p1->coords[3] > min_width) &&
        (p2->coords[3] > min_width) )
-      renderEdgeInCube(p1, p2, cube, theta, phi, scale);
+      renderEdgeInCube(p1, p2, cube, theta, phi, scale, renderScale);
   }
 
   for(int i = 1; i < segment->points.size(); i++){
     if((segment->points[i-1].coords[3] > min_width) &&
        (segment->points[i].coords[3]   > min_width) )
-      renderEdgeInCube(&segment->points[i-1], &segment->points[i], cube, theta, phi, scale);
+      renderEdgeInCube(&segment->points[i-1], &segment->points[i], cube,
+                       theta, phi, scale, renderScale);
   }
   for(int i = 0; i < segment->childs.size(); i++)
-    renderSegmentInCube(segment->childs[i], cube, theta, phi, scale,  min_width);
+    renderSegmentInCube(segment->childs[i], cube, theta, phi,
+                        scale,  min_width, renderScale);
 
 }
 
 
-void Neuron::toCloud(string points_file,
+void Neuron::toCloudOld(string points_file,
                      string edges_file,
                      float width_sampled,
                      Cube<uchar, ulong>* cube)
 {
+
   std::ofstream points_of(points_file.c_str());
   std::ofstream edges_of(edges_file.c_str());
+
   int point_number = 0;
   for(int i = 0; i < dendrites.size(); i++)
-    toCloud(points_of,
+    toCloudOld(points_of,
             edges_of, width_sampled,
             dendrites[i], cube, point_number);
   for(int i = 0; i < axon.size(); i++)
-    toCloud(points_of, edges_of,
+    toCloudOld(points_of, edges_of,
             width_sampled, axon[i], cube, point_number);
   points_of.close();
   edges_of.close();
 }
 
-void Neuron::toCloud(std::ofstream& points_of,
+void Neuron::toCloudOld(std::ofstream& points_of,
                      std::ofstream& edges_of,
                      float width_sampled,
                      NeuronSegment* segment,
@@ -1938,8 +2072,102 @@ void Neuron::toCloud(std::ofstream& points_of,
   }
 
   for(int i = 0; i < segment->childs.size(); i++)
-    toCloud(points_of, edges_of, width_sampled,
+    toCloudOld(points_of, edges_of, width_sampled,
             segment->childs[i], cube, last_point_number);
 }
 
 
+
+//Ich bin ein Berliner
+Cloud_P* Neuron::toCloud(string cloudName,
+                     bool saveOrientation,
+                     bool saveType,
+                     Cube_P* cubeLimit)
+{
+
+  Cloud_P* cloud;
+  if(saveOrientation && saveType){
+    cloud = new Cloud< Point3Dot >(cloudName);
+  } else if (saveOrientation & !saveType) {
+    cloud = new Cloud< Point3Do >(cloudName);
+  } else if (!saveOrientation & !saveType){
+    cloud = new Cloud< Point3D >(cloudName);
+  }
+
+  int point_number = 0;
+  for(int i = 0; i < dendrites.size(); i++)
+    toCloud(dendrites[i], cloud, saveOrientation,
+            saveType, cubeLimit);
+  for(int i = 0; i < axon.size(); i++)
+    toCloud(dendrites[i], cloud, saveOrientation,
+            saveType, cubeLimit);
+  cloud->saveToFile(cloudName);
+  return cloud;
+}
+
+
+void Neuron::toCloud(NeuronSegment* segment,
+             Cloud_P* cloud,
+             bool saveOrientation,
+             bool saveType,
+             Cube_P* cubeLimit)
+{
+
+  vector< float > mcoords(3);
+  vector< float > mcnext(3);
+  float theta;
+  float phi;
+  float radius;
+
+  //For the indexing of the vertices of the cube, see doc/coordinates.txt
+  vector< float > cv0mic(3);
+  vector< float > cv6mic(3);
+  vector< int > v_0(3);
+  vector< int > v_6(3);
+  if( cubeLimit != NULL){
+    v_0[0]=0;v_0[1]=0;v_0[2]=0;
+    v_6[0]=cubeLimit->cubeWidth;
+    v_6[1]=cubeLimit->cubeHeight;
+    v_6[2]=cubeLimit->cubeDepth;
+    cubeLimit->indexesToMicrometers(v_0, cv0mic);
+    cubeLimit->indexesToMicrometers(v_6, cv6mic);
+  }
+
+
+  for(int i = 0; i < segment->points.size(); i++){
+    neuronToMicrometers(segment->points[i].coords, mcoords);
+
+    if(cubeLimit!= NULL){
+      if( (mcoords[0] < cv0mic[0]) | (mcoords[0] > cv6mic[0]) |
+          (mcoords[1] > cv0mic[1]) | (mcoords[1] < cv6mic[1]) |
+          (mcoords[2] < cv0mic[2]) | (mcoords[2] > cv6mic[2]) )
+        continue;
+    }
+
+    if(saveOrientation){
+      if(i!= segment->points.size()-1)
+        neuronToMicrometers(segment->points[i+1].coords, mcnext);
+      else if (i >= 1)
+        neuronToMicrometers(segment->points[i-1].coords, mcnext);
+      else continue;
+      theta = atan2(mcnext[1] - mcoords[1], mcnext[0]-mcoords[0]);
+      radius = sqrt( (mcnext[2]-mcoords[2])*(mcnext[2]-mcoords[2]) +
+                     (mcnext[1]-mcoords[1])*(mcnext[1]-mcoords[1]) +
+                     (mcnext[0]-mcoords[0])*(mcnext[0]-mcoords[0]) );
+      phi = acos( (mcnext[2]-mcoords[2])/radius);
+    }
+
+    if(saveOrientation && saveType)
+      cloud->points.push_back(new Point3Dot(mcoords[0],mcoords[1],mcoords[2],
+                                            theta, phi, 1));
+    if(saveOrientation && !saveType)
+      cloud->points.push_back(new Point3Do(mcoords[0],mcoords[1],mcoords[2],
+                                            theta, phi));
+    if(!saveOrientation && !saveType)
+      cloud->points.push_back(new Point3D(mcoords[0],mcoords[1],mcoords[2]));
+  }
+
+  for(int i = 0; i < segment->childs.size(); i++)
+    toCloud(segment->childs[i], cloud, saveOrientation,
+            saveType, cubeLimit);
+}

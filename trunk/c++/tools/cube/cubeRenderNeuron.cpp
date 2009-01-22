@@ -41,6 +41,7 @@ static struct argp_option options[] = {
   {"theta",  't', "theta", 0, "saves the theta angle in that volume file"},
   {"output", 'o', "output", 0, "name of the rendered mask"},
   {"scale",  's', "scale", 0, "saves the scale of the dendrite in that file"},
+  {"renderScale",  'r', "scale", 0, "multiplyes the width of the neuron by that factor"},
   {"min_width", 'w', "0",         0, "minimum width in micrometers of the dendrites to be drawn"},
   { 0 }
 };
@@ -54,6 +55,7 @@ struct arguments
   string output_name;
   string neuron_name;
   float  min_width;
+  float renderScale;
 };
 
 /* Parse a single option. */
@@ -80,6 +82,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case 'w':
       argments->min_width = atof(arg);
+      break;
+    case 'r':
+      argments->renderScale = atof(arg);
       break;
 
     case ARGP_KEY_ARG:
@@ -116,15 +121,16 @@ int main(int argc, char **argv) {
   args.neuron_name = "";
   args.output_name = "output";
   args.min_width = 0;
+  args.renderScale = 1;
 
   argp_parse(&argp, argc, argv, 0, 0, &args);
 
   printf("The arguments are:\n  cube_name: %s\n  neuron_name: %s\n"
          "  output_name: %s\n  theta_file: %s\n  phi_file: %s\n  scale_name: %s\n"
-         "  min_width: %f\n",
+         "  min_width: %f\n renderScale = %f\n",
          args.cube_name.c_str(), args.neuron_name.c_str(), args.output_name.c_str(),
          args.theta_file.c_str(), args.phi_file.c_str(), args.scale_file.c_str(),
-         args.min_width);
+         args.min_width, args.renderScale);
   // exit(0);
 
   Neuron* neuron = new Neuron(args.neuron_name);
@@ -143,5 +149,7 @@ int main(int argc, char **argv) {
   if(args.scale_file != "")
     scale = orig->create_blank_cube(args.scale_file);
 
-  neuron->renderInCube(rendered, theta, phi, scale, args.min_width);
+  neuron->renderInCube(rendered, theta, phi, scale, args.min_width, args.renderScale);
+  // rendered->put_all(255);
+  // neuron->renderSegmentInCube(neuron->dendrites[0],rendered, theta, phi, scale, args.min_width, args.renderScale);
 }
