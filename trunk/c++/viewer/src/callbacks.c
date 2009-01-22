@@ -9,6 +9,7 @@
 #include "interface.h"
 #include "support.h"
 #include "Neuron.h"
+#include "Contour.h"
 #include "globals.h"
 #include "CubeFactory.h"
 #include "CloudFactory.h"
@@ -300,4 +301,7 @@ on_screenshot_activate                 (GtkMenuItem     *menuitem,
     }
   gtk_widget_destroy (dialog);
 }
+
+//-------------------------------------------------
+
 

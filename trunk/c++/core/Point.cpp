@@ -41,3 +41,20 @@ void Point::draw(float width){
   // }
   // return true;
 // }
+
+ostream& operator <<(ostream &os,const Point &point)
+{
+//    for(itCoords = point.coords.begin();
+//        itCoords != point.coords.end(); itCoords++)
+//    {
+//        os << *itCoords << " ";
+//    }
+    for(int i=0;i<point.coords.size();i++)
+    {
+        if(i==point.coords.size()-1)
+            os << point.coords[i]<<endl;
+        else
+            os << point.coords[i] << " ";
+    }
+    return os;
+}

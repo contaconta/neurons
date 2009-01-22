@@ -190,6 +190,14 @@ void setUpMatricesXZ(int layerSpan)
 
 }
 
+void draw_contours()
+{
+    for(vector< Contour<Point>* >::iterator itContours = lContours.begin();
+        itContours != lContours.end(); itContours++)
+    {
+        (*itContours)->draw();
+    }
+}
 
 gboolean
 on_drawing3D_expose_event              (GtkWidget       *widget,
@@ -248,9 +256,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glCallList(1);
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */
-
       draw_last_point();
       glDisable(GL_DEPTH_TEST);
+      draw_contours();
     }
 
   if(flag_draw_XZ)
@@ -265,6 +273,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron)
         glCallList(1);
+      draw_contours();
       draw_last_point();
       glDisable(GL_DEPTH_TEST);
     }
@@ -281,6 +290,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron)
         glCallList(1);
+      draw_contours();
       draw_last_point();
       glDisable(GL_DEPTH_TEST);
     }

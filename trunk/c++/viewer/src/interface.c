@@ -81,6 +81,7 @@ create_ascEditor (void)
   GtkObject *layer_YZ_spin_adj;
   GtkWidget *layer_YZ_spin;
   GtkWidget *get_matrix_button;
+  GtkWidget *shaders;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -324,6 +325,12 @@ create_ascEditor (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  shaders = gtk_button_new_with_mnemonic (_("Shaders"));
+  gtk_widget_show (shaders);
+  gtk_table_attach (GTK_TABLE (table1), shaders, 0, 1, 9, 10,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   g_signal_connect ((gpointer) ascEditor, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
                     NULL);
@@ -420,6 +427,9 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) get_matrix_button, "clicked",
                     G_CALLBACK (on_get_matrix_button_clicked),
                     NULL);
+  g_signal_connect ((gpointer) shaders, "clicked",
+                    G_CALLBACK (on_shaders_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (ascEditor, ascEditor, "ascEditor");
@@ -468,6 +478,7 @@ create_ascEditor (void)
   GLADE_HOOKUP_OBJECT (ascEditor, layerXZ_spin, "layerXZ_spin");
   GLADE_HOOKUP_OBJECT (ascEditor, layer_YZ_spin, "layer_YZ_spin");
   GLADE_HOOKUP_OBJECT (ascEditor, get_matrix_button, "get_matrix_button");
+  GLADE_HOOKUP_OBJECT (ascEditor, shaders, "shaders");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);
@@ -774,5 +785,177 @@ create_ascEditControls (void)
   GLADE_HOOKUP_OBJECT (ascEditControls, label22, "label22");
 
   return ascEditControls;
+}
+
+GtkWidget*
+create_ascSelectShaders (void)
+{
+  GtkWidget *ascSelectShaders;
+  GtkWidget *eventbox1;
+  GtkWidget *vbox2;
+  GtkWidget *select_filter;
+
+  ascSelectShaders = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (ascSelectShaders), _("Select shaders"));
+
+  eventbox1 = gtk_event_box_new ();
+  gtk_widget_show (eventbox1);
+  gtk_container_add (GTK_CONTAINER (ascSelectShaders), eventbox1);
+
+  vbox2 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox2);
+  gtk_container_add (GTK_CONTAINER (eventbox1), vbox2);
+
+  select_filter = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (select_filter);
+  gtk_box_pack_start (GTK_BOX (vbox2), select_filter, TRUE, TRUE, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("None"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Inversion"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Laplace"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Sobel"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Kirsch"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Compass"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (select_filter), _("Gaussian 3*3"));
+
+  g_signal_connect ((gpointer) select_filter, "changed",
+                    G_CALLBACK (on_select_shaders_changed),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (ascSelectShaders, ascSelectShaders, "ascSelectShaders");
+  GLADE_HOOKUP_OBJECT (ascSelectShaders, eventbox1, "eventbox1");
+  GLADE_HOOKUP_OBJECT (ascSelectShaders, vbox2, "vbox2");
+  GLADE_HOOKUP_OBJECT (ascSelectShaders, select_filter, "select_filter");
+
+  return ascSelectShaders;
+}
+
+GtkWidget*
+create_ascEditControlsContours (void)
+{
+  GtkWidget *ascEditControlsContours;
+  GtkWidget *table3;
+  GtkWidget *add_contour_point;
+  GtkWidget *label_a;
+  GtkWidget *create_contour;
+  GtkWidget *label_c;
+  GtkWidget *save_contour;
+  GtkWidget *label_s;
+  GtkWidget *clear_contour;
+  GtkWidget *label_l;
+  GtkWidget *list_contours;
+  GtkWidget *remove_contour;
+  GtkWidget *label_r;
+
+  ascEditControlsContours = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (ascEditControlsContours), _("Select contours"));
+
+  table3 = gtk_table_new (11, 2, FALSE);
+  gtk_widget_show (table3);
+  gtk_container_add (GTK_CONTAINER (ascEditControlsContours), table3);
+
+  add_contour_point = gtk_button_new_with_mnemonic (_("Add contour point"));
+  gtk_widget_show (add_contour_point);
+  gtk_table_attach (GTK_TABLE (table3), add_contour_point, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label_a = gtk_label_new (_("a"));
+  gtk_widget_show (label_a);
+  gtk_table_attach (GTK_TABLE (table3), label_a, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_a), 0, 0.5);
+
+  create_contour = gtk_button_new_with_mnemonic (_("Create contour"));
+  gtk_widget_show (create_contour);
+  gtk_table_attach (GTK_TABLE (table3), create_contour, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label_c = gtk_label_new (_("c"));
+  gtk_widget_show (label_c);
+  gtk_table_attach (GTK_TABLE (table3), label_c, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_c), 0, 0.5);
+
+  save_contour = gtk_button_new_with_mnemonic (_("Save contour"));
+  gtk_widget_show (save_contour);
+  gtk_table_attach (GTK_TABLE (table3), save_contour, 0, 1, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label_s = gtk_label_new (_("s"));
+  gtk_widget_show (label_s);
+  gtk_table_attach (GTK_TABLE (table3), label_s, 1, 2, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_s), 0, 0.5);
+
+  clear_contour = gtk_button_new_with_mnemonic (_("Clear"));
+  gtk_widget_show (clear_contour);
+  gtk_table_attach (GTK_TABLE (table3), clear_contour, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label_l = gtk_label_new (_("l"));
+  gtk_widget_show (label_l);
+  gtk_table_attach (GTK_TABLE (table3), label_l, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_l), 0, 0.5);
+
+  list_contours = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (list_contours);
+  gtk_table_attach (GTK_TABLE (table3), list_contours, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+  remove_contour = gtk_button_new_with_mnemonic (_("Remove"));
+  gtk_widget_show (remove_contour);
+  gtk_table_attach (GTK_TABLE (table3), remove_contour, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label_r = gtk_label_new (_("r"));
+  gtk_widget_show (label_r);
+  gtk_table_attach (GTK_TABLE (table3), label_r, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_r), 0, 0.5);
+
+  g_signal_connect ((gpointer) add_contour_point, "clicked",
+                    G_CALLBACK (on_add_contour_point_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) create_contour, "clicked",
+                    G_CALLBACK (on_create_contour_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) save_contour, "clicked",
+                    G_CALLBACK (on_save_contour_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) clear_contour, "clicked",
+                    G_CALLBACK (on_clear_contour_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) remove_contour, "clicked",
+                    G_CALLBACK (on_remove_contour_clicked),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (ascEditControlsContours, ascEditControlsContours, "ascEditControlsContours");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, table3, "table3");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, add_contour_point, "add_contour_point");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_a, "label_a");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, create_contour, "create_contour");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_c, "label_c");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, save_contour, "save_contour");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_s, "label_s");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, clear_contour, "clear_contour");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_l, "label_l");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, list_contours, "list_contours");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, remove_contour, "remove_contour");
+  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_r, "label_r");
+
+  return ascEditControlsContours;
 }
 

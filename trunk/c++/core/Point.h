@@ -11,7 +11,7 @@
 
 using namespace std;
 
-/** A point in 3D*/
+/** A point*/
 class Point : public Visible
 {
 public:
@@ -25,6 +25,8 @@ public:
   virtual void draw()=0;
 
   virtual void draw(float width)=0;
+
+    friend ostream& operator <<(ostream &os,const Point &point);
 
 };
 
