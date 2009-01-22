@@ -108,7 +108,7 @@ OBJ_CORE       = $(addprefix $(OBJ_DIR),$(OBJ_CORE_O))
 #Files for the viewer
 SRC_VIEWER_N = callbacks.c interface.c support.c main.c		\
                callbacks_menu.c callbacks_ui.c callbacks_draw.c	\
-               callbacks_ascEdit.c #callbacks_ICM.c
+               callbacks_ascEdit.c callbacks_contour.c #callbacks_ICM.c
 SRC_VIEWER=$(addprefix $(VIEWER_SRC_DIR),$(SRC_VIEWER_N));
 OBJ_VIEWER_O=$(SRC_VIEWER_N:.c=.o)
 OBJ_VIEWER=$(addprefix $(OBJ_DIR)$(VIEWER_SRC_DIR),$(OBJ_VIEWER_O))
