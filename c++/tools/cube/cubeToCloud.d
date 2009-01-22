@@ -166,7 +166,8 @@ tools/cube/cubeToCloud.o tools/cube/cubeToCloud.d: tools/cube/cubeToCloud.cpp /u
   /usr/lib/gcc/i486-linux-gnu/4.2.4/include/omp.h core/Cube_data.h \
   core/Cube_display.h core/Cube_drawBetween.h core/Cube_aux.h \
   core/Cube_image.h core/CubeFactory.h core/Neuron.h core/ascParser2.h \
-  core/Neuron.h core/Cloud.h core/Cloud_P.h core/Point.h core/Point2D.h \
-  core/Point2Do.h core/Point2Dot.h core/Point3D.h core/Point3Dt.h \
-  core/Point3Do.h core/Point3Dot.h /usr/include/argp.h \
+  core/Neuron.h core/CloudFactory.h core/Cloud.h core/Cloud_P.h \
+  core/Point.h core/Point2D.h core/Point2Do.h core/Point2Dot.h \
+  core/Point3D.h core/Point3Dt.h core/Point3Do.h core/Point3Dot.h \
+  core/Cloud.h core/CloudFactory.h core/utils.h /usr/include/argp.h \
   /usr/include/gsl/gsl_rng.h

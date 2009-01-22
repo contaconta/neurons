@@ -1108,6 +1108,135 @@ double Cube<T,U>::integral_between(int x0, int y0, int z0, int x1, int y1, int z
 
 }
 
+
+template <class T, class U>
+void Cube<T,U>::put_value_in_line(T value, int x0, int y0, int z0, int x1, int y1, int z1)
+{
+  // First step is to calculate in which dimension we have the greatest distance.
+
+  double value_to_return = 0;
+  int xt, yt, zt;
+
+  //Case it is in the x
+  if ( (abs(x1-x0) >= abs(y1-y0)) &&
+       (abs(x1-x0) >= abs(z1-z0)) )
+  {
+    float my = ((float)(y1-y0))/(x1-x0);
+    float mz = ((float)(z1-z0))/(x1-x0);
+    float y = 0;
+    float z = 0;
+    if(min(x0,x1) == x0)
+      {
+        y = y0;
+        z = z0;
+      }
+    if(min(x0,x1) == x1)
+      {
+        y = y1;
+        z = z1;
+      }
+    for(int x = min(x0,x1); x <= max(x0,x1); x++)
+      {
+//         printf("%i %i %i\n", (int)roundf(x),
+//                (int)roundf(y),
+//                (int)roundf(z));
+        if(x < 0) xt = 0; else if(x >= cubeWidth) xt = cubeWidth-1; else xt=x;
+        if(y < 0) yt = 0; else if(y >= cubeHeight) yt = cubeHeight-1; else yt = y;
+        if(z < 0) zt = 0; else if(z >= cubeDepth) zt = cubeDepth-1;   else zt = z;
+        this->put((int)roundf(xt),(int)roundf(yt),(int)roundf(zt), value);
+        y += my;
+        z += mz;
+      }
+    value_to_return = value_to_return / (abs(x1-x0)+1);
+  }
+
+  //Case it is in the y
+  if ( (abs(y1-y0) >= abs(x1-x0)) &&
+       (abs(y1-y0) >= abs(z1-z0)) )
+  {
+    float mx = ((float)(x1-x0))/(y1-y0);
+    float mz = ((float)(z1-z0))/(y1-y0);
+    float x = 0;
+    float z = 0;
+    if(min(y0,y1) == y0)
+      {
+        x = x0;
+        z = z0;
+      }
+    if(min(y0,y1) == y1)
+      {
+        x = x1;
+        z = z1;
+      }
+    for(int y = min(y0,y1); y <= max(y0,y1); y++)
+      {
+//         printf("%i %i %i\n", (int)roundf(x),
+//                (int)roundf(y),
+//                (int)roundf(z));
+        if(x < 0) xt = 0; else if(x >= cubeWidth) xt = cubeWidth-1; else xt=x;
+        if(y < 0) yt = 0; else if(y >= cubeHeight) yt = cubeHeight-1; else yt = y;
+        if(z < 0) zt = 0; else if(z >= cubeDepth) zt = cubeDepth-1;   else zt = z;
+        this->put((int)roundf(xt),(int)roundf(yt),(int)roundf(zt), value);
+        x += mx;
+        z += mz;
+      }
+    value_to_return = value_to_return / (abs(y1-y0)+1);
+  }
+
+  //Case it is in the z
+  if ( (abs(z1-z0) >= abs(y1-y0)) &&
+       (abs(z1-z0) >= abs(x1-x0)) )
+  {
+    float my = ((float)(y1-y0))/(z1-z0);
+    float mx = ((float)(x1-x0))/(z1-z0);
+    float y = 0;
+    float x = 0;
+    if(min(z0,z1) == z0)
+      {
+        y = y0;
+        x = x0;
+      }
+    if(min(z0,z1) == z1)
+      {
+        y = y1;
+        x = x1;
+      }
+
+    for(int z = min(z0,z1); z <= max(z0,z1); z++)
+      {
+//         printf("%i %i %i\n", (int)roundf(x),
+//                (int)roundf(y),
+//                (int)roundf(z));
+        if(x < 0) xt = 0; else if(x >= cubeWidth) xt = cubeWidth-1; else xt=x;
+        if(y < 0) yt = 0; else if(y >= cubeHeight) yt = cubeHeight-1; else yt = y;
+        if(z < 0) zt = 0; else if(z >= cubeDepth) zt = cubeDepth-1;   else zt = z;
+        this->put((int)roundf(xt),(int)roundf(yt),(int)roundf(zt), value);
+        y += my;
+        x += mx;
+      }
+    value_to_return = value_to_return / (abs(z1-z0)+1);
+  }
+}
+
+
+template <class T, class U>
+void Cube<T,U>::put_value_in_ellipsoid
+(T value, int x0, int y0, int z0, int rx, int ry, int rz)
+{
+  double dist;
+  for(int z = max(0, z0-rz); z <= min((int)cubeDepth-1, z0+rz); z++)
+    for(int y = max(0, y0-ry); y <= min((int)cubeHeight-1, y0+ry); y++)
+      for(int x = max(0, x0-rx); x <= min((int)cubeWidth-1, x0+rx); x++){
+        dist =  double((z-z0)*(z-z0))/(rz*rz);
+        dist += double((y-y0)*(y-y0))/(ry*ry);
+        dist += double((x-x0)*(x-x0))/(rx*rx);
+        if(dist <= 1)
+          put(x,y,z,value);
+      }
+}
+
+
+
 template <class T, class U>
 void Cube<T,U>::print()
 {

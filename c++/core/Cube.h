@@ -219,6 +219,12 @@ public:
   /** Calculates the integral allong the line betwewn  the indexes.*/
   double integral_between(int x0, int y0, int z0, int x1, int y1, int z1);
 
+  /** Puts the given value in the line between the points */
+  void put_value_in_line(T value, int x0, int y0, int z0, int x1, int y1, int z1);
+
+  /** Puts the value in an ellipsoid of radius rx, ry, rz centerd in x0, y0, z0.*/
+  void put_value_in_ellipsoid(T value, int x0, int y0, int z0, int rx, int ry, int rz);
+
   /** Prints the parameters*/
   void print();
 

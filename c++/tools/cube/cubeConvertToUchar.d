@@ -166,4 +166,7 @@ tools/cube/cubeConvertToUchar.o tools/cube/cubeConvertToUchar.d: tools/cube/cube
   core/Cube_P.h core/Cube.h \
   /usr/lib/gcc/i486-linux-gnu/4.2.4/include/omp.h core/Cube_data.h \
   core/Cube_display.h core/Cube_drawBetween.h core/Cube_aux.h \
-  core/Cube_image.h core/Neuron.h core/ascParser2.h core/Neuron.h
+  core/Cube_image.h core/Neuron.h core/ascParser2.h core/Neuron.h \
+  core/CloudFactory.h core/Cloud.h core/Cloud_P.h core/Point.h \
+  core/Point2D.h core/Point2Do.h core/Point2Dot.h core/Point3D.h \
+  core/Point3Dt.h core/Point3Do.h core/Point3Dot.h

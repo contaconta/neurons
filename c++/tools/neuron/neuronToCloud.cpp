@@ -19,6 +19,7 @@
 #include "Cube.h"
 #include "Cloud.h"
 #include <argp.h>
+#include "CubeFactory.h"
 
 using namespace std;
 
@@ -38,6 +39,11 @@ static char args_doc[] = "neuron.asc cloud.cl";
 static struct argp_option options[] = {
   {"verbose"  ,    'v', 0,           0,  "Produce verbose output" },
   {"min_width"  ,  'w', "min_width",           0,  "Produce verbose output" },
+  {"onlyIfInCube",  'c', "cube",           0,  "Only takes the points that fall inside the cube" },
+  {"orientation"  ,  'n', 0,           0,  "Saves the orientation of the points from the neuron" },
+  {"theta"  ,  't', "theta_cube",           0,  "Takes the orientation from the theta of the cube" },
+  {"phi"  ,  'p', "phi_cube",           0,  "Takes the orientation from the phi bbof the cube" },
+  {"type"  ,         'y', 0,           0,  "Saves the type of the points" },
   { 0 }
 };
 
@@ -45,8 +51,13 @@ struct arguments
 {
   string name_neuron;
   string name_cloud;
+  string name_cube;
   int verbose;
   double width;
+  bool saveOrientation;
+  bool saveType;
+  string name_cubeTheta;
+  string name_cubePhi;
 };
 
 
@@ -66,7 +77,23 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'w':
       argments->width = atof(arg);
       break;
-
+    case 'n':
+      argments->saveOrientation = true;
+      break;
+    case 'y':
+      argments->saveType = true;
+      break;
+    case 'c':
+      argments->name_cube = arg;
+      break;
+    case 't':
+      argments->name_cubeTheta = arg;
+      argments->saveOrientation = true;
+      break;
+    case 'p':
+      argments->name_cubePhi = arg;
+      argments->saveOrientation = true;
+      break;
 
     case ARGP_KEY_ARG:
       if (state->arg_num >= 2)
@@ -99,20 +126,45 @@ static struct argp argp = { options, parse_opt, args_doc, doc };
 int main(int argc, char** argv)
 {
 
-  printf("This code needs to be checked and redone!\n");
-  exit(0);
+  struct arguments args;
+  args.name_neuron = "";
+  args.name_cloud = "";
+  args.name_cube = "";
+  args.saveOrientation = false;
+  args.saveType = false;
+  args.name_cubeTheta = "";
+  args.name_cubePhi   = "";
+  args.width = 0;
 
-  // struct arguments args;
-  // args.name_neuron = "";
-  // args.name_cloud = "";
-  // args.width = 0;
+  argp_parse (&argp, argc, argv, 0, 0, &args);
 
-  // argp_parse (&argp, argc, argv, 0, 0, &args);
+  Neuron* neuronita = new Neuron(args.name_neuron);
+  double min_width = args.width;
 
-  // Neuron* neuronita = new Neuron(args.neuron_name);
-  // double min_width = args.width;
+  Cube_P* cube = NULL;
+  if(args.name_cube != ""){
+    cube = CubeFactory::load(args.name_cube);
+  }
 
-  // neuronita->toCloud(args.name_neuron, args.name_neuron, min_width, args.name_neuron);
+  Cloud_P* cloud = neuronita->toCloud(args.name_cloud,
+                                      args.saveOrientation, args.saveType,
+                                      cube);
+
+  if( (cube!= NULL) && (args.name_cubeTheta!="") && (args.name_cubePhi!="") ){
+    vector< float > nmic(3);
+    vector< int > idx(3);
+    Cube<float, double>*  theta = new Cube<float, double>(args.name_cubeTheta);
+    Cube<float, double>*  phi = new Cube<float, double>(args.name_cubePhi);
+    for(int i = 0; i < cloud->points.size(); i++){
+      Point3Do* pt = dynamic_cast<Point3Dot*>(cloud->points[i]);
+      theta->micrometersToIndexes(pt->coords, idx);
+      // printf("%i %i %i\n", idx[0], idx[1], idx[2]);
+      pt->theta = theta->at(idx[0],idx[1],idx[2]);
+      pt->phi   = phi->at(idx[0],idx[1],idx[2]);
+    }
+  }
+
+  cloud->saveToFile(args.name_cloud);
 
   return 0;
 }

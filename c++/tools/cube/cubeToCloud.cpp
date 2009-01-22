@@ -21,6 +21,8 @@
 #include "CubeFactory.h"
 #include "Neuron.h"
 #include "Cloud.h"
+#include "CloudFactory.h"
+#include "utils.h"
 #include <argp.h>
 #include <gsl/gsl_rng.h>
 
@@ -34,7 +36,7 @@ const char *argp_program_bug_address =
   "<german.gonzalez@epfl.ch>";
 /* Program documentation. */
 static char doc[] =
-  "imageToCloud creates a cloud with the pixels that are not cero on the image";
+  "cubeToCloud creates a cloud with the pixels that are cero on the image as positives";
 
 /* A description of the arguments we accept. */
 static char args_doc[] = "image cloud";
@@ -47,6 +49,7 @@ static struct argp_option options[] = {
   {"type",          'y',  0,                   0, "if true saves the type of the points"},
   {"numberPositive", 'N', "positive_points",-  0, "if defined, the number of positive points to get"},
   {"numberNegative", 'M', "negative_points",-  0, "if defined, the number of negative points to get"},
+  {"negativeMask",   'Z', "negative_mask",     0, "if defined, the points of this mask that are 0 are the potential negative candidates"},
   { 0 }
 };
 
@@ -62,6 +65,7 @@ struct arguments
   bool   save_type;
   bool   save_negative;
   bool   save_orientation;
+  string name_negativeMask;
 };
 
 
@@ -94,6 +98,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case 'M':
       argments->number_negative_points = atoi(arg);
+      break;
+    case 'Z':
+      argments->name_negativeMask = arg;
       break;
 
     case ARGP_KEY_ARG:
@@ -159,6 +166,7 @@ int main(int argc, char **argv) {
   args.name_phi = "";
   args.name_mask = "";
   args.name_cloud = "cloud.cl";
+  args.name_negativeMask = "";
   args.save_negative = false;
   args.save_type     = false;
   args.number_points   = 0;
@@ -167,13 +175,14 @@ int main(int argc, char **argv) {
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
 
-  printf("Cube: %s\nTheta: %s\nPhi: %s\nOut: %s\nMsk: %s\nSave_negative: %i\nSave_type: %i\nSave_orientation: %i\nNumber_points: %i\nNumber_negative_points: %i\n",
+  printf("Cube: %s\nTheta: %s\nPhi: %s\nOut: %s\nMsk: %s\nSave_negative: %i\nSave_type: %i\nSave_orientation: %i\nNumber_points: %i\nNumber_negative_points: %i\n name_negativeMask = %s\n",
          args.name_cube.c_str(),args.name_theta.c_str(),
          args.name_phi.c_str(), args.name_cloud.c_str(),
          args.name_mask.c_str(),
          args.save_negative, args.save_type,
          args.save_orientation, args.number_points,
-         args.number_negative_points);
+         args.number_negative_points,
+         args.name_negativeMask.c_str());
 
   Cube<uchar, ulong>* cborig = new Cube<uchar, ulong>(args.name_cube);
   Cube<float, double>* theta;
@@ -187,27 +196,47 @@ int main(int argc, char **argv) {
   vector< int > idx(3);
 
   Cloud_P* cloud;
-  if(args.save_orientation && args.save_type){
-    cloud = new Cloud< Point3Dot >();
-    mode = c3Dot;
-    printf("Mode = 3Dot\n");
+  if(fileExists(args.name_cloud)){
+    cloud = CloudFactory::load(args.name_cloud);
+    if(args.save_orientation && args.save_type){
+      mode = c3Dot;
+      printf("Mode = 3Dot\n");
+    }
+    if(args.save_orientation && !args.save_type){
+      mode = c3Do;
+      printf("Mode = 3Do\n");
+    }
+    if(!args.save_orientation && args.save_type){
+      mode = c3Dt;
+      printf("Mode = 3Dt\n");
+    }
+    if(!args.save_orientation && !args.save_type){
+      mode = c3D;
+      printf("Mode = 3D\n");
+    }
   }
-  if(args.save_orientation && !args.save_type){
-    cloud = new Cloud< Point3Do >();
-    mode = c3Do;
-    printf("Mode = 3Do\n");
+  else{
+    if(args.save_orientation && args.save_type){
+      cloud = new Cloud< Point3Dot >();
+      mode = c3Dot;
+      printf("Mode = 3Dot\n");
+    }
+    if(args.save_orientation && !args.save_type){
+      cloud = new Cloud< Point3Do >();
+      mode = c3Do;
+      printf("Mode = 3Do\n");
+    }
+    if(!args.save_orientation && args.save_type){
+      cloud = new Cloud< Point3Dt >();
+      mode = c3Dt;
+      printf("Mode = 3Dt\n");
+    }
+    if(!args.save_orientation && !args.save_type){
+      cloud = new Cloud< Point3D >();
+      mode = c3D;
+      printf("Mode = 3D\n");
+    }
   }
-  if(!args.save_orientation && args.save_type){
-    cloud = new Cloud< Point3Dt >();
-    mode = c3Dt;
-    printf("Mode = 3Dt\n");
-  }
-  if(!args.save_orientation && !args.save_type){
-    cloud = new Cloud< Point3D >();
-    mode = c3D;
-    printf("Mode = 3D\n");
-  }
-
   // Random number generation
   const gsl_rng_type * T2;
   gsl_rng * r;
@@ -253,13 +282,26 @@ int main(int argc, char **argv) {
   }
 
   //Negative points
-  for(int i = 0; i < args.number_negative_points; i++){
-    do{
-      idx[0] = (int)(gsl_rng_uniform(r)*cborig->cubeWidth);
-      idx[1] = (int)(gsl_rng_uniform(r)*cborig->cubeHeight);
-      idx[2] = (int)(gsl_rng_uniform(r)*cborig->cubeDepth);
-    }while(cborig->at(idx[0],idx[1],idx[2]) < 100);
+  Cube<uchar, ulong>* negativeMask;
+  if(args.name_negativeMask != "")
+    negativeMask = new Cube<uchar, ulong>(args.name_negativeMask);
 
+  for(int i = 0; i < args.number_negative_points; i++){
+    if(args.name_negativeMask == ""){
+      //Take white points of the image
+      do{
+        idx[0] = (int)(gsl_rng_uniform(r)*cborig->cubeWidth);
+        idx[1] = (int)(gsl_rng_uniform(r)*cborig->cubeHeight);
+        idx[2] = (int)(gsl_rng_uniform(r)*cborig->cubeDepth);
+      }while(cborig->at(idx[0],idx[1],idx[2]) < 100);
+    } else{
+      //Take black points of the negativeMask
+      do{
+        idx[0] = (int)(gsl_rng_uniform(r)*cborig->cubeWidth);
+        idx[1] = (int)(gsl_rng_uniform(r)*cborig->cubeHeight);
+        idx[2] = (int)(gsl_rng_uniform(r)*cborig->cubeDepth);
+      }while(negativeMask->at(idx[0],idx[1],idx[2]) > 100);
+    }
     cborig->indexesToMicrometers(idx, micr);
     switch(mode)
       {
