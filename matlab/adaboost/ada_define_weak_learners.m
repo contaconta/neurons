@@ -29,17 +29,24 @@ for t = 1:length(LEARNERS)
         
         % call the function to define haar wavelets and pass them to WEAK
         haars = ada_haar_define(LEARNERS(t).IMSIZE, 'shapes', LEARNERS(t).shapes);
+        
+        for i = 1:length(haars)
+            WEAK.learners{length(WEAK.learners)+1} = haars(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'haar';
+        end
+        
+        %WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)];
 
         % set the feature definitions to a field of WEAK('haars', 'haars_1', etc)
-        field = namenewfield(WEAK, 'haars');
-        WEAK.(field) = haars;
+        %field = namenewfield(WEAK, 'haars');
+        %WEAK.(field) = haars;
 
-        WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
-        WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))))';
-        WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
-        WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_trclassify1, @ada_haar_trclassify2}};
+         
+        %index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
+        %WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
+        %WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))))';
+        %WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
+        %WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_trclassify1, @ada_haar_trclassify2}};
         clear haars;
         
         
@@ -50,20 +57,28 @@ for t = 1:length(LEARNERS)
         
         spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).sigma);
         
-        field = namenewfield(WEAK, 'spedge');
-        WEAK.(field) = spedge;
         
-        WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
-        WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))) )';
-        WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
-        WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_trclassify1, @ada_spedge_trclassify2}};
+        for i = 1:length(spedge)
+            WEAK.learners{length(WEAK.learners)+1} = spedge(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'spedge';
+        end
+        
+        %WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
+        
+%         field = namenewfield(WEAK, 'spedge');
+%         WEAK.(field) = spedge;
+%         index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
+%         WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
+%         WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))) )';
+%         WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
+%         WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_trclassify1, @ada_spedge_trclassify2}};
         clear spedge;
 
 
     end
 end
+
+WEAK.error = zeros(length(WEAK.learners),1);
 
 WEAK = orderfields(WEAK);
 

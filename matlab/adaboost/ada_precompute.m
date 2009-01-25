@@ -2,15 +2,16 @@ function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename)
 
 
 %%  allocate the bigmatrix to store all precomputed features
-SET.responses = bigmatrix( length(SET.class), size(WEAK.list,1), 'filename', filename, 'memory', FILES.memory, 'precision', 'single');
+%SET.responses = bigmatrix( length(SET.class), size(WEAK.list,1), 'filename', filename, 'memory', FILES.memory, 'precision', 'single');
+SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', 'single');
 
 
 %% precompute all weak learner responses
 %  precompute responses of each feature of each weak learner type over the
 %  entire data set
 
-for l = 1:length(WEAK.learners)
-    switch WEAK.learners{l}{1}
+for l = 1:length(LEARNERS)
+    switch LEARNERS(l).feature_type
     
         case 'haar'
             %% haar like weak learners - for haars it is faster to compute the
@@ -22,31 +23,47 @@ for l = 1:length(WEAK.learners)
                 II = integral_image(SET.Images(:,:,i));
                 IIs(:,i) = II(:);
             end
+            
+            % compute the number of haar features
+            num_haars = 0;
+            for f = 1:length(WEAK.learners)
+                if strcmp(WEAK.learners{f}.type, 'haar')
+                    num_haars = num_haars + 1;
+                end
+            end
 
-            W = wristwatch('start', 'end', length(WEAK.learners{l}{3}), 'every', 10000, 'text', '    ...precomputed haar feature ');
+            W = wristwatch('start', 'end', num_haars, 'every', 10000, 'text', '    ...precomputed haar feature ');
             block = round(FILES.memory / (length(SET.class)*4));        % block = # columns fit into memory lim
             R = zeros(length(SET.class), block );                       % R temporary feature response storage
             j = 1;                                                      % feature index in current block
+            f_list = [];
             
             % loop through features, compute response of feature f to all
             % examples, store as columns
-            for f = 1:length(WEAK.learners{l}{3})
-                R(:,j) = ada_haar_response(WEAK.haars(f).hinds, WEAK.haars(f).hvals, IIs);
+            
+            for f = 1:length(WEAK.learners)
+                if strcmp(WEAK.learners{f}.type, 'haar')
+                    R(:,j) = ada_haar_response(WEAK.learners{f}.hinds, WEAK.learners{f}.hvals, IIs);
+                    f_list = [f_list f];
 
-                if mod(f,block) == 0
-                    disp(['    ...writing to ' SET.responses.filename]);
-                    rows = 1:length(SET.class);
-                    cols = WEAK.learners{1}{3}(f-block+1:f);
-                    SET.responses.storeBlock(R,rows,cols);
-                    j = 0;
+                    if mod(f,block) == 0
+                        disp(['    ...writing to ' SET.responses.filename]);
+                        rows = 1:length(SET.class);
+                        %cols = f-block+1:f;
+                        cols = f_list;
+                        SET.responses.storeBlock(R,rows,cols);
+                        j = 0;
+                        f_list = [];
+                    end
+                    W = wristwatch(W, 'update', f);
+                    j = j + 1;
                 end
-                W = wristwatch(W, 'update', f);
-                j = j + 1;
             end
             
             % store the last columns
             disp(['    ...writing to ' SET.responses.filename]);
-            cols = WEAK.learners{1}{3}(f-j+2:f);
+            %cols = WEAK.learners{1}{3}(f-j+2:f);
+            cols = f_list;
             %A = R(:,1:j-1);
             SET.responses.storeBlock(R(:,1:j-1),rows,cols);
             
@@ -58,10 +75,23 @@ for l = 1:length(WEAK.learners)
         case 'spedge'
             disp('...computing spedge repsonses');
             
-            block = round(FILES.memory / (length(WEAK.learners{l}{3})*4)); 
+            % create a list of spedge feature indexes
+            f_list = []; 
+            for f = 1:length(WEAK.learners)
+                if strcmp(WEAK.learners{f}.type, 'spedge')
+                    f_list = [f_list f];
+                end
+            end
+            
+            
+            %block = round(FILES.memory / (length(WEAK.learners{l}{3})*4)); 
+            block = round(FILES.memory / (length(f_list)*4)); 
             W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '    ...precomputed spedge for example ');
-            R = zeros(block, length(WEAK.learners{l}{3}));
+            %R = zeros(block, length(WEAK.learners{l}{3}));
+            R = zeros(block, length(f_list));
             j = 1;
+            
+            
 
             % loop through examples, compute all spedge repsonses for
             % example i, store as rows
@@ -73,7 +103,8 @@ for l = 1:length(WEAK.learners)
                 if mod(i,block) == 0
                     disp(['    ...writing to ' SET.responses.filename]);
                     rows = i-block+1:i;
-                    cols = WEAK.learners{l}{3}(:);
+                    %cols = WEAK.learners{l}{3}(:);
+                    cols = f_list;
                     SET.responses.storeBlock(R, rows, cols);
                     j = 0;
                 end
@@ -88,6 +119,10 @@ for l = 1:length(WEAK.learners)
             clear R;
     end
 end
+
+
+
+
 
 
 
