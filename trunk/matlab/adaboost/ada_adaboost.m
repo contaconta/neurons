@@ -44,21 +44,27 @@ for t = start_t:T
     
     % populate the selected classifier with needed information
     CLASSIFIER.feature_index(t) = BEST_learner; 
-    CLASSIFIER.alpha(t)         = log( (1 - BEST_err) / BEST_err );
+    alpha                       = log( (1 - BEST_err) / BEST_err );
+    %CLASSIFIER.alpha(t)         = log( (1 - BEST_err) / BEST_err );
     beta                        = BEST_err/ (1 - BEST_err);      % beta is between [0, 1]
     weak_classifier             = WEAK.(WEAK.list{BEST_learner,1})(WEAK.list{BEST_learner,2});
     learner_ind                 = WEAK.list{BEST_learner,3};
     field                       = WEAK.learners{learner_ind}{1};
-    %classification_function     = WEAK.learners{learner_ind}{6};
     classification_function     = WEAK.learners{learner_ind}{6};
     CLASSIFIER.learner_type{t}  = field;
     
     % add the weak learner to the classifier (if it is not the first of its
     % type it needs to be appended, otherwise added)
     if ~isfield(CLASSIFIER, field)
-        CLASSIFIER.(field)(1) = weak_classifier;
+        CLASSIFIER.weak_learners{1} = weak_classifier;
+        CLASSIFIER.weak_learners{1}.alpha = alpha;
+        CLASSIFIER.weak_learners{1}.index = BEST_learner;
+        CLASSIFIER.weak_learners{1}.type = field;
     else
-        CLASSIFIER.(field)(length(CLASSIFIER.(field))+1) = weak_classifier;
+        CLASSIFIER.weak_learners{t} = weak_classifier;
+        CLASSIFIER.weak_learners{t}.alpha = alpha;
+        CLASSIFIER.weak_learners{t}.index = BEST_learner;
+        CLASSIFIER.weak_learners{t}.type = field;
     end
     
     % add the weak classification function to a list of classification functions

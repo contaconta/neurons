@@ -18,11 +18,15 @@ for i = 1:IMSIZE(1)
     for j = 1:IMSIZE(2);
         for k = 1:length(angles);
             for s = 1:length(sigmas);
-                % [angle, r, c]
-                %SP(c_num).descriptor = [k i j];
+
                 SP(c_num).index = single(sub2ind([length(angles) length(sigmas) IMSIZE(1) IMSIZE(2)], k,s,i,j));
                 SP(c_num).polarity = single(1);
                 SP(c_num).theta = 0;
+                
+                SP(c_num).angle = angles(k);
+                SP(c_num).sigma = sigmas(s);
+                SP(c_num).row = i;
+                SP(c_num).col = j;
 
                 c_num = c_num + 1;
             end
