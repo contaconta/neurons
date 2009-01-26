@@ -415,7 +415,7 @@ public:
   /** Blurs the cube with the variance sigma.*/
   void blur(float sigma,
             Cube<float, double>* output,
-            Cube<float,double>* tmp);
+            Cube<float, double>* tmp);
 
   /** Blurs the cube in 2D with the variance sigma.*/
   void blur_2D(float sigma,

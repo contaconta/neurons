@@ -19,31 +19,27 @@ Point3Do::Point3Do(float x, float y, float z, float _theta, float _phi) : Point(
 }
 
 void Point3Do::draw(){
-  glPushMatrix();
-  glTranslatef(coords[0], coords[1], coords[2]);
-  float ox, oy, oz;
-  ox = cos(theta)*sin(phi);
-  oy = sin(theta)*sin(phi);
-  oz = cos(phi);
-  glBegin(GL_LINES);
-  glVertex3f(0,0,0);
-  glVertex3f(ox, oy, oz);
-  glEnd();
-  glutSolidSphere(0.5, 10, 10);
-  glPopMatrix();
+  draw(1);
 }
 
+
+
+
 void Point3Do::draw(float width){
+
   glPushMatrix();
   glTranslatef(coords[0], coords[1], coords[2]);
   float ox, oy, oz;
   ox = width*2*cos(theta)*sin(phi);
   oy = width*2*sin(theta)*sin(phi);
   oz = width*2*cos(phi);
+  glRotatef(-phi*180/3.1416,oy,-ox,0);
   glBegin(GL_LINES);
   glVertex3f(0,0,0);
-  glVertex3f(ox, oy, oz);
+  glVertex3f(0,0,3);
+  // glVertex3f(ox, oy, oz);
   glEnd();
+  glScalef(0.5, 0.5, 2);
   glutSolidSphere(width, 10, 10);
   glPopMatrix();
 }
