@@ -217,7 +217,7 @@ $(TOOLS_IMAGE_EXEC): bin/%:$(OBJ_DIR)tools/image/%.o lib/libneseg.a
 $(OBJ_VIEWER):$(OBJ_DIR)%.o:%.c
 	$(CPP) $(CFLAGS) $(CFLAGSGTK) $(CFLAGSGTKEXT) $< -o $@
 
-bin/neseg: $(OBJ_VIEWER)
+bin/neseg: library $(OBJ_VIEWER) 
 	$(CPP) $(LDFLAGS) $(LDFLAGSGTK) $(LDFLAGSGTKEXT) $(OBJ_VIEWER) -o $@ -lneseg
 
 cleanDepend:
