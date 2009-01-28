@@ -304,4 +304,3 @@ on_screenshot_activate                 (GtkMenuItem     *menuitem,
 
 //-------------------------------------------------
 
-

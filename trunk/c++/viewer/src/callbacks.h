@@ -241,10 +241,6 @@ on_select_shaders_changed              (GtkComboBox     *combobox,
                                         gpointer         user_data);
 
 void
-on_add_contour_point_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
 on_create_contour_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
@@ -258,4 +254,12 @@ on_clear_contour_clicked               (GtkButton       *button,
 
 void
 on_remove_contour_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_run_graph_cuts_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_add_contour_point_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
