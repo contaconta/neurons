@@ -10,7 +10,7 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.2
+CPP = g++-4.3
 USE_OPENMP=1
 USE_GLEW=1
 
@@ -36,7 +36,7 @@ endif
 CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags gsl)
 CFLAGSGTK    = $(shell pkg-config --cflags gtk+-2.0)
 CFLAGSGTKEXT    = $(shell pkg-config --cflags gtkglext-1.0 pangoft2)
-CFLAGSGL = -I/usr/include/
+CFLAGSGL = -I/usr/include/ -I/usr/include/GL
 
 LDFLAGSOPENCV = $(shell pkg-config --libs opencv) $(shell pkg-config --libs gsl)
 LDFLAGSGTK    = $(shell pkg-config --libs gtk+-2.0)
