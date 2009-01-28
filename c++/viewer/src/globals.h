@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "Axis.h"
 #include "Contour.h"
+#include "GraphCut.h"
 
 //Camera parameters
 double fovy3D = 60;
@@ -129,6 +130,7 @@ string volume_name;
 vector< string >    objectNames;
 vector< VisibleE* > toDraw;
 vector< Contour<Point>* > lContours;
+vector< GraphCut<Point>* > lGraphCuts;
 
 // Parameters
 int argcp;
@@ -147,8 +149,20 @@ enum ContourPointActions{
   CPA_NONE
 };
 
+enum ContourPointType{
+  CPT_SOURCE,
+  CPT_SINK
+};
+
+enum ContourType{
+  CT_SIMPLE_CONTOUR=0,
+  CT_GRAPHCUT
+};
+
 ContourPointActions contourEditor_action = CPA_SELECT;
 
 Contour<Point>* currentContour = 0;
+
+GraphCut<Point>* currentGraphCut = 0;
 
 #endif

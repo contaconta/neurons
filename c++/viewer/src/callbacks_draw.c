@@ -238,6 +238,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         /* neuronita->drawInOpenGl(); */
         glCallList(1);
       draw_last_point();
+      draw_contours();
     }
 
   //Draws the XY view

@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "Axis.h"
 #include "Contour.h"
+#include "GraphCut.h"
 
 //Camera parameters
 extern double fovy3D;
@@ -114,7 +115,7 @@ extern string volume_name;
 extern vector< string >    objectNames;
 extern vector< VisibleE* > toDraw;
 extern vector< Contour<Point>* > lContours;
-
+extern vector< GraphCut<Point>* > lGraphCuts;
 
 // Parameters
 extern int argcp;
@@ -132,9 +133,20 @@ enum ContourPointActions{
   CPA_NONE
 };
 
+enum ContourPointType{
+  CPT_SOURCE,
+  CPT_SINK
+};
+
+enum ContourType{
+  CT_SIMPLE_CONTOUR=0,
+  CT_GRAPHCUT
+};
+
 extern ContourPointActions contourEditor_action;
 
 extern Contour<Point>* currentContour;
 
+extern GraphCut<Point>* currentGraphCut;
 
 #endif

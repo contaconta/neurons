@@ -217,7 +217,7 @@ void unProjectMouse()
     unProjectMouseAsc(mouse_last_x, mouse_last_y);
   }
   if(majorMode == MOD_CONTOUREDITOR){
-    unProjectMouseContour(mouse_last_x, mouse_last_y);
+    unProjectMouseContour(mouse_last_x, mouse_last_y, CPT_SOURCE);
   }
 
 }
@@ -289,6 +289,9 @@ on_drawing3D_button_press_event        (GtkWidget       *widget,
       break;
     case 2:
       mouse_buttons[1] = (mouse_buttons[1]==0)?1:0;
+      if(majorMode == MOD_CONTOUREDITOR){
+	unProjectMouseContour(mouse_last_x, mouse_last_y,CPT_SINK);
+      }
       break;
     case 3:
       mouse_buttons[2] = (mouse_buttons[2]==0)?1:0;

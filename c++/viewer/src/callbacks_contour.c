@@ -22,23 +22,47 @@ void
 on_create_contour_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-    currentContour = new Contour<Point>;
-    lContours.push_back(currentContour);
-    GtkComboBox* list_contours=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_contours"));
-    gtk_combo_box_append_text(list_contours, currentContour->contour_name.c_str());
+  GtkComboBox* list_contours=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_contours"));
+  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
+  int active_id = gtk_combo_box_get_active(contour_type);
+  if(active_id == CT_SIMPLE_CONTOUR)
+    {
+      currentContour = new Contour<Point>;
+      lContours.push_back(currentContour);
+      gtk_combo_box_append_text(list_contours, currentContour->contour_name.c_str());
+    }
+  else
+    {
+      currentGraphCut = new GraphCut<Point>;
+      lGraphCuts.push_back(currentGraphCut);
+      gtk_combo_box_append_text(list_contours, currentGraphCut->graphcut_name.c_str());
+    }
 }
 
 void
-on_add_contour_point_clicked           (GtkButton       *button,
+on_add_contour_point_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    contourEditor_action = CPA_ADD_POINTS;
+    if(togglebutton->active)
+        contourEditor_action = CPA_ADD_POINTS;
+    else
+        contourEditor_action = CPA_SELECT;
 }
 
-void unProjectMouseContour(int mouse_last_x, int mouse_last_y)
+void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType pointType)
 {
-    if(currentContour == NULL)
-        return;
+  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(drawing3D->parent,"contour_selection_type"));
+  int active_id = gtk_combo_box_get_active(contour_type);
+  if(active_id == CT_SIMPLE_CONTOUR)
+    {
+      if(currentContour == 0)
+	return;
+    }
+  else
+    {
+      if(currentGraphCut == 0)
+	return;
+    }
 
     bool need_redraw = false;
     GLint viewport[4];
@@ -86,38 +110,32 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y)
 
     get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y);
 
-    //neuronita->setUpGlMatrices();
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
-    glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
-    GLfloat depth;
-    glReadPixels(   mouse_last_x,
-                    realy,
-                    1,
-                    1,
-                    GL_DEPTH_COMPONENT,
-                    GL_FLOAT,
-                    &depth );
-    gluUnProject ((GLdouble) mouse_last_x, (GLdouble) realy, depth,
-                    mvmatrix, projmatrix, viewport, &nx, &ny, &nz);
-
     glPopMatrix();
 
     printf("unProjectMouseContour\n");
     printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
-    printf("Neuron coordinates: [%f %f %f]\n", nx, ny, nz);
-    /* if(pp!=NULL) */
-    /* printf("Closep coordinates: [%f %f %f]\n", pp->coords[0],  pp->coords[1],  pp->coords[2]); */
 
     switch(contourEditor_action)
     {
         case CPA_ADD_POINTS:
             {
-                Point3D* point=new Point3D();
-                point->coords.push_back((float)wx);
-                point->coords.push_back((float)wy);
-                point->coords.push_back((float)wz);
-                currentContour->addPoint(point);
+	      Point3D* point=new Point3D();
+	      vector<float> coords;
+	      coords.push_back((float)wx);
+	      coords.push_back((float)wy);
+	      coords.push_back((float)wz);
+	      cube->micrometersToIndexes(coords, point->coordsV);
+	      if(active_id == CT_SIMPLE_CONTOUR)
+		{
+		  currentContour->addPoint(point);
+		}
+	      else
+		{
+		  if(pointType == CPT_SOURCE)
+		    currentGraphCut->addSourcePoint(point);
+		  else
+		    currentGraphCut->addSinkPoint(point);
+		}
                 break;
             }
         default:
@@ -129,11 +147,25 @@ void
 on_save_contour_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-    if(currentContour)
+  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
+  int active_id = gtk_combo_box_get_active(contour_type);
+  if(active_id == CT_SIMPLE_CONTOUR)
     {
-        //If the neuron is modified, the previous will be saved in the following name
-        string contour_name_save = currentContour->contour_name + ".save";
-        currentContour->save(contour_name_save);
+      if(currentContour)
+	{
+	  //If the neuron is modified, the previous will be saved in the following name
+	  string contour_name_save = currentContour->contour_name + ".save";
+	  currentContour->save(contour_name_save);
+	}
+    }
+  else
+    {
+      if(currentGraphCut)
+	{
+	  //If the neuron is modified, the previous will be saved in the following name
+	  string graphcut_name_save = currentGraphCut->graphcut_name + ".save";
+	  currentGraphCut->save(graphcut_name_save);
+	}
     }
 }
 
@@ -169,5 +201,16 @@ on_remove_contour_clicked              (GtkButton       *button,
             else
                 itContours++;
         }
+    }
+}
+
+void
+on_run_graph_cuts_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  printf("run_graph_cut\n");
+  if(currentGraphCut)
+    {
+      currentGraphCut->run_maxflow((Cube<float,float>*)cube);
     }
 }
