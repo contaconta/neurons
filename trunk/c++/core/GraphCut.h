@@ -3,8 +3,8 @@
 
 // Include graph.h first to avoid compilation errors
 // due to the re-definition of symbols
-#include "dynamicGraph.h"
-#include "dynamicGraph.cpp"
+#include "graphCut/dynamicGraph.h"
+#include "graphCut/dynamicGraph.cpp"
 #include <sstream>
 #include "Point.h"
 #include "VisibleE.h"

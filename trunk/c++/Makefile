@@ -44,7 +44,7 @@ LDFLAGSGTKEXT = $(shell pkg-config --libs gtkglext-1.0 pangoft2)
 LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 
 LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
-INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore 
+INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore -Iexternal/include
 CFLAGS = -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 
 ## Relevant directories (I am dislexic)
