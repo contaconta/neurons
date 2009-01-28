@@ -15,7 +15,7 @@ class Point2D : public Point
 {
 public:
 
-  vector< float > coords;
+  // vector< float > coords;
 
   Point2D();
 
