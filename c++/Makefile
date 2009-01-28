@@ -44,10 +44,12 @@ LDFLAGSGTKEXT = $(shell pkg-config --libs gtkglext-1.0 pangoft2)
 LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 
 LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
-INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore -Iexternal/include
+INCLUDEFLAGSEXT = -Iexternal/graphCuts
+INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT)
 CFLAGS = -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 
 ## Relevant directories (I am dislexic)
+
 OBJ_DIR = objects/
 BIN_DIR = bin/
 LIB_DIR = lib/
@@ -128,11 +130,14 @@ $(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P)
 # This will compile all the library
 all:  library tools neseg
 
-library:  lib/libneseg.a
+library:  lib/libneseg.a lib/libneseg.so
 
 #Compilation of the library
 lib/libneseg.a:  $(OBJ_CORE)
 	ar rcs $@ $(OBJ_CORE)
+
+lib/libneseg.so:  $(OBJ_CORE)
+	gcc -shared -Wl -o $@   $(OBJ_CORE)
 
 $(OBJ_CORE):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
@@ -150,6 +155,9 @@ neuronTools: library $(TOOLS_NEURON_OBJ) $(TOOLS_NEURON_EXEC)
 
 imageTools: library $(TOOLS_IMAGE_OBJ) $(TOOLS_IMAGE_EXEC)
 
+install: library
+	cp lib/libneseg.so /usr/lib
+	cp lib/libneseg.a /usr/lib
 
 include  $(ALL_SOURCES:.cpp=.d)
 

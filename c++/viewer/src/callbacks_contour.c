@@ -124,7 +124,7 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
 	      coords.push_back((float)wx);
 	      coords.push_back((float)wy);
 	      coords.push_back((float)wz);
-	      cube->micrometersToIndexes(coords, point->coordsV);
+	      /* cube->micrometersToIndexes(coords, point->coordsV); */
 	      if(active_id == CT_SIMPLE_CONTOUR)
 		{
 		  currentContour->addPoint(point);

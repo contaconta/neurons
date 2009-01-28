@@ -15,7 +15,7 @@ class Point3Do : public Point
 {
 public:
 
-  vector< float > coords;
+  // vector< float > coords;
 
   float theta;
 
