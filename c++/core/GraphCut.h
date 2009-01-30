@@ -250,7 +250,6 @@ template<class T, class U>
   // (weight of edge between mark object to the source or mark background to the sink)
   //float K = FLT_MAX;
   float K = 100;
-  //GraphType::node_id*** node_ids;
 
   if(layer_id == -1)
     {
@@ -259,7 +258,6 @@ template<class T, class U>
       ni = cube->cubeWidth;
       nj = cube->cubeHeight;
       nk = cube->cubeDepth;
-      //node_ids = new GraphType::node_id[ni][nj][nk];
     }
   else
     {
