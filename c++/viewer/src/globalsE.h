@@ -38,7 +38,9 @@ extern bool flag_save_cube_coordinate;
 
 
 //Canvas parameters
+extern GtkWidget* ascEditor;
 extern GtkWidget* drawing3D;
+extern GtkWidget* contourEditor;
 extern double widgetWidth;
 extern double widgetHeight;
 

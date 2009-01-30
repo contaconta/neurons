@@ -1,3 +1,4 @@
+
 #ifndef GLOBAL_VARIABLES_FILE_H_
 #define GLOBAL_VARIABLES_FILE_H_
 
@@ -23,7 +24,9 @@ double rot3DY = 0;
 
 
 //Canvas parameters
+GtkWidget *ascEditor;
 GtkWidget* drawing3D;
+GtkWidget* contourEditor;
 double widgetWidth = 0;
 double widgetHeight = 0;
 

@@ -46,7 +46,7 @@ LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
 INCLUDEFLAGSEXT = -Iexternal/graphCuts
 INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT)
-CFLAGS = -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+CFLAGS = $1 -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 
 ## Relevant directories (I am dislexic)
 
@@ -203,7 +203,9 @@ $(TOOLS_GRAPH_OBJ):$(OBJ_DIR)%.o:%.cpp
 # $(TOOLS_GRAPH_EXEC): $(OBJ_DIR)/tools/graph/ 
 $(TOOLS_GRAPH_EXEC): bin/%:$(OBJ_DIR)tools/graph/%.o lib/libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(GRAPH_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
+ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$@ $(INST_DIR)$(@F)
+endif
 
 # Compilation of the neuron tools
 $(TOOLS_NEURON_OBJ):$(OBJ_DIR)%.o:%.cpp
@@ -211,7 +213,9 @@ $(TOOLS_NEURON_OBJ):$(OBJ_DIR)%.o:%.cpp
 
 $(TOOLS_NEURON_EXEC): bin/%:$(OBJ_DIR)tools/neuron/%.o lib/libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(NEURON_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
+ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
+endif
 
 # Compilation of the image tools
 $(TOOLS_IMAGE_OBJ):$(OBJ_DIR)%.o:%.cpp
@@ -219,7 +223,9 @@ $(TOOLS_IMAGE_OBJ):$(OBJ_DIR)%.o:%.cpp
 
 $(TOOLS_IMAGE_EXEC): bin/%:$(OBJ_DIR)tools/image/%.o lib/libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
+ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
+endif
 
 #Compilation for the viewer
 $(OBJ_VIEWER):$(OBJ_DIR)%.o:%.c

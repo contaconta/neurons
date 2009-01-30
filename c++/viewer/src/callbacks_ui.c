@@ -180,37 +180,26 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
 
 void unProjectMouse()
 {
-
-  GLint viewport[4];
-  GLdouble mvmatrix[16], projmatrix[16];
   GLdouble wx, wy, wz;
-  GLdouble nx,ny,nz;
-  GLint realy; /*  OpenGL y coordinate position, not the Mouse one of Gdk */
-               /*   realy = widgetHeight - mouse_last_y; */
-  realy = (GLint)widgetHeight - 1 - mouse_last_y;
 
   get_world_coordinates(wx, wy, wz, true);
 
-
-  if(1)
-    {
-      printf("World Coordinates: %f %f %f\n", wx, wy, wz);
-      vector< float > world(3);
-      world[0] = wx;
-      world[1] = wy;
-      world[2] = wz;
-      if(cube!=NULL){
-        vector< int > indexes(3);
-        cube->micrometersToIndexes(world, indexes);
+  printf("World Coordinates: %f %f %f\n", wx, wy, wz);
+  vector< float > world(3);
+  world[0] = wx;
+  world[1] = wy;
+  world[2] = wz;
+  if(cube!=NULL){
+    vector< int > indexes(3);
+    cube->micrometersToIndexes(world, indexes);
 
 /*         layerToDrawXY = indexes[2]%512; */
 /*         layerToDrawXZ = indexes[1]%512; */
 /*         layerToDrawYZ = indexes[0]%512; */
 
 /*         printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]); */
-        on_drawing3D_expose_event(drawing3D,NULL, NULL);
-      }
-    }
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
 
   /** If the mode is MOD_ASCEDITOR, change the asc.*/
   if(majorMode == MOD_ASCEDITOR){
@@ -289,12 +278,12 @@ on_drawing3D_button_press_event        (GtkWidget       *widget,
       break;
     case 2:
       mouse_buttons[1] = (mouse_buttons[1]==0)?1:0;
-      if(majorMode == MOD_CONTOUREDITOR){
-	unProjectMouseContour(mouse_last_x, mouse_last_y,CPT_SINK);
-      }
       break;
     case 3:
       mouse_buttons[2] = (mouse_buttons[2]==0)?1:0;
+      if(majorMode == MOD_CONTOUREDITOR){
+	unProjectMouseContour(mouse_last_x, mouse_last_y,CPT_SINK);
+      }
       break;
     default:
       break;

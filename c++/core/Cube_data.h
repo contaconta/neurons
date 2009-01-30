@@ -831,9 +831,9 @@ void Cube<T,U>::createMIPImage(string filename, bool minMax)
 template <class T, class U>
 void Cube<T,U>::micrometersToIndexes(vector< float >& micrometers, vector< int >& indexes)
 {
-  indexes[0] = (int)(float(cubeWidth)/2 + micrometers[0]/voxelWidth);
-  indexes[1] = (int)(float(cubeHeight)/2 - micrometers[1]/voxelHeight);
-  indexes[2] = (int)(float(cubeDepth)/2 + micrometers[2]/voxelDepth);
+  indexes.push_back((int)(float(cubeWidth)/2 + micrometers[0]/voxelWidth));
+  indexes.push_back((int)(float(cubeHeight)/2 - micrometers[1]/voxelHeight));
+  indexes.push_back((int)(float(cubeDepth)/2 + micrometers[2]/voxelDepth));
 }
 
 template <class T, class U>
