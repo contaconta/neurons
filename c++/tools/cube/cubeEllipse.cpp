@@ -37,18 +37,7 @@ int main(int argc, char **argv) {
    Cube<float, double>* output = new Cube<float,double>(rx, ry, rz, name);
 
    //Cube<uchar,ulong>* output = new Cube<uchar,ulong>();
-   output->put_value_in_ellipsoid(100,100,100,50,10,10,10);
-
-   //string name_no_dir = name.substr(name.find_last_of("/\\")+1);
-   //string name_no_dir(argv[1]);
-   printf("name_no_dir: %s\n", name);
-   
-   output->filenameVoxelData = name + ".vl";
-   output->type = "float";
-
-   output->save_parameters(name + ".nfo");
-   output->create_volume_file(name + ".vl");
-   output->load_volume_data(name + ".vl");
+   output->put_value_in_ellipsoid(100,100,100,50,500,10,10);
 
    delete output;
 }
