@@ -110,8 +110,6 @@ main (int argc, char *argv[])
 
   argp_parse (&argp, argc, argv, 0, 0, 0);
 
-  GtkWidget *ascEditor;
-
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
@@ -130,7 +128,7 @@ main (int argc, char *argv[])
   if(glconfig == NULL)
     std::cout << "Error creating the glconfig\n";
 
-  GtkWidget* drawing3D = lookup_widget(ascEditor, "drawing3D");
+  drawing3D = lookup_widget(ascEditor, "drawing3D");
 
   gtk_widget_set_gl_capability (drawing3D,
                                 glconfig,
@@ -161,8 +159,8 @@ main (int argc, char *argv[])
     gtk_widget_show (controlsAsc);
   }
   else if(majorMode == MOD_CONTOUREDITOR){
-    GtkWidget* contoursEditor = create_ascEditControlsContours();
-    gtk_widget_show (contoursEditor);
+    contourEditor = create_ascEditControlsContours();
+    gtk_widget_show (contourEditor);
   }
 
 

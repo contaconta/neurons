@@ -199,6 +199,33 @@ void draw_contours()
     }
 }
 
+void draw_graphcuts()
+{
+  int x = -1;
+  int y = -1;
+  int z = -1;
+  if(flag_draw_XY)
+    {
+      GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+      z = gtk_spin_button_get_value_as_int(layer_XY_spin);
+    }
+  else
+  if(flag_draw_XZ)
+    {
+    }
+  else
+  if(flag_draw_YZ)
+    {
+    }
+
+
+    for(vector< GraphCut<Point>* >::iterator itGraphCut = lGraphCuts.begin();
+        itGraphCut != lGraphCuts.end(); itGraphCut++)
+    {
+      (*itGraphCut)->draw(x,y,z);
+    }
+}
+
 gboolean
 on_drawing3D_expose_event              (GtkWidget       *widget,
                                         GdkEventExpose  *event,
@@ -239,6 +266,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glCallList(1);
       draw_last_point();
       draw_contours();
+      draw_graphcuts();
     }
 
   //Draws the XY view
@@ -258,8 +286,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */
       draw_last_point();
-      glDisable(GL_DEPTH_TEST);
       draw_contours();
+      draw_graphcuts();
+      glDisable(GL_DEPTH_TEST);
     }
 
   if(flag_draw_XZ)
@@ -274,8 +303,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron)
         glCallList(1);
-      draw_contours();
       draw_last_point();
+      draw_contours();
+      draw_graphcuts();
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -291,8 +321,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron)
         glCallList(1);
-      draw_contours();
       draw_last_point();
+      draw_contours();
+      draw_graphcuts();
       glDisable(GL_DEPTH_TEST);
     }
 

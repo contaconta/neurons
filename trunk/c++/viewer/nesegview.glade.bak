@@ -1530,7 +1530,7 @@ Gaussian 3*3</property>
   <child>
     <widget class="GtkTable" id="table3">
       <property name="visible">True</property>
-      <property name="n_rows">12</property>
+      <property name="n_rows">13</property>
       <property name="n_columns">2</property>
       <property name="homogeneous">False</property>
       <property name="row_spacing">0</property>
@@ -1681,9 +1681,9 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkLabel" id="label_l">
+	<widget class="GtkLabel" id="label_e">
 	  <property name="visible">True</property>
-	  <property name="label" translatable="yes">l</property>
+	  <property name="label" translatable="yes">e</property>
 	  <property name="use_underline">False</property>
 	  <property name="use_markup">False</property>
 	  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1807,8 +1807,8 @@ Gaussian 3*3</property>
 	<packing>
 	  <property name="left_attach">0</property>
 	  <property name="right_attach">1</property>
-	  <property name="top_attach">7</property>
-	  <property name="bottom_attach">8</property>
+	  <property name="top_attach">8</property>
+	  <property name="bottom_attach">9</property>
 	  <property name="x_options">fill</property>
 	  <property name="y_options"></property>
 	</packing>
@@ -1835,8 +1835,8 @@ Gaussian 3*3</property>
 	<packing>
 	  <property name="left_attach">1</property>
 	  <property name="right_attach">2</property>
-	  <property name="top_attach">7</property>
-	  <property name="bottom_attach">8</property>
+	  <property name="top_attach">8</property>
+	  <property name="bottom_attach">9</property>
 	  <property name="x_options">fill</property>
 	  <property name="y_options"></property>
 	</packing>
@@ -1857,6 +1857,54 @@ GraphCut</property>
 	  <property name="top_attach">1</property>
 	  <property name="bottom_attach">2</property>
 	  <property name="x_options">fill</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="load_contour">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">Load contour</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <property name="focus_on_click">True</property>
+	  <signal name="clicked" handler="on_load_contour_clicked" last_modification_time="Thu, 29 Jan 2009 10:54:22 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">0</property>
+	  <property name="right_attach">1</property>
+	  <property name="top_attach">7</property>
+	  <property name="bottom_attach">8</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkLabel" id="label_l">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">l</property>
+	  <property name="use_underline">False</property>
+	  <property name="use_markup">False</property>
+	  <property name="justify">GTK_JUSTIFY_LEFT</property>
+	  <property name="wrap">False</property>
+	  <property name="selectable">False</property>
+	  <property name="xalign">0</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	  <property name="width_chars">-1</property>
+	  <property name="single_line_mode">False</property>
+	  <property name="angle">0</property>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">7</property>
+	  <property name="bottom_attach">8</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
 	</packing>
       </child>
     </widget>

@@ -28,7 +28,9 @@ void main(void)
 	else if(filterId == 2)
 	{
 		// Laplace operator
-		gl_FragColor = 8.0 * (c + -0.125 * (bl + l + tl + t + ur + r + br + b));
+		//gl_FragColor = 4.0 * (-c + 0.125 * (l + t + r + b));
+		gl_FragColor = 8.0 * (c + -0.125 * (bl + l + tl + t + ur + r + br + b)); // sharpen
+		//gl_FragColor = 2.0 * tl - c -br; // emboss
 	}
 	else if(filterId == 3)
 	{
