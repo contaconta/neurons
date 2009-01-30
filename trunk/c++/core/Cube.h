@@ -66,6 +66,8 @@ public:
   int fildes;
 
   Cube();
+  //The string nameFile should be given with the directory, if not the one where the program is being done, and without extension
+  Cube(int width, int height, int depth, string nameFile, float voxelWidth = 1, float voxelHeight = 1, float voxelDepth = 1);
   Cube(string filenameParams, bool load_volume_file = true);
   Cube(string filenameParams, string _filenameVoxelData);
   Cube(string filenameParams, string _filenameVoxelData, string filenameIntegralData);
@@ -503,6 +505,37 @@ Cube<T,U>::~Cube()
     close(fildes);
   }
 }
+
+template <class T, class U>
+Cube<T,U>::Cube
+(int width, int height, int depth, string nameFile,
+ float voxelWidth, float voxelHeight, float voxelDepth)
+{
+  this->cubeWidth   = width;
+  this->cubeHeight  = height;
+  this->cubeDepth   = depth;
+  this->voxelWidth  = voxelWidth;
+  this->voxelHeight = voxelHeight;
+  this->voxelDepth  = voxelDepth;
+  this->x_offset = 0;
+  this->y_offset = 0;
+  this->z_offset = 0;
+  this->cubeFile = getNameFromPath(nameFile) + ".vl";
+  //Hack to get if it is uchar or float, really bad but fast
+  if(sizeof(T) == 1)
+    this->type = "uchar";
+  else if (sizeof(T)==4)
+    this->type = "float";
+  else{
+    printf("Find me in Cube.h and fix me, I am a bug\n");
+    exit(0);
+  }
+  this->create_volume_file(nameFile + ".vl");
+  this->load_volume_data(nameFile + ".vl");
+  this->save_parameters(nameFile + ".nfo");
+
+}
+
 
 template <class T, class U>
 Cube<T,U>::Cube(string filenameParams, string _filenameVoxelData)
