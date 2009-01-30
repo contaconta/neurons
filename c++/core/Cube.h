@@ -520,7 +520,7 @@ Cube<T,U>::Cube
   this->x_offset = 0;
   this->y_offset = 0;
   this->z_offset = 0;
-  this->cubeFile = getNameFromPath(nameFile) + ".vl";
+  this->filenameVoxelData = getNameFromPath(nameFile) + ".vl";
   //Hack to get if it is uchar or float, really bad but fast
   if(sizeof(T) == 1)
     this->type = "uchar";
@@ -533,7 +533,6 @@ Cube<T,U>::Cube
   this->create_volume_file(nameFile + ".vl");
   this->load_volume_data(nameFile + ".vl");
   this->save_parameters(nameFile + ".nfo");
-
 }
 
 

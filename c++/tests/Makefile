@@ -3,12 +3,12 @@ SHELL=/bin/bash
 CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags gsl)
 CFLAGSGTK    = $(shell pkg-config --cflags gtk+-2.0)
 CFLAGSGTKEXT    = $(shell pkg-config --cflags gtkglext-1.0 pangoft2)
-CFLAGSGL = -I/usr/include/
+CFLAGSGL = -I/usr/include/ -openmp -D WITH_OPENMP
 
 LDFLAGSOPENCV = $(shell pkg-config --libs opencv) $(shell pkg-config --libs gsl)
 LDFLAGSGTK    = $(shell pkg-config --libs gtk+-2.0)
 LDFLAGSGTKEXT = $(shell pkg-config --libs gtkglext-1.0 pangoft2)
-LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib -lGLEW -lglut -lGLU -lGL
+LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib -lGLEW -lglut -lGLU -lGL -lpthread -gomp
 
 LDFLAGS =  -g -pg $(LDFLAGSOPENCV) $(LDFLAGSGTK) $(LDFLAGSGTKEXT) $(LDFLAGSOPENGL) -L../lib
 CFLAGS = -c -g  -pg -I../core $(CFLAGSOPENCV) $(CFLAGSGTK) $(CFLAGSGTKEXT) $(CFLAGSGL)
@@ -51,6 +51,12 @@ cloud.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
 cloud.o: ../core/Cloud.h ../core/Cloud_P.h ../core/Point.h ../core/Point2D.h
 cloud.o: ../core/Point2Do.h ../core/Point2Dot.h ../core/Point3D.h
 cloud.o: ../core/Point3Dt.h ../core/Point3Do.h ../core/Point3Dot.h
+cubeCreator.o: ../core/Cube.h ../core/neseg.h ../core/Image.h
+cubeCreator.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
+cubeCreator.o: ../core/Object.h ../core/utils.h ../core/Mask.h
+cubeCreator.o: ../core/Cube_P.h ../core/Cube_data.h ../core/Cube_display.h
+cubeCreator.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h
+cubeCreator.o: ../core/Cube_image.h
 dfactorial.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
 generalParser.o: ../core/Parser.h ../core/utils.h ../core/Mask.h
 generalParser.o: ../core/polynomial.h
