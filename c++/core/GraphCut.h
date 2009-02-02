@@ -3,8 +3,9 @@
 
 // Include graph.h first to avoid compilation errors
 // due to the re-definition of symbols
-#include "dynamicGraph.h"
-#include "dynamicGraph.cpp"
+#include "kgraph.h"
+#include "kgraph.cpp"
+#include "maxflow.cpp"
 #include <sstream>
 #include "Point.h"
 #include "VisibleE.h"
@@ -234,12 +235,8 @@ template< class P>
 template<class T, class U>
   void GraphCut<P>::run_maxflow(Cube<T,U>* cube, int layer_id)
 {
-  typedef DynamicGraph<float,float,float> GraphType;
-  // TODO / Computer correct parameters
-  int nEdges = cube->cubeWidth*cube->cubeHeight*4; //*11;
-  GraphType *g = new GraphType(/*estimated # of nodes*/ cube->cubeWidth*cube->cubeHeight*1, //cube->cubeDepth,
-			       /*estimated # of edges*/ nEdges); 
-
+  typedef maxflow::Graph<float,float,float> GraphType;
+ 
   int startK, endK;
   int ni,nj,nk;
   float weightToSource;
@@ -270,28 +267,37 @@ template<class T, class U>
 
   GraphType::node_id node_ids[ni][nj][nk];
 
+  // TODO / Computer correct parameters
+  int nNodes = ni*nj*nk;
+  int nEdges = nNodes*3;
+  GraphType *g = new GraphType(/*estimated # of nodes*/ nNodes,
+			       /*estimated # of edges*/ nEdges);
+
   // Debug
   //int k = 0;
   printf("Cube : %d %d %d\n", ni, nj, nk);
   nEdges = 0;
 
-  for(int i = 0;i<cube->cubeWidth;i++)
+  int i,j,k;
+  for(i = 0;i<cube->cubeWidth;i++)
     {
-      for(int j = 0;j<cube->cubeHeight;j++)
+      for(j = 0;j<cube->cubeHeight;j++)
 	{
-	  for(int k = startK;k<endK;k++)
+	  for(k = 0;k<nk;k++)
 	    {
 	      node_ids[i][j][k] = g->add_node();
 	    }
 	}
     }
 
+  printf("node_ids[i][j][k] : %d %d %d %d\n", i,j,k,node_ids[i-1][j-1][k-1]);
+
   //for(int i = 1;i<cube->cubeWidth-2;i++)
   for(int i = 0;i<cube->cubeWidth;i++)
     {
     //for(int j = 1;j<cube->cubeHeight-2;j++)
       for(int j = 0;j<cube->cubeHeight;j++)
-      for(int k = startK;k<endK;k++)
+	for(int k = 0;k<nk;k++)
 	{
 	  weightToSink = 0;
 	  weightToSource = 0;
@@ -315,25 +321,25 @@ template<class T, class U>
 		}
 	    }
 
-          g->edit_tweights(node_ids[i][j][k],weightToSource,weightToSink);
+          g->add_tweights(node_ids[i][j][k],weightToSource,weightToSink);
 
 	  if(i+1 < ni && (node_ids[i][j][k] != node_ids[i+1][j][k]))
 	    {
-	      weight = exp(-pow((cube->at(i,j,k)-cube->at(i+1,j,k))/sqrt(2.f)/sigma,2.f));
+	      weight = exp(-pow((cube->at(i,j,k+startK)-cube->at(i+1,j,k+startK))/sqrt(2.f)/sigma,2.f));
 	      g->add_edge(node_ids[i][j][k], node_ids[i+1][j][k], weight, weight);
 	      nEdges++;
 	    }
 
 	  if(j+1 < nj && (node_ids[i][j][k] != node_ids[i][j+1][k]))
 	    {
-	      weight = exp(-pow((cube->at(i,j,k)-cube->at(i,j+1,k))/sqrt(2.f)/sigma,2.f));
+	      weight = exp(-pow((cube->at(i,j,k+startK)-cube->at(i,j+1,k+startK))/sqrt(2.f)/sigma,2.f));
 	      g->add_edge(node_ids[i][j][k], node_ids[i][j+1][k], weight, weight);
 	      nEdges++;
 	    }
 
-	  if(k+1 < endK && (node_ids[i][j][k] != node_ids[i][j][k+1]))
+	  if(k+1 < nk && (node_ids[i][j][k] != node_ids[i][j][k+1]))
 	    {
-	      weight = exp(-pow((cube->at(i,j,k)-cube->at(i,j,k+1))/sqrt(2.f)/sigma,2.f));
+	      weight = exp(-pow((cube->at(i,j,k+startK)-cube->at(i,j,k+1+startK))/sqrt(2.f)/sigma,2.f));
 	      g->add_edge(node_ids[i][j][k], node_ids[i][j][k+1], weight, weight);
 	      nEdges++;
 	    }
@@ -420,7 +426,7 @@ template<class T, class U>
   printf("Edges: %d %d\n", nEdges, flow);
 			
   // TODO : debug only, get rid of this part
-  for(int k = startK;k<endK;k++)
+  for(int k = 0;k<nk;k++)
     {
       IplImage* img = cvCreateImage( cvSize(cube->cubeWidth, cube->cubeHeight), 8, 1 );
       uchar* ptrImage;
