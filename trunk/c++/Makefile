@@ -46,7 +46,7 @@ LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
 INCLUDEFLAGSEXT = -Iexternal/graphCuts
 INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT)
-CFLAGS = $1 -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 
 ## Relevant directories (I am dislexic)
 

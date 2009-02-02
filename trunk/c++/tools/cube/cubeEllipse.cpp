@@ -29,15 +29,15 @@ int main(int argc, char **argv) {
       exit(0);
     }
 
-   int rx = 200;
-   int ry = 200;
-   int rz = 100;
+   int rx = 100;
+   int ry = 100;
+   int rz = 50;
 
    string name(argv[1]);
    Cube<float, double>* output = new Cube<float,double>(rx, ry, rz, name);
 
    //Cube<uchar,ulong>* output = new Cube<uchar,ulong>();
-   output->put_value_in_ellipsoid(100,100,100,50,500,10,10);
+   output->put_value_in_ellipsoid(100,50,50,25,5,5,4);
 
    delete output;
 }
