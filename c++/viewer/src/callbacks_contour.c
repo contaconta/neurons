@@ -34,7 +34,7 @@ on_create_contour_clicked              (GtkButton       *button,
     }
   else
     {
-      currentGraphCut = new GraphCut<Point>;
+      currentGraphCut = new GraphCut<Point>(cube);
       lGraphCuts.push_back(currentGraphCut);
       gtk_combo_box_append_text(list_contours, currentGraphCut->graphcut_name.c_str());
     }
@@ -50,19 +50,20 @@ on_add_contour_point_toggled           (GtkToggleButton *togglebutton,
         contourEditor_action = CPA_SELECT;
 }
 
-void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType pointType)
+bool unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType pointType)
 {
+  bool bRes = false;
   GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(contourEditor,"contour_selection_type"));
   int active_id = gtk_combo_box_get_active(contour_type);
   if(active_id == CT_SIMPLE_CONTOUR)
     {
       if(currentContour == 0)
-	return;
+	return false;
     }
   else
     {
       if(currentGraphCut == 0)
-	return;
+	return false;
     }
 
   bool need_redraw = false;
@@ -70,7 +71,7 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
   GLdouble mvmatrix[16], projmatrix[16];
   GLdouble wx, wy, wz;
   GLdouble nx,ny,nz;
-  GLint realy; /*  OpenGL y coordinate position, not the Mouse one of Gdk */
+  GLint realy; // OpenGL y coordinate position, not the Mouse one of Gdk
 
   realy = (GLint)widgetHeight - 1 - mouse_last_y;
   int window_x = mouse_last_x;
@@ -105,7 +106,7 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
     }
     //In the 3D view, it makes no sense
     else if( (window_x < widgetWidth/2) && (window_y < widgetHeight/2) ){
-      return;
+      return false;
     }
   }
 
@@ -113,7 +114,7 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
 
   glPopMatrix();
 
-  printf("unProjectMouseContour\n");
+  printf("unProjectMouseContour %d %d\n", mouse_last_x, mouse_last_y);
   printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
 
   switch(contourEditor_action)
@@ -137,20 +138,22 @@ void unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
 	    cube->micrometersToIndexes(point->w_coords, point->coords);
 	    if(pointType == CPT_SOURCE)
 	      {
-		printf("Add source point\n");
+		printf("Add source point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
 		currentGraphCut->addSourcePoint(point);
 	      }
 	    else
 	      {
-		printf("Add sink point\n");
+		printf("Add sink point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
 		currentGraphCut->addSinkPoint(point);
 	      }
 	  }
+	bRes = true;
 	break;
       }
     default:
       break;
     }
+  return bRes;
 }
 
 void
@@ -272,7 +275,14 @@ on_load_contour_clicked                (GtkButton       *button,
       if(currentGraphCut)
 	{
 	  printf("Loading %s\n", currentGraphCut->graphcut_name.c_str());
-	  currentGraphCut->load(active_text);
+
+	  if(cube->type == "uchar"){
+	    currentGraphCut->load((Cube<uchar,ulong>*)cube, active_text);
+	  }
+	  else if(cube->type == "float"){
+	    currentGraphCut->load((Cube<float,double>*)cube, active_text);
+	  }
+	  currentGraphCut->list();
 	}
     }
 }
