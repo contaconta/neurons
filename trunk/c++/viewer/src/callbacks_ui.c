@@ -77,7 +77,11 @@ void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y)
                 &depth );
 
 
+  /*
   gluUnProject ((GLdouble) mouse_last_x, (GLdouble) realy, depth,
+                mvmatrix, projmatrix, viewport, &wx, &wy, &wz);
+  */
+  gluUnProject ((GLdouble) x, (GLdouble) realy, depth,
                 mvmatrix, projmatrix, viewport, &wx, &wy, &wz);
 }
 
@@ -211,6 +215,25 @@ void unProjectMouse()
 
 }
 
+bool contour_handle_mouse(int x, int y)
+{
+  bool bRes = false;
+  if(majorMode == MOD_CONTOUREDITOR)
+    {
+    if( mouse_buttons[2] )
+      {
+	printf("contour_handle_mouse %d %d\n", x, y);
+	bRes = unProjectMouseContour(x, y, CPT_SINK);
+      }
+    else
+      if( mouse_buttons[0] )
+	{
+	  bRes = unProjectMouseContour(x, y, CPT_SOURCE);
+	}
+    }
+  return bRes;
+}
+
 gboolean
 on_drawing3D_motion_notify_event       (GtkWidget       *widget,
                                         GdkEventMotion  *event,
@@ -219,6 +242,10 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
   int x, y;
   GdkModifierType state;
   gdk_window_get_pointer (event->window, &x, &y, &state);
+
+  if(contour_handle_mouse(x,y))
+    return true;
+
   mouse_current_x = x;
   mouse_current_y = y;
   int diffx=x-mouse_last_x;
@@ -240,6 +267,7 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
       {
         rot3DX -= (float) 0.5f * diffy;
         rot3DY -= (float) 0.5f * diffx;
+
         on_drawing3D_expose_event(widget, NULL, user_data);
       }
     else
@@ -259,6 +287,7 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
 
   if(MOD_ASCEDITOR)
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
+
   return FALSE;
 }
 

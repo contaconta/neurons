@@ -21,6 +21,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 
 	float n = (node_num_max*sizeof(node)) + (2*edge_num_max*sizeof(arc));
 	printf("Allocating memory for graph. %d %d Requiered: %f kB, %f mB\n", sizeof(node), sizeof(arc), n/1024.0f, n/(1024.0f*1024.0f));
+	fflush(stdout);
 	nodes = (node*) malloc(node_num_max*sizeof(node));
 	arcs = (arc*) malloc(2*edge_num_max*sizeof(arc));
 	
@@ -28,7 +29,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 		if (error_function) (*error_function)("Not enough memory!");
 		else
 			printf("Not enough memory!\n");
-		exit(1);
+		exit(13);
 	}
 	printf("Memory allocated\n");
 

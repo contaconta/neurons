@@ -204,26 +204,37 @@ void draw_graphcuts()
   int x = -1;
   int y = -1;
   int z = -1;
+
+  glPushMatrix();
+
   if(flag_draw_XY)
     {
       GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
       z = gtk_spin_button_get_value_as_int(layer_XY_spin);
+      glTranslatef(0.0f,0.0f,-0.2f);
     }
   else
   if(flag_draw_XZ)
     {
+      GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
+      y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
     }
   else
   if(flag_draw_YZ)
     {
+      GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
+      x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
     }
 
 
-    for(vector< GraphCut<Point>* >::iterator itGraphCut = lGraphCuts.begin();
-        itGraphCut != lGraphCuts.end(); itGraphCut++)
+  for(vector< GraphCut<Point>* >::iterator itGraphCut = lGraphCuts.begin();
+      itGraphCut != lGraphCuts.end(); itGraphCut++)
     {
       (*itGraphCut)->draw(x,y,z);
+      (*itGraphCut)->drawSegmentation(x,y,z);
     }
+
+  glPopMatrix();
 }
 
 gboolean

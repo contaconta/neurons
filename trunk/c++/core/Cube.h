@@ -206,6 +206,9 @@ public:
   /** Converts from coordinates in cube indexes to micrometers.*/
   void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
 
+  /** Converts from 3d coordinates in cube indexes to micrometers.*/
+  void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz);
+
   /** Print some cube statistics.*/
   void print_statistics(string filename = "");
 
