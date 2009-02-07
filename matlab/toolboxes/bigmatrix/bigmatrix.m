@@ -335,16 +335,22 @@ classdef bigmatrix < handle
                 %disp(['columns [' num2str(cached_cols) '] found in the colCache']);
             end
             
-            % retrieve the missing columns from the file and put them in
-            % DATA 
+            % retrieve the missing columns from the file and put them in DATA 
             % NOTE!!!!  Must perform a loop because getColsFromFile only
             % accepts a list of col_inds if they are sequential.  Otherwise
             % it returns garbage after the 1st one
             if ~isempty(find(~data_cols,1))
-                file_col_inds = col_inds(~data_cols);
-                for i = 1:length(file_col_inds)
-                    data(:, find(col_inds == file_col_inds(i))) = obj.getColsFromFile(file_col_inds(i));
+                %file_col_inds = col_inds(~data_cols);
+                for i = 1:length(col_inds)
+                    if ~obj.inColCache(i)
+                        data(:, i) = obj.getColsFromFile(col_inds(i));
+                    end
                 end
+                
+%                 for i = 1:length(file_col_inds)
+%                     data(:, find(col_inds == file_col_inds(i))) = obj.getColsFromFile(file_col_inds(i));
+%                 end
+
                 %data(:, ~data_cols) = obj.getColsFromFile(file_col_inds);
                 %disp(['columns [' num2str(file_col_inds) '] retrieved from ' num2str(obj.filename)]);
             end
