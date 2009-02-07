@@ -32,7 +32,7 @@ i = 0;                          % cascade stage index
 Fi = 1;                         % cascade's current false positive rate      
 Di = 1;                         % cascade's current detection rate
 
-loop until we meet the target false positive rate
+%loop until we meet the target false positive rate
 while (Fi > Ftarget)
     i = i + 1;
     disp(['============== NOW TRAINING CASCADE STAGE i = ' num2str(i) ' ==============']);

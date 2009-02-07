@@ -25,7 +25,8 @@ FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage 
 FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
 FILES.memory          = 300000000;                          % size of memory to use in bytes for each bigmatrix 
 FILES.precision       = 'single';                           % precision of stored values
-path(path, [pwd '/../spedges/']);       % append the path to the spedges features 
+path(path, [pwd '/../spedges/']);                           % append the path to the spedges features 
+path(path, [pwd '/../toolboxes/bigmatrix/']);               % append the path to bigmatrix
 
 %-------------------------------------------------------------------------
 % WEAK LEARNERS
@@ -44,8 +45,8 @@ LEARNERS(2).sigma           = [1 1.5 2 3];  %2;
 % TRAINING & VALIDATION DATA SETS
 %-------------------------------------------------------------------------
 
-%DATASETS.filelist = 'nuclei-rotated.txt';       % file containing list of training images
-DATASETS.filelist = 'faces.txt';                % file containing list of training images
+DATASETS.filelist = 'nuclei-rotated.txt';       % file containing list of training images
+%DATASETS.filelist = 'faces.txt';                % file containing list of training images
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;                  % detector step size
