@@ -339,8 +339,10 @@ classdef bigmatrix < handle
             % NOTE!!!!  Must perform a loop because getColsFromFile only
             % accepts a list of col_inds if they are sequential.  Otherwise
             % it returns garbage after the 1st one
+            % FIXED PROBLEM -> there used to be an issue when extracting
+            % repeated col_inds.  it is fixed but slightly slower, now.
             if ~isempty(find(~data_cols,1))
-                %file_col_inds = col_inds(~data_cols);
+%                 file_col_inds = col_inds(~data_cols);
                 for i = 1:length(col_inds)
                     if ~obj.inColCache(col_inds(i))
                         data(:, i) = obj.getColsFromFile(col_inds(i));
