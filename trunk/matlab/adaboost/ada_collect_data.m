@@ -143,9 +143,12 @@ SET = orderfields(SET);
 
 function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
 
+w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
 success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
 FIND_RATE_LIMIT = .0001;                        %  minimum rate to find FP examples
 disp('       ...randomly scanning for FP examples');
+
+            
 
 while length(FP_LIST) < FPs_REQUIRED
     % 1. randomly select a file from the list
@@ -189,6 +192,7 @@ while length(FP_LIST) < FPs_REQUIRED
     if C
         %disp(['added (random scan) false positive ' num2str(length(FP_LIST)+1) '  current FP rate = ' num2str(find_rate)]);
         FP_LIST{length(FP_LIST)+1} = Image;
+        w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
     end
     
     % 6. check to see if find_rate is too, if raster scan is required   

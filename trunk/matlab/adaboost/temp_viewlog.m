@@ -1,5 +1,4 @@
-function temp_viewlog(log_filenm)
-
+function temp_viewlog(log_filenm, varargin)
 
 
 DATA = logfile(log_filenm, 'read');
