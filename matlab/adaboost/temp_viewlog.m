@@ -12,6 +12,7 @@ fi = DATA(:,7);
 dit = DATA(:,8);
 fit = DATA(:,9);
 stages = DATA(:,1);
+LEARNER = DATA(:,10);
 
 
 figure; hold on;
@@ -24,6 +25,13 @@ plot(di, 'b-');
 plot(fi, 'r-');
 plot(dit, 'c-');
 plot(fit, 'm-');
+
+for l=1:max(LEARNER)
+    str = learnerstr(l);
+    plot(find(LEARNER==l), Di(LEARNER==l), str);
+    plot(find(LEARNER==l), Fi(LEARNER==l), str);
+end
+
 legend('Overall Detection Rate D_i', 'Overall False Positive Rate F_i', 'Stage Detection Rate d_i', 'Stage False Positive Rate f_i', 'Training Data d_i', 'Training Data f_i');
 xlabel('# of Weak Learners');
 ylabel('Detection Rate / False Positive Rate');
@@ -40,6 +48,31 @@ for i = stagelist'
     text(first+1, -.05,['stage ' num2str(i)]);
 end
 
+
+function str = learnerstr(l)
+
+switch l
+    case 1
+            str = 'k.';
+    case 2
+            str = 'k+';
+    case 3
+            str = 'ko';
+    case 4
+            str = 'kx';
+    case 5
+            str = 'ks';
+    case 6
+            str = 'kd';
+    case 7
+            str = 'k^';
+    case 8
+            str = 'k>';
+    case 9
+            str = 'kp';
+    otherwise
+            str = 'kh';
+end
 
 %fill([0 10 10 0],[-.1 -.1 0 0], [.3 .2 .5]);
 

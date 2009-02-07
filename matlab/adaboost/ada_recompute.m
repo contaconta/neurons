@@ -26,7 +26,7 @@ for l = 1:length(LEARNERS)
                 end
             end
 
-            W = wristwatch('start', 'end', num_haars, 'every', 10000, 'text', '    ...precomputed haar feature ');
+            W = wristwatch('start', 'end', num_haars, 'every', 10000, 'text', '       ...precomputed haar feature ');
             block = round(FILES.memory / (length(SET.class)*SET.responses.bytes));        % block = # columns fit into memory lim
             R = zeros(length(SET.class), block );                       % R temporary feature response storage
             j = 1;                                                      % feature index in current block
@@ -74,7 +74,7 @@ for l = 1:length(LEARNERS)
             end
             
             block = min(length(SET.class), round(FILES.memory / (length(f_list)*SET.responses.bytes))); 
-            W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '    ...precomputed spedge for example ');
+            W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '       ...precomputed spedge for example ');
             R = zeros(block, length(f_list));
             j = 1;
             
