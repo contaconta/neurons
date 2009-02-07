@@ -60,8 +60,11 @@ for s = 1:length(CASCADE)
                 
             case 'spedge'
                 %f = SP(CASCADE(s).CLASSIFIER.weak_learners{l}.index);
-                
-                f = sp(CASCADE(s).CLASSIFIER.weak_learners{l}.row, CASCADE(s).CLASSIFIER.weak_learners{l}.col,CASCADE(s).CLASSIFIER.weak_learners{l}.sigma, CASCADE(s).CLASSIFIER.weak_learners{l}.angle);                
+                %angle = CASCADE(s).CLASSIFIER.weak_learners{l}.angle
+                for a = 1:length(LEARNERS); if strcmp(LEARNERS(a).feature_type, CASCADE(s).CLASSIFIER.weak_learners{l}.type); L_ind = a; end; end;
+                angle_ind = find(LEARNERS(L_ind).angles ==CASCADE(s).CLASSIFIER.weak_learners{l}.angle);
+                sigma_ind = find(LEARNERS(L_ind).sigma ==CASCADE(s).CLASSIFIER.weak_learners{l}.sigma);
+                f(l) = sp.spedges(angle_ind, sigma_ind, CASCADE(s).CLASSIFIER.weak_learners{l}.row, CASCADE(s).CLASSIFIER.weak_learners{l}.col);                
                 
                 polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
                 theta(l) = CASCADE(s).CLASSIFIER.theta(l);

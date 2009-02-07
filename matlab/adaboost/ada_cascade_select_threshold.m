@@ -72,8 +72,8 @@ while (low <= high) && (iterations < MAX_ITERATIONS)
 end    
 
 % display the results of our search for a suitable threshold
-disp(['Di=' num2str(Di) ', Fi=' num2str(Fi) ', #FP = ' num2str(length(FPs)) '. CASCADE applied to VALIDATION set.']);               
-disp(['di=' num2str(CASCADE(i).di) ', fi=' num2str(CASCADE(i).fi) ', #fp = ' num2str(length(fps)) '.  Stage ' num2str(i) ' applied to VALIDATION set that pass previous stages (selected threshold = ' num2str(CASCADE(i).threshold) ').' ]);               
+disp(['Di=' num2str(Di) ', Fi=' num2str(Fi) ', #FPs->Stage' num2str(i) ' = ' num2str(length(FPs)) '. CASCADE applied to VALIDATION set.']);               
+disp(['di=' num2str(CASCADE(i).di) ', fi=' num2str(CASCADE(i).fi) ', #fp = ' num2str(length(fps)) '. Stage ' num2str(i) ' applied to VALIDATION (selected threshold ' num2str(CASCADE(i).threshold) ').' ]);               
 
 % disp(['results on VALIDATION data for CASCADE: Di=' num2str(Di) ', Fi=' num2str(Fi) ', #FP = ' num2str(length(FPs)) ]);               
 % disp(['results on VALIDATION data for stage ' num2str(i) ' (threshold = ' num2str(CASCADE(i).threshold) '): di=' num2str(CASCADE(i).di) ', fi=' num2str(CASCADE(i).fi) ', #fp = ' num2str(length(fps)) ]);               
