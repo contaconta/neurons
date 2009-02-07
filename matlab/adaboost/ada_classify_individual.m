@@ -11,7 +11,7 @@ function C = ada_classify_individual(CLASSIFIER, I, LEARNERS)
 
 % if we are passed a single stage instead of a cascade, make it appear as a
 % similar structure to a cascade
-if strcmp(CLASSIFIER.type, 'SINGLE');
+if strcmp(CLASSIFIER(1).type, 'SINGLE');
     CASCADE.CLASSIFIER = CLASSIFIER;
 else
     CASCADE = CLASSIFIER;
