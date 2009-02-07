@@ -68,7 +68,7 @@ guidata(hObject, handles);
 function handles = on_start(handles)
 
 % initial parameters
-handles.files.filename = {'cameraman.tif' 'peppers.png' 'saturn.png'};
+handles.files.filename = {'/osshare/Work/Data/nucleus_training_rotated/train/pos/nucleus00124.png' 'peppers.png' 'saturn.png'};
 handles.files.pathname = {'' '' ''};
 handles.sigma = 2;
 %handles.angles = [0:45:360-45];
@@ -240,8 +240,9 @@ y = repmat(y, [length(handles.sp.angle) 1]);
 disp(['selected point x = ' num2str(x(1)) '; y = ' num2str(y(1)) ';']);
 
 %handles.sp
+sigma = 1;
 
-sp1 = handles.sp.spedges(:,y(1),x(1)); sp1=squeeze(sp1); %bar(sp1);
+sp1 = handles.sp.spedges(:,sigma,y(1),x(1)); sp1=squeeze(sp1); %bar(sp1);
 
 for i = 1:length(handles.sp.angle)
     u(i) = sp1(i) * cosd(handles.sp.angle(i));

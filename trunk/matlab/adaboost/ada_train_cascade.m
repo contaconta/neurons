@@ -62,13 +62,10 @@ while (Fi > Ftarget)
 
         % ====================  TEMPORARY  ==============================
         % to make sure we're actually improving on the training data
-        gt = [TRAIN(:).class]';  C = zeros(size(gt));
-%         for j=1:length(TRAIN.class); 
-%             C(j) = ada_classify_cascade(CASCADE, TRAIN, j);
-%         end
+        gt = [TRAIN(:).class]'; 
         C = ada_classify_set(CASCADE, TRAIN);
         [tpr fpr FPs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist');
-        disp(['results on TRAIN data for CASCADE: Di=' num2str(tpr) ', (f)i=' num2str(fpr) ', #FPs = ' num2str(length(FPs)) ' (remember class 0 = FPs)' ]);               
+        disp(['results on TRAIN data for CASCADE: Di=' num2str(tpr) ', (f)i=' num2str(fpr) ', #FP = ' num2str(length(FPs)) ' (remember class 0 = FP)' ]);               
         % ===============================================================
         
         % write training results to the log file
@@ -91,13 +88,18 @@ while (Fi > Ftarget)
 
     disp('...updating the TRAIN set with negative examples which cause false positives');
     TRAIN = ada_collect_data(DATASETS, 'update', TRAIN, CASCADE, LEARNERS);
+    TRAIN = ada_recompute(TRAIN, LEARNERS, WEAK, FILES);
     
-    TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train', 'update', TRAIN, CASCADE);
-    TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
-                
     disp('...updating the VALIDATION set with negative examples which cause false positives');
-    VALIDATION = ada_collect_data(DATASETS, LEARNERS, 'validation', 'update', VALIDATION, CASCADE);
-    VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
+    VALIDATION = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
+    VALIDATION = ada_recompute(VALIDATION, LEARNERS, WEAK, FILES);
+    
+%     TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train', 'update', TRAIN, CASCADE);
+%     TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
+%                 
+%     disp('...updating the VALIDATION set with negative examples which cause false positives');
+%     VALIDATION = ada_collect_data(DATASETS, LEARNERS, 'validation', 'update', VALIDATION, CASCADE);
+%     VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
      
 end
 

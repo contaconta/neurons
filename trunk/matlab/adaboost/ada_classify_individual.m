@@ -1,11 +1,13 @@
 function C = ada_classify_individual(CLASSIFIER, I, LEARNERS)
-%
+%function C = ada_classify_individual(CLASSIFIER, I, LEARNERS, TRAIN,i)
+%   TRAIN, and i are (i think temporary) and not necessary
 %
 %   C = ada_classify_individual(CLASSIFIER, I, LEARNERS)
 %
 %   seems to work for haar, haven't checked yet for spedges
 %
 %
+
 
 % if we are passed a single stage instead of a cascade, make it appear as a
 % similar structure to a cascade
@@ -24,51 +26,69 @@ for l = 1:length(LEARNERS)
 
     if strcmp(LEARNERS(l).feature_type, 'spedge')
         sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
-        SP = sp.spedges(:);
+        %SP = sp.spedges(:);
     end
     
 end
    
+
+
 % initialize C to zero
 C = 1;
 
     
 for s = 1:length(CASCADE)
     
-    %h = zeros(size(CASCADE(s).feature_index));
     
-    h_ind = 1;   s_ind = 1;     % indexes of the haar and spedge features of this stage
-    
-    % compute the necessary features for this stage and use them to do weak
-    % classification on the image (store in h)  
-    for l = 1:length(CASCADE(s).CLASSIFIER.learner_type)
-        learner_type = CASCADE(s).CLASSIFIER.learner_type{l};
-
-        switch learner_type
+    for l = 1:length(CASCADE(s).CLASSIFIER.weak_learners)
+        
+        switch CASCADE(s).CLASSIFIER.weak_learners{l}.type
+            
             case 'haar'
-                
-                hinds = CASCADE(s).CLASSIFIER.haar(h_ind).hinds;
-                hvals = CASCADE(s).CLASSIFIER.haar(h_ind).hvals;
+                hinds = CASCADE(s).CLASSIFIER.weak_learners{l}.hinds;
+                hvals = CASCADE(s).CLASSIFIER.weak_learners{l}.hvals;
                 f(l) = ada_haar_response(hinds, hvals, II);
                 
+%                 b(l) = TRAIN.responses.get(i, CASCADE(s).CLASSIFIER.weak_learners{l}.index);
+%                 
+%                 if abs(f(l) - b(l)) > 1e-03
+%                     keyboard;
+%                 end
                 
-                polarity(l) = CASCADE(s).CLASSIFIER.haar(h_ind).polarity;
-                theta(l) = CASCADE(s).CLASSIFIER.haar(h_ind).theta;
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);
                 
-                h_ind = h_ind + 1;
-
             case 'spedge'
-
-                f = SP(CASCADE(s).CLASSIFIER.spedge(s_ind).index);
-
-                polarity(l) = CASCADE(s).CLASSIFIER.spedge(s_ind).polarity;
-                theta(l) = CASCADE(s).CLASSIFIER.spedge(s_ind).theta;
-                s_ind = s_ind + 1;
+                %f = SP(CASCADE(s).CLASSIFIER.weak_learners{l}.index);
+                
+                f = sp(CASCADE(s).CLASSIFIER.weak_learners{l}.row, CASCADE(s).CLASSIFIER.weak_learners{l}.col,CASCADE(s).CLASSIFIER.weak_learners{l}.sigma, CASCADE(s).CLASSIFIER.weak_learners{l}.angle);                
+                
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);
         end
+            
         
         % weak classification
         h(l) = polarity(l) * f(l) < polarity(l) * theta(l);
+        
+        
+%         b(l) = polarity(l) * f(l) < polarity(l) * theta(l);
     end
+    
+%     if ~isequal(h, b)
+%         disp('classifications based on computed features (f) and from bigmatrix (b) do not agree.');
+%         keyboard;
+%     else
+%         disp('classifications based on computed features (f) and from bigmatrix (b) seems to agree.');
+%         disp(['h = ' num2str(h)]);
+%         disp(['b = ' num2str(b)]);
+%     end
+    
+%     disp(['polarity ' num2str(polarity)]);
+%     disp(['f        ' num2str(f)]);
+%     disp(['theta    ' num2str(theta)]);
+%     disp(['h        ' num2str(h)]);
+
     
     % compute the strong classification
     C = sum(h .* CASCADE(s).CLASSIFIER.alpha)  >  ( .5 * sum(CASCADE(s).CLASSIFIER.alpha) * CASCADE(s).threshold) ;
@@ -81,31 +101,3 @@ end
     
     
 
-
-
-    
-    
-    
-    
-% %% weak classify gives the weak classification results given feature values
-% function h = weak_classify(CLASSIFIER, f)
-% 
-% 
-% polarity = zeros(1,size(f,2));
-% theta = zeros(1,size(f,2));
-% 
-% learner_types = unique(CLASSIFIER.learner_type);
-% for l = 1:length(learner_types)
-%     type = CLASSIFIER.learner_type{l};
-%     pol = [CLASSIFIER.(type).polarity];
-%     the = [CLASSIFIER.(type).theta];
-%     
-%     inds = find(strcmp(CLASSIFIER.learner_type, type));
-%     polarity(inds) = pol;
-%     theta(inds) = the;
-% end
-% 
-% polarity = repmat(polarity, size(f,1), 1);
-% theta = repmat(theta, size(f,1),1);
-% 
-% h = polarity .* f < polarity .* theta;

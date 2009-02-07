@@ -4,16 +4,16 @@ function SCALES = scale_selection(I, IMSIZE, varargin)
 %   SCALES = scale_selection(I, IMSIZE)  
 %   SCALES = scale_selection(I, IMSIZE, 'scale_factor', SCALE_FACTOR, 'limits', LIMITS)
 %
-%   SCALES contains scales TO RESIZE THE IMAGE.  The effective detector
-%   scale is 1/scale.  LIMITS is given in detector scale size.  For
-%   example,
+%   SCALES contains scales TO RESIZE THE IMAGE.  Because the image is shrunk 
+%   to simulate a growing detector, the effective detector scale is 1/SCALES.  
+%   LIMITS specifies the scale limits for the DETECTOR.  For example,
 %
 %   scale_selection(zeros(100,100), [24 24], 'limits', [1 2])
 %
 %   returns   [0.5120    0.6400    0.8000    1.0000]
 %
-%   This effectively scales the detector from its original size to double
-%   that size.
+%   By reducing the image to .5 and applying the detector, we can get the 
+%   same results as if the detector was doubled in size.
 %   
 %   Copyright © 2008 Kevin Smith
 %
