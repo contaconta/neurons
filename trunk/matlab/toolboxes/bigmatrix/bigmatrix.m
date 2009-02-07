@@ -342,7 +342,7 @@ classdef bigmatrix < handle
             if ~isempty(find(~data_cols,1))
                 %file_col_inds = col_inds(~data_cols);
                 for i = 1:length(col_inds)
-                    if ~obj.inColCache(i)
+                    if ~obj.inColCache(col_inds(i))
                         data(:, i) = obj.getColsFromFile(col_inds(i));
                     end
                 end
