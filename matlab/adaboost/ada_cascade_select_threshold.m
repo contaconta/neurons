@@ -11,19 +11,23 @@ C = zeros(size(gt));                % init a vector for our cascade results
 
 % COLLECT THE MISCLASSIFICATIONS THAT MAKE IT THROUGH CASCADE(1:i-1)
 if i > 1
-    for j=1:length(VALIDATION.class); 
-        C(j) = ada_classify_cascade(CASCADE(1:i-1), VALIDATION, j);
-    end   
+    C = ada_classify_set(CASCADE(1:i-1), VALIDATION);
+
     [TPs FPs] = rocstats(C, gt, 'TPlist', 'FPlist');  
-    PASSTHROUGHS = VALIDATION([TPs; FPs]);
-    gt = [VALIDATION([TPs; FPs]).class]';
-    C = zeros(size(gt));            % re-init a vector for our cascade results
+    PASSTHROUGHS = [TPs; FPs];
+    gt = VALIDATION.class(PASSTHROUGHS);
+%    C = zeros(size(gt));            % re-init a vector for our cascade results
 else
-    PASSTHROUGHS = VALIDATION;
+    PASSTHROUGHS = 1:length(VALIDATION.class);
     FPs = zeros(length(gt));
 end
 
 % TODO: need to handle the case when PASSTHROUGHS is empty !!
+if isempty(PASSTHROUGHS)
+    disp('The previous stage of the cascade did not produce any positive classifications, something is wrong!');
+    keyboard;
+end
+
 
 
 Fi = prod([CASCADE(:).fi]);
@@ -43,6 +47,7 @@ while (low <= high) && (iterations < MAX_ITERATIONS)
 %         C(j) = ada_classify_strong(CASCADE(i).CLASSIFIER, PASSTHROUGHS, j, THRESH);
 %     end  
     C = ada_classify_set(CASCADE(i), VALIDATION, THRESH);
+    C = C(PASSTHROUGHS);
     
     [CASCADE(i).di CASCADE(i).fi fps] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist'); 
     Fi = prod([CASCADE(:).fi]);
@@ -67,6 +72,6 @@ while (low <= high) && (iterations < MAX_ITERATIONS)
 end    
 
 % display the results of our search for a suitable threshold
-disp(['results on VALIDATION data for CASCADE: Di=' num2str(Di) ', Fi=' num2str(Fi) ', #FPs = ' num2str(length(FPs)) ]);               
-disp(['results on VALIDATION data for stage ' num2str(i) ' (threshold = ' num2str(CASCADE(i).threshold) '): di=' num2str(CASCADE(i).di) ', fi=' num2str(CASCADE(i).fi) ', #fps = ' num2str(length(fps)) ]);               
+disp(['results on VALIDATION data for CASCADE: Di=' num2str(Di) ', Fi=' num2str(Fi) ', #FP = ' num2str(length(FPs)) ]);               
+disp(['results on VALIDATION data for stage ' num2str(i) ' (threshold = ' num2str(CASCADE(i).threshold) '): di=' num2str(CASCADE(i).di) ', fi=' num2str(CASCADE(i).fi) ', #fp = ' num2str(length(fps)) ]);               
 

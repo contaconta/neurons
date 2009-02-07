@@ -2,8 +2,7 @@ function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename)
 
 
 %%  allocate the bigmatrix to store all precomputed features
-%SET.responses = bigmatrix( length(SET.class), size(WEAK.list,1), 'filename', filename, 'memory', FILES.memory, 'precision', 'single');
-SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', 'single');
+SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', FILES.precision);
 
 
 %% precompute all weak learner responses
@@ -15,8 +14,7 @@ for l = 1:length(LEARNERS)
     
         case 'haar'
             %% haar like weak learners - for haars it is faster to compute the
-            %  haar response of a singe feature over all training examples
-            disp('...computing haar wavelet responses');
+            %  haar response of a single feature over all training examples
 
             % collect all the vectorized integral images into IIs
             for i = 1:length(SET.class)
@@ -33,7 +31,7 @@ for l = 1:length(LEARNERS)
             end
 
             W = wristwatch('start', 'end', num_haars, 'every', 10000, 'text', '    ...precomputed haar feature ');
-            block = round(FILES.memory / (length(SET.class)*4));        % block = # columns fit into memory lim
+            block = round(FILES.memory / (length(SET.class)*SET.responses.bytes));        % block = # columns fit into memory lim
             R = zeros(length(SET.class), block );                       % R temporary feature response storage
             j = 1;                                                      % feature index in current block
             f_list = [];
@@ -73,7 +71,6 @@ for l = 1:length(LEARNERS)
         %  unlike haars, spedges are faster to compute by looping through
         %  the examples and computing all spedges for each example.
         case 'spedge'
-            disp('...computing spedge repsonses');
             
             % create a list of spedge feature indexes
             f_list = []; 
@@ -85,7 +82,7 @@ for l = 1:length(LEARNERS)
             
             
             %block = round(FILES.memory / (length(WEAK.learners{l}{3})*4)); 
-            block = round(FILES.memory / (length(f_list)*4)); 
+            block = min(length(SET.class), round(FILES.memory / (length(f_list)*SET.responses.bytes))); 
             W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '    ...precomputed spedge for example ');
             %R = zeros(block, length(WEAK.learners{l}{3}));
             R = zeros(block, length(f_list));
@@ -112,11 +109,13 @@ for l = 1:length(LEARNERS)
                 j = j + 1;
             end
             
-            % store the last rows
-            disp(['    ...writing to ' SET.responses.filename]);
-            rows = i-j+2:i;
-            SET.responses.storeBlock(R(1:j-1,:), rows, cols);
-            clear R;
+            if j ~= 1
+                % store the last rows, if we have some left over
+                disp(['    ...writing to ' SET.responses.filename]);
+                rows = i-j+2:i;
+                SET.responses.storeBlock(R(1:j-1,:), rows, cols);
+                clear R;
+            end
     end
 end
 
