@@ -102,7 +102,7 @@ if strcmp(set_type, 'update')
     % Collect FPs-REQUIRED images containing false positives
     [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
     if ~success
-        disp('    ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
+        disp('       ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
         FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
     end
     
@@ -145,7 +145,7 @@ function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DA
 
 success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
 FIND_RATE_LIMIT = .0001;                        %  minimum rate to find FP examples
-disp('   ...randomly scanning for FP examples');
+disp('       ...randomly scanning for FP examples');
 
 while length(FP_LIST) < FPs_REQUIRED
     % 1. randomly select a file from the list
@@ -203,7 +203,7 @@ end
 
 % if we get to this point, we were successful in finding false positives!
 success = 1;
-disp(['   ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
+disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
 
 
 
@@ -289,7 +289,7 @@ TN_LIST = (C == SET.class) .* ~SET.class;
 
 TN_LIST = find(TN_LIST);
 
-disp(['   ...found ' num2str(length(TN_LIST)) ' TNs and ' num2str( length(find(SET.class == 0)) - length(TN_LIST)) ' FPs in previous data set ']);
+disp(['       ...found ' num2str(length(TN_LIST)) ' TNs and ' num2str( length(find(SET.class == 0)) - length(TN_LIST)) ' FPs in previous data set ']);
 
 
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)

@@ -1,36 +1,36 @@
 % load the parameters and path information
-% ----------
-ada_settings; 
-ada_versioninfo;
-
-
-%% preparation
-
-% initialize the log file
-logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
-logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)'});
-
-% define the weak learners
-tic; disp('...defining the weak learners.');
-WEAK = ada_define_weak_learners(LEARNERS); toc; 
-
-% collect the training set and precompute feature responses
-tic; disp('...collecting and processing the TRAIN data set.');
-TRAIN = ada_collect_data(DATASETS, 'train'); toc;
-TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
-
-% collect the validation set and precompute feature responses
-tic; disp('...collecting and processing the VALIDATION data set.');
-VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
-VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
-
-
-%% train the cascade
-
-CASCADE = ada_cascade_init();   % initialize the CASCADE struct
-i = 0;                          % cascade stage index
-Fi = 1;                         % cascade's current false positive rate      
-Di = 1;                         % cascade's current detection rate
+% % ----------
+% ada_settings; 
+% ada_versioninfo;
+% 
+% 
+% %% preparation
+% 
+% % initialize the log file
+% logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+% logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
+% 
+% % define the weak learners
+% tic; disp('...defining the weak learners.');
+% WEAK = ada_define_weak_learners(LEARNERS); toc; 
+% 
+% % collect the training set and precompute feature responses
+% tic; disp('...collecting and processing the TRAIN data set.');
+% TRAIN = ada_collect_data(DATASETS, 'train'); toc;
+% TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
+% 
+% % collect the validation set and precompute feature responses
+% tic; disp('...collecting and processing the VALIDATION data set.');
+% VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
+% VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
+% 
+% 
+% %% train the cascade
+% 
+% CASCADE = ada_cascade_init();   % initialize the CASCADE struct
+% i = 0;                          % cascade stage index
+% Fi = 1;                         % cascade's current false positive rate      
+% Di = 1;                         % cascade's current detection rate
 
 % loop until we meet the target false positive rate
 while (Fi > Ftarget)
@@ -48,12 +48,14 @@ while (Fi > Ftarget)
         
         %% train the next weak classifier (for the strong classifier of stage i)
         disp('   ----------------------------------------------------------------------');
-        disp(['...CASCADE stage ' num2str(i) ' training classifier hypothesis ti=' num2str(ti) '.']);
+        disp(['...CASCADE stage ' num2str(i) ' selecting weak learner ti=' num2str(ti) '.']);
         if ti == 1
             CASCADE(i).CLASSIFIER = ada_adaboost(TRAIN, WEAK, ti, LEARNERS);
         else
             CASCADE(i).CLASSIFIER = ada_adaboost(TRAIN, WEAK, ti, LEARNERS, CASCADE(i).CLASSIFIER);
         end
+        
+        disp(['Stage ' num2str(i) ' goals.  Detection rate (Di) > ' num2str(dmin * Dlast) '.  False positive rate (Fi) < ' num2str(fmax * Flast) '.']);
         
         %% select the cascade threshold for stage i
         %  adjust the threshold for the current stage until we find one
@@ -65,15 +67,17 @@ while (Fi > Ftarget)
         gt = [TRAIN(:).class]'; 
         C = ada_classify_set(CASCADE, TRAIN);
         [tpr fpr FPs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist');
-        disp(['results on TRAIN data for CASCADE: Di=' num2str(tpr) ', (f)i=' num2str(fpr) ', #FP = ' num2str(length(FPs)) ' (remember class 0 = FP)' ]);               
+        disp(['Di=' num2str(tpr) ', Fi=' num2str(fpr) ', #FP = ' num2str(length(FPs)) '.  CASCADE applied to TRAIN set.'  ]);               
         % ===============================================================
         
         % write training results to the log file
-        logfile(FILES.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr]);
+        for l = 1:length(LEARNERS); if strcmp(CASCADE(i).CLASSIFIER.weak_learners{ti}.type, LEARNERS(l).feature_type); L_ind = l; end; end;
+        disp(['L_ind = ' num2str(L_ind) ' learner = ' CASCADE(i).CLASSIFIER.weak_learners{ti}.type ]);
+        logfile(FILES.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr  L_ind]);
         
         % save the cascade to a file in case something bad happens and we need to restart
         save(FILES.cascade_filenm, 'CASCADE');
-        disp(['...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
+        disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
         
         % hand-tune some stage goals (for first few stages) loosly following Viola-Jones IJCV '04
         if i == 1; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .50);   break; end; end;
@@ -86,21 +90,14 @@ while (Fi > Ftarget)
     %  recollect negative examples for the training and validation set which 
     %  include only FPs generated by the current cascade
 
-    disp('...updating the TRAIN set with negative examples which cause false positives');
+    disp('       ...updating the TRAIN set with negative examples which cause false positives');
     TRAIN = ada_collect_data(DATASETS, 'update', TRAIN, CASCADE, LEARNERS);
     TRAIN = ada_recompute(TRAIN, LEARNERS, WEAK, FILES);
     
-    disp('...updating the VALIDATION set with negative examples which cause false positives');
+    disp('       ...updating the VALIDATION set with negative examples which cause false positives');
     VALIDATION = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
     VALIDATION = ada_recompute(VALIDATION, LEARNERS, WEAK, FILES);
-    
-%     TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train', 'update', TRAIN, CASCADE);
-%     TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
-%                 
-%     disp('...updating the VALIDATION set with negative examples which cause false positives');
-%     VALIDATION = ada_collect_data(DATASETS, LEARNERS, 'validation', 'update', VALIDATION, CASCADE);
-%     VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
-     
+
 end
 
 
