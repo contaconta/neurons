@@ -35,6 +35,7 @@ C = 1;
 
     
 for s = 1:length(CASCADE)
+    h = zeros(size(CASCADE(s).CLASSIFIER.feature_index));
     for l = 1:length(CASCADE(s).CLASSIFIER.weak_learners)
         switch CASCADE(s).CLASSIFIER.weak_learners{l}.type
             
@@ -113,6 +114,10 @@ for s = 1:length(CASCADE)
             
         % weak classification
         h(l) = polarity(l) * f(l) < polarity(l) * theta(l);
+        
+%         if length(h) ~= l
+%             keyboard;
+%         end
 
     end
     
@@ -123,6 +128,7 @@ for s = 1:length(CASCADE)
     if C == 0
         break;
     end
+    clear h;
 end
     
 
