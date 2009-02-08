@@ -96,10 +96,10 @@ for s = 1:length(CASCADE)
                 if ~isempty(ind)
                     EDGE = edgelist(ind).EDGE;
                     [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,EDGE, 'edge');
-                    disp('using a previously stored edge');
+                    %disp('using a previously stored edge');
                 else
                     [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,I);
-                    disp('using a newly computed edge');
+                    %disp('using a newly computed edge');
                 end
                 
                 % store EDGE for this SIGMA value
