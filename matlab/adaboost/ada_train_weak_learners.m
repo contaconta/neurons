@@ -43,7 +43,7 @@ for i = 1:length(WEAK.learners)
             [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
             
         case 'spdiff'
-            wstring = '       optimized spedge feature ';
+            wstring = '       optimized spdiff feature ';
             W = wristwatch(W, 'update', i, 'text', wstring);
             [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
     end

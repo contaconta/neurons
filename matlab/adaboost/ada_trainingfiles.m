@@ -5,7 +5,7 @@ function files = ada_trainingfiles(filenm, varargin)
 %  ada_trainingfiles('files.txt', 'train', '+' 500);
 %  ada_trainingfiles('files.txt', 'train', 'both' 500);
 %  ada_trainingfiles('files.txt', 'new', 'validation', '-', path);
-%
+%  ada_trainingfiles('files.txt', 'add', 'update', path);
 %
 
 
