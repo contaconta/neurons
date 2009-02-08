@@ -18,11 +18,12 @@ rand('twister', 100);       % seed the random variable
 % FILES & PATH INFORMATION
 %-------------------------------------------------------------------------
 
-FILES.cascade_filenm  = 'CASCADE.mat';                  % filename to store the cascaded classifier
-FILES.log_filenm      = 'CASCADE.log';                  % filename to store the log file    
+FILES.datestr         = datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
+FILES.cascade_filenm  = ['SPDIFF' FILES.datestr '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['SPDIFF' FILES.datestr '.log'];   % filename to store the log file    
 FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
-FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
-FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
+FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURESspdiff.dat'];    % temporary storage filename
+FILES.valid_filenm    = [pwd '/mat/VALID_FEATURESspdiff.dat'];
 FILES.memory          = 300000000;                          % size of memory to use in bytes for each bigmatrix 
 FILES.precision       = 'single';                           % precision of stored values
 path(path, [pwd '/../spedges/']);                           % append the path to the spedges features 
@@ -49,17 +50,17 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).sigma            = [1 1.5 2 3];  %2;
 
-LEARNERS(length(LEARNERS)+1).feature_type	  = 'spdiff';
+LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-LEARNERS(length(LEARNERS)).sigma            = [2];  %[1 1.5 2 3];  %2;
+LEARNERS(length(LEARNERS)).sigma            = [1 2];  %[1 1.5 2 3];  %2;
 
 %-------------------------------------------------------------------------
 % TRAINING & VALIDATION DATA SETS
 %-------------------------------------------------------------------------
 
-%DATASETS.filelist = 'nuclei-rotated.txt';       % file containing list of training images
-DATASETS.filelist = 'faces.txt';                % file containing list of training images
+DATASETS.filelist = 'nuclei-rotated.txt';       % file containing list of training images
+%DATASETS.filelist = 'faces.txt';                % file containing list of training images
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;                  % detector step size
