@@ -3,7 +3,6 @@ function temp_viewlog(log_filenm, varargin)
 
 DATA = logfile(log_filenm, 'read');
 
-
 Di = DATA(:,4);
 Fi = DATA(:,5);
 di = DATA(:,6);
@@ -48,17 +47,21 @@ for i = stagelist'
 end
 
 
+
+
+%% ================ SUPPORTING FUNCTIONS ================== 
+
 function str = learnerstr(l)
 
 switch l
     case 1
-            str = 'k.';
-    case 2
-            str = 'k+';
-    case 3
             str = 'ko';
+    case 2
+            str = 'k*';
+    case 3
+            str = 'k.';
     case 4
-            str = 'kx';
+            str = 'k+';
     case 5
             str = 'ks';
     case 6
@@ -66,14 +69,14 @@ switch l
     case 7
             str = 'k^';
     case 8
-            str = 'k>';
+            str = 'kx';
     case 9
             str = 'kp';
     otherwise
             str = 'kh';
 end
 
-%fill([0 10 10 0],[-.1 -.1 0 0], [.3 .2 .5]);
 
-%fill([0 x x 0],[-.1 -.1 0 0], [.3 .2 .5]);
-%fill([0 1 1 0],[0 0 1 1], [.3 .2 .5])
+
+
+
