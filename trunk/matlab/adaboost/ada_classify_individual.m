@@ -24,7 +24,7 @@ for l = 1:length(LEARNERS)
         II = II(:);
     end
 
-    if strcmp(LEARNERS(l).feature_type, 'spedge')
+    if strcmp(LEARNERS(l).feature_type, 'spedge') || strcmp(LEARNERS(l).feature_type, 'spdiff')
         edgelist.sigma = 0;
         edgelist.EDGE = I;
     end
@@ -71,6 +71,34 @@ for s = 1:length(CASCADE)
                 else
                     [f(l) EDGE] = single_spedge(angle, sigma, row, col, I);
                     %disp('using a newly computed edge');
+                end
+                
+                % store EDGE for this SIGMA value
+                if isempty(find([edgelist(:).sigma] == sigma,1));
+                    edgelist(length(edgelist)+1).sigma = sigma;
+                    edgelist(length(edgelist)).EDGE = EDGE;
+                end
+
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);
+                
+            case 'spdiff'
+                angle1 = CASCADE(s).CLASSIFIER.weak_learners{l}.angle1;
+                angle2 = CASCADE(s).CLASSIFIER.weak_learners{l}.angle2;
+                sigma = CASCADE(s).CLASSIFIER.weak_learners{l}.sigma;
+                row = CASCADE(s).CLASSIFIER.weak_learners{l}.row;
+                col = CASCADE(s).CLASSIFIER.weak_learners{l}.col;
+                
+                
+                % if we've already computed EDGE for SIGMA, use it, otherwise use I
+                ind = find([edgelist(:).sigma] == sigma,1);
+                if ~isempty(ind)
+                    EDGE = edgelist(ind).EDGE;
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,EDGE, 'edge');
+                    disp('using a previously stored edge');
+                else
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,I);
+                    disp('using a newly computed edge');
                 end
                 
                 % store EDGE for this SIGMA value
