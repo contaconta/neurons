@@ -84,7 +84,6 @@ end
 
 
 %% update collection: TRUE NEGATIVE examples are updated with False Positives.
-% also:  PRECOMPUTE the feature responses to these new examples.
 if strcmp(set_type, 'update')
 
     SET = varargin{1};
@@ -106,24 +105,18 @@ if strcmp(set_type, 'update')
         FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
     end
     
-   
-    % <===== HERE IS WHERE I NEED TO WORK FROM!!!
-        
-    
     % Replace the True Negatives with newly collected False Positives
     for i = 1:length(TN_LIST)
         SET.Images(:,:,TN_LIST(i)) = FP_LIST{i};
-%         disp(['replaced TN ' num2str(TN_LIST(i)) ' with an FP.']);
-%         imshow(FP_LIST{i});
-%         pause(0.1);
+%         disp(['replaced TN ' num2str(TN_LIST(i)) ' with an FP.']);        imshow(FP_LIST{i});        pause(0.1);
     end
         
 end  
     
-        
-
-%% alphabetize the fields of the set
+% alphabetize the fields of the set
 SET = orderfields(SET);   
+
+
 
 
 
@@ -217,72 +210,71 @@ disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%'])
 
 function FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
 
-%while (length(FP_LIST) < FPs_REQUIRED) && (end_not_reached)
-    for file_ind = 1:length(d)
 
-        % read the file
-        filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
+for file_ind = 1:length(d)
 
-        % convert to proper class (pixel intensity represented by [0,1])
-        if ~isa(I, 'double')
-            cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); 
-        end
+    % read the file
+    filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
 
-        % convert to grasyscale if necessary
-        if size(I,3) > 1
-            I = rgb2gray(I);
-        end
+    % convert to proper class (pixel intensity represented by [0,1])
+    if ~isa(I, 'double')
+        cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); 
+    end
 
-        if isfield(DATASETS, 'scale_limits')
-            scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
-        else
-            scales = scale_selection(I, IMSIZE);
-        end
+    % convert to grasyscale if necessary
+    if size(I,3) > 1
+        I = rgb2gray(I);
+    end
 
-        % loop through the scales
-        for scale = scales
-            Iscaled = imresize(I, scale);
-            actual_scale = size(Iscaled,1) / size(I,1);
-            disp(['detector scale = ' num2str(1/actual_scale)]);
-            W = size(Iscaled,2);  H = size(Iscaled,1);
+    if isfield(DATASETS, 'scale_limits')
+        scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
+    else
+        scales = scale_selection(I, IMSIZE);
+    end
 
-            DS = round(DELTA*actual_scale);
-            disp(['scaled delta = ' num2str(DS)]);
+    % loop through the scales
+    for scale = scales
+        Iscaled = imresize(I, scale);
+        actual_scale = size(Iscaled,1) / size(I,1);
+        disp(['detector scale = ' num2str(1/actual_scale)]);
+        W = size(Iscaled,2);  H = size(Iscaled,1);
 
-            % scan the image at each scale
-            for c = 1:max(1,DS):W - IMSIZE(2)
-                for r = 1:max(1,DS):H - IMSIZE(1)
+        DS = round(DELTA*actual_scale);
+        disp(['scaled delta = ' num2str(DS)]);
 
-                    Image = Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
+        % scan the image at each scale
+        for c = 1:max(1,DS):W - IMSIZE(2)
+            for r = 1:max(1,DS):H - IMSIZE(1)
+
+                Image = Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
 
 %                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
 %                     imshow(Itemp);  pause(.01); refresh; 
 %                     disp(['scanning (' num2str(r) ',' num2str(c) ')']);
 
-                    % normalize if necessary
-                    if NORM
-                        Image = imnormalize('image', Image);
-                    end
-
-                    % classify the example
-                    C = ada_classify_individual(DETECTOR, Image, LEARNERS);
-
-                    if C
-                        %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
-                        FP_LIST{length(FP_LIST)+1} = Image;
-                    end
-                    
-                    % if we've collected enough FPs, return.
-                    if length(FP_LIST) >= FPs_REQUIRED
-                        return;
-                    end
-                    
+                % normalize if necessary
+                if NORM
+                    Image = imnormalize('image', Image);
                 end
+
+                % classify the example
+                C = ada_classify_individual(DETECTOR, Image, LEARNERS);
+
+                if C
+                    %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
+                    FP_LIST{length(FP_LIST)+1} = Image;
+                end
+
+                % if we've collected enough FPs, return.
+                if length(FP_LIST) >= FPs_REQUIRED
+                    return;
+                end
+
             end
         end
     end
-%     end_not_reached = 0;
-% end
+end
+
 
 
 function TN_LIST = get_true_negatives(SET, DETECTOR)

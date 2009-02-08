@@ -38,6 +38,16 @@ for s = 1:length(CASCADE)
     for l = 1:length(CASCADE(s).CLASSIFIER.weak_learners)
         switch CASCADE(s).CLASSIFIER.weak_learners{l}.type
             
+            case 'intmean'
+                f(l) = ada_intmean_response(I);
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);
+                
+            case 'intvar'
+                f(l) = ada_intvar_response(I);
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);
+                
             case 'haar'
                 hinds = CASCADE(s).CLASSIFIER.weak_learners{l}.hinds;
                 hvals = CASCADE(s).CLASSIFIER.weak_learners{l}.hvals;
