@@ -103,8 +103,8 @@ classdef bigmatrix < handle
                     end
                 else
                     A = zeros(obj.rows, obj.cols, obj.precision);   
-                    fwrite(obj.fid, A, 'float');
-                    obj.data = A;
+                    fwrite(obj.fid, A, obj.precision);
+                    %obj.data = A;
                 end
                 
                 obj.rowCache = zeros(1,obj.cols);

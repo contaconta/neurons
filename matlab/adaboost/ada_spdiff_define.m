@@ -14,6 +14,7 @@ sigmas = varargin{3};
 
 count = 1;
 
+% combnk enumerates combinations - we use this to find all pairs of angles
 combos = combnk(angles, 2);
             
 for c = 1:size(combos,1);
@@ -32,7 +33,7 @@ for c = 1:size(combos,1);
             spdiff(count).sigma = sigmas(s);
             spdiff(count).row = i;
             spdiff(count).col = j;
-
+            
             count = count + 1;
             end
         end
