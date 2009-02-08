@@ -22,7 +22,16 @@ for i = 1:length(WEAK.learners)
     learner_type        = WEAK.learners{i}.type;
     
     switch learner_type
-        
+        case 'intmean'
+            wstring = '       optimized intmean feature ';
+            W = wristwatch(W, 'update', i, 'text', wstring);
+            [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
+          
+        case 'intvar'
+            wstring = '       optimized intvar feature ';
+            W = wristwatch(W, 'update', i, 'text', wstring);
+            [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
+               
         case 'haar'
             wstring = '       optimized haar feature ';
             W = wristwatch(W, 'update', i, 'text', wstring);

@@ -19,6 +19,33 @@ WEAK.learners = {};
 WEAK.lists = [];
 
 for t = 1:length(LEARNERS)
+    
+     %% add intmean weak learners
+    if strcmp('intmean', LEARNERS(t).feature_type)
+        
+        intmean = ada_intmean_define(LEARNERS(t).IMSIZE );
+        WEAK.lists.intmean = [];
+        
+        for i = 1:length(intmean)
+            WEAK.learners{length(WEAK.learners)+1} = intmean(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'intmean';
+        end
+        clear intmean;
+    end
+    
+    %% add invar weak learners
+    if strcmp('intvar', LEARNERS(t).feature_type)
+        
+        intvar = ada_intvar_define(LEARNERS(t).IMSIZE);
+        WEAK.lists.intvar = [];
+        
+        for i = 1:length(intvar)
+            WEAK.learners{length(WEAK.learners)+1} = intvar(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'intvar';
+        end
+        clear intvar;
+    end
+    
     %% add haar wavelet weak learners
     if strcmp('haar', LEARNERS(t).feature_type)
         
@@ -46,6 +73,20 @@ for t = 1:length(LEARNERS)
         end
         clear spedge;
     end
+    
+    %% add spdiff weak learners
+    if strcmp('spdiff', LEARNERS(t).feature_type)
+        
+        spdiff = ada_spdiff_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).sigma);
+        WEAK.lists.spdiff = [];
+        
+        for i = 1:length(spdiff)
+            WEAK.learners{length(WEAK.learners)+1} = spdiff(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'spdiff';
+        end
+        clear spdiff;
+    end
+   
 end
 
 WEAK.error = zeros(length(WEAK.learners),1);
