@@ -20,6 +20,8 @@ for i = 1:nargin
     LEARNER = DATA(:,10);
 
 
+    %keyboard;
+    
     if i == 1;
         figure; hold on;
     end
@@ -44,7 +46,10 @@ for i = 1:nargin
     title('Cascade Learning Progress');
     grid on;
     ylim([-.1 1]);
-    xlim([1 size(DATA,1)]);
+    %xlim([1 size(DATA,1)]);
+    
+    
+    xlim([1 100]);
 
 %     stagelist = unique(stages);
 %     for i = stagelist'
