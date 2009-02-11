@@ -192,7 +192,7 @@ void GraphCut<P>::drawSegmentation(int x, int y, int z){
   if(lastX != x || lastY != y || lastZ != z)
     {
       // Create display list
-      printf("Create display list %d %d %d\n",x,y,z);
+      //printf("Create display list %d %d %d\n",x,y,z);
 
       if(m_segDL != -1)
 	glDeleteLists(m_segDL, 1);
@@ -435,12 +435,18 @@ template<class T, class U>
       for(j = 0;j<nj;j++)
 	{
 	  m_node_ids[i][j] = new GraphType::node_id[nk];
+
+	  for(k = 0;k<nk;k++)
+	    {
+	      m_node_ids[i][j][k] = m_graph->add_node();
+	    }
 	}
     }
 
   // Debug
   nEdges = 0;
 
+  /*
   for(i = 0;i<ni;i++)
     {
       for(j = 0;j<nj;j++)
@@ -451,6 +457,7 @@ template<class T, class U>
 	    }
 	}
     }
+  */
 
   for(int i = 0;i<ni;i++)
     {

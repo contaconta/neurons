@@ -159,6 +159,7 @@ on_layer_XY_spin_value_changed         (GtkSpinButton   *spinbutton,
 {
   layerToDrawXY = gtk_spin_button_get_value(spinbutton);
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
+  //gtk_widget_queue_draw(drawing3D);  
 }
 
 
