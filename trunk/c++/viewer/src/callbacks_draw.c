@@ -211,7 +211,7 @@ void draw_graphcuts()
     {
       GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
       z = gtk_spin_button_get_value_as_int(layer_XY_spin);
-      glTranslatef(0.0f,0.0f,-0.2f);
+      //glTranslatef(0.0f,0.0f,-0.2f);
     }
   else
   if(flag_draw_XZ)
@@ -272,9 +272,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron)
-        /* neuronita->drawInOpenGl(); */
-        glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+        //glCallList(1);
       draw_last_point();
       draw_contours();
       draw_graphcuts();
@@ -292,8 +292,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron)
-        glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+      //glCallList(1);
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */
       draw_last_point();
@@ -312,8 +313,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron)
-        glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+      //glCallList(1);
       draw_last_point();
       draw_contours();
       draw_graphcuts();
@@ -330,8 +332,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron)
-        glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+      //glCallList(1);
       draw_last_point();
       draw_contours();
       draw_graphcuts();
@@ -370,8 +373,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glDisable(GL_DEPTH_TEST);
     else
       glEnable(GL_DEPTH_TEST);
-    if(flag_draw_neuron)
-      glCallList(1);
+    if(flag_draw_neuron && neuronita)
+      neuronita->drawInOpenGl();
+    //glCallList(1);
     draw_last_point();
 
     glEnable(GL_DEPTH_TEST);
@@ -399,7 +403,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       setUpMatricesXZ(layerSpanViewZ);
       glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
                   (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-      glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+      //glCallList(1);
       draw_last_point();
     }
 
@@ -428,7 +434,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       setUpMatricesYZ(layerSpanViewZ);
       glViewport ((GLsizei)widgetWidth/2, (GLsizei)0,
                   (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-      glCallList(1);
+      if(flag_draw_neuron && neuronita)
+	neuronita->drawInOpenGl();
+      //glCallList(1);
       draw_last_point();
     }
 
@@ -457,7 +465,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         setUpMatricesXY(layerSpanViewZ);
         glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
                     (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-        glCallList(1);
+	if(flag_draw_neuron && neuronita)
+	  neuronita->drawInOpenGl();
+	//glCallList(1);
         draw_last_point();
       }
     glDisable(GL_DEPTH_TEST);
