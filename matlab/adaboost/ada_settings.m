@@ -60,9 +60,10 @@ LEARNERS(length(LEARNERS)).sigma            = [1 2];  %[1 1.5 2 3];  %2;
 %-------------------------------------------------------------------------
 
 %DATASETS.filelist = 'nuclei-rotated.txt';       % file containing rotated nuclei image list
-%DATASETS.filelist = 'faces.txt';                % file containing face training image list
+DATASETS.filelist = 'faces.txt';                % file containing face training image list
 %DATASETS.filelist = 'mitochondria48.txt';       % file containing mitochondria training image 48x48 list
-DATASETS.filelist = 'mitochondria24.txt';       % file containing mitochondria training image 24x24 list
+%DATASETS.filelist = 'mitochondria24.txt';       % file containing mitochondria training image 24x24 list
+%DATASETS.filelist = 'nuclei24.txt';
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;                  % detector step size
