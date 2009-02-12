@@ -1,7 +1,7 @@
-function [FEAT, EDGE] = spedge_dist(I, angle, sigma)
+function [FEAT, EDGE] = spedge_dist(I, angle, stride, edge_method)
 %SPEDGE_DIST computes a spedge feature in a given direction
 %
-%   FEATURE = spedge_dist(I, ANGLE, SIGMA)  computes a spedge 
+%   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
 %   feature on a grayscale image I at angle ANGLE.  Each pixel in FEATURE 
 %   contains the distance to the nearest edge in direction ANGLE.  Edges 
 %   are computed using Laplacian of Gaussian zero-crossings (!!! in the 
@@ -24,6 +24,7 @@ angle = mod(angle,360);
 if angle < 0;  angle = angle + 360; end;
 
 
+%=========================== NEED TO REWRITE=======================================
 % we use a zero-crossing laplacian of gaussian to ensure closed contours
 EDGE = edge(I, 'log', 0, sigma);
 %EDGE = edge(I, 'sobel');
@@ -31,7 +32,7 @@ EDGE = edge(I, 'log', 0, sigma);
 % to handle directions that pass through lines at an angle, thicken lines
 % on diagonals
 EDGE = bwmorph(EDGE, 'diag');
-
+%==========================================================================
 
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);
@@ -131,6 +132,10 @@ else
         inimage = find(rowx <= size(I,1));
     end
 end
+
+
+FEAT = FEAT(1:stride:size(FEAT,1), 1:stride:size(FEAT,2));
+
 
 
 %figure; imagesc(FEAT); axis image;

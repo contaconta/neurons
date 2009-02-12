@@ -100,8 +100,9 @@ if strcmp(set_type, 'update')
 
     % Collect FPs-REQUIRED images containing false positives
     [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
+    %success = 0;  FP_LIST =[];
     if ~success
-        disp('       ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
+        disp('       ...random scanning progressing too slow, switching to raster scan.');
         FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
     end
     
@@ -231,16 +232,19 @@ for file_ind = 1:length(d)
     else
         scales = scale_selection(I, IMSIZE);
     end
+    
+    FP_start = length(FP_LIST);  count = 1;
+    tic;
 
     % loop through the scales
     for scale = scales
         Iscaled = imresize(I, scale);
         actual_scale = size(Iscaled,1) / size(I,1);
-        disp(['detector scale = ' num2str(1/actual_scale)]);
+        %disp(['detector scale = ' num2str(1/actual_scale)]);
         W = size(Iscaled,2);  H = size(Iscaled,1);
 
         DS = round(DELTA*actual_scale);
-        disp(['scaled delta = ' num2str(DS)]);
+        %disp(['scaled delta = ' num2str(DS)]);
 
         % scan the image at each scale
         for c = 1:max(1,DS):W - IMSIZE(2)
@@ -267,12 +271,17 @@ for file_ind = 1:length(d)
 
                 % if we've collected enough FPs, return.
                 if length(FP_LIST) >= FPs_REQUIRED
+                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc]);
+                    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
                     return;
                 end
 
+                count = count + 1;
             end
         end
     end
+    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc]);
+    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
 end
 
 

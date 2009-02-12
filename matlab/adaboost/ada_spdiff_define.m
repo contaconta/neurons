@@ -14,9 +14,20 @@ sigmas = varargin{3};
 
 count = 1;
 
+
 % combnk enumerates combinations - we use this to find all pairs of angles
 combos = combnk(angles, 2);
-            
+
+% pre-allocated for speed
+num_learners = prod(IMSIZE)*size(combos,1)*length(sigmas);
+spdiff(num_learners).angle1 =[];
+spdiff(num_learners).angle2 = [];
+spdiff(num_learners).sigma = [];
+spdiff(num_learners).row = [];
+spdiff(num_learners).col = [];
+spdiff(num_learners).polarity = [];
+spdiff(num_learners).theta = [];
+
 for c = 1:size(combos,1);
     for i = 1:IMSIZE(1)
         for j = 1:IMSIZE(2);
