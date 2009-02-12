@@ -27,8 +27,8 @@ for l = 1:length(LEARNERS)
             
 
             W = wristwatch('start', 'end', length(SET.class), 'every', 2000, 'text', '    ...precomputed intmean for example ');
-            % loop through examples, compute all spedge repsonses for
-            % example i, store as rows
+            % loop through features, compute intmean responses for each 
+            % example, store as a column
             
             for f = f_list
                 for i = 1:length(SET.class)
@@ -55,8 +55,9 @@ for l = 1:length(LEARNERS)
             
 
             W = wristwatch('start', 'end', length(SET.class), 'every', 2000, 'text', '    ...precomputed intvar for example ');
-            % loop through examples, compute all spedge repsonses for
-            % example i, store as rows
+            % loop through features, compute intvar responses for each 
+            % example, store as a column
+
             
             for f = f_list
                 for i = 1:length(SET.class)
@@ -240,8 +241,44 @@ for l = 1:length(LEARNERS)
     
             
             
-    end     
-    
+        case 'hog'
+        %% hog weak learners
+        %  so few hog features means we don't have to worry about storing blocks
+            
+            % create a list of hog feature indexes
+            f_list = []; 
+            for f = 1:length(WEAK.learners)
+                if strcmp(WEAK.learners{f}.type, 'hog')
+                    f_list = [f_list f];
+                end
+            end
+            
+
+            W = wristwatch('start', 'end', length(SET.class), 'every', 500, 'text', '    ...precomputed hog for example ');
+            % loop through all examples, compute all hog feature responses
+            % for example i, store as a block
+            
+            for i = 1:length(SET.class)
+                I = SET.Images(:,:,i);
+                f = hog(I, 'orientationbins', LEARNERS(l).bins, 'cellsize', LEARNERS(l).cellsize, 'blocksize', LEARNERS(l).blocksize);
+                f = f(:);
+                R(i,:) = f; 
+                W = wristwatch(W, 'update', i);
+            end
+            
+            rows = 1:length(SET.class);
+            cols = f_list;
+            
+            SET.responses.storeBlock(R, rows, cols);
+            
+            clear R;
+            
+            
+            
+            
+            
+            
+    end    
 end
 
 

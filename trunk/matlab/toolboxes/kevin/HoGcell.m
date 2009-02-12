@@ -1,7 +1,7 @@
-function  F = HoG(I, varargin)
+function  F = HoGcell(I, varargin)
 %
-% F = hog(I);
-% F = hog(I, 'orientationbins', 'cellsize', 'blocksize', 'decompress')
+% F = hogcell(I,cellr,cellc,bin);
+% F = hogcell(I,ellr,cellc,bin, 'orientationbins', 'cellsize', 'blocksize', 'decompress')
 %
 %
 
@@ -20,6 +20,9 @@ if nargin > 1
         end
         if strcmp('decompress', varargin{i})
             DECOMPRESS = 1;
+        end
+        if strcmp('CELLS', varargin{i})
+            CELLS = 1;
         end
     end
 end
@@ -94,20 +97,4 @@ end
 function CELLBIN = sumsum(c)
 
 CELLBIN = repmat(sum(sum(c)), size(c));
-
-
-
-
-
-
-
-% function CELL = buildcell(NORMS)
-% 
-% histogram = sum(sum(NORMS,1),2);
-% CELL = repmat(histogram, [size(NORMS,1) size(NORMS,2) 1]);
-% 
-% keyboard;
-
-
-
 

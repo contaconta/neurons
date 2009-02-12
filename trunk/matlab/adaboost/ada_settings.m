@@ -50,10 +50,17 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).sigma            = [1 1.5 2 3];  %2;
 
-LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
+% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
+% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+% LEARNERS(length(LEARNERS)).sigma            = [1 2];  %[1 1.5 2 3];  %2;
+
+LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-LEARNERS(length(LEARNERS)).sigma            = [1 2];  %[1 1.5 2 3];  %2;
+LEARNERS(length(LEARNERS)).bins             = 9;
+LEARNERS(length(LEARNERS)).cellsize         = [4 4];
+LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+
 
 %-------------------------------------------------------------------------
 % TRAINING & VALIDATION DATA SETS

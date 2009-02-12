@@ -11,7 +11,14 @@ IMSIZE = varargin{1};
 angles = varargin{2};
 sigmas = varargin{3};
 
-
+% pre-allocated for speed
+num_learners = prod(IMSIZE)*length(angles)*length(sigmas);
+SP(num_learners).angles = [];
+SP(num_learners).sigmas = [];
+SP(num_learners).row = [];
+SP(num_learners).col = [];
+SP(num_learners).polarity = [];
+SP(num_learners).theta = [];
 
 for i = 1:IMSIZE(1)
     for j = 1:IMSIZE(2);

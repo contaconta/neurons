@@ -86,6 +86,19 @@ for t = 1:length(LEARNERS)
         end
         clear spdiff;
     end
+    
+    %% add hog weak learners
+    if strcmp('hog', LEARNERS(t).feature_type)
+        
+        hog = ada_hog_define(LEARNERS(t).IMSIZE, LEARNERS(t).bins, LEARNERS(t).cellsize, LEARNERS(t).blocksize);
+        WEAK.lists.hog = [];
+        
+        for i = 1:length(hog)
+            WEAK.learners{length(WEAK.learners)+1} = hog(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'hog';
+        end
+        clear hog;
+    end
    
 end
 
