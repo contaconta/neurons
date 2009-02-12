@@ -12,7 +12,7 @@ VALIDATION_POS  = 1000;     % number of positive examples in the validation set
 VALIDATION_NEG  = 1000;     % number of negative examples in the validation set
 NORM            = 1;        % normalize image intensity variance? (FACES 1, NUCLEI 0)
 
-rand('twister', 100);       % seed the random variable
+%rand('twister', 100);       % seed the random variable
 
 %-------------------------------------------------------------------------
 % FILES & PATH INFORMATION
@@ -28,6 +28,7 @@ FILES.memory          = 300000000;                          % size of memory to 
 FILES.precision       = 'single';                           % precision of stored values
 path(path, [pwd '/../spedges/']);                           % append the path to the spedges features 
 path(path, [pwd '/../toolboxes/bigmatrix/']);               % append the path to bigmatrix
+path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to kevin
 
 %-------------------------------------------------------------------------
 % WEAK LEARNERS
