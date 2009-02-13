@@ -1,7 +1,7 @@
-function A = spedges(I, angles, edge_methods)
+function A = spedges(I, angles, stride, edge_methods)
 %SPEDGES computes spedge features along ANGLES
 %
-%   FEATURES = spedges(I, ANGLE, EDGE_METHODS)  computes spedge features on a 
+%   FEATURES = spedges(I, ANGLE, STRIDE, EDGE_METHODS)  computes spedge features on a 
 %   grayscale image I at angles defined by ANGLES (given as a vector, eg.
 %   [0 90 180 270]).  FEATURES contains a stack of images, each
 %   corresponding to an angle in ANGLES. Each pixel in FEATURES(i,:,:) 
@@ -23,11 +23,11 @@ function A = spedges(I, angles, edge_methods)
 %   See also SPEDGE_DIST, EDGE, VIEW_SPEDGES
 
 A.angle = angles;
-A.edgemethods = edgemethods;
+A.edgemethods = edge_methods;
 
 for i = 1:length(angles)
     for s = 1:length(edge_methods)
-        [A.spedges(i,s,:,:), A.edge] = spedge_dist(I, angles(i),edge_methods(s));   
+        [A.spedges(i,s,:,:), A.edge] = spedge_dist(I, angles(i), stride, edge_methods(s));   
     end
 end
 

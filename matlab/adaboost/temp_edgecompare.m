@@ -93,7 +93,7 @@ for f = 1:length(files)
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     % show prewitt
-    filtX = fspecial('sobel');
+    filtX = fspecial('prewitt');
     filtY = filtX';
     GradX = imfilter(I,filtX, 'symmetric');
     GradY = imfilter(I,filtY, 'symmetric');
@@ -113,7 +113,7 @@ for f = 1:length(files)
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     % show sobel
-    filtX = fspecial('prewitt');
+    filtX = fspecial('sobel');
     filtY = filtX';
     GradX = imfilter(I,filtX, 'symmetric');
     GradY = imfilter(I,filtY, 'symmetric');

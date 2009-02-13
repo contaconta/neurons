@@ -64,7 +64,7 @@ for t = 1:length(LEARNERS)
     %% add spedge weak learners
     if strcmp('spedge', LEARNERS(t).feature_type)
         
-        spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).sigma);
+        spedge = ada_spedge_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).stride, LEARNERS(t).edge_methods);
         WEAK.lists.spedge = [];
         
         for i = 1:length(spedge)
@@ -77,7 +77,7 @@ for t = 1:length(LEARNERS)
     %% add spdiff weak learners
     if strcmp('spdiff', LEARNERS(t).feature_type)
         
-        spdiff = ada_spdiff_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).sigma);
+        spdiff = ada_spdiff_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).stride, LEARNERS(t).edge_methods);
         WEAK.lists.spdiff = [];
         
         for i = 1:length(spdiff)

@@ -145,7 +145,7 @@ for l = 1:length(LEARNERS)
             % example i, store as rows
             for i = 1:length(SET.class)
             
-                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).sigma);
+                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
                 R(j,:) = sp.spedges(:);
                 
                 if mod(i,block) == 0
@@ -199,25 +199,35 @@ for l = 1:length(LEARNERS)
             % example i, store as rows
             for i = 1:length(SET.class)
             
-                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).sigma);
+                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
                 
                 SP = sp.spedges(:);
                 
                 R(j,:) = SP(ang1subs) - SP(ang2subs);
                 
-%                 % DEBUGGING - make sure my speed up stuff is computing
-%                 % features correctly.
-%                 if i  <  5
-%                     for f = 1:length(f_list)
-%                         angle1_ind = find(LEARNERS(l).angles == WEAK.learners{f_list(f)}.angle1,1);
-%                         angle2_ind = find(LEARNERS(l).angles == WEAK.learners{f_list(f)}.angle2,1);
-%                         sigma_ind = find(LEARNERS(l).sigma == WEAK.learners{f_list(f)}.sigma,1);
-%                         Rlong(j,f) = sp.spedges(angle1_ind, sigma_ind, WEAK.learners{f_list(f)}.row, WEAK.learners{f_list(f)}.col) - sp.spedges(angle2_ind, sigma_ind, WEAK.learners{f_list(f)}.row, WEAK.learners{f_list(f)}.col);
-%                     
-%                         Rind(j,f) = ada_spdiff_response(WEAK.learners{f_list(f)}.angle1,WEAK.learners{f_list(f)}.angle2,WEAK.learners{f_list(f)}.sigma,WEAK.learners{f_list(f)}.row,WEAK.learners{f_list(f)}.col,SET.Images(:,:,i));
-%                     end
-%                     keyboard;
-%                 end
+                % =======DEBUGGING - make sure my speed up stuff is computing
+                % features correctly.
+                if i  <  5
+                    for f = 1:length(f_list)
+                        angle1_ind = find(LEARNERS(l).angles == WEAK.learners{f_list(f)}.angle1,1);
+                        angle2_ind = find(LEARNERS(l).angles == WEAK.learners{f_list(f)}.angle2,1);
+                        edgem_ind = find(LEARNERS(l).edge_methods == WEAK.learners{f_list(f)}.edge_method,1);
+                        stride = WEAK.learners{f_list(f)}.stride;
+                        Rlong(j,f) = sp.spedges(angle1_ind, edgem_ind, WEAK.learners{f_list(f)}.row, WEAK.learners{f_list(f)}.col) - sp.spedges(angle2_ind, edgem_ind, WEAK.learners{f_list(f)}.row, WEAK.learners{f_list(f)}.col);
+                    
+                        Rind(j,f) = ada_spdiff_response(WEAK.learners{f_list(f)}.angle1,WEAK.learners{f_list(f)}.angle2, stride, WEAK.learners{f_list(f)}.edge_method, WEAK.learners{f_list(f)}.row,WEAK.learners{f_list(f)}.col,SET.Images(:,:,i));
+                    end
+                    
+                    if ~isequal(R(j,:),Rlong(j,:))
+                        disp('problem - stored values are not the same as flattened values');
+                        keyboard;
+                    end
+                    if ~isequal(R(j,:),Rind(j,:))
+                        disp('problem - stored values are not the same as individually computed values');
+                        keyboard;
+                    end
+                end
+                %==========================================================
 
                 
                 if mod(i,block) == 0
@@ -260,7 +270,7 @@ for l = 1:length(LEARNERS)
             
             for i = 1:length(SET.class)
                 I = SET.Images(:,:,i);
-                f = hog(I, 'orientationbins', LEARNERS(l).bins, 'cellsize', LEARNERS(l).cellsize, 'blocksize', LEARNERS(l).blocksize);
+                f = HoG(I, 'orientationbins', LEARNERS(l).bins, 'cellsize', LEARNERS(l).cellsize, 'blocksize', LEARNERS(l).blocksize);
                 f = f(:);
                 R(i,:) = f; 
                 W = wristwatch(W, 'update', i);
