@@ -19,8 +19,8 @@ NORM            = 1;        % normalize image intensity variance? (FACES 1, NUCL
 %-------------------------------------------------------------------------
 
 FILES.datestr         = datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
-FILES.cascade_filenm  = ['SPDIFF_MITO' FILES.datestr '.mat'];   % filename to store the cascaded classifier
-FILES.log_filenm      = ['SPDIFF_MITO' FILES.datestr '.log'];   % filename to store the log file    
+FILES.cascade_filenm  = ['TEST_NEW_SPDIFF' FILES.datestr '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['TEST_NEW_SPDIFF' FILES.datestr '.log'];   % filename to store the log file    
 FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
 FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
 FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
@@ -49,18 +49,20 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spedge';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-% LEARNERS(length(LEARNERS)).sigma            = [1 1.5 2 3];  %2;
+% LEARNERS(length(LEARNERS)).stride           = 2; 
+% LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5 6];
 
-% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
-% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-% LEARNERS(length(LEARNERS)).sigma            = [1 2];  %[1 1.5 2 3];  %2;
-
-LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).bins             = 9;
-LEARNERS(length(LEARNERS)).cellsize         = [4 4];
-LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+LEARNERS(length(LEARNERS)).stride           = 2; 
+LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5];
+
+% LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+% LEARNERS(length(LEARNERS)).bins             = 9;
+% LEARNERS(length(LEARNERS)).cellsize         = [4 4];
+% LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 
 
 %-------------------------------------------------------------------------
@@ -68,10 +70,10 @@ LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 %-------------------------------------------------------------------------
 
 %DATASETS.filelist = 'nuclei-rotated.txt';       % file containing rotated nuclei image list
-DATASETS.filelist = 'faces.txt';                % file containing face training image list
+%DATASETS.filelist = 'faces.txt';                % file containing face training image list
 %DATASETS.filelist = 'mitochondria48.txt';       % file containing mitochondria training image 48x48 list
 %DATASETS.filelist = 'mitochondria24.txt';       % file containing mitochondria training image 24x24 list
-%DATASETS.filelist = 'nuclei24.txt';
+DATASETS.filelist = 'nuclei24.txt';
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;                  % detector step size

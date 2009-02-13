@@ -1,17 +1,18 @@
 
-function [f, EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,varargin)
+function [f, EDGE] = ada_spdiff_response(angle1,angle2,stride,edge_method,row,col,varargin)
 
 % we can save computations by passing a previously computed EDGE for the
 % given sigma
-if nargin > 6
+if nargin > 7
     EDGE = varargin{1};
-    [d1 EDGE]   = single_spedge(angle1, sigma, row, col, EDGE, 'edge');
-    [d2]        = single_spedge(angle2, sigma, row, col, EDGE, 'edge');
+    [d1 EDGE]   = single_spedge(angle1, stride, edge_method, row, col, EDGE, 'edge');
+    [d2]        = single_spedge(angle2, stride, edge_method, row, col, EDGE, 'edge');
     f = d1 - d2;
 else
     I = varargin{1};
-    [d1 EDGE]   = single_spedge(angle1, sigma, row, col, I);
-    [d2]        = single_spedge(angle2, sigma, row, col, I);
+    [d1 EDGE]   = single_spedge(angle1, stride, edge_method, row, col, I);
+    [d2]        = single_spedge(angle2, stride, edge_method, row, col, EDGE, 'edge');
     f = d1 - d2;
 end
 
+%keyboard;

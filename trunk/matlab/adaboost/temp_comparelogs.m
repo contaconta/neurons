@@ -27,7 +27,7 @@ for i = 1:nargin
     end
 
 
-    plot(Di, 'b-', 'LineWidth',2);
+%    plot(Di, 'b-', 'LineWidth',2);
     plot(Fi, color_select(i), 'LineWidth',2);
 %     plot(di, 'b-');
 %     plot(fi, 'r-');
@@ -36,7 +36,7 @@ for i = 1:nargin
 
     for l=1:max(LEARNER)
         str = learnerstr(l);
-        plot(find(LEARNER==l), Di(LEARNER==l), str);
+        %plot(find(LEARNER==l), Di(LEARNER==l), str);
         plot(find(LEARNER==l), Fi(LEARNER==l), str);
     end
 
@@ -45,7 +45,7 @@ for i = 1:nargin
     ylabel('Detection Rate / False Positive Rate');
     title('Cascade Learning Progress');
     grid on;
-    ylim([-.1 1]);
+    ylim([0 .9]);
     %xlim([1 size(DATA,1)]);
     
     

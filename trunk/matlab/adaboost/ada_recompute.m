@@ -141,7 +141,7 @@ for l = 1:length(LEARNERS)
             % example i, store as rows
             for i = 1:length(SET.class)
             
-                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).sigma);
+                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
                 R(j,:) = sp.spedges(:);
                 
                 if mod(i,block) == 0
@@ -195,7 +195,7 @@ for l = 1:length(LEARNERS)
             % example i, store as rows
             for i = 1:length(SET.class)
             
-                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).sigma);
+                sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
                 
                 SP = sp.spedges(:);
                 
@@ -256,7 +256,7 @@ for l = 1:length(LEARNERS)
             
             for i = 1:length(SET.class)
                 I = SET.Images(:,:,i);
-                f = hog(I, 'orientationbins', LEARNERS(l).bins, 'cellsize', LEARNERS(l).cellsize, 'blocksize', LEARNERS(l).blocksize);
+                f = HoG(I, 'orientationbins', LEARNERS(l).bins, 'cellsize', LEARNERS(l).cellsize, 'blocksize', LEARNERS(l).blocksize);
                 f = f(:);
                 R(i,:) = f; 
                 W = wristwatch(W, 'update', i);

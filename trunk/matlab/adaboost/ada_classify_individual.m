@@ -25,7 +25,7 @@ for l = 1:length(LEARNERS)
     end
 
     if strcmp(LEARNERS(l).feature_type, 'spedge') || strcmp(LEARNERS(l).feature_type, 'spdiff')
-        edgelist.sigma = 0;
+        edgelist.edge_method = 0;
         edgelist.EDGE = I;
     end
     
@@ -66,24 +66,25 @@ for s = 1:length(CASCADE)
                 
             case 'spedge'
                 angle = CASCADE(s).CLASSIFIER.weak_learners{l}.angle;
-                sigma = CASCADE(s).CLASSIFIER.weak_learners{l}.sigma;
+                stride = CASCADE(s).CLASSIFIER.weak_learners{l}.stride;
+                edge_method = CASCADE(s).CLASSIFIER.weak_learners{l}.edge_method;
                 row = CASCADE(s).CLASSIFIER.weak_learners{l}.row;
                 col = CASCADE(s).CLASSIFIER.weak_learners{l}.col;
                 
                 % if we've already computed EDGE for SIGMA, use it, otherwise use I
-                ind = find([edgelist(:).sigma] == sigma,1);
+                ind = find([edgelist(:).edge_method] == edge_method,1);
                 if ~isempty(ind)
                     EDGE = edgelist(ind).EDGE;
-                    [f(l) EDGE] = single_spedge(angle, sigma, row, col, EDGE, 'edge');
+                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, EDGE, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE] = single_spedge(angle, sigma, row, col, I);
+                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, I);
                     %disp('using a newly computed edge');
                 end
-                
-                % store EDGE for this SIGMA value
-                if isempty(find([edgelist(:).sigma] == sigma,1));
-                    edgelist(length(edgelist)+1).sigma = sigma;
+
+                % store EDGE for this EDGE_METHOD value
+                if isempty(find([edgelist(:).edge_method] == edge_method,1));
+                    edgelist(length(edgelist)+1).edge_method = edge_method;
                     edgelist(length(edgelist)).EDGE = EDGE;
                 end
 
@@ -93,25 +94,34 @@ for s = 1:length(CASCADE)
             case 'spdiff'
                 angle1 = CASCADE(s).CLASSIFIER.weak_learners{l}.angle1;
                 angle2 = CASCADE(s).CLASSIFIER.weak_learners{l}.angle2;
-                sigma = CASCADE(s).CLASSIFIER.weak_learners{l}.sigma;
+                stride = CASCADE(s).CLASSIFIER.weak_learners{l}.stride;
+                edge_method = CASCADE(s).CLASSIFIER.weak_learners{l}.edge_method;
                 row = CASCADE(s).CLASSIFIER.weak_learners{l}.row;
                 col = CASCADE(s).CLASSIFIER.weak_learners{l}.col;
                 
                 
                 % if we've already computed EDGE for SIGMA, use it, otherwise use I
-                ind = find([edgelist(:).sigma] == sigma,1);
+                ind = find([edgelist(:).edge_method] == edge_method,1);
                 if ~isempty(ind)
                     EDGE = edgelist(ind).EDGE;
-                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,EDGE, 'edge');
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,EDGE, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,sigma,row,col,I);
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,I);
                     %disp('using a newly computed edge');
                 end
                 
+%                 %================== debugging ========================
+%                 fbig(l) = TRAIN.responses.get(i, CASCADE.CLASSIFIER.weak_learners{l}.index);
+%                 if fbig(l) ~= f(l)
+%                     disp(['fbig ~= f']);
+%                     keyboard;
+%                 end
+%                 %=====================================================
+                
                 % store EDGE for this SIGMA value
-                if isempty(find([edgelist(:).sigma] == sigma,1));
-                    edgelist(length(edgelist)+1).sigma = sigma;
+                if isempty(find([edgelist(:).edge_method] == edge_method,1));
+                    edgelist(length(edgelist)+1).edge_method = edge_method;
                     edgelist(length(edgelist)).EDGE = EDGE;
                 end
 

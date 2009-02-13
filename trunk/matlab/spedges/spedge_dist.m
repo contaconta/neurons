@@ -24,15 +24,18 @@ angle = mod(angle,360);
 if angle < 0;  angle = angle + 360; end;
 
 
-%=========================== NEED TO REWRITE=======================================
-% we use a zero-crossing laplacian of gaussian to ensure closed contours
-EDGE = edge(I, 'log', 0, sigma);
-%EDGE = edge(I, 'sobel');
+% we get our edge map based on the index edge_method
+EDGE = edgemethods(I, edge_method);
 
-% to handle directions that pass through lines at an angle, thicken lines
-% on diagonals
-EDGE = bwmorph(EDGE, 'diag');
-%==========================================================================
+% %=========================== NEED TO REWRITE=======================================
+% % we use a zero-crossing laplacian of gaussian to ensure closed contours
+% EDGE = edge(I, 'log', 0, sigma);
+% %EDGE = edge(I, 'sobel');
+% 
+% % to handle directions that pass through lines at an angle, thicken lines
+% % on diagonals
+% EDGE = bwmorph(EDGE, 'diag');
+% %==========================================================================
 
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);

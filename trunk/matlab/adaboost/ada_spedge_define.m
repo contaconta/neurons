@@ -1,6 +1,6 @@
 function SP = ada_spedge_define(varargin)
 %
-%   SP = ada_spedge_define(IMSIZE, ANGLES)
+%   SP = ada_spedge_define(IMSIZE, ANGLES, STRIDE, EDGE_METHODS)
 %
 %   defines a spedge for each pixel and angle
 %
@@ -9,50 +9,41 @@ function SP = ada_spedge_define(varargin)
 
 IMSIZE = varargin{1};
 angles = varargin{2};
-sigmas = varargin{3};
+stride = varargin{3};
+edge_methods = varargin{4};
 
 % pre-allocated for speed
-num_learners = prod(IMSIZE)*length(angles)*length(sigmas);
+num_learners = (IMSIZE(1)/stride)*(IMSIZE(2)/stride)*length(angles)*length(edge_methods);
 SP(num_learners).angles = [];
-SP(num_learners).sigmas = [];
+SP(num_learners).edge_method = [];
 SP(num_learners).row = [];
 SP(num_learners).col = [];
 SP(num_learners).polarity = [];
 SP(num_learners).theta = [];
+SP(num_learners).stride = [];
 
-for i = 1:IMSIZE(1)
-    for j = 1:IMSIZE(2);
+for i = 1:IMSIZE(1)/stride
+    for j = 1:IMSIZE(2)/stride;
         for k = 1:length(angles);
-            for s = 1:length(sigmas);
+            for s = 1:length(edge_methods);
 
                 % because we will flatten the spedge tensor into a vector 
                 % later, we need to order the spedge features in the order 
                 % the spedge vector will be ordered
-                sp_index = single(sub2ind([length(angles) length(sigmas) IMSIZE(1) IMSIZE(2)], k,s,i,j));
+                sp_index = single(sub2ind([length(angles) length(edge_methods) IMSIZE(1)/stride IMSIZE(2)/stride], k,s,i,j));
                 
                 SP(sp_index).polarity = single(1);
                 SP(sp_index).theta = 0;
                 
                 SP(sp_index).angle = angles(k);
-                SP(sp_index).sigma = sigmas(s);
+                SP(sp_index).edge_method = edge_methods(s);
                 SP(sp_index).row = i;
                 SP(sp_index).col = j;
+                SP(sp_index).stride = stride;
             end
         end
     end
 end
 
 
-%c_num = 1;
 
-
-   %SP(c_num).sp_index = single(sub2ind([length(angles) length(sigmas) IMSIZE(1) IMSIZE(2)], k,s,i,j));
-%                 SP(c_num).polarity = single(1);
-%                 SP(c_num).theta = 0;
-%                 
-%                 SP(c_num).angle = angles(k);
-%                 SP(c_num).sigma = sigmas(s);
-%                 SP(c_num).row = i;
-%                 SP(c_num).col = j;
-% 
-%                 c_num = c_num + 1;
