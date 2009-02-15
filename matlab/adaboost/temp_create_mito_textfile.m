@@ -6,6 +6,7 @@ neg_train_path = '/osshare/Work/Data/mitochondria24/train/neg/';
 pos_test_path  = '/osshare/Work/Data/mitochondria24/test/pos/';
 neg_test_path  = '/osshare/Work/Data/mitochondria24/test/neg/';
 update_path = '/osshare/Work/Data/mitochondria24/slices/';
+annotation_path = '/osshare/Work/Data/mitochondria24/annotations/';
 
 file_extension = '*.png';
 
@@ -28,3 +29,6 @@ ada_trainingfiles(text_filename, 'add', 'validation', '-', neg_test_path);
 
 % CREATE THE UPDATE PATH
 ada_trainingfiles(text_filename, 'add', 'update', '-', update_path);
+
+% CREATE THE ANNOTATION PATH
+ada_trainingfiles(text_filename, 'add', 'annotation', '+', update_path);
