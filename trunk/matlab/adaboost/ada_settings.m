@@ -10,9 +10,9 @@ TRAIN_POS       = 1000;     % number of positive examples in the training set
 TRAIN_NEG       = 1000;     % number of negative examples in the training set
 VALIDATION_POS  = 1000;     % number of positive examples in the validation set
 VALIDATION_NEG  = 1000;     % number of negative examples in the validation set
-NORM            = 1;        % normalize image intensity variance? (FACES 1, NUCLEI 0)
+NORM            = 1;        % normalize intensity? (FACES 1, NUCLEI 1, MITO ?, CONTOURS 0)
 
-%rand('twister', 100);       % seed the random variable
+rand('twister', 100);       % seed the random variable
 
 %-------------------------------------------------------------------------
 % FILES & PATH INFORMATION
@@ -56,7 +56,7 @@ LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 LEARNERS(length(LEARNERS)).stride           = 2; 
-LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5];
+LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
@@ -69,15 +69,15 @@ LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5];
 % TRAINING & VALIDATION DATA SETS
 %-------------------------------------------------------------------------
 
-%DATASETS.filelist = 'nuclei-rotated.txt';       % file containing rotated nuclei image list
-%DATASETS.filelist = 'faces.txt';                % file containing face training image list
-%DATASETS.filelist = 'mitochondria48.txt';       % file containing mitochondria training image 48x48 list
-%DATASETS.filelist = 'mitochondria24.txt';       % file containing mitochondria training image 24x24 list
-DATASETS.filelist = 'nuclei24.txt';
+%DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2];       
+%DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5];                
+%DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];       
+%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];
+DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];
+%DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];
 
 % parameters for updating the negative examples
-DATASETS.delta          = 10;                  % detector step size
-DATASETS.scale_limits   = [1 2];               % detector scales (use if objects only exist at certain scales)
+DATASETS.delta          = 10;       % detector step size
 
 
 DATASETS.IMSIZE = IMSIZE; DATASETS.NORMALIZE = NORM;

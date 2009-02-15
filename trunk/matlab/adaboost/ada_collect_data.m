@@ -32,7 +32,7 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
-
+TRUE_OVERLAP_THRESH = .2;
 
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
@@ -94,16 +94,19 @@ if strcmp(set_type, 'update')
     % construct a list of files to search in
     d = ada_trainingfiles(DATASETS.filelist, 'update', '-');   
     
+    % construct a list of annotations to make sure we only get FP's
+    a = ada_trainingfiles(DATASETS.filelist, 'annotation', '+');
+    
     % find a list of the current set of True Negatives in the data set
     TN_LIST = get_true_negatives(SET, DETECTOR);
     FPs_REQUIRED = length(TN_LIST);
 
     % Collect FPs-REQUIRED images containing false positives
-    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
+    [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
     %success = 0;  FP_LIST =[];
     if ~success
         disp('       ...random scanning progressing too slow, switching to raster scan.');
-        FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
+        FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
     end
     
     % Replace the True Negatives with newly collected False Positives
@@ -135,11 +138,11 @@ SET = orderfields(SET);
 %   
 
 
-function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
+function [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
 
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
 success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
-FIND_RATE_LIMIT = .0001;                        %  minimum rate to find FP examples
+FIND_RATE_LIMIT = .002;                        %  minimum rate to find FP examples
 disp('       ...randomly scanning for FP examples');
 
             
@@ -148,6 +151,7 @@ while length(FP_LIST) < FPs_REQUIRED
     % 1. randomly select a file from the list
     file_ind = randsample(1:length(d),1);
     filenm = d{file_ind}; I = imread(filenm);  %disp(['scanning ' filenm]);
+    filenm = a{file_ind}; A = imread(filenm);
     
     % convert to grasyscale if necessary
     if size(I,3) > 1
@@ -174,6 +178,14 @@ while length(FP_LIST) < FPs_REQUIRED
         cls = class(Image); Image = mat2gray(Image, [0 double(intmax(cls))]); 
     end
     Image = imresize(Image, IMSIZE);
+    
+    % 5. make sure it does not contain a true positive example
+    Acrop = imcrop(A, rect);
+    if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+        %disp('...oops, we picked a true positive example!');
+        attempts = attempts + 1;
+        continue;
+    end
     
     % normalize if necessary
     if NORM
@@ -209,13 +221,14 @@ disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%'])
 
 
 
-function FP_LIST = rasterscan(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
+function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
 
 
 for file_ind = 1:length(d)
 
     % read the file
     filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
+    filenm = a{file_ind}; A = imread(filenm);
 
     % convert to proper class (pixel intensity represented by [0,1])
     if ~isa(I, 'double')
@@ -239,6 +252,7 @@ for file_ind = 1:length(d)
     % loop through the scales
     for scale = scales
         Iscaled = imresize(I, scale);
+        Ascaled = imresize(A, scale);
         actual_scale = size(Iscaled,1) / size(I,1);
         %disp(['detector scale = ' num2str(1/actual_scale)]);
         W = size(Iscaled,2);  H = size(Iscaled,1);
@@ -255,6 +269,15 @@ for file_ind = 1:length(d)
 %                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
 %                     imshow(Itemp);  pause(.01); refresh; 
 %                     disp(['scanning (' num2str(r) ',' num2str(c) ')']);
+
+                
+                %  make sure it does not contain a true positive example
+                Acrop = Ascaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
+                if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+                    %disp('...oops, we picked a true positive example!');
+                    count = count + 1;
+                    continue;
+                end
 
                 % normalize if necessary
                 if NORM
@@ -341,187 +364,3 @@ if strcmp(set_type,'validation')
         end
     end
 end
-
-
-% function update_bigmatrix(TN_LIST, SET, LEARNERS, WEAK)
-% 
-% 
-% for l = 1:length(LEARNERS)
-%     switch LEARNERS(l).feature_type
-%     
-%         case 'haar'
-%             %% haar like weak learners - for haars it is faster to compute the
-%             %  haar response of a single feature over all training examples
-% 
-%             % collect all the vectorized integral images into IIs
-%             for i = 1:length(TN_LIST)
-%                 II = integral_image(SET.Images(:,:,TN_LIST));
-%                 IIs(:,i) = II(:);
-%             end
-%             
-%             % compute the number of haar features
-%             num_haars = 0;
-%             for f = 1:length(WEAK.learners)
-%                 if strcmp(WEAK.learners{f}.type, 'haar')
-%                     num_haars = num_haars + 1;
-%                 end
-%             end
-% 
-%             W = wristwatch('start', 'end', num_haars, 'every', 10000, 'text', '    ...precomputed haar feature ');
-%             block = round(FILES.memory / (length(TN_LIST)*SET.responses.bytes));        % block = # columns fit into memory lim
-%             R = zeros(length(TN_LIST), block );                       % R temporary feature response storage
-%             j = 1;                                                      % feature index in current block
-%             f_list = [];
-%             
-%             % loop through features, compute response of feature f to all
-%             % examples, store as columns
-%             
-%             for f = 1:length(WEAK.learners)
-%                 if strcmp(WEAK.learners{f}.type, 'haar')
-%                     R(:,j) = ada_haar_response(WEAK.learners{f}.hinds, WEAK.learners{f}.hvals, IIs);
-%                     f_list = [f_list f];
-% 
-%                     if mod(f,block) == 0
-%                         disp(['    ...writing to ' SET.responses.filename]);
-%                         rows = 1:length(SET.class);
-%                         cols = f_list;
-%                         SET.responses.storeBlock(R,rows,cols);
-%                         j = 0;
-%                         f_list = [];
-%                     end
-%                     W = wristwatch(W, 'update', f);
-%                     j = j + 1;
-%                 end
-%             end
-%             
-%             % store the last columns
-%             disp(['    ...writing to ' SET.responses.filename]);
-%             %cols = WEAK.learners{1}{3}(f-j+2:f);
-%             cols = f_list;
-%             %A = R(:,1:j-1);
-%             SET.responses.storeBlock(R(:,1:j-1),rows,cols);
-%             
-%             clear R;
-% 
-%         %% spedge weak learners
-%         %  unlike haars, spedges are faster to compute by looping through
-%         %  the examples and computing all spedges for each example.
-%         case 'spedge'
-%             
-%             % create a list of spedge feature indexes
-%             f_list = []; 
-%             for f = 1:length(WEAK.learners)
-%                 if strcmp(WEAK.learners{f}.type, 'spedge')
-%                     f_list = [f_list f];
-%                 end
-%             end
-%             
-%             
-%             %block = round(FILES.memory / (length(WEAK.learners{l}{3})*4)); 
-%             block = min(length(SET.class), round(FILES.memory / (length(f_list)*SET.responses.bytes))); 
-%             W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '    ...precomputed spedge for example ');
-%             %R = zeros(block, length(WEAK.learners{l}{3}));
-%             R = zeros(block, length(f_list));
-%             j = 1;
-%             
-%             
-% 
-%             % loop through examples, compute all spedge repsonses for
-%             % example i, store as rows
-%             for i = 1:length(SET.class)
-%             
-%                 sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).sigma);
-%                 R(j,:) = sp.spedges(:);
-%                 
-%                 if mod(i,block) == 0
-%                     disp(['    ...writing to ' SET.responses.filename]);
-%                     rows = i-block+1:i;
-%                     %cols = WEAK.learners{l}{3}(:);
-%                     cols = f_list;
-%                     SET.responses.storeBlock(R, rows, cols);
-%                     j = 0;
-%                 end
-%                 W = wristwatch(W, 'update', i);
-%                 j = j + 1;
-%             end
-%             
-%             if j ~= 1
-%                 % store the last rows, if we have some left over
-%                 disp(['    ...writing to ' SET.responses.filename]);
-%                 rows = i-j+2:i;
-%                 SET.responses.storeBlock(R(1:j-1,:), rows, cols);
-%                 clear R;
-%             end
-%     end
-% end
-
-
-
-% function FP_LIST = get_old_FPs(SET, DETECTOR)
-% 
-% % disp('   ...collecting FPs from previous data set');
-% % 
-% % FP_LIST = [];
-% % N = SET([SET.class] == 0);
-% % 
-% % for i = 1:length(N)
-% % 
-% %     %C = ada_classify_cascade(DETECTOR,  N(i), [0 0]);
-% %     C = ada_classify_set(DETECTOR, SET);
-% % 
-% %     if C
-% %         FP_LIST = [FP_LIST N(i)];
-% %     end
-% %     
-% % end
-% % 
-% % disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
-% 
-% 
-% 
-% C = ada_classify_set(DETECTOR, SET);
-% 
-% FP_LIST = (C ~= SET.class) .* ~SET.class;
-% 
-% FP_LIST = find(FP_LIST);
-% 
-% disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
-% 
-
-
-
-
-
-
-
-
-
-% 
-% function S = scan_next(d, IMSIZE, DELTA, NORM, DATASETS, method, Slast)
-% 
-% 
-% % select the file index we need to load
-% switch method
-%     case 'random'
-%         S.file_ind = randsample(1:length(d),1);       
-%     case 'raster'
-%         S.file_ind = Slast.file_ind;   
-% end
-% 
-% % read the selected file
-% filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
-% 
-% % convert to grasyscale if necessary
-% if size(I,3) > 1; I = rgb2gray(I); end
-% 
-% % determine the correct list of scales this image must be scanned at
-% scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
-% 
-% switch method
-%     case 'random'
-%         S.scale = 
-%     case 'raster'
-%         S.scale = 
-% 
-
-
