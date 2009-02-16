@@ -36,7 +36,7 @@ Di = 1;                         % cascade's current detection rate
 while (Fi > Ftarget)
     i = i + 1;
     disp(['============== NOW TRAINING CASCADE STAGE i = ' num2str(i) ' ==============']);
-    ti = 0;                     % weak learner index (within current stage)
+    %ti = 0;                     % weak learner index (within current stage)
 
     if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
     if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
@@ -104,8 +104,8 @@ end
 %% training goals achieved, clean up and quit!
 disp('');
 disp('==============================================================================');
-disp(['Training complete.  CASCADE is stored in ' cascade_filenm '.']);
+disp(['Training complete.  CASCADE is stored in ' FILES.cascade_filenm '.']);
 disp('==============================================================================');
-clear TRAIN VALIDATION C gt NORM WEAK Di dmin Dlast Fi fmax Flast tpr fpr Ftarget FPs i j ti log_filenm appname version author email IMSIZE TRAIN_POS TRAIN_NEG TEST_POS TEST_NEG cascade_filenm temppath temp_filenm datapath train1 train0 validation1 validation0 update0
+%clear TRAIN VALIDATION C gt NORM WEAK Di dmin Dlast Fi fmax Flast tpr fpr Ftarget FPs i j ti log_filenm appname version author email IMSIZE TRAIN_POS TRAIN_NEG TEST_POS TEST_NEG cascade_filenm temppath temp_filenm datapath train1 train0 validation1 validation0 update0
 
 
