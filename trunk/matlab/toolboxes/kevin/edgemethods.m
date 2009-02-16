@@ -102,15 +102,18 @@ switch ind
         thresh = .01;
         EDGE = edge(I,'sobel', thresh);
     case 24
-        thresh = .03;
+        thresh = .02;
         EDGE = edge(I,'sobel', thresh);
    	case 25
-        thresh = .05;
+        thresh = .04;
         EDGE = edge(I,'sobel', thresh);
    	case 26
-        thresh = .08;
+        thresh = .06;
         EDGE = edge(I,'sobel', thresh);
    	case 27
+        thresh = .08;
+        EDGE = edge(I,'sobel', thresh);
+    case 28
         thresh = .1;
         EDGE = edge(I,'sobel', thresh);
 end

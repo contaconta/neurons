@@ -19,8 +19,8 @@ rand('twister', 100);       % seed the random variable
 %-------------------------------------------------------------------------
 
 FILES.datestr         = datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
-FILES.cascade_filenm  = ['TEST_NEW_SPDIFF' FILES.datestr '.mat'];   % filename to store the cascaded classifier
-FILES.log_filenm      = ['TEST_NEW_SPDIFF' FILES.datestr '.log'];   % filename to store the log file    
+FILES.cascade_filenm  = ['SPmix_repeat_prob' FILES.datestr '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['SPmix_repeat_prob' FILES.datestr '.log'];   % filename to store the log file    
 FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
 FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
 FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
@@ -56,7 +56,7 @@ LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 LEARNERS(length(LEARNERS)).stride           = 2; 
-LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
+LEARNERS(length(LEARNERS)).edge_methods     = [1 7  18  24 ];  %[1 3 7 9 18 21 24 27];
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
@@ -70,10 +70,10 @@ LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
 %-------------------------------------------------------------------------
 
 %DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2];       
-%DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5];                
+DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5];                
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];       
 %DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];
-DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];
+%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];
 %DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];
 
 % parameters for updating the negative examples
