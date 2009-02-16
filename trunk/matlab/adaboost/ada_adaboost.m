@@ -35,19 +35,20 @@ for t = start_t:ti
     w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
     w(TRAIN.class == 0) = .5 * (w(TRAIN.class==0) /sum(w(TRAIN.class==0)));
     
-%     %%================ DEBUGGING =======================================
-%     if t == 100
-%         disp('we are about to start repeating!');
-%         keyboard;
-%     end
-%     %===================================================================
-%     
-%     
     %% 2. train weak learners for optimal class separation
     WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
     
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
+    
+    %======== HACK to avoid repeatedly selecting same feture ==============
+    if (t > 1) && (BEST_learner == CLASSIFIER.feature_index(t-1))
+        a = sort(WEAK.error); BEST_err = a(2);
+        [BEST_learner] = find(WEAK.error == BEST_err,1);        
+        disp(['       ! picked 2nd best feature to stop CASCADE from picking ' num2str(CLASSIFIER.feature_index(t-1)) ' again!']);
+    end
+    %======================================================================
+    
     
     % populate the selected classifier with needed information
     CLASSIFIER.feature_index(t) = BEST_learner; 
@@ -71,8 +72,9 @@ for t = start_t:ti
         if m1 == min(WEAK.error); prestr = '     ✓ '; else prestr = '       '; end
         s = [prestr 'best ' type ' error: ' num2str(m1) ', feature index: ' num2str(ind)]; disp(s);
     end
+    s = ['       SELECTED ' WEAK.learners{BEST_learner}.type ' error: ' num2str(BEST_err) ', feature index: ' num2str(BEST_learner) ', polarity: ' num2str(CLASSIFIER.polarity(t)) ', theta: ' num2str(CLASSIFIER.theta(t))]; disp(s);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+   
 
     
     %% 4. Update the training weight vector according to misclassifications

@@ -46,6 +46,19 @@ for i = 1:length(WEAK.learners)
             wstring = '       optimized spdiff feature ';
             W = wristwatch(W, 'update', i, 'text', wstring);
             [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
+%             [err1, theta1, pol1] = ada_weak_learn(i, training_labels, TRAIN, w);
+%             [err2, theta2, pol2] = ada_weak_slow_learn(i, training_labels, TRAIN, w);
+%             %if ~isequal([err1 theta1 pol1], [err2 theta2 pol2]);
+%             if abs(err1 - err2) > 1e-5
+%                 disp('houston we have a problem');
+%                 disp(['[err1 theta1 pol1] ' num2str([err1 theta1 pol1]) ]);
+%                 disp(['[err2 theta2 pol2] ' num2str([err2 theta2 pol2]) ]);
+%                 keyboard;
+%             end
+%             WEAK.error(i) = err2;
+%             WEAK.learners{i}.theta = theta2;
+%             WEAK.learners{i}.polarity = pol2;
+        
         case 'hog'
             wstring = '       optimized hog feature ';
             W = wristwatch(W, 'update', i, 'text', wstring);

@@ -27,12 +27,30 @@ for q=1:length(fsorted)
     if (q>1) && (fsorted(q) == fsorted(q-1))
         err(q) = err(q-1); polarity(q) = polarity(q-1);
     else
+        % compute the classification error if we set the threshold to 'q'
+        % keep in mind, SPOS is sum up to but not including q, as is SNEG
+%         fp_error_pos_pol = SPOS + lsorted(q)*wsorted(q);            % fp >= q
+%         fp_error_neg_pol = TPOS - SPOS;                             % fp <= q
+%         fn_error_pos_pol = TNEG - SNEG + ~lsorted(q)*wsorted(q);    % fn > q
+%         fn_error_neg_pol = SNEG;                                    % fn < q
         
-        % compute the classification error if we set the treshold to 'q'
-        if SPOS + (TNEG - SNEG) <= SNEG + (TPOS - SPOS)
-            err(q) = SPOS + (TNEG - SNEG); polarity(q) = -1;     % The polarity = -1 case
+        fp_error_pos_pol = TPOS - SPOS;                             % fp >= q
+        fp_error_neg_pol = SPOS + lsorted(q)*wsorted(q);            % fp <= q
+        fn_error_pos_pol = SNEG;                                    % fn < q
+        fn_error_neg_pol = TNEG - SNEG - ~lsorted(q)*wsorted(q);    % fn > q
+        
+%         fp_error_pos_pol = SPOS;            % fp >= q
+%         fp_error_neg_pol = TPOS - SPOS;                             % fp <= q
+%         fn_error_pos_pol = TNEG - SNEG;                                    % fn < q
+%         fn_error_neg_pol = SNEG;    % fn > q
+        
+        pos_pol_error = fp_error_pos_pol + fn_error_pos_pol;
+        neg_pol_error = fp_error_neg_pol + fn_error_neg_pol;
+        
+        if pos_pol_error <= neg_pol_error
+            err(q) = pos_pol_error; polarity(q) = 1;
         else
-            err(q) = SNEG + (TPOS - SPOS); polarity(q) = 1;      % The polarity = +1 case
+            err(q) = neg_pol_error; polarity(q) = -1;
         end
     end
     
@@ -50,4 +68,4 @@ end
 theta           = fsorted(q_ind);
 pol             = polarity(q_ind);
 
-
+%keyboard;
