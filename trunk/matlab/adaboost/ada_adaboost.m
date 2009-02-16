@@ -35,14 +35,14 @@ for t = start_t:ti
     w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
     w(TRAIN.class == 0) = .5 * (w(TRAIN.class==0) /sum(w(TRAIN.class==0)));
     
-    %%================ DEBUGGING =======================================
-    if t == 100
-        disp('we are about to start repeating!');
-        keyboard;
-    end
-    %===================================================================
-    
-    
+%     %%================ DEBUGGING =======================================
+%     if t == 100
+%         disp('we are about to start repeating!');
+%         keyboard;
+%     end
+%     %===================================================================
+%     
+%     
     %% 2. train weak learners for optimal class separation
     WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
     
