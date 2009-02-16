@@ -2,6 +2,7 @@
 % % ----------
 ada_settings; 
 ada_versioninfo;
+ada_stage_goals;
 
 
 %% preparation
@@ -36,7 +37,7 @@ Di = 1;                         % cascade's current detection rate
 while (Fi > Ftarget)
     i = i + 1;
     disp(['============== NOW TRAINING CASCADE STAGE i = ' num2str(i) ' ==============']);
-    %ti = 0;                     % weak learner index (within current stage)
+    ti = 0;                     % weak learner index (within current stage)
 
     if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
     if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
