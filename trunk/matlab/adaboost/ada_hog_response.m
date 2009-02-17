@@ -9,7 +9,7 @@ function [f, HOG] = ada_hog_response(I, bin, cellc, cellr, orientationbins, cell
 if nargin > 7
     HOG = varargin{1};
 else
-    HOG = hog(I, 'orientationbins', orientationbins, 'cellsize', cellsize, 'blocksize', blocksize);
+    HOG = HoG(I, 'orientationbins', orientationbins, 'cellsize', cellsize, 'blocksize', blocksize);
 end
 
 f = HOG(cellr, cellc, bin);
