@@ -3,9 +3,10 @@
 %-------------------------------------------------------------------------
 
 IMSIZE          = [24 24];  % standard image size used for training & classification
-fmax            = .3;      	% maximum false positive rate for any cascade stage
-dmin            = .99;    	% minimum detection rate for any cascade stage
+% fmax            = .3;      	% maximum false positive rate for any cascade stage
+% dmin            = .99;    	% minimum detection rate for any cascade stage
 Ftarget         = 1e-5;     % target false positive rate for the entire cascade
+Dtarget         = .90;      % target detection rate for the entire cascade
 TRAIN_POS       = 1000;     % number of positive examples in the training set
 TRAIN_NEG       = 1000;     % number of negative examples in the training set
 VALIDATION_POS  = 1000;     % number of positive examples in the validation set
@@ -52,17 +53,17 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5 6];
 
-LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
-LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-LEARNERS(length(LEARNERS)).stride           = 2; 
-LEARNERS(length(LEARNERS)).edge_methods     = [1 7  18  24 ];  %[1 3 7 9 18 21 24 27];
-
-% LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).bins             = 9;
-% LEARNERS(length(LEARNERS)).cellsize         = [4 4];
-% LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+% LEARNERS(length(LEARNERS)).stride           = 2; 
+% LEARNERS(length(LEARNERS)).edge_methods     = [1 7  18  24 ];  %[1 3 7 9 18 21 24 27];
+
+LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+LEARNERS(length(LEARNERS)).bins             = 9;
+LEARNERS(length(LEARNERS)).cellsize         = [4 4];
+LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 
 
 %-------------------------------------------------------------------------

@@ -4,26 +4,25 @@ ada_settings;
 ada_versioninfo;
 ada_stage_goals;
 
-
 %% preparation
 
-% initialize the log file
-logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
-logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
-
-% define the weak learners
-tic; disp('...defining the weak learners.');
-WEAK = ada_define_weak_learners(LEARNERS); toc; 
-
-% collect the training set and precompute feature responses
-tic; disp('...collecting and processing the TRAIN data set.');
-TRAIN = ada_collect_data(DATASETS, 'train'); toc;
-TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
-
-% collect the validation set and precompute feature responses
-tic; disp('...collecting and processing the VALIDATION data set.');
-VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
-VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
+% % initialize the log file
+% logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+% logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
+% 
+% % define the weak learners
+% tic; disp('...defining the weak learners.');
+% WEAK = ada_define_weak_learners(LEARNERS); toc; 
+% 
+% % collect the training set and precompute feature responses
+% tic; disp('...collecting and processing the TRAIN data set.');
+% TRAIN = ada_collect_data(DATASETS, 'train'); toc;
+% TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
+% 
+% % collect the validation set and precompute feature responses
+% tic; disp('...collecting and processing the VALIDATION data set.');
+% VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
+% VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
 
 
 %% train the cascade
@@ -33,17 +32,18 @@ i = 0;                          % cascade stage index
 Fi = 1;                         % cascade's current false positive rate      
 Di = 1;                         % cascade's current detection rate
 
-%loop until we meet the target false positive rate
-while (Fi > Ftarget)
+while (Fi > Ftarget)            % loop until we meet the target false positive rate
     i = i + 1;
     disp(['============== NOW TRAINING CASCADE STAGE i = ' num2str(i) ' ==============']);
     ti = 0;                     % weak learner index (within current stage)
 
-    if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
-    if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
-     
+    %if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
+    %if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
+    CASCADE(i).di = 0;  CASCADE(i).fi = 0;
+    
     % cascade must meet detection and FP rate goals before passing to the next stage
-    while (Fi > fmax * Flast) || (Di < dmin * Dlast)
+    %while (Fi > GOALS(i).fmax * Flast) || (Di < dmin * Dlast)
+    while (CASCADE(i).fi > GOALS(i).fmax) || (CASCADE(i).di < GOALS(i).dmin)
         ti = ti + 1;
 
         
@@ -56,12 +56,12 @@ while (Fi > Ftarget)
             CASCADE(i).CLASSIFIER = ada_adaboost(TRAIN, WEAK, ti, LEARNERS, CASCADE(i).CLASSIFIER);
         end
         
-        disp(['Stage ' num2str(i) ' goals.  Detection rate (Di) > ' num2str(dmin * Dlast) '.  False positive rate (Fi) < ' num2str(fmax * Flast) '.']);
+        disp(['Stage ' num2str(i) ' goals: min detection rate (di) > ' num2str(GOALS(i).dmin) ', max false positive rate (fi) < ' num2str(GOALS(i).fmax) '.']);
         
         %% select the cascade threshold for stage i
         %  adjust the threshold for the current stage until we find one
         %  which gives a satifactory detection rate (this changes the false alarm rate)
-        [CASCADE, Fi, Di]  = ada_cascade_select_threshold(CASCADE, i, VALIDATION, dmin);
+        [CASCADE, Fi, Di]  = ada_cascade_select_threshold(CASCADE, i, VALIDATION, GOALS(i).dmin);
 
         % ====================  TEMPORARY  ==============================
         % to make sure we're actually improving on the training data
@@ -80,11 +80,11 @@ while (Fi > Ftarget)
         save(FILES.cascade_filenm, 'CASCADE');
         disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
         
-        % hand-tune some stage goals (for first few stages) loosly following Viola-Jones IJCV '04
-        if i == 1; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .50);   break; end; end;
-        if i == 2; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .40);   break; end; end;
-        if i == 3; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
-        if i == 4; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
+%         % hand-tune some stage goals (for first few stages) loosly following Viola-Jones IJCV '04
+%         if i == 1; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .50);   break; end; end;
+%         if i == 2; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .40);   break; end; end;
+%         if i == 3; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
+%         if i == 4; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
     end
     
     %% prepare training & validation data for the next stage of the cascade  
