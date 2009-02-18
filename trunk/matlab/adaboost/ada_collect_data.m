@@ -103,6 +103,7 @@ if strcmp(set_type, 'update')
 
     % SCAN THE IMAGES!
     disp('       ...raster/random scan.'); FP_LIST =[];
+    %FP_LIST = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
     FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
 
     
@@ -142,36 +143,46 @@ function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DE
 % randomly permute the file lists, so we don't always start with the same image
 rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  FP_start = length(FP_LIST);  count = 1;
 
-% pick a set of 20 or less files to look through
-NUM_FILES = min(20, length(d));
 
+BYTES_LIMIT = 1500000;  % the total # of bytes we will scan in one chunk
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #'; tic;
 
-for F = NUM_FILES:NUM_FILES:length(d)
+g = 1;  running_bytes = 0; groups = zeros(size(d));
+for f = 1:length(d);
+    d_file = dir(d{f});
+    running_bytes = running_bytes + d_file.bytes;
+    groups(f) = g;
+    if running_bytes > BYTES_LIMIT;
+        g = g + 1;
+        running_bytes = 0;
+    end
+end
+
+for g = 1:max(groups)
 
     % for each of these files, create a list of the crop rects for a raster
     % scan
-    
-    short_inds = F - NUM_FILES + 1 : F;
-    
-    short_filenm_list = d(short_inds);
-    short_annotation_list = a(short_inds);
+ 
+    group_inds = find(groups == g);
+   
+    short_filenm_list = d(group_inds);
+    short_annotation_list = a(group_inds);
     short_list = [];
-    scanlist = zeros(100000,4);  scancount = 1;
-    
-    %keyboard;
+    SAFE_BIG_NUMBER = 700000;
+    scanlist = zeros(SAFE_BIG_NUMBER,4);  scancount = 1;
 
     %% construct the scanlist - a short list of files and rects to scan
     for f_ind = 1:length(short_filenm_list)
 
-        I = imread(short_filenm_list{f_ind}); disp(['       scanning ' short_filenm_list{f_ind}]);
+        I = imread(short_filenm_list{f_ind}); %disp(['       scanning ' short_filenm_list{f_ind}]);
         A = mat2gray(imread(short_annotation_list{f_ind}));
 
         % convert to proper class (pixel intensity represented by [0,1])
         if ~isa(I, 'double');cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); end
 
         % convert to grayscale if necessary
-        if size(I,3) > 1; I = rgb2gray(I); end
+        if size(I,3) > 1; I = rgb2gray(I); end 
+        if size(A,3) > 1; A = rgb2gray(A); end
 
         % store the image into the short_list
         short_list(f_ind).I = I;
@@ -196,6 +207,11 @@ for F = NUM_FILES:NUM_FILES:length(d)
             W = size(short_list(f_ind).Iscaled{s},2);  H = size(short_list(f_ind).Iscaled{s},1);
             DS = round(DELTA*short_list(f_ind).actual_scale(s));
         
+            if scancount > SAFE_BIG_NUMBER
+                disp('too many scan points for SAFE_BIG_NUMBER!');
+                keyboard;
+            end
+            
             for r = 1:max(1,DS):H - IMSIZE(1)
                 for c = 1:max(1,DS):W - IMSIZE(2)
 
@@ -210,7 +226,7 @@ for F = NUM_FILES:NUM_FILES:length(d)
     %% randomly permute the scanlist
     scanlist = scanlist(1:scancount-1,:); rnd = randperm(scancount-1);
     scanlist = scanlist(rnd,:);
-    disp('randomized the scanlist');
+    %disp('randomized the scanlist');
     
     
     %% proceed through the scanlist: crop, classify, and add the example if it produces a false positive
@@ -227,7 +243,7 @@ for F = NUM_FILES:NUM_FILES:length(d)
         %figure(124332); imshow(Icrop);  pause(.01); refresh;
 
         if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
-            disp('...oops, we picked a true positive example!');
+            %disp('...oops, we picked a true positive example!');
             count = count + 1; continue;
         end
         
