@@ -225,7 +225,7 @@ function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DE
 
 
 % randomly permute the list, so we don't always start with the same image
-rnd = randperm(length(d));    d = d(rnd);
+rnd = randperm(length(d));    d = d(rnd); a = a(rnd);
 
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
 tic;
@@ -270,7 +270,7 @@ for file_ind = 1:length(d)
         for c = 1:max(1,DS):W - IMSIZE(2)
             for r = 1:max(1,DS):H - IMSIZE(1)
 
-                Image = Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
+                Image = Iscaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
 
 %                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
 %                     imshow(Itemp);  pause(.01); refresh; 
@@ -278,7 +278,7 @@ for file_ind = 1:length(d)
 
                 
                 %  make sure it does not contain a true positive example
-                Acrop = Ascaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
+                Acrop = Ascaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
                 if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
                     %disp('...oops, we picked a true positive example!');
                     count = count + 1;
@@ -301,7 +301,7 @@ for file_ind = 1:length(d)
 
                 % if we've collected enough FPs, return.
                 if length(FP_LIST) >= FPs_REQUIRED
-                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc ' s']);
+                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
                     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
                     return;
                 end
@@ -310,7 +310,7 @@ for file_ind = 1:length(d)
             end
         end
     end
-    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc ' s']);
+    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
 end
 
