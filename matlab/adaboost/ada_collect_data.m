@@ -102,8 +102,8 @@ if strcmp(set_type, 'update')
     FPs_REQUIRED = length(TN_LIST);
 
     % Collect FPs-REQUIRED images containing false positives
-    [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
-    %success = 0;  FP_LIST =[];
+    %[FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
+    success = 0;  FP_LIST =[];
     if ~success
         disp('       ...random scanning progressing too slow, switching to raster scan.');
         FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
@@ -224,10 +224,16 @@ disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%'])
 function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
 
 
+% randomly permute the list, so we don't always start with the same image
+rnd = randperm(length(d));    d = d(rnd);
+
+w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
+tic;
+
 for file_ind = 1:length(d)
 
     % read the file
-    filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
+    filenm = d{file_ind}; I = imread(filenm);  disp(['       scanning ' filenm]);
     filenm = a{file_ind}; A = imread(filenm);
 
     % convert to proper class (pixel intensity represented by [0,1])
@@ -290,11 +296,12 @@ for file_ind = 1:length(d)
                 if C
                     %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
                     FP_LIST{length(FP_LIST)+1} = Image;
+                    w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
                 end
 
                 % if we've collected enough FPs, return.
                 if length(FP_LIST) >= FPs_REQUIRED
-                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc]);
+                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc ' s']);
                     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
                     return;
                 end
@@ -303,7 +310,7 @@ for file_ind = 1:length(d)
             end
         end
     end
-    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc]);
+    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' toc ' s']);
     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
 end
 
