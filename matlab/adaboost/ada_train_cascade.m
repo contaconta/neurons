@@ -80,11 +80,6 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
         save(FILES.cascade_filenm, 'CASCADE');
         disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
         
-%         % hand-tune some stage goals (for first few stages) loosly following Viola-Jones IJCV '04
-%         if i == 1; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .50);   break; end; end;
-%         if i == 2; if (CASCADE(i).di >= .99) && (CASCADE(i).fi < .40);   break; end; end;
-%         if i == 3; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
-%         if i == 4; if (Di > dmin * Dlast) && (Fi < Flast*.35);  break; end; end;
     end
     
     %% prepare training & validation data for the next stage of the cascade  

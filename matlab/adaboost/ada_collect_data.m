@@ -101,13 +101,10 @@ if strcmp(set_type, 'update')
     TN_LIST = get_true_negatives(SET, DETECTOR);
     FPs_REQUIRED = length(TN_LIST);
 
-    % Collect FPs-REQUIRED images containing false positives
-    %[FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
-    success = 0;  FP_LIST =[];
-    if ~success
-        disp('       ...random scanning progressing too slow, switching to raster scan.');
-        FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
-    end
+    % SCAN THE IMAGES!
+    disp('       ...raster/random scan.'); FP_LIST =[];
+    FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
+
     
     % Replace the True Negatives with newly collected False Positives
     for i = 1:length(TN_LIST)
@@ -138,181 +135,311 @@ SET = orderfields(SET);
 %   
 
 
-function [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
-
-w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
-success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
-FIND_RATE_LIMIT = .002;                        %  minimum rate to find FP examples
-disp('       ...randomly scanning for FP examples');
-
-            
-
-while length(FP_LIST) < FPs_REQUIRED
-    % 1. randomly select a file from the list
-    file_ind = randsample(1:length(d),1);
-    filenm = d{file_ind}; I = imread(filenm);  %disp(['scanning ' filenm]);
-    filenm = a{file_ind}; A = imread(filenm);
-    
-    % convert to grasyscale if necessary
-    if size(I,3) > 1
-        I = rgb2gray(I);
-    end
-    
-    % 2. randomly select a location and window size from the image
-    if isfield(DATASETS, 'scale_limits')
-        W = randsample(round(IMSIZE(2) * scale_selection(I,IMSIZE, 'limits', DATASETS.scale_limits)),1);  
-        H = round( (IMSIZE(1)/IMSIZE(2)) * W);
-    else
-        W = randsample(round(IMSIZE(2) * scale_selection(I,IMSIZE)),1);  
-        H = round( (IMSIZE(1)/IMSIZE(2)) * W);
-    end
-    X = ceil(  (size(I,2) - W)  * rand(1));
-    Y = ceil(  (size(I,1) - H)  * rand(1));
-    
-    % 3. sample from this image, location, size
-    rect = [X Y W-1 H-1];
-    Image = imcrop(I, rect);
-    
-    % 4. adjust the image as necessary
-    if ~isa(Image, 'double')
-        cls = class(Image); Image = mat2gray(Image, [0 double(intmax(cls))]); 
-    end
-    Image = imresize(Image, IMSIZE);
-    
-    % 5. make sure it does not contain a true positive example
-    Acrop = imcrop(A, rect);
-    if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
-        %disp('...oops, we picked a true positive example!');
-        attempts = attempts + 1;
-        continue;
-    end
-    
-    % normalize if necessary
-    if NORM
-        Image = imnormalize('image', Image);
-    end
-
-    % classify the example
-    C = ada_classify_individual(DETECTOR, Image, LEARNERS);
-
-    if C
-        %disp(['added (random scan) false positive ' num2str(length(FP_LIST)+1) '  current FP rate = ' num2str(find_rate)]);
-        FP_LIST{length(FP_LIST)+1} = Image;
-        w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
-    end
-    
-    % 6. check to see if find_rate is too, if raster scan is required   
-    find_rate = length(FP_LIST) / attempts;  %     disp(['current FP finding rate = ' num2str(find_rate)]);
-    
-    if (attempts > 1000) && (find_rate < FIND_RATE_LIMIT)
-        return
-    end
-
-    attempts = attempts + 1;
-end
-
-% if we get to this point, we were successful in finding false positives!
-success = 1;
-disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
-
-
-
-
-
 
 
 function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
 
+% randomly permute the file lists, so we don't always start with the same image
+rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  FP_start = length(FP_LIST);  count = 1;
 
-% randomly permute the list, so we don't always start with the same image
-rnd = randperm(length(d));    d = d(rnd); a = a(rnd);
+% pick a set of 20 or less files to look through
+NUM_FILES = min(20, length(d));
 
-w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
-tic;
+w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #'; tic;
 
-for file_ind = 1:length(d)
+for F = NUM_FILES:NUM_FILES:length(d)
 
-    % read the file
-    filenm = d{file_ind}; I = imread(filenm);  disp(['       scanning ' filenm]);
-    filenm = a{file_ind}; A = imread(filenm);
-
-    % convert to proper class (pixel intensity represented by [0,1])
-    if ~isa(I, 'double')
-        cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); 
-    end
-
-    % convert to grasyscale if necessary
-    if size(I,3) > 1
-        I = rgb2gray(I);
-    end
-
-    if isfield(DATASETS, 'scale_limits')
-        scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
-    else
-        scales = scale_selection(I, IMSIZE);
-    end
+    % for each of these files, create a list of the crop rects for a raster
+    % scan
     
-    FP_start = length(FP_LIST);  count = 1;
-    tic;
+    short_inds = F - NUM_FILES + 1 : F;
+    
+    short_filenm_list = d(short_inds);
+    short_annotation_list = a(short_inds);
+    short_list = [];
+    scanlist = zeros(100000,4);  scancount = 1;
+    
+    %keyboard;
 
-    % loop through the scales
-    for scale = scales
-        Iscaled = imresize(I, scale);
-        Ascaled = imresize(A, scale);
-        actual_scale = size(Iscaled,1) / size(I,1);
-        %disp(['detector scale = ' num2str(1/actual_scale)]);
-        W = size(Iscaled,2);  H = size(Iscaled,1);
+    %% construct the scanlist - a short list of files and rects to scan
+    for f_ind = 1:length(short_filenm_list)
 
-        DS = round(DELTA*actual_scale);
-        %disp(['scaled delta = ' num2str(DS)]);
+        I = imread(short_filenm_list{f_ind}); disp(['       scanning ' short_filenm_list{f_ind}]);
+        A = mat2gray(imread(short_annotation_list{f_ind}));
 
-        % scan the image at each scale
-        for c = 1:max(1,DS):W - IMSIZE(2)
+        % convert to proper class (pixel intensity represented by [0,1])
+        if ~isa(I, 'double');cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); end
+
+        % convert to grayscale if necessary
+        if size(I,3) > 1; I = rgb2gray(I); end
+
+        % store the image into the short_list
+        short_list(f_ind).I = I;
+        short_list(f_ind).A = A;
+
+        % figure out the scales we will search at
+        if isfield(DATASETS, 'scale_limits')
+            short_list(f_ind).scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
+        else
+            short_list(f_ind).scales = scale_selection(I, IMSIZE);
+        end
+        
+        % loop through the scales
+        for s = 1:length(short_list(f_ind).scales)
+            % resize the image and annotation for scale s
+            scale = short_list(f_ind).scales(s);
+            short_list(f_ind).Iscaled{s} = imresize(short_list(f_ind).I, scale);
+            short_list(f_ind).Ascaled{s} = imresize(short_list(f_ind).A, scale);
+            short_list(f_ind).actual_scale(s) = size(short_list(f_ind).Iscaled{s},1) / size(short_list(f_ind).I,1);
+        
+            % define all of the scan rects at this scale, append to scanlist
+            W = size(short_list(f_ind).Iscaled{s},2);  H = size(short_list(f_ind).Iscaled{s},1);
+            DS = round(DELTA*short_list(f_ind).actual_scale(s));
+        
             for r = 1:max(1,DS):H - IMSIZE(1)
+                for c = 1:max(1,DS):W - IMSIZE(2)
 
-                Image = Iscaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
-
-%                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
-%                     imshow(Itemp);  pause(.01); refresh; 
-%                     disp(['scanning (' num2str(r) ',' num2str(c) ')']);
-
-                
-                %  make sure it does not contain a true positive example
-                Acrop = Ascaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
-                if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
-                    %disp('...oops, we picked a true positive example!');
-                    count = count + 1;
-                    continue;
+                    scanlist(scancount,:) = [f_ind, s, r, c];
+                    scancount = scancount + 1;
                 end
-
-                % normalize if necessary
-                if NORM
-                    Image = imnormalize('image', Image);
-                end
-
-                % classify the example
-                C = ada_classify_individual(DETECTOR, Image, LEARNERS);
-
-                if C
-                    %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
-                    FP_LIST{length(FP_LIST)+1} = Image;
-                    w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
-                end
-
-                % if we've collected enough FPs, return.
-                if length(FP_LIST) >= FPs_REQUIRED
-                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
-                    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
-                    return;
-                end
-
-                count = count + 1;
             end
         end
+
     end
-    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
-    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
+
+    %% randomly permute the scanlist
+    scanlist = scanlist(1:scancount-1,:); rnd = randperm(scancount-1);
+    scanlist = scanlist(rnd,:);
+    disp('randomized the scanlist');
+    
+    
+    %% proceed through the scanlist: crop, classify, and add the example if it produces a false positive
+    for i = 1:size(scanlist,1)
+        
+        f = scanlist(i,1);      % the file index
+        s = scanlist(i,2);      % the scale index
+        r = scanlist(i,3);      % the row index
+        c = scanlist(i,4);      % the col index
+        
+        Icrop = short_list(f).Iscaled{s}(r:r+IMSIZE(1)-1, c:c + IMSIZE(2)-1);
+        Acrop = short_list(f).Ascaled{s}(r:r+IMSIZE(1)-1, c:c + IMSIZE(2)-1);
+    
+        %figure(124332); imshow(Icrop);  pause(.01); refresh;
+
+        if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+            disp('...oops, we picked a true positive example!');
+            count = count + 1; continue;
+        end
+        
+        % normalize if necessary
+        if NORM
+            Icrop = imnormalize('image', Icrop);
+        end
+        
+        % classify the example
+        C = ada_classify_individual(DETECTOR, Icrop, LEARNERS);
+
+        if C
+            %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
+            FP_LIST{length(FP_LIST)+1} = Icrop;
+            w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
+        end
+
+        % if we've collected enough FPs, return.
+        if length(FP_LIST) >= FPs_REQUIRED
+            disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+            return;
+        end
+
+        count = count + 1;
+    
+    end
+        
+    %disp('--------------------------------------');
 end
+
+
+
+
+
+
+
+% 
+% function [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
+% 
+% w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
+% success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
+% FIND_RATE_LIMIT = .002;                        %  minimum rate to find FP examples
+% disp('       ...randomly scanning for FP examples');
+% 
+%             
+% 
+% while length(FP_LIST) < FPs_REQUIRED
+%     % 1. randomly select a file from the list
+%     file_ind = randsample(1:length(d),1);
+%     filenm = d{file_ind}; I = imread(filenm);  %disp(['scanning ' filenm]);
+%     filenm = a{file_ind}; A = imread(filenm);
+%     
+%     % convert to grasyscale if necessary
+%     if size(I,3) > 1
+%         I = rgb2gray(I);
+%     end
+%     
+%     % 2. randomly select a location and window size from the image
+%     if isfield(DATASETS, 'scale_limits')
+%         W = randsample(round(IMSIZE(2) * scale_selection(I,IMSIZE, 'limits', DATASETS.scale_limits)),1);  
+%         H = round( (IMSIZE(1)/IMSIZE(2)) * W);
+%     else
+%         W = randsample(round(IMSIZE(2) * scale_selection(I,IMSIZE)),1);  
+%         H = round( (IMSIZE(1)/IMSIZE(2)) * W);
+%     end
+%     X = ceil(  (size(I,2) - W)  * rand(1));
+%     Y = ceil(  (size(I,1) - H)  * rand(1));
+%     
+%     % 3. sample from this image, location, size
+%     rect = [X Y W-1 H-1];
+%     Image = imcrop(I, rect);
+%     
+%     % 4. adjust the image as necessary
+%     if ~isa(Image, 'double')
+%         cls = class(Image); Image = mat2gray(Image, [0 double(intmax(cls))]); 
+%     end
+%     Image = imresize(Image, IMSIZE);
+%     
+%     % 5. make sure it does not contain a true positive example
+%     Acrop = imcrop(A, rect);
+%     if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+%         %disp('...oops, we picked a true positive example!');
+%         attempts = attempts + 1;
+%         continue;
+%     end
+%     
+%     % normalize if necessary
+%     if NORM
+%         Image = imnormalize('image', Image);
+%     end
+% 
+%     % classify the example
+%     C = ada_classify_individual(DETECTOR, Image, LEARNERS);
+% 
+%     if C
+%         %disp(['added (random scan) false positive ' num2str(length(FP_LIST)+1) '  current FP rate = ' num2str(find_rate)]);
+%         FP_LIST{length(FP_LIST)+1} = Image;
+%         w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
+%     end
+%     
+%     % 6. check to see if find_rate is too, if raster scan is required   
+%     find_rate = length(FP_LIST) / attempts;  %     disp(['current FP finding rate = ' num2str(find_rate)]);
+%     
+%     if (attempts > 1000) && (find_rate < FIND_RATE_LIMIT)
+%         return
+%     end
+% 
+%     attempts = attempts + 1;
+% end
+% 
+% % if we get to this point, we were successful in finding false positives!
+% success = 1;
+% disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
+
+
+
+
+
+
+
+% function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
+% 
+% 
+% % randomly permute the list, so we don't always start with the same image
+% rnd = randperm(length(d));    d = d(rnd); a = a(rnd);
+% 
+% w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
+% tic;
+% 
+% for file_ind = 1:length(d)
+% 
+%     % read the file
+%     filenm = d{file_ind}; I = imread(filenm);  disp(['       scanning ' filenm]);
+%     filenm = a{file_ind}; A = imread(filenm);
+% 
+%     % convert to proper class (pixel intensity represented by [0,1])
+%     if ~isa(I, 'double')
+%         cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); 
+%     end
+% 
+%     % convert to grasyscale if necessary
+%     if size(I,3) > 1
+%         I = rgb2gray(I);
+%     end
+% 
+%     if isfield(DATASETS, 'scale_limits')
+%         scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
+%     else
+%         scales = scale_selection(I, IMSIZE);
+%     end
+%     
+%     FP_start = length(FP_LIST);  count = 1;
+%     tic;
+% 
+%     % loop through the scales
+%     for scale = scales
+%         Iscaled = imresize(I, scale);
+%         Ascaled = imresize(A, scale);
+%         actual_scale = size(Iscaled,1) / size(I,1);
+%         %disp(['detector scale = ' num2str(1/actual_scale)]);
+%         W = size(Iscaled,2);  H = size(Iscaled,1);
+% 
+%         DS = round(DELTA*actual_scale);
+%         %disp(['scaled delta = ' num2str(DS)]);
+% 
+%         % scan the image at each scale
+%         for c = 1:max(1,DS):W - IMSIZE(2)
+%             for r = 1:max(1,DS):H - IMSIZE(1)
+% 
+%                 Image = Iscaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
+% 
+% %                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
+% %                     imshow(Itemp);  pause(.01); refresh; 
+% %                     disp(['scanning (' num2str(r) ',' num2str(c) ')']);
+% 
+%                 
+%                 %  make sure it does not contain a true positive example
+%                 Acrop = Ascaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
+%                 if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+%                     %disp('...oops, we picked a true positive example!');
+%                     count = count + 1;
+%                     continue;
+%                 end
+% 
+%                 % normalize if necessary
+%                 if NORM
+%                     Image = imnormalize('image', Image);
+%                 end
+% 
+%                 % classify the example
+%                 C = ada_classify_individual(DETECTOR, Image, LEARNERS);
+% 
+%                 if C
+%                     %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
+%                     FP_LIST{length(FP_LIST)+1} = Image;
+%                     w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
+%                 end
+% 
+%                 % if we've collected enough FPs, return.
+%                 if length(FP_LIST) >= FPs_REQUIRED
+%                     disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+%                     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
+%                     return;
+%                 end
+% 
+%                 count = count + 1;
+%             end
+%         end
+%     end
+%     disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+%     %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
+% end 
 
 
 
