@@ -1,11 +1,15 @@
 clear IStack;
 
-nuclei = ada_trainingfiles('nuclei24.txt', 'train', '+', 500);
-mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
-nonnuclei = ada_trainingfiles('nuclei24.txt', 'train', '-', 500);
-nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
+%nuclei = ada_trainingfiles('nuclei24.txt', 'train', '+', 500);
+%mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
+%nonnuclei = ada_trainingfiles('nuclei24.txt', 'train', '-', 500);
+%%nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
+mito = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
+nonmito = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
+nuclei = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
+nonnuclei = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
 
-N_EXAMPLES = 8;
+N_EXAMPLES = 2;
 
 nuc_inds = ceil(length(nuclei) * rand([N_EXAMPLES 1]));
 mito_inds = ceil(length(mito) * rand([N_EXAMPLES 1]));

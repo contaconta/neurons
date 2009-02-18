@@ -58,11 +58,11 @@ LEARNERS(length(LEARNERS)).IMSIZE        	= IMSIZE;
 LEARNERS(length(LEARNERS)+1).feature_type 	= 'intvar';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 
-LEARNERS(length(LEARNERS)+1).feature_type 	= 'haar';
-LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).shapes           = {'vert2', 'horz2', 'vert3', 'checker'};
-LEARNERS(length(LEARNERS)).SCAN_Y_STEP      = 3;  % [3 persons, 1 all others]
-LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 1;  
+% LEARNERS(length(LEARNERS)+1).feature_type 	= 'haar';
+% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+% LEARNERS(length(LEARNERS)).shapes           = {'vert2', 'horz2', 'vert3', 'checker'};
+% LEARNERS(length(LEARNERS)).SCAN_Y_STEP      = 3;  % [3 persons, 1 all others]
+% LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 1;  
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spedge';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
@@ -70,11 +70,11 @@ LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 1;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5 6];
 
-% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
-% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-% LEARNERS(length(LEARNERS)).stride           = 2; 
-% LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
+LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+LEARNERS(length(LEARNERS)).stride           = 2; 
+LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
