@@ -49,13 +49,14 @@ function HAAR = ada_haar_define(varargin)
 
 
 % define parameters
-IMSIZE = varargin{1};  IMAGE_W = IMSIZE(1); IMAGE_H = IMSIZE(2);  V = 0; D = 0;
+IMSIZE = varargin{1};  IMAGE_W = IMSIZE(2); IMAGE_H = IMSIZE(1);  V = 0; D = 0;
 MAX_W = 15; MAX_H = 15; U_MIN_W = 1; U_MIN_H = 1; U_STEP_W = 1; U_STEP_H = 1;
+SCAN_X_STEP = 1; SCAN_Y_STEP = 1;
 BIG_SAFE_NUMBER = 100000;                           % large enough for IMSIZE = [24 24]
 HAAR(BIG_SAFE_NUMBER).descriptor = single([]);
 HAAR(BIG_SAFE_NUMBER).hinds = single([]);
 HAAR(BIG_SAFE_NUMBER).hvals = single([]);
-%HAAR(BIG_SAFE_NUMBER).theta = [];
+
 
 %WEAK.descriptor = zeros([BIG_SAFE_NUMBER 17]);      % preallocate descriptor space
 %WEAK.fast = zeros(BIG_SAFE_NUMBER, prod(IMSIZE));   % preallocate fast descriptor space
@@ -84,6 +85,12 @@ for i = 2:nargin
         LIMS = varargin{i+1};
         U_MIN_W = LIMS(1); U_STEP_W = LIMS(2); MAX_W = min(LIMS(3), IMAGE_W);
     end
+    if strcmp(varargin{i}, 'SCAN_X_STEP')
+        SCAN_X_STEP = varargin{i+1};
+    end
+    if strcmp(varargin{i}, 'SCAN_Y_STEP')
+        SCAN_Y_STEP = varargin{i+1};
+    end
 end
 
 
@@ -100,8 +107,8 @@ if ismember('vert2', SHAPES)
 
     for w = MIN_W:W_STEP:MAX_W
         for h = MIN_H:H_STEP:MAX_H
-            for y = 1:IMAGE_H - h + 1
-                for x = 1:IMAGE_W - w + 1
+            for y = 1:SCAN_X_STEP:IMAGE_H - h + 1
+                for x = 1:SCAN_Y_STEP:IMAGE_W - w + 1
                    
                     HAAR(c_num).descriptor(1) = single(1);  % TYPE 1 = haar vertical
                     HAAR(c_num).descriptor(2:3) = single([x y]);
@@ -153,8 +160,8 @@ if ismember('horz2', SHAPES)
 
     for h = MIN_H:H_STEP:MAX_H
         for w = MIN_W:W_STEP:MAX_W      
-            for y = 1:IMAGE_H - h +1
-                for x = 1:IMAGE_W - w +1
+            for y = 1:SCAN_Y_STEP:IMAGE_H - h +1
+                for x = 1:SCAN_X_STEP:IMAGE_W - w +1
 
                     HAAR(c_num).descriptor(1) = single(2);  % TYPE 2 = haar horizontal
                     HAAR(c_num).descriptor(2:3) = single([x y]);
@@ -203,8 +210,8 @@ if ismember('vert3', SHAPES)
     
     for w = MIN_W:W_STEP:MAX_W
         for h = MIN_H:H_STEP:MAX_H        
-            for y = 1:IMAGE_H - h + 1
-                for x = 1:IMAGE_W - w + 1
+            for y = 1:SCAN_Y_STEP:IMAGE_H - h + 1
+                for x = 1:SCAN_X_STEP:IMAGE_W - w + 1
                    
                     HAAR(c_num).descriptor(1) = single(3);  % TYPE 3 = 3-rectangle haar vertical
                     HAAR(c_num).descriptor(2:3) = single([x y]);
@@ -256,8 +263,8 @@ if ismember('horz3', SHAPES)
 
     for w = MIN_W:W_STEP:MAX_W
         for h = MIN_H:H_STEP:MAX_H        
-            for y = 1:IMAGE_H - h + 1
-                for x = 1:IMAGE_W - w + 1
+            for y = 1:SCAN_Y_STEP:IMAGE_H - h + 1
+                for x = 1:SCAN_X_STEP:IMAGE_W - w + 1
                    
                     HAAR(c_num).descriptor(1) = single(4);  % TYPE 4 = 3-rectangle haar horizontal
                     HAAR(c_num).descriptor(2:3) = single([x y]);
@@ -309,8 +316,8 @@ if ismember('checker', SHAPES)
  
     for w = MIN_W:W_STEP:MAX_W
         for h = MIN_H:H_STEP:MAX_H      
-            for y = 1:IMAGE_H - h + 1
-                for x = 1:IMAGE_W - w + 1
+            for y = 1:SCAN_Y_STEP:IMAGE_H - h + 1
+                for x = 1:SCAN_X_STEP:IMAGE_W - w + 1
                    
                     HAAR(c_num).descriptor(1) = single(5);  % TYPE 5 = haar 4-rectangle
                     HAAR(c_num).descriptor(2:3) = single([x y]);
