@@ -13,27 +13,36 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 %   [POS_EXAMPLES NEG_EXAMPLES] from the training set.  Optional argument
 %   'v' for verbose output.
 %
-%   TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train');
-%   TRAIN = ada_collect_data(DATASETS, LEARNERS, 'train', 'update', TRAIN, CASCADE);
+%   TRAIN       = ada_collect_data(DATASETS, 'train');
+%   VALIDATION  = ada_collect_data(DATASETS, 'validation')
+%   TRAIN       = ada_collect_data(DATASETS, 'update', TRAIN, CASCADE, LEARNERS);
+%   VALIDATION  = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
 %
 %   Copyright 2008 Kevin Smith
 %
 %   See also STRUCT, ADA_TRAIN, INTEGRAL_IMAGE, ADA_ADABOOST
  
-% collect settings from DATASETS
+
+
+% collect settings from DATASETS 
+%   NORM = normalize images?, 
+%   IMSIZE = training image size, 
+%   POS_LIM = # positive examples, 
+%   NEG_LIM = # of negative examples.
+
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
+TRUE_OVERLAP_THRESH = .2;
+
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
-if nargin == 2
+if  ~strcmp(set_type, 'update')   %nargin == 2
     for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
         if c == 1
             d = ada_trainingfiles(DATASETS.filelist, set_type, '+', POS_LIM);
-            %SET.Images(length(d)) = [];
         else
             d = ada_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
-            %SET.Images(length(SET) + length(d)) = [];
         end
 
         % add each image file to SET, format it, normalize it, and compute features
@@ -66,64 +75,6 @@ if nargin == 2
             SET.Images(:,:,count) = I;
             if c == 1; SET.class(count) = 1; end
             if c == 2; SET.class(count) = 0; end
-
-           
-                    
-%                 if strcmp(WEAK.learners{1}{1}, 'haar')
-%                     II = integral_image(I);   
-%                     
-%                     
-%                     
-%                 end
-%                 
-%                 if strcmp(WEAK.learners{1}{1}, 'spedge')
-%                     sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
-%                     spbar = sp.spedges(:);
-%                 end
-%             end
-                
-%             for j = 1:length(WEAK.list)
-% 
-%                 if strcmp(WEAK.list{j,1}, 'haar')
-%                     field = WEAK.list{j,1};
-%                     ind = WEAK.list{j,2};
-%                     RESPONSES(j) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, II);
-%                 end
-% 
-%                 if strcmp(WEAK.list{j,1}, 'spedge')
-%                     %field = WEAK.list{j,1};
-%                     ind = WEAK.list{j,2};
-%                     RESPONSES(j) = spbar(ind);
-%                 end
-%             end
-                
-                    
-%                     haar_list = [];
-%                     for i = 1:length(WEAK.learners)
-%                         if strcmp('haar', WEAK.learners{i}{1})
-%                             haar_list = [haar_list WEAK.learners{i}{3}];
-%                         end
-%                     end
-%                     
-%                     for i = haar_list
-%                         field = WEAK.list{i,1};
-%                         ind = WEAK.list{i,2};
-%                         f_responses(j,:) = ada_haar_response(WEAK.(field)(ind).hinds, WEAK.(field)(ind).hvals, IIs);
-%                     
-%                     
-%                     RESPONSES(WEAK.learners{l}{3}) = II(:);
-%                     %SET(count).II = II(:);
-%                     %SET.responses.storeCols(II(:),count);
-%                 end
-%                 if strcmp(LEARNERS(l).feature_type, 'spedge')
-%                     sp = spedges(I, LEARNERS(l).angles, LEARNERS(l).sigma);
-%                     %SET(count).sp = sp.spedges(:);
-%                     %SET.responses.storeCols(sp.spedges(:),count);
-%                     RESPONSES(WEAK.learners{l}{3}) = sp.spedges(:);
-%                 end
-            %end
-            
-            
             
             count = count + 1;       
         end
@@ -131,59 +82,76 @@ if nargin == 2
 end
 
 
-%% update collection: NEGATIVE examples are updated with False Positives
-if nargin > 6
 
-    SET = varargin{2};
-    DETECTOR = varargin{3};
+%% update collection: TRUE NEGATIVE examples are updated with False Positives.
+if strcmp(set_type, 'update')
+
+    SET = varargin{1};
+    DETECTOR = varargin{2};
+    LEARNERS = varargin{3};
     DELTA = DATASETS.delta;     % how many pixels to skip by default when scanning
-    
-    %% task 1: build a collection of false positive training images
     
     % construct a list of files to search in
     d = ada_trainingfiles(DATASETS.filelist, 'update', '-');   
     
-    % randomly sample from the update set to generate a FP_LIST
-    FP_LIST = get_old_FPs(SET, DETECTOR);
-    [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST);
+    % construct a list of annotations to make sure we only get FP's
+    a = ada_trainingfiles(DATASETS.filelist, 'annotation', '+');
+    
+    % find a list of the current set of True Negatives in the data set
+    TN_LIST = get_true_negatives(SET, DETECTOR);
+    FPs_REQUIRED = length(TN_LIST);
+
+    % Collect FPs-REQUIRED images containing false positives
+    %[FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
+    success = 0;  FP_LIST =[];
     if ~success
-        disp('    ...randomly scanning was progressing too slow, deterministically scanning through all images to find FP examples.');
-        FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST);
+        disp('       ...random scanning progressing too slow, switching to raster scan.');
+        FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
     end
     
-    
-    
-    %% task 2: randomly select up to NEG_LIM new NEGATIVE examples
-    NUM_EXAMPLES = min(NEG_LIM, length(FP_LIST));
-    inds = randsample(1:length(FP_LIST),NUM_EXAMPLES);      % sample with replacement from FP_LIST
-    
-    N_NEW = orderfields(FP_LIST(inds));
-    
-    %% task 3: replace the current NEGATIVE examples with new FP examples
-    P = orderfields(SET( [SET(:).class] == 1));
-    SET = [P N_NEW];
-    
+    % Replace the True Negatives with newly collected False Positives
+    for i = 1:length(TN_LIST)
+        SET.Images(:,:,TN_LIST(i)) = FP_LIST{i};
+%         disp(['replaced TN ' num2str(TN_LIST(i)) ' with an FP.']);        imshow(FP_LIST{i});        pause(0.1);
+    end
+        
 end  
     
-        
+% alphabetize the fields of the set
 SET = orderfields(SET);   
 
 
-%% SUB - FUNCTIONS
 
 
 
-function [FP_LIST, success] = randomscan(d, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, NEG_LIM, FP_LIST)
 
-success = 0;  find_rate = 1;
-FIND_RATE_LIMIT = .0001;                        %  minimum rate to find FP examples
-attempts = 1;
-disp('   ...randomly scanning for FP examples');
 
-while length(FP_LIST) < NEG_LIM
+
+%% =========================== SUB - FUNCTIONS ======================================
+%
+%   randomscan -> searches images randomly to find FPs
+%   rasterscan -> scans each image in raster fashon to find FPs
+%   get_true_negatives ->  returns a list of images in the set which
+%                          produce TN detector responses
+%   collect_arguments ->   collects settings from DATASETS 
+%   update_bigmatrix -> precomputes feature values for newly found FPs
+%   
+
+
+function [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED)
+
+w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
+success = 0;  find_rate = 1; attempts = 1; FP_LIST = {};
+FIND_RATE_LIMIT = .002;                        %  minimum rate to find FP examples
+disp('       ...randomly scanning for FP examples');
+
+            
+
+while length(FP_LIST) < FPs_REQUIRED
     % 1. randomly select a file from the list
     file_ind = randsample(1:length(d),1);
     filenm = d{file_ind}; I = imread(filenm);  %disp(['scanning ' filenm]);
+    filenm = a{file_ind}; A = imread(filenm);
     
     % convert to grasyscale if necessary
     if size(I,3) > 1
@@ -203,68 +171,70 @@ while length(FP_LIST) < NEG_LIM
     
     % 3. sample from this image, location, size
     rect = [X Y W-1 H-1];
-    EXAMPLE.Image = imcrop(I, rect);
+    Image = imcrop(I, rect);
     
-    % 4. compute features and adjust the image as necessary
-    if ~isa(EXAMPLE.Image, 'double')
-        cls = class(EXAMPLE.Image); EXAMPLE.Image = mat2gray(EXAMPLE.Image, [0 double(intmax(cls))]); 
+    % 4. adjust the image as necessary
+    if ~isa(Image, 'double')
+        cls = class(Image); Image = mat2gray(Image, [0 double(intmax(cls))]); 
     end
-
-    EXAMPLE.Image = imresize(EXAMPLE.Image, IMSIZE);
+    Image = imresize(Image, IMSIZE);
+    
+    % 5. make sure it does not contain a true positive example
+    Acrop = imcrop(A, rect);
+    if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+        %disp('...oops, we picked a true positive example!');
+        attempts = attempts + 1;
+        continue;
+    end
     
     % normalize if necessary
     if NORM
-        EXAMPLE.Image = imnormalize('image', Example.Image);
+        Image = imnormalize('image', Image);
     end
 
-    
-    
-    % compute the appropriate features
-    for l = 1:length(LEARNERS)
-        if strcmp(LEARNERS(l).feature_type, 'haar')
-            II = integral_image(EXAMPLE.Image);
-            EXAMPLE.II = II(:);
-        end
-        if strcmp(LEARNERS(l).feature_type, 'spedge')
-            sp = spedges(EXAMPLE.Image, LEARNERS(l).angles, LEARNERS(l).sigma);
-            EXAMPLE.sp = sp.spedges(:);
-        end
-    end
-    
-    
-    % 5. classify
-    C = ada_classify_cascade(DETECTOR,  EXAMPLE, [0 0]);
+    % classify the example
+    C = ada_classify_individual(DETECTOR, Image, LEARNERS);
 
     if C
-        EXAMPLE.class = 0;
-        FP_LIST = [FP_LIST EXAMPLE];
+        %disp(['added (random scan) false positive ' num2str(length(FP_LIST)+1) '  current FP rate = ' num2str(find_rate)]);
+        FP_LIST{length(FP_LIST)+1} = Image;
+        w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
     end
     
-    % 6. check to see if find_rate is too low and we need to do a
-    %    deterministic search
-    
-    find_rate = length(FP_LIST) / attempts;
-    %disp(['current FP finding rate = ' num2str(find_rate)]);
+    % 6. check to see if find_rate is too, if raster scan is required   
+    find_rate = length(FP_LIST) / attempts;  %     disp(['current FP finding rate = ' num2str(find_rate)]);
     
     if (attempts > 1000) && (find_rate < FIND_RATE_LIMIT)
         return
     end
-    
+
     attempts = attempts + 1;
 end
 
 % if we get to this point, we were successful in finding false positives!
 success = 1;
-disp(['   ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
+disp(['       ...found FP examples at a rate of = ' num2str(find_rate*100) '%']);
 
 
-function FP_LIST = scanallimages(d, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST)
 
+
+
+
+
+function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
+
+
+% randomly permute the list, so we don't always start with the same image
+rnd = randperm(length(d));    d = d(rnd); a = a(rnd);
+
+w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #';
+tic;
 
 for file_ind = 1:length(d)
-        
+
     % read the file
-    filenm = d{file_ind}; I = imread(filenm);  disp(['scanning ' filenm]);
+    filenm = d{file_ind}; I = imread(filenm);  disp(['       scanning ' filenm]);
+    filenm = a{file_ind}; A = imread(filenm);
 
     % convert to proper class (pixel intensity represented by [0,1])
     if ~isa(I, 'double')
@@ -275,89 +245,86 @@ for file_ind = 1:length(d)
     if size(I,3) > 1
         I = rgb2gray(I);
     end
-    
+
     if isfield(DATASETS, 'scale_limits')
         scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
     else
         scales = scale_selection(I, IMSIZE);
     end
     
+    FP_start = length(FP_LIST);  count = 1;
+    tic;
+
     % loop through the scales
     for scale = scales
         Iscaled = imresize(I, scale);
+        Ascaled = imresize(A, scale);
         actual_scale = size(Iscaled,1) / size(I,1);
-        disp(['detector scale = ' num2str(1/actual_scale)]);
+        %disp(['detector scale = ' num2str(1/actual_scale)]);
         W = size(Iscaled,2);  H = size(Iscaled,1);
-        
+
         DS = round(DELTA*actual_scale);
-        disp(['scaled delta = ' num2str(DS)]);
+        %disp(['scaled delta = ' num2str(DS)]);
 
         % scan the image at each scale
         for c = 1:max(1,DS):W - IMSIZE(2)
-            EXAMPLE = [];
             for r = 1:max(1,DS):H - IMSIZE(1)
 
-                EXAMPLE.Image = Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1);
+                Image = Iscaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
 
-                %figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
-                %imshow(Itemp);  pause(.01); refresh; 
-                %disp(['scanning (' num2str(r) ',' num2str(c) ')']);
+%                     figure(12343); Itemp = Iscaled; Itemp(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1) = ones(size(Iscaled(r:r+IMSIZE(2)-1, c:c + IMSIZE(1) -1)));
+%                     imshow(Itemp);  pause(.01); refresh; 
+%                     disp(['scanning (' num2str(r) ',' num2str(c) ')']);
+
                 
+                %  make sure it does not contain a true positive example
+                Acrop = Ascaled(r:r+IMSIZE(1)-1, c:c + IMSIZE(2) -1);
+                if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+                    %disp('...oops, we picked a true positive example!');
+                    count = count + 1;
+                    continue;
+                end
+
                 % normalize if necessary
                 if NORM
-                    EXAMPLE.Image = imnormalize('image', Example.Image);
+                    Image = imnormalize('image', Image);
                 end
 
-                % compute the appropriate features
-                for l = 1:length(LEARNERS)
-                    if strcmp(LEARNERS(l).feature_type, 'haar')
-                        II = integral_image(EXAMPLE.Image);
-                        EXAMPLE.II = II(:);
-                    end
-                    if strcmp(LEARNERS(l).feature_type, 'spedge')
-                        sp = spedges(EXAMPLE.Image, LEARNERS(l).angles, LEARNERS(l).sigma);
-                        EXAMPLE.sp = sp.spedges(:);
-                    end
-                end
-
-                % classify the EXAMPLE
-                C = ada_classify_cascade(DETECTOR,  EXAMPLE, [0 0]);
+                % classify the example
+                C = ada_classify_individual(DETECTOR, Image, LEARNERS);
 
                 if C
-                    EXAMPLE.class = 0;
-                    FP_LIST = [FP_LIST EXAMPLE];
+                    %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
+                    FP_LIST{length(FP_LIST)+1} = Image;
+                    w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
                 end
+
+                % if we've collected enough FPs, return.
+                if length(FP_LIST) >= FPs_REQUIRED
+                    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+                    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
+                    return;
+                end
+
+                count = count + 1;
             end
         end
     end
+    disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+    %disp([ num2str(length(FP_LIST)) ' Total FPs found.']);
 end
 
 
 
+function TN_LIST = get_true_negatives(SET, DETECTOR)
 
+C = ada_classify_set(DETECTOR, SET);
 
+TN_LIST = (C == SET.class) .* ~SET.class;
 
+TN_LIST = find(TN_LIST);
 
-function FP_LIST = get_old_FPs(SET, DETECTOR)
-
-disp('   ...collecting FPs from previous data set');
-
-FP_LIST = [];
-N = SET([SET.class] == 0);
-
-for i = 1:length(N)
-
-    C = ada_classify_cascade(DETECTOR,  N(i), [0 0]);
-
-    if C
-        FP_LIST = [FP_LIST N(i)];
-    end
-    
-end
-
-disp(['   ...found ' num2str(length(FP_LIST)) ' FPs in previous data set ']);
-
-
+disp(['       ...found ' num2str(length(TN_LIST)) ' TNs and ' num2str( length(find(SET.class == 0)) - length(TN_LIST)) ' FPs in previous data set ']);
 
 
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)
@@ -404,4 +371,3 @@ if strcmp(set_type,'validation')
         end
     end
 end
-
