@@ -50,7 +50,7 @@ for t = 1:length(LEARNERS)
     if strcmp('haar', LEARNERS(t).feature_type)
         
         % call the function to define haar wavelets and pass them to WEAK
-        haars = ada_haar_define(LEARNERS(t).IMSIZE, 'shapes', LEARNERS(t).shapes);
+        haars = ada_haar_define(LEARNERS(t).IMSIZE, 'shapes', LEARNERS(t).shapes, 'SCAN_Y_STEP', LEARNERS(t).SCAN_Y_STEP, 'SCAN_X_STEP', LEARNERS(t).SCAN_X_STEP);
         WEAK.lists.haar = [];
         
         for i = 1:length(haars)
