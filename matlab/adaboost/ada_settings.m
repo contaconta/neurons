@@ -17,8 +17,8 @@ rand('twister', 100);       % seed the random variable
 %-------------------------------------------------------------------------
 
 FILES.datestr         = datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
-FILES.cascade_filenm  = ['SPmix_repeat_prob' FILES.datestr '.mat'];   % filename to store the cascaded classifier
-FILES.log_filenm      = ['SPmix_repeat_prob' FILES.datestr '.log'];   % filename to store the log file    
+FILES.cascade_filenm  = ['SP-debug' FILES.datestr '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['SP-debug' FILES.datestr '.log'];   % filename to store the log file    
 FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
 FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
 FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
@@ -71,15 +71,15 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = [1 2 3 4 5 6];
 
-% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
-% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-% LEARNERS(length(LEARNERS)).stride           = 2; 
-% LEARNERS(length(LEARNERS)).edge_methods     = [23:27];
-
-LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).bins             = 9;
-LEARNERS(length(LEARNERS)).cellsize         = [8 8];
-LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+LEARNERS(length(LEARNERS)).stride           = 3;    % normally 2, 3 for persons.
+LEARNERS(length(LEARNERS)).edge_methods     = [11 13 15 23 25 27 28];
+
+% LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+% LEARNERS(length(LEARNERS)).bins             = 9;
+% LEARNERS(length(LEARNERS)).cellsize         = [8 8];
+% LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 

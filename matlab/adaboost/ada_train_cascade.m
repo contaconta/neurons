@@ -1,28 +1,28 @@
-% %load the parameters and path information
-% % % ----------
-% ada_settings; 
-% ada_versioninfo;
-% ada_stage_goals;
-% 
-% %% preparation
-% 
-% % initialize the log file
-% logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
-% logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
-% 
-% % define the weak learners
-% tic; disp('...defining the weak learners.');
-% WEAK = ada_define_weak_learners(LEARNERS); toc; 
-% 
-% % collect the training set and precompute feature responses
-% tic; disp('...collecting and processing the TRAIN data set.');
-% TRAIN = ada_collect_data(DATASETS, 'train'); toc;
-% TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
-% 
-% % collect the validation set and precompute feature responses
-% tic; disp('...collecting and processing the VALIDATION data set.');
-% VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
-% VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
+%load the parameters and path information
+% % ----------
+ada_settings; 
+ada_versioninfo;
+ada_stage_goals;
+
+%% preparation
+
+% initialize the log file
+logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
+
+% define the weak learners
+tic; disp('...defining the weak learners.');
+WEAK = ada_define_weak_learners(LEARNERS); toc; 
+
+% collect the training set and precompute feature responses
+tic; disp('...collecting and processing the TRAIN data set.');
+TRAIN = ada_collect_data(DATASETS, 'train'); toc;
+TRAIN = ada_precompute(TRAIN, LEARNERS, WEAK, FILES, FILES.train_filenm);
+
+% collect the validation set and precompute feature responses
+tic; disp('...collecting and processing the VALIDATION data set.');
+VALIDATION = ada_collect_data(DATASETS, 'validation'); toc;
+VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filenm);
 
 
 %% train the cascade
