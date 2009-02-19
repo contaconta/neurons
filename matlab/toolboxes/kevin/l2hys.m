@@ -12,6 +12,7 @@ function v = l2hys(v, varargin)
 %
 %   See also L2NORM
 
+%thresh = .2;
 thresh = .2;
 
 if nargin > 1

@@ -33,7 +33,7 @@ for l = 1:length(LEARNERS)
         bins = LEARNERS(l).bins;
         cellsize = LEARNERS(l).cellsize;
         blocksize = LEARNERS(l).blocksize;
-        [f, HOG] = ada_hog_response(I, 1, 1, 1, bins, cellsize, blocksize);
+        [f, HOG] = ada_hog_response(I, 1, 1, 1, 1, bins, cellsize, blocksize);
     end
 end
    
@@ -132,8 +132,9 @@ for s = 1:length(CASCADE)
                 oind = CASCADE(s).CLASSIFIER.weak_learners{l}.oind;
                 cellr = CASCADE(s).CLASSIFIER.weak_learners{l}.cellr;
                 cellc = CASCADE(s).CLASSIFIER.weak_learners{l}.cellc;
+                n = CASCADE(s).CLASSIFIER.weak_learners{l}.n;
                 
-                f(l) = ada_hog_response(I, oind, cellc, cellr, bins, cellsize, blocksize, HOG);
+                f(l) = ada_hog_response(I, oind, cellc, cellr, n, bins, cellsize, blocksize, HOG);
                 
                 polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
                 theta(l) = CASCADE(s).CLASSIFIER.theta(l);

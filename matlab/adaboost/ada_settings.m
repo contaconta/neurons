@@ -36,10 +36,10 @@ path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];   
 %DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
-DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];  IMSIZE = [24 24];
+%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];  IMSIZE = [24 24];
 %DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [64 24];
-%DATASETS.filelist = 'persons48x128.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
+DATASETS.filelist = 'persons48x128.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;       % detector step size
@@ -80,6 +80,6 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).bins             = 9;
-LEARNERS(length(LEARNERS)).cellsize         = [4 4];
+LEARNERS(length(LEARNERS)).cellsize         = [8 8];
 LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 

@@ -12,6 +12,8 @@ bins        = varargin{2};
 cellsize    = varargin{3};
 %blocksize   = varargin{4};
 
+NEIGHBOR_CASES = 4;
+
 
 numcells = IMSIZE./cellsize;
 
@@ -29,19 +31,21 @@ angles = rad2deg(0: pi/(bins-1) :pi);
 for r = 1:numcells(1)
     for c = 1:numcells(2)
         for o = 1:bins
+            for n = 1:NEIGHBOR_CASES;
             
-            hog_ind = single(sub2ind([numcells(1) numcells(2) bins], r,c,o));
-            
-            hog(hog_ind).cellr = r;
-            hog(hog_ind).cellc = c;
-            hog(hog_ind).oind  = o;
-            hog(hog_ind).orientation = angles(o);
-            
-            
-            
-            hog(hog_ind).polarity   = single(1);
-            hog(hog_ind).theta      = 0;
-            
+                hog_ind = single(sub2ind([numcells(1) numcells(2) bins NEIGHBOR_CASES], r,c,o,n));
+
+                hog(hog_ind).cellr  = r;
+                hog(hog_ind).cellc  = c;
+                hog(hog_ind).oind   = o;
+                hog(hog_ind).orientation = angles(o);
+                hog(hog_ind).n      = n;
+
+
+
+                hog(hog_ind).polarity   = single(1);
+                hog(hog_ind).theta      = 0;
+            end
         end
     end
 end
