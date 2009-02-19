@@ -263,7 +263,7 @@ for g = 1:max(groups)
 
         % if we've collected enough FPs, return.
         if length(FP_LIST) >= FPs_REQUIRED
-            disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str((length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
+            disp([ num2str(length(FP_LIST) - FP_start) ' new FPs found [' num2str(length(FP_LIST)) '/' num2str(FPs_REQUIRED)  '] at a rate of ' num2str( 100*(length(FP_LIST) - FP_start)/count) '% in ' num2str(toc) ' s']);
             return;
         end
 

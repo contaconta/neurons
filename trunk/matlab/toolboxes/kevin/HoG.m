@@ -1,7 +1,7 @@
-function  F = HoG(I, varargin)
+function  FEATURE = HoG(I, varargin)
 %
 % F = hog(I);
-% F = hog(I, 'orientationbins', 'cellsize', 'blocksize', 'decompress')
+% F = hog(I, 'orientationbins', 'cellsize', 'blocksize')
 %
 %
 
@@ -17,9 +17,6 @@ if nargin > 1
         end
         if strcmp('blocksize', varargin{i})
             blocksize = varargin{i+1};
-        end
-        if strcmp('decompress', varargin{i})
-            DECOMPRESS = 1;
         end
     end
 end
@@ -58,27 +55,66 @@ end
 
 CELLS = HIST(1:cellsize(1):size(I,1), 1:cellsize(2):size(I,2), :);
 
-% normalize the histograms in each block
-for r=1:blocksize(1):size(CELLS,1)
-    for c = 1:blocksize(2):size(CELLS,2)
-        rows = r: r+ blocksize(1)-1;
-        cols = c: c+ blocksize(2)-1;
-        %disp(['block rows: ' num2str(rows) '   cols: ' num2str(cols)]);
+%keyboard;
+
+%% the final feature is the CELLS normalized with 4 possible neighbor combos
+FEATURE = zeros([size(CELLS,1) size(CELLS,2) size(CELLS,3) 4]);
+neighbors = 1:4;
+
+
+%% normalize the histograms in each block according to its neighbors
+for r=1:blocksize(1):size(CELLS,1)+1
+    for c = 1:blocksize(2):size(CELLS,2)+1
+        for n = neighbors;
+            
+            % find the appropriate rows to normalize
+            switch n
+                case 1      % neighbors are up & left
+                    rows = max(1,r - blocksize(1)+1):min(r,size(CELLS,1));
+                    cols = max(1,c - blocksize(2)+1):min(c, size(CELLS,2));
+                    
+                case 2      % neighbors are up & right
+                    rows = max(1,r - blocksize(1)+1):min(r,size(CELLS,1));
+                    cols = c: min(c+ blocksize(2)-1, size(CELLS,2));
+                    
+                case 3      % neighbors are down & right
+                    rows = r: min(r+ blocksize(1)-1, size(CELLS,1));
+                    cols = c: min(c+ blocksize(2)-1, size(CELLS,2));
+                    
+                case 4      % neighbors are down & left
+                    rows = r: min(r+ blocksize(1)-1, size(CELLS,1));
+                    cols = max(1,c - blocksize(2)+1):min(c, size(CELLS,2));
+            end
+%             rows = r: r+ blocksize(1)-1;
+%             cols = c: c+ blocksize(2)-1;
+%             disp(['case ' num2str(n) ' block rows: ' num2str(rows) '  cols: ' num2str(cols) '  size = [' num2str(size(CELLS(rows,cols,:))) ']']);
         
-        CELLS(rows,cols,:) = l2hys(CELLS(rows,cols,:));
-        
+%             disp(['size = [' num2str(size(CELLS(rows,cols,:))) ']' ]);
+
+            FEATURE(rows,cols,:,n) = l2hys(CELLS(rows,cols,:));
+        end
     end
 end
 
-if DECOMPRESS
-    %F = CELLS;
-else
-    F = CELLS; 
-end
+
+% % normalize the histograms in each block
+% for r=1:blocksize(1):size(CELLS,1)
+%     for c = 1:blocksize(2):size(CELLS,2)
+%         rows = r: r+ blocksize(1)-1;
+%         cols = c: c+ blocksize(2)-1;
+%         %disp(['block rows: ' num2str(rows) '   cols: ' num2str(cols)]);
+%         
+%         CELLS(rows,cols,:) = l2hys(CELLS(rows,cols,:));
+%         
+%     end
+% end
 
 
 
-%ANGL = rad2deg(ANGL);
+
+
+%% Visualize!
+% ANGL = rad2deg(ANGL);
 % %plot the gradient
 % for x=1:size(I,1)
 %     for y=1:size(I,2)
@@ -87,6 +123,11 @@ end
 % end
 % imshow(I); hold on;  axis image; set(gca, 'Position', [0 0 1 1]);
 % quiver(Y(:),X(:), GradX(:), GradY(:));
+% 
+% figure;
+%hogview(I);
+
+
 
 
 %% supporting functions
@@ -97,16 +138,6 @@ CELLBIN = repmat(sum(sum(c)), size(c));
 
 
 
-
-
-
-
-% function CELL = buildcell(NORMS)
-% 
-% histogram = sum(sum(NORMS,1),2);
-% CELL = repmat(histogram, [size(NORMS,1) size(NORMS,2) 1]);
-% 
-% keyboard;
 
 
 
