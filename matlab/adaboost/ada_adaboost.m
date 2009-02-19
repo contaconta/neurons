@@ -60,8 +60,9 @@ for t = start_t:ti
         % classifier to 0.
         maxinds = find(w == max(w));
         w(w == max(w)) = 0;
-        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.']);
-        fid = fopen('BADEXAMPLES.txt', 'a', 'n');
+        filenm = 'BADEXAMPLES.txt';
+        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
+        fid = fopen(filenm, 'a', 'n');
         cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
         fwrite(fid, cstring);
         fclose(fid);  
