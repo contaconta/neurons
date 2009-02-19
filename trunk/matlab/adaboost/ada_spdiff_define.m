@@ -31,12 +31,12 @@ spdiff(num_learners).theta = [];
 spdiff(num_learners).stride = [];
 
 for c = 1:size(combos,1);
-    for i = 1:IMSIZE(1)/stride
-        for j = 1:IMSIZE(2)/stride;
+    for i = 1:ceil(IMSIZE(1)/stride)
+        for j = 1:ceil(IMSIZE(2)/stride);
             for s = 1:length(edge_methods);
 
-            spdiff(count).vec_index1 = sub2ind([length(angles) length(edge_methods) IMSIZE(1)/stride IMSIZE(2)/stride], find(angles == combos(c,1),1),s,i,j);
-            spdiff(count).vec_index2 = sub2ind([length(angles) length(edge_methods) IMSIZE(1)/stride IMSIZE(2)/stride], find(angles == combos(c,2),1),s,i,j);
+            spdiff(count).vec_index1 = sub2ind([length(angles) length(edge_methods) ceil(IMSIZE(1)/stride) ceil(IMSIZE(2)/stride)], find(angles == combos(c,1),1),s,i,j);
+            spdiff(count).vec_index2 = sub2ind([length(angles) length(edge_methods) ceil(IMSIZE(1)/stride) ceil(IMSIZE(2)/stride)], find(angles == combos(c,2),1),s,i,j);
             
             spdiff(count).polarity = single(1);
             spdiff(count).theta = 0;
