@@ -74,8 +74,8 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-LEARNERS(length(LEARNERS)).stride           = 3;    % normally 2, 3 for persons.
-LEARNERS(length(LEARNERS)).edge_methods     = [11 13 15 23 25 27 28];
+LEARNERS(length(LEARNERS)).stride           = 5;    % normally 2, 3 for persons.
+LEARNERS(length(LEARNERS)).edge_methods     = [11];
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;

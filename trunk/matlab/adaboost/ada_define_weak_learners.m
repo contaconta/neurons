@@ -30,6 +30,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = intmean(i);
             WEAK.learners{length(WEAK.learners)}.type = 'intmean';
         end
+        disp(['   added ' num2str(length(intmean)) ' ' LEARNERS(t).feature_type ' learners']);
         clear intmean;
     end
     
@@ -43,6 +44,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = intvar(i);
             WEAK.learners{length(WEAK.learners)}.type = 'intvar';
         end
+        disp(['   added ' num2str(length(intvar)) ' ' LEARNERS(t).feature_type ' learners']);
         clear intvar;
     end
     
@@ -57,6 +59,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = haars(i);
             WEAK.learners{length(WEAK.learners)}.type = 'haar';
         end
+        disp(['   added ' num2str(length(haars)) ' ' LEARNERS(t).feature_type ' learners']);
         clear haars;   
     end
 
@@ -71,6 +74,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = spedge(i);
             WEAK.learners{length(WEAK.learners)}.type = 'spedge';
         end
+        disp(['   added ' num2str(length(spedge)) ' ' LEARNERS(t).feature_type ' learners']);
         clear spedge;
     end
     
@@ -84,6 +88,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = spdiff(i);
             WEAK.learners{length(WEAK.learners)}.type = 'spdiff';
         end
+        disp(['   added ' num2str(length(spdiff)) ' ' LEARNERS(t).feature_type ' learners']);
         clear spdiff;
     end
     
@@ -97,6 +102,7 @@ for t = 1:length(LEARNERS)
             WEAK.learners{length(WEAK.learners)+1} = hog(i);
             WEAK.learners{length(WEAK.learners)}.type = 'hog';
         end
+        disp(['   added ' num2str(length(hog)) ' ' LEARNERS(t).feature_type ' learners']);
         clear hog;
     end
    
@@ -134,37 +140,4 @@ else
 end
 
 
-
-%% handle input parameters
-% IMSIZE = varargin{1};
-% LEARNERS 
-% TYPES = varargin{2};
-% PARAMS = varargin{3};
-
-
- %WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)];
-
-        % set the feature definitions to a field of WEAK('haars', 'haars_1', etc)
-        %field = namenewfield(WEAK, 'haars');
-        %WEAK.(field) = haars;
-
-         
-        %index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
-        %WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-        %WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))))';
-        %WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
-        %WEAK.learners   = {WEAK.learners{:}, {'haar', field, index_map, @ada_haar_learn, @ada_haar_response, @ada_haar_trclassify1, @ada_haar_trclassify2}};
-        
-
-
-  %WEAK.error              = [WEAK.error; zeros(length(WEAK.(field)),1)]; 
-        
-%         field = namenewfield(WEAK, 'spedge');
-%         WEAK.(field) = spedge;
-%         index_map               = single(sort(length(WEAK.error):-1:length(WEAK.error)-length(WEAK.(field))+1));
-%         WEAK.list(index_map,1)   = repmat({field}, [length(WEAK.(field)),1]);
-%         WEAK.list(index_map,2)   = num2cell( single(1:length(WEAK.(field))) )';
-%         WEAK.list(index_map,3)   = num2cell( single(repmat(t, [length(WEAK.(field)),1])));
-%         WEAK.learners   = {WEAK.learners{:}, {'spedge', field, index_map, @ada_spedge_learn, @ada_spedge_response, @ada_spedge_trclassify1, @ada_spedge_trclassify2}};
-        
 

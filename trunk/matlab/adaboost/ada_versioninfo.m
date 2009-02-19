@@ -3,7 +3,7 @@ n1 = strcat('Copyright © ', ' ', n(3), ' ', ' Kevin Smith');
 
 INFO.appname     = 'Adaboost Image Detection Matlab Toolbox';
 INFO.institution = 'CVLAB - École Polytechnique Fédérale de Lausanne';
-INFO.version     = '0.83';
+INFO.version     = '0.85';
 INFO.author      = 'Kevin Smith';
 INFO.email       = 'kevin.smith@epfl.ch';
 INFO.copyright   = n1{1};

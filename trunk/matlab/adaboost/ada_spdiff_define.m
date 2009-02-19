@@ -20,7 +20,7 @@ count = 1;
 combos = combnk(angles, 2);
 
 % pre-allocated for speed
-num_learners = (IMSIZE(1)/stride)*(IMSIZE(2)/stride)*size(combos,1)*length(edge_methods);
+num_learners = ceil(IMSIZE(1)/stride)*ceil(IMSIZE(2)/stride)*size(combos,1)*length(edge_methods);
 spdiff(num_learners).angle1 =[];
 spdiff(num_learners).angle2 = [];
 spdiff(num_learners).edge_method = [];
