@@ -1,5 +1,5 @@
 %load the parameters and path information
-% % ----------
+% ----------
 ada_settings; 
 ada_versioninfo;
 ada_stage_goals;
@@ -7,7 +7,7 @@ ada_stage_goals;
 %% preparation
 
 % initialize the log file
-logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' LEARNERS(:).feature_type],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
 
 % define the weak learners
@@ -32,14 +32,19 @@ i = 0;                          % cascade stage index
 Fi = 1;                         % cascade's current false positive rate      
 Di = 1;                         % cascade's current detection rate
 
+
 while (Fi > Ftarget)            % loop until we meet the target false positive rate
     i = i + 1;
     disp(['============== NOW TRAINING CASCADE STAGE i = ' num2str(i) ' ==============']);
     ti = 0;                     % weak learner index (within current stage)
 
-    %if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
-    %if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
+    if i == 1; Flast = 1; else Flast = prod([CASCADE(1:i-1).fi]); end
+    if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
     CASCADE(i).di = 0;  CASCADE(i).fi = 0;
+    
+%     %================= debug ===============
+%     CASCADE(i).wlog = zeros([1 length(TRAIN.class)]);
+%     %=======================================
     
     % cascade must meet detection and FP rate goals before passing to the next stage
     %while (Fi > GOALS(i).fmax * Flast) || (Di < dmin * Dlast)

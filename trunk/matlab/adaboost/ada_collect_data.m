@@ -78,6 +78,7 @@ if  ~strcmp(set_type, 'update')   %nargin == 2
             
             count = count + 1;       
         end
+        SET.database = DATASETS.filelist;
     end
 end
 

@@ -38,14 +38,33 @@ for t = start_t:ti
     %% 2. train weak learners for optimal class separation
     WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
     
+%     %================= debug ===============
+%     CLASSIFIER.wlog(t,:) = w; 
+%     wlog = CLASSIFIER.wlog;
+%     save([pwd '/tmp/WLOG' num2str(t) '.mat'], 'wlog');
+%     
+%     if t >= 46
+%         disp('about to start repeating!');  keyboard;
+%     end
+%     %=======================================
+    
+    
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
     
     %======== HACK to avoid repeatedly selecting same feture ==============
     if (t > 1) && (BEST_learner == CLASSIFIER.feature_index(t-1))
-        a = sort(WEAK.error); BEST_err = a(2);
-        [BEST_learner] = find(WEAK.error == BEST_err,1);        
-        disp(['       ! picked 2nd best feature to stop CASCADE from picking ' num2str(CLASSIFIER.feature_index(t-1)) ' again!']);
+
+        disp(' !!!! REPEATED CLASSIFIER!!!! ');
+        % if we have a repeated classifier, set the weight of the leading
+        % classifier to 0.
+        maxinds = find(w == max(w));
+        w(w == max(w)) = 0;
+        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.']);
+        fid = fopen('BADEXAMPLES.txt', 'a', 'n');
+        cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
+        fwrite(fid, cstring);
+        fclose(fid);  
     end
     %======================================================================
     
