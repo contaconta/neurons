@@ -52,22 +52,22 @@ for t = start_t:ti
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
     
-    %======== HACK to avoid repeatedly selecting same feture ==============
-    if (t > 1) && (BEST_learner == CLASSIFIER.feature_index(t-1))
-
-        disp(' !!!! REPEATED CLASSIFIER!!!! ');
-        % if we have a repeated classifier, set the weight of the leading
-        % classifier to 0.
-        maxinds = find(w == max(w));
-        w(w == max(w)) = 0;
-        filenm = 'BADEXAMPLES.txt';
-        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
-        fid = fopen(filenm, 'a', 'n');
-        cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
-        fwrite(fid, cstring);
-        fclose(fid);  
-    end
-    %======================================================================
+%     %======== HACK to avoid repeatedly selecting same feture ==============
+%     if (t > 1) && (BEST_learner == CLASSIFIER.feature_index(t-1))
+% 
+%         disp(' !!!! REPEATED CLASSIFIER!!!! ');
+%         % if we have a repeated classifier, set the weight of the leading
+%         % classifier to 0.
+%         maxinds = find(w == max(w));
+%         w(w == max(w)) = 0;
+%         filenm = 'BADEXAMPLES.txt';
+%         disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
+%         fid = fopen(filenm, 'a', 'n');
+%         cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
+%         fwrite(fid, cstring);
+%         fclose(fid);  
+%     end
+%     %======================================================================
     
     
     % populate the selected classifier with needed information
