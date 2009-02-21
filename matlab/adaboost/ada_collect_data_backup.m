@@ -1,4 +1,4 @@
-function SET = ada_collect_data(DATASETS, set_type, varargin)
+function SET = ada_collect_data_backup(DATASETS, set_type, varargin)
 %ADA_COLLECT_DATA organizes training images for viola-jones
 %
 %   SET = ada_collect_data(path1, path0, ...) collects and processes 
@@ -157,6 +157,7 @@ while length(FP_LIST) < FPs_REQUIRED
     if size(I,3) > 1
         I = rgb2gray(I);
     end
+    if size(A,3) > 1; A = mat2gray(rgb2gray(A)); else  A = mat2gray(A); end
     
     % 2. randomly select a location and window size from the image
     if isfield(DATASETS, 'scale_limits')
