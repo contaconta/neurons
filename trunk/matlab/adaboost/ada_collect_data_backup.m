@@ -102,8 +102,8 @@ if strcmp(set_type, 'update')
     FPs_REQUIRED = length(TN_LIST);
 
     % Collect FPs-REQUIRED images containing false positives
-    %[FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
-    success = 0;  FP_LIST =[];
+    [FP_LIST, success] = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
+    %success = 0;  FP_LIST =[];
     if ~success
         disp('       ...random scanning progressing too slow, switching to raster scan.');
         FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
