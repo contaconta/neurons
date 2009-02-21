@@ -4,10 +4,10 @@
 
 Ftarget         = 1e-5;     % target false positive rate for the entire cascade
 Dtarget         = .90;      % target detection rate for the entire cascade
-TRAIN_POS       = 1500;     % number of positive examples in the training set
-TRAIN_NEG       = 1500;     % number of negative examples in the training set
-VALIDATION_POS  = 1500;     % number of positive examples in the validation set
-VALIDATION_NEG  = 1500;     % number of negative examples in the validation set
+TRAIN_POS       = 1000;     % number of positive examples in the training set
+TRAIN_NEG       = 1000;     % number of negative examples in the training set
+VALIDATION_POS  = 1000;     % number of positive examples in the validation set
+VALIDATION_NEG  = 1000;     % number of negative examples in the validation set
 NORM            = 1;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
 
 rand('twister', 100);       % seed the random variable
@@ -42,7 +42,7 @@ DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2];  IMS
 %DATASETS.filelist = 'persons48x128.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
 
 % parameters for updating the negative examples
-DATASETS.delta          = 7;       % detector step size
+DATASETS.delta          = 10;       % detector step size
 
 DATASETS.IMSIZE = IMSIZE; DATASETS.NORMALIZE = NORM;
 DATASETS.TRAIN_POS = TRAIN_POS; DATASETS.TRAIN_NEG = TRAIN_NEG;

@@ -242,10 +242,9 @@ for file_ind = 1:length(d)
     end
 
     % convert to grasyscale if necessary
-    if size(I,3) > 1
-        I = rgb2gray(I);
-    end
-
+    if size(I,3) > 1; I = rgb2gray(I);     end
+    if size(A,3) > 1; A = mat2gray(rgb2gray(A)); else  A = mat2gray(A); end
+    
     if isfield(DATASETS, 'scale_limits')
         scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
     else

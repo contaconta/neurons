@@ -32,7 +32,7 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
-TRUE_OVERLAP_THRESH = .2;
+TRUE_OVERLAP_THRESH = .1;
 
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
@@ -145,7 +145,7 @@ function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DE
 rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  FP_start = length(FP_LIST);  count = 1;
 
 
-BYTES_LIMIT = 1500000;  % the total # of bytes we will scan in one chunk
+BYTES_LIMIT = 5000000;  % the total # of bytes we will scan in one chunk
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #'; tic;
 
 g = 1;  running_bytes = 0; groups = zeros(size(d));
@@ -176,14 +176,14 @@ for g = 1:max(groups)
     for f_ind = 1:length(short_filenm_list)
 
         I = imread(short_filenm_list{f_ind}); %disp(['       scanning ' short_filenm_list{f_ind}]);
-        A = mat2gray(imread(short_annotation_list{f_ind}));
+        A = imread(short_annotation_list{f_ind});
 
         % convert to proper class (pixel intensity represented by [0,1])
         if ~isa(I, 'double');cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); end
 
         % convert to grayscale if necessary
         if size(I,3) > 1; I = rgb2gray(I); end 
-        if size(A,3) > 1; A = rgb2gray(A); end
+        if size(A,3) > 1; A = mat2gray(rgb2gray(A)); end
 
         % store the image into the short_list
         short_list(f_ind).I = I;
