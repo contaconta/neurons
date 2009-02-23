@@ -53,7 +53,7 @@ for t = start_t:ti
     [BEST_err, BEST_learner] = min(WEAK.error);
     
     %======== HACK to avoid repeatedly selecting same feture (2 back) ==============
-    if (t > 2) && (BEST_learner == CLASSIFIER.feature_index(t-2))
+    if (t > 2) && (BEST_learner == CLASSIFIER.feature_index(t-2)) && (BEST_learner == CLASSIFIER.feature_index(t-1))
 
         disp(' !!!! REPEATED CLASSIFIER!!!! ');
         % if we have a repeated classifier, set the weight of the leading
