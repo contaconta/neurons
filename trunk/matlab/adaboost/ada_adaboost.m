@@ -52,8 +52,8 @@ for t = start_t:ti
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
     
-    %======== HACK to avoid repeatedly selecting same feture ==============
-    if (t > 1) && (BEST_learner == CLASSIFIER.feature_index(t-1))
+    %======== HACK to avoid repeatedly selecting same feture (2 back) ==============
+    if (t > 2) && (BEST_learner == CLASSIFIER.feature_index(t-2))
 
         disp(' !!!! REPEATED CLASSIFIER!!!! ');
         % if we have a repeated classifier, set the weight of the leading
