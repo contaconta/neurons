@@ -139,40 +139,37 @@ SET = orderfields(SET);
 
 
 
-function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED)
+function FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED) %#ok<INUSL>
 
-% randomly permute the file lists, so we don't always start with the same image
-rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  FP_start = length(FP_LIST);  count = 1;
-
-
-BYTES_LIMIT = 5000000;  % the total # of bytes we will scan in one chunk
+FP_start = length(FP_LIST);  count = 1;
+BYTES_LIMIT = 1500000;  % the total # of bytes we will scan in one chunk
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #'; tic;
 
-g = 1;  running_bytes = 0; groups = zeros(size(d));
-for f = 1:length(d);
-    d_file = dir(d{f});
-    running_bytes = running_bytes + d_file.bytes;
-    groups(f) = g;
-    if running_bytes > BYTES_LIMIT;
-        g = g + 1;
-        running_bytes = 0;
+
+    
+% while we don't have enough FP examples, keep searching for more.    
+while length(FP_LIST) < FPs_REQUIRED
+
+    % randomly permute the file lists.
+    rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  
+    
+    % determine how many images will fit within BYTES_LIMIT
+    running_bytes = 0; ind = 1;
+    while running_bytes < BYTES_LIMIT
+        d_file = dir(d{ind});
+        running_bytes = running_bytes + d_file.bytes;
+        short_filenm_list(ind) = d(ind);
+        short_annotation_list(ind) = a(ind);
+        ind = ind + 1;
     end
-end
-
-for g = 1:max(groups)
-
-    % for each of these files, create a list of the crop rects for a raster
-    % scan
- 
-    group_inds = find(groups == g);
-   
-    short_filenm_list = d(group_inds);
-    short_annotation_list = a(group_inds);
+    
+    %keyboard;
+    
     short_list = [];
-    SAFE_BIG_NUMBER = 700000;
-    scanlist = zeros(SAFE_BIG_NUMBER,4);  scancount = 1;
-
-    %% construct the scanlist - a short list of files and rects to scan
+    NSCAN = 1000;
+    scanlist = zeros(NSCAN,5);
+    
+    %% create short_list - a cell containing a small number of images to scan
     for f_ind = 1:length(short_filenm_list)
 
         I = imread(short_filenm_list{f_ind}); %disp(['       scanning ' short_filenm_list{f_ind}]);
@@ -188,66 +185,62 @@ for g = 1:max(groups)
         % store the image into the short_list
         short_list(f_ind).I = I;
         short_list(f_ind).A = A;
-
+        short_list(f_ind).Isize = size(A);
+        
         % figure out the scales we will search at
         if isfield(DATASETS, 'scale_limits')
             short_list(f_ind).scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
         else
             short_list(f_ind).scales = scale_selection(I, IMSIZE);
         end
-        
-        % loop through the scales
-        for s = 1:length(short_list(f_ind).scales)
-            % resize the image and annotation for scale s
-            scale = short_list(f_ind).scales(s);
-            short_list(f_ind).Iscaled{s} = imresize(short_list(f_ind).I, scale);
-            short_list(f_ind).Ascaled{s} = imresize(short_list(f_ind).A, scale);
-            short_list(f_ind).actual_scale(s) = size(short_list(f_ind).Iscaled{s},1) / size(short_list(f_ind).I,1);
-        
-            % define all of the scan rects at this scale, append to scanlist
-            W = size(short_list(f_ind).Iscaled{s},2);  H = size(short_list(f_ind).Iscaled{s},1);
-            DS = round(DELTA*short_list(f_ind).actual_scale(s));
-        
-            if scancount > SAFE_BIG_NUMBER
-                disp('too many scan points for SAFE_BIG_NUMBER!');
-                keyboard;
-            end
-            
-            for r = 1:max(1,DS):H - IMSIZE(1)
-                for c = 1:max(1,DS):W - IMSIZE(2)
-
-                    scanlist(scancount,:) = [f_ind, s, r, c];
-                    scancount = scancount + 1;
-                end
-            end
-        end
-
     end
+    
 
-    %% randomly permute the scanlist
-    scanlist = scanlist(1:scancount-1,:); rnd = randperm(scancount-1);
-    scanlist = scanlist(rnd,:);
-    %disp('randomized the scanlist');
+    %% consruct a scanlist - a list of NSCAN points to scan in the file
+    for n = 1:NSCAN
+        % randomly select a member of shortlist
+        f_ind = ceil(rand()*length(short_list));
+        
+        % randomly select a detector scale, give more weight to smaller detector scales
+        s = randsample(short_list(f_ind).scales, 1, true, short_list(f_ind).scales.^2);
+
+        % randomly select a scaled rect
+        Isize = short_list(f_ind).Isize;
+        W = round(IMSIZE(2)*(1/s));
+        H = round( (IMSIZE(1)/IMSIZE(2)) * W);
+   
+        r = ceil(  (Isize(1) - H)  * rand(1));
+        c = ceil(  (Isize(2) - W)  * rand(1));
+        
+        scanlist(n,:) = [f_ind, r, c, W, H];
+    end
     
     
     %% proceed through the scanlist: crop, classify, and add the example if it produces a false positive
     for i = 1:size(scanlist,1)
         
         f = scanlist(i,1);      % the file index
-        s = scanlist(i,2);      % the scale index
-        r = scanlist(i,3);      % the row index
-        c = scanlist(i,4);      % the col index
+        r = scanlist(i,2);      % the row index
+        c = scanlist(i,3);      % the col index
+        W = scanlist(i,4);      % the detector width
+        H = scanlist(i,5);      % the detector height
         
-        Icrop = short_list(f).Iscaled{s}(r:r+IMSIZE(1)-1, c:c + IMSIZE(2)-1);
-        Acrop = short_list(f).Ascaled{s}(r:r+IMSIZE(1)-1, c:c + IMSIZE(2)-1);
-    
-        %figure(124332); imshow(Icrop);  pause(.01); refresh;
-
+        % crop out our detector patch
+        Icrop = short_list(f).I(r:r+H-1, c:c + W-1);
+        Acrop = short_list(f).A(r:r+H-1, c:c + W-1);
+        
         if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
             %disp('...oops, we picked a true positive example!');
             count = count + 1; continue;
         end
         
+        % resize it to standard detector size, IMSIZE
+        if ~isequal(size(Icrop), IMSIZE)
+            Icrop = imresize(Icrop, IMSIZE);
+        end
+       
+        %figure(124332); imshow(Icrop);  pause(.01); refresh;
+
         % normalize if necessary
         if NORM
             Icrop = imnormalize('image', Icrop);
@@ -260,6 +253,7 @@ for g = 1:max(groups)
             %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);
             FP_LIST{length(FP_LIST)+1} = Icrop;
             w = wristwatch(w, 'update', length(FP_LIST), 'text', wstring);
+            %figure(124332); imshow(Icrop); set(gca, 'Position', [0 0 1 1]); pause(.01); refresh; 
         end
 
         % if we've collected enough FPs, return.
