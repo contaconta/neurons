@@ -34,8 +34,13 @@ if nargin > 2
             LIMITS = varargin{i+1};
             %MAX_SCALE = 1/LIMITS(1);
             %MIN_SCALE = 1/LIMITS(2);
-            MIN_SCALE = LIMITS(1);
-            MAX_SCALE = LIMITS(2);
+            if size(LIMITS) == 1
+                MIN_SCALE = LIMITS(1);
+                MAX_SCALE = LIMITS(1);
+            else
+                MIN_SCALE = LIMITS(1);
+                MAX_SCALE = LIMITS(2);
+            end
         end
     end
 end
