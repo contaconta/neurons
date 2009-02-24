@@ -155,7 +155,7 @@ while length(FP_LIST) < FPs_REQUIRED
     
     % determine how many images will fit within BYTES_LIMIT
     running_bytes = 0; ind = 1;
-    while running_bytes < BYTES_LIMIT
+    while (running_bytes < BYTES_LIMIT) && (ind <= length(rnd))
         d_file = dir(d{ind});
         running_bytes = running_bytes + d_file.bytes;
         short_filenm_list(ind) = d(ind);
