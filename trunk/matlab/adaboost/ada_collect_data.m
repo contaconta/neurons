@@ -36,7 +36,7 @@ TRUE_OVERLAP_THRESH = .1;
 
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
-if  ~strcmp(set_type, 'update')   %nargin == 2
+if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin == 2
     for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
         if c == 1
@@ -82,6 +82,63 @@ if  ~strcmp(set_type, 'update')   %nargin == 2
     end
 end
 
+
+if strcmp(set_type, 'populate');
+    
+    SET.Images = zeros([IMSIZE(1) IMSIZE(2) DATASETS.VALIDATION_POS+DATASETS.VALIDATION_NEG]);
+    
+    % populated the positive class
+    d = ada_trainingfiles(DATASETS.filelist, 'validation', '+', POS_LIM);
+    
+    for i = 1:length(d)
+        % read the file
+        filenm = d{i};
+        I = imread(filenm);
+
+        % convert to proper class (pixel intensity represented by [0,1])
+        if ~isa(I, 'double')
+            cls = class(I);
+            I = mat2gray(I, [0 double(intmax(cls))]); 
+        end
+
+        % convert to grasyscale if necessary
+        if size(I,3) > 1
+            I = rgb2gray(I);
+        end
+
+        % resize to standard size
+        if ~isequal(size(I), IMSIZE)
+            I = imresize(I, IMSIZE);
+        end
+
+        % normalize if necessary
+        if NORM
+            I = imnormalize('image', I);
+        end
+
+        SET.Images(:,:,count) = I;
+        SET.class(count) = 1;
+        
+
+        count = count + 1;       
+    end
+    SET.database = DATASETS.filelist;
+    
+    
+    % the negative class
+    d = ada_trainingfiles(DATASETS.filelist, 'update', '-');
+    a = ada_trainingfiles(DATASETS.filelist, 'annotation', '+');
+    DELTA = DATASETS.delta;
+    NEG_REQUIRED = DATASETS.VALIDATION_NEG;
+    N_LIST = populate(d, a, IMSIZE, DELTA, NORM, DATASETS, NEG_REQUIRED, TRUE_OVERLAP_THRESH);
+
+    for i = 1:length(N_LIST)
+        SET.Images(:,:,count) = N_LIST{i};
+        SET.class(count) = 0;
+        count = count + 1;
+    end
+    SET.database = DATASETS.filelist;
+end
 
 
 %% update collection: TRUE NEGATIVE examples are updated with False Positives.
@@ -269,6 +326,133 @@ while length(FP_LIST) < FPs_REQUIRED
     %disp('--------------------------------------');
 end
 
+
+
+
+
+
+function N_LIST = populate(d, a, IMSIZE, DELTA, NORM, DATASETS, NEG_REQUIRED, TRUE_OVERLAP_THRESH) %#ok<INUSL>
+
+count = 1;
+BYTES_LIMIT = 1500000;  % the total # of bytes we will scan in one chunk
+w = wristwatch('start', 'end', NEG_REQUIRED, 'every', 1000); wstring = '       ...found N example #'; tic;
+N_LIST = [];
+
+    
+% while we don't have enough FP examples, keep searching for more.    
+while length(N_LIST) < NEG_REQUIRED
+
+    % randomly permute the file lists.
+    rnd = randperm(length(d));    d = d(rnd);  a = a(rnd);  
+    
+    % determine how many images will fit within BYTES_LIMIT
+    running_bytes = 0; ind = 1;
+    while (running_bytes < BYTES_LIMIT) && (ind <= length(rnd))
+        d_file = dir(d{ind});
+        running_bytes = running_bytes + d_file.bytes;
+        short_filenm_list(ind) = d(ind);
+        short_annotation_list(ind) = a(ind);
+        ind = ind + 1;
+    end
+    
+    short_list = [];
+    NSCAN = 1000;
+    scanlist = zeros(NSCAN,5);
+    
+    %% create short_list - a cell containing a small number of images to scan
+    for f_ind = 1:length(short_filenm_list)
+
+        I = imread(short_filenm_list{f_ind}); %disp(['       scanning ' short_filenm_list{f_ind}]);
+        A = imread(short_annotation_list{f_ind});
+
+        % convert to proper class (pixel intensity represented by [0,1])
+        if ~isa(I, 'double');cls = class(I); I = mat2gray(I, [0 double(intmax(cls))]); end
+
+        % convert to grayscale if necessary
+        if size(I,3) > 1; I = rgb2gray(I); end 
+        if size(A,3) > 1; A = mat2gray(rgb2gray(A)); end
+
+        % store the image into the short_list
+        short_list(f_ind).I = I;
+        short_list(f_ind).A = A;
+        short_list(f_ind).Isize = size(A);
+        
+        % figure out the scales we will search at
+        if isfield(DATASETS, 'scale_limits')
+            short_list(f_ind).scales = scale_selection(I, IMSIZE, 'limits', DATASETS.scale_limits);
+        else
+            short_list(f_ind).scales = scale_selection(I, IMSIZE);
+        end
+    end
+    
+
+    %% consruct a scanlist - a list of NSCAN points to scan in the file
+    for n = 1:NSCAN
+        % randomly select a member of shortlist
+        f_ind = ceil(rand()*length(short_list));
+        
+        % randomly select a detector scale, give more weight to smaller detector scales
+        s = randsample(short_list(f_ind).scales, 1, true, short_list(f_ind).scales.^2);
+
+        % randomly select a scaled rect
+        Isize = short_list(f_ind).Isize;
+        W = round(IMSIZE(2)*(1/s));
+        H = round( (IMSIZE(1)/IMSIZE(2)) * W);
+   
+        r = ceil(  (Isize(1) - H)  * rand(1));
+        c = ceil(  (Isize(2) - W)  * rand(1));
+        
+        scanlist(n,:) = [f_ind, r, c, W, H];
+    end
+    
+    
+    %% proceed through the scanlist: crop, classify, and add the example if it produces a false positive
+    for i = 1:size(scanlist,1)
+        
+        f = scanlist(i,1);      % the file index
+        r = scanlist(i,2);      % the row index
+        c = scanlist(i,3);      % the col index
+        W = scanlist(i,4);      % the detector width
+        H = scanlist(i,5);      % the detector height
+        
+        % crop out our detector patch
+        Icrop = short_list(f).I(r:r+H-1, c:c + W-1);
+        Acrop = short_list(f).A(r:r+H-1, c:c + W-1);
+        
+        if (sum(Acrop(:)) / numel(Acrop)) > TRUE_OVERLAP_THRESH
+            %disp('...oops, we picked a true positive example!');
+            count = count + 1; continue;
+        end
+        
+        % resize it to standard detector size, IMSIZE
+        if ~isequal(size(Icrop), IMSIZE)
+            Icrop = imresize(Icrop, IMSIZE);
+        end
+       
+        %figure(124332); imshow(Icrop);  pause(.01); refresh;
+
+        % normalize if necessary
+        if NORM
+            Icrop = imnormalize('image', Icrop);
+        end
+        
+        % added to the NEG_LIST
+        N_LIST{length(N_LIST)+1} = Icrop;
+        w = wristwatch(w, 'update', length(N_LIST), 'text', wstring);
+           
+
+        % if we've collected enough FPs, return.
+        if length(N_LIST) >= NEG_REQUIRED
+            disp([ num2str(length(N_LIST)) ' new FPs found [' num2str(length(N_LIST)) '/' num2str(NEG_REQUIRED)  '] at a rate of ' num2str( 100*(length(N_LIST))/count) '% in ' num2str(toc) ' s']);
+            return;
+        end
+
+        count = count + 1;
+    
+    end
+        
+    %disp('--------------------------------------');
+end
 
 
 
@@ -498,6 +682,19 @@ if strcmp(set_type,'train')
 end
     
 if strcmp(set_type,'validation')
+    if isfield(DATASETS, 'VALIDATION_POS')
+        if ~isempty(DATASETS.VALIDATION_POS)
+            POS_LIM = DATASETS.VALIDATION_POS;
+        end
+    end
+    if isfield(DATASETS, 'VALIDATION_NEG')
+        if ~isempty(DATASETS.VALIDATION_NEG)
+            NEG_LIM = DATASETS.VALIDATION_NEG;
+        end
+    end
+end
+
+if strcmp(set_type,'populate')
     if isfield(DATASETS, 'VALIDATION_POS')
         if ~isempty(DATASETS.VALIDATION_POS)
             POS_LIM = DATASETS.VALIDATION_POS;

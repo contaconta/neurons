@@ -1,4 +1,4 @@
-%load the parameters and path information
+%%load the parameters and path information
 % ----------
 ada_settings; 
 ada_versioninfo;
@@ -42,10 +42,6 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
     if i == 1; Dlast = 1; else Dlast = prod([CASCADE(1:i-1).di]); end
     CASCADE(i).di = 0;  CASCADE(i).fi = 0;
     
-%     %================= debug ===============
-%     CASCADE(i).wlog = zeros([1 length(TRAIN.class)]);
-%     %=======================================
-    
     % cascade must meet detection and FP rate goals before passing to the next stage
     %while (Fi > GOALS(i).fmax * Flast) || (Di < dmin * Dlast)
     while (CASCADE(i).fi > GOALS(i).fmax) || (CASCADE(i).di < GOALS(i).dmin)
@@ -78,13 +74,22 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
         
         % write training results to the log file
         for l = 1:length(LEARNERS); if strcmp(CASCADE(i).CLASSIFIER.weak_learners{ti}.type, LEARNERS(l).feature_type); L_ind = l; end; end;
-        %disp(['L_ind = ' num2str(L_ind) ' learner = ' CASCADE(i).CLASSIFIER.weak_learners{ti}.type ]);
         logfile(FILES.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr  L_ind]);
         
         % save the cascade to a file in case something bad happens and we need to restart
         save(FILES.cascade_filenm, 'CASCADE');
         disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
         
+    end
+    
+    %% check to see if we have completed training
+    if (Fi <= prod([GOALS(:).fmax])) && (Di >= prod([GOALS(:).dmin]))
+        break;
+    end
+    
+    %% ================= DEBUG ==========================================
+    if ada_cascade_length(CASCADE) >= 300
+        break;
     end
     
     %% prepare training & validation data for the next stage of the cascade  
@@ -99,6 +104,7 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
     VALIDATION = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
     VALIDATION = ada_recompute(VALIDATION, LEARNERS, WEAK, FILES);
 
+    
 end
 
 
