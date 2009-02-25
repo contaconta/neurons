@@ -6,8 +6,8 @@ clear GOALS;
 
 NStages = 1; %13;
 
-GOALS(1).dmin = .99;
-GOALS(1).fmax = .0005;
+GOALS(1).dmin = .90;
+GOALS(1).fmax = .00005;
 
 
 % GOALS(1).dmin = .99;
