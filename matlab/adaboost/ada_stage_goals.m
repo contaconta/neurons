@@ -4,13 +4,11 @@
 % dmin      - default minimum detection rate for cascade stage
 clear GOALS;
 
-NStages = 2; %13;
+NStages = 1; %13;
 
 GOALS(1).dmin = .99;
-GOALS(1).fmax = .2;
+GOALS(1).fmax = .0005;
 
-GOALS(2).dmin = .99;
-GOALS(2).fmax = .5;
 
 % GOALS(1).dmin = .99;
 % GOALS(1).fmax = .5;

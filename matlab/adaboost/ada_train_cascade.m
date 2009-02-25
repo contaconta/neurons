@@ -88,7 +88,7 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
     end
     
     %% ================= DEBUG ==========================================
-    if ada_cascade_length(CASCADE) >= 300
+    if ada_cascade_length(CASCADE) >= 900
         break;
     end
     
