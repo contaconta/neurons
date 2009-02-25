@@ -1,15 +1,15 @@
 clear IStack;
 
-%nuclei = ada_trainingfiles('nuclei24.txt', 'train', '+', 500);
-%mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
-%nonnuclei = ada_trainingfiles('nuclei24.txt', 'train', '-', 500);
-%%nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
-mito = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
-nonmito = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
-nuclei = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
-nonnuclei = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
+nuclei = ada_trainingfiles('nuclei24.txt', 'train', '+', 500);
+mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
+nonnuclei = ada_trainingfiles('nuclei24.txt', 'train', '-', 500);
+nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
+%mito = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
+%nonmito = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
+%nuclei = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
+%nonnuclei = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
 
-N_EXAMPLES = 2;
+N_EXAMPLES = 4;
 
 nuc_inds = ceil(length(nuclei) * rand([N_EXAMPLES 1]));
 mito_inds = ceil(length(mito) * rand([N_EXAMPLES 1]));
@@ -25,6 +25,8 @@ for f = 1:length(files)
     I = imread(files{f});
     cls = class(I);
     I = mat2gray(I, [0 double(intmax(cls))]); 
+    
+    I = imnormalize('image', I);
     
     % show the image as the first column in the montage
     if f == 1
@@ -96,25 +98,25 @@ for f = 1:length(files)
     EDGE = edge(I, 'log', 0, SIGMA); %EDGE = bwmorph(EDGE, 'diag');
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
-    % show prewitt
-    filtX = fspecial('prewitt');
-    filtY = filtX';
-    GradX = imfilter(I,filtX, 'symmetric');
-    GradY = imfilter(I,filtY, 'symmetric');
-    NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
-    IStack(:,:,1,size(IStack,4)+1) = NORM;
-    
-    EDGE = edge(I,'prewitt', .01);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'prewitt', .03);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'prewitt', .06);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'prewitt', .1);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     % show prewitt
+%     filtX = fspecial('prewitt');
+%     filtY = filtX';
+%     GradX = imfilter(I,filtX, 'symmetric');
+%     GradY = imfilter(I,filtY, 'symmetric');
+%     NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
+%     IStack(:,:,1,size(IStack,4)+1) = NORM;
+%     
+%     EDGE = edge(I,'prewitt', .01);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'prewitt', .03);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'prewitt', .06);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'prewitt', .1);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     % show sobel
     filtX = fspecial('sobel');
@@ -124,7 +126,19 @@ for f = 1:length(files)
     NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
     IStack(:,:,1,size(IStack,4)+1) = NORM;
     
+    EDGE = edge(I,'sobel', .001);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
+    EDGE = edge(I,'sobel', .005);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
+    EDGE = edge(I,'sobel', .0075);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
     EDGE = edge(I,'sobel', .01);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
+    DGE = edge(I,'sobel', .02);
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     EDGE = edge(I,'sobel', .03);
@@ -175,30 +189,30 @@ for f = 1:length(files)
 %     EDGE = zerocrossing(I, SIGMA, .1);
 %     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
-    % show canny
-    sigma = 0.5;
-    filtX = gauss0(sigma);
-    filtY = filtX';
-    GradX = imfilter(I,filtX, 'symmetric');
-    GradY = imfilter(I,filtY, 'symmetric');
-    NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
-    IStack(:,:,1,size(IStack,4)+1) = NORM;
-    
-    EDGE = edge(I,'canny', .1 ,sigma);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'canny', .3 ,sigma);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'canny', .5 ,sigma);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'canny', .7 ,sigma);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
-    EDGE = edge(I,'canny', .9 ,sigma);
-    IStack(:,:,1,size(IStack,4)+1) = EDGE;
-    
+%     % show canny
+%     sigma = 0.5;
+%     filtX = gauss0(sigma);
+%     filtY = filtX';
+%     GradX = imfilter(I,filtX, 'symmetric');
+%     GradY = imfilter(I,filtY, 'symmetric');
+%     NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
+%     IStack(:,:,1,size(IStack,4)+1) = NORM;
+%     
+%     EDGE = edge(I,'canny', .1 ,sigma);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'canny', .3 ,sigma);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'canny', .5 ,sigma);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'canny', .7 ,sigma);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
+%     EDGE = edge(I,'canny', .9 ,sigma);
+%     IStack(:,:,1,size(IStack,4)+1) = EDGE;
+%     
     % show canny
     sigma = .8;
     filtX = gauss0(sigma);
@@ -207,6 +221,15 @@ for f = 1:length(files)
     GradY = imfilter(I,filtY, 'symmetric');
     NORM = arrayfun(@(a,b)(norm([a b])), GradX, GradY);
     IStack(:,:,1,size(IStack,4)+1) = NORM;
+    
+    EDGE = edge(I,'canny', .01 ,sigma);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
+    EDGE = edge(I,'canny', .025 ,sigma);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
+    
+    EDGE = edge(I,'canny', .05 ,sigma);
+    IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     EDGE = edge(I,'canny', .1 ,sigma);
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
@@ -225,6 +248,6 @@ for f = 1:length(files)
 end
 
 
-montage(IStack, 'Size', [length(files) 38]);
+montage(IStack, 'Size', [length(files) 34]);
 
 %montage(IStack, 'Size', [2 5]);
