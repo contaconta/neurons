@@ -116,6 +116,38 @@ switch ind
     case 28
         thresh = .1;
         EDGE = edge(I,'sobel', thresh);
+        
+        
+    %% MORE SOBEL THRESHOLDS
+    case 29
+        thresh = .001;
+        EDGE = edge(I,'sobel', thresh);
+    case 30
+        thresh = .005;
+        EDGE = edge(I,'sobel', thresh);
+    case 31
+        thresh = .0075; 
+        EDGE = edge(I,'sobel', thresh);
+    case 32
+        thresh = .02;
+        EDGE = edge(I,'sobel', thresh);
+
+        
+    %% MORE CANNY THRESHOLDS
+    case 33 
+        sigma = .8;
+        thresh = .01;
+        EDGE = edge(I,'canny', thresh ,sigma);
+    case 34
+        sigma = .8;
+        thresh = .025;
+        EDGE = edge(I,'canny', thresh ,sigma);
+    case 35
+        sigma = .8;
+        thresh = .05;
+        EDGE = edge(I,'canny', thresh ,sigma);
+        
+
 end
 
 EDGE = bwmorph(EDGE, 'diag');
