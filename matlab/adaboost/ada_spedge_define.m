@@ -13,7 +13,7 @@ stride = varargin{3};
 edge_methods = varargin{4};
 
 % pre-allocated for speed
-num_learners = (IMSIZE(1)/stride)*(IMSIZE(2)/stride)*length(angles)*length(edge_methods);
+num_learners = ceil(IMSIZE(1)/stride)*ceil(IMSIZE(2)/stride)*length(angles)*length(edge_methods);
 SP(num_learners).angles = [];
 SP(num_learners).edge_method = [];
 SP(num_learners).row = [];
@@ -22,15 +22,15 @@ SP(num_learners).polarity = [];
 SP(num_learners).theta = [];
 SP(num_learners).stride = [];
 
-for i = 1:IMSIZE(1)/stride
-    for j = 1:IMSIZE(2)/stride;
+for i = 1:ceil(IMSIZE(1)/stride)
+    for j = 1:ceil(IMSIZE(2)/stride);
         for k = 1:length(angles);
             for s = 1:length(edge_methods);
 
                 % because we will flatten the spedge tensor into a vector 
                 % later, we need to order the spedge features in the order 
                 % the spedge vector will be ordered
-                sp_index = single(sub2ind([length(angles) length(edge_methods) IMSIZE(1)/stride IMSIZE(2)/stride], k,s,i,j));
+                sp_index = single(sub2ind([length(angles) length(edge_methods) ceil(IMSIZE(1)/stride) ceil(IMSIZE(2)/stride)], k,s,i,j));
                 
                 SP(sp_index).polarity = single(1);
                 SP(sp_index).theta = 0;
