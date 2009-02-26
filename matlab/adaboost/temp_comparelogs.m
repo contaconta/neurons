@@ -48,8 +48,11 @@ for i = 1:nargin
     %ylim([0 .9]);
     %xlim([1 size(DATA,1)]);
     
+     set(gca, 'YScale', 'log');
     
-    xlim([1 100]);
+    xlim([1 200]);
+    
+    %xlim([1 100]);
 
 %     stagelist = unique(stages);
 %     for i = stagelist'

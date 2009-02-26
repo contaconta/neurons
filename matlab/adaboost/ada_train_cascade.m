@@ -1,6 +1,6 @@
 %%load the parameters and path information
 % ----------
-ada_settings; 
+ada_settings;
 ada_versioninfo;
 ada_stage_goals;
 
@@ -27,10 +27,10 @@ VALIDATION = ada_precompute(VALIDATION, LEARNERS, WEAK, FILES, FILES.valid_filen
 
 %% train the cascade
 
-CASCADE = ada_cascade_init();   % initialize the CASCADE struct
-i = 0;                          % cascade stage index
-Fi = 1;                         % cascade's current false positive rate      
-Di = 1;                         % cascade's current detection rate
+CASCADE = ada_cascade_init(DATASETS);       % initialize the CASCADE struct
+i = 0;                                      % cascade stage index
+Fi = 1;                                     % cascade's current false positive rate      
+Di = 1;                                     % cascade's current detection rate
 
 
 while (Fi > Ftarget)            % loop until we meet the target false positive rate
