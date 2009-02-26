@@ -72,15 +72,15 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = [11:15];
 
-% LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
-% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
-% LEARNERS(length(LEARNERS)).stride           = 2;    % normally 2, 3 for persons.
-% LEARNERS(length(LEARNERS)).edge_methods     = 23:28;% mix = [11 13 15 23 25 27 28];  canny=[11:15];  sobel=[23:28];
-
-LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).bins             = 9;
-LEARNERS(length(LEARNERS)).cellsize         = [4 4];   % [8 8] for persons
-LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+LEARNERS(length(LEARNERS)).stride           = 2;    % normally 2, 3 for persons.
+LEARNERS(length(LEARNERS)).edge_methods     = 23:27;% mix = [11 13 15 23 25 27 28];  canny=[11:15];  sobel=[23:28];
+
+%LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+%LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+%LEARNERS(length(LEARNERS)).bins             = 9;
+%LEARNERS(length(LEARNERS)).cellsize         = [4 4];   % [8 8] for persons
+%LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 

@@ -146,7 +146,10 @@ switch ind
         sigma = .8;
         thresh = .05;
         EDGE = edge(I,'canny', thresh ,sigma);
-        
+                
+    %% JUST THRESHOLD AND INVERT THE IMAGE
+    case 36
+        EDGE = (I <.9);
 
 end
 

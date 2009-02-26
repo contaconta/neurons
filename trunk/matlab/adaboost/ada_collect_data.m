@@ -17,6 +17,9 @@ function SET = ada_collect_data(DATASETS, set_type, varargin)
 %   VALIDATION  = ada_collect_data(DATASETS, 'validation')
 %   TRAIN       = ada_collect_data(DATASETS, 'update', TRAIN, CASCADE, LEARNERS);
 %   VALIDATION  = ada_collect_data(DATASETS, 'update', VALIDATION, CASCADE, LEARNERS);
+% 
+%   DATASETS.VALIDATION_NEG = 5000;
+%   TEST = ada_collect_data(DATASETS, 'populate');
 %
 %   Copyright 2008 Kevin Smith
 %
@@ -44,6 +47,8 @@ if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin =
         else
             d = ada_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
         end
+        
+        SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);
 
         % add each image file to SET, format it, normalize it, and compute features
         for i = 1:length(d)
@@ -80,6 +85,8 @@ if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin =
         end
         SET.database = DATASETS.filelist;
     end
+    
+    SET.Images = SET.Images(:,:,1:count-1);
 end
 
 
@@ -398,9 +405,19 @@ while length(N_LIST) < NEG_REQUIRED
         Isize = short_list(f_ind).Isize;
         W = round(IMSIZE(2)*(1/s));
         H = round( (IMSIZE(1)/IMSIZE(2)) * W);
+        
+        if (W > IMSIZE(2)) || (H > IMSIZE(1))
+            W = IMSIZE(2);
+            H = IMSIZE(1);
+        end
    
         r = ceil(  (Isize(1) - H)  * rand(1));
         c = ceil(  (Isize(2) - W)  * rand(1));
+        
+        if (r < 0) || (c <0)
+            disp('invalid r or c value');
+            keyboard;
+        end
         
         scanlist(n,:) = [f_ind, r, c, W, H];
     end

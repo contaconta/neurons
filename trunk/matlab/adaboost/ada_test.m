@@ -1,25 +1,29 @@
+%% load the saved cascaded classifier
+%load HA-nuclei24-23-Feb-2009-20.41.11.mat;
+load SP-sobel-nuclei24-23-Feb-2009-20.41.22.mat
+
+
+%% load the test set
+%load TEST_faces.mat;                 DATASETS.VALIDATION_NEG = 100000;
+%load TEST_mitochondria.mat;          DATASETS.VALIDATION_NEG = 100000;
+load TEST_nuclei24.mat;              DATASETS.VALIDATION_NEG = 100000;
+%load TEST_persons48x128.mat;         DATASETS.VALIDATION_NEG = 20000;
+
+
 %% load our settings, make sure they reflect the experiment!
 ada_settings; 
 ada_versioninfo;
 
-%%% create the test set
-% FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.dat'];
-% DATASETS.VALIDATION_NEG = 5000;
-% TEST = ada_collect_data(DATASETS, 'populate');
 
-%% define the features this experiment used
-WEAK = ada_define_weak_learners(LEARNERS); toc; 
-
-%% precompute responses to the test set
+%% other preparation stuff - define the features this experiment used
+FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.dat'];
+tic;WEAK = ada_define_weak_learners(LEARNERS); toc; 
 TEST = ada_precompute(TEST, LEARNERS, WEAK, FILES, FILES.test_filenm);
 
-%% load the saved cascaded classifier
-load HA-nuclei24-23-Feb-2009-20.41.11.mat;
-%load SP-sobel-nuclei24-23-Feb-2009-20.41.22.mat
+
 
 %% compute the classifiers response to the test set
 FILES.log_filenm = 'HAAR.log';
-
 logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' LEARNERS(:).feature_type],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
 
@@ -54,3 +58,10 @@ for i = 1:length(CASCADE);
     end
     
 end
+
+
+
+%%% create the test set
+% FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.dat'];
+% DATASETS.VALIDATION_NEG = 5000;
+% TEST = ada_collect_data(DATASETS, 'populate');
