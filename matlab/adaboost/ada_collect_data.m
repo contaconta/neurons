@@ -40,6 +40,7 @@ TRUE_OVERLAP_THRESH = .1;
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
 if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin == 2
+    SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);
     for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
         if c == 1
@@ -48,7 +49,7 @@ if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin =
             d = ada_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
         end
         
-        SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);
+        
 
         % add each image file to SET, format it, normalize it, and compute features
         for i = 1:length(d)
