@@ -273,7 +273,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       else
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
         //glCallList(1);
       draw_last_point();
       draw_contours();
@@ -293,7 +293,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       else
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
       //glCallList(1);
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */
@@ -314,7 +314,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       else
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
       //glCallList(1);
       draw_last_point();
       draw_contours();
@@ -333,7 +333,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       else
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
       //glCallList(1);
       draw_last_point();
       draw_contours();
@@ -374,7 +374,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     else
       glEnable(GL_DEPTH_TEST);
     if(flag_draw_neuron && neuronita)
-      neuronita->drawInOpenGl();
+      neuronita->draw();
     //glCallList(1);
     draw_last_point();
 
@@ -404,7 +404,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
                   (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
       //glCallList(1);
       draw_last_point();
     }
@@ -435,7 +435,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glViewport ((GLsizei)widgetWidth/2, (GLsizei)0,
                   (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
       if(flag_draw_neuron && neuronita)
-	neuronita->drawInOpenGl();
+	neuronita->draw();
       //glCallList(1);
       draw_last_point();
     }
@@ -466,7 +466,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
                     (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
 	if(flag_draw_neuron && neuronita)
-	  neuronita->drawInOpenGl();
+	  neuronita->draw();
 	//glCallList(1);
         draw_last_point();
       }

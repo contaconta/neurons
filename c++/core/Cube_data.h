@@ -1252,6 +1252,7 @@ void Cube<T,U>::put_value_in_ellipsoid
         if(dist <= 1)
           put(x,y,z,value);
       }
+
 }
 
 
