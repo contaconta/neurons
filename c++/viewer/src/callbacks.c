@@ -81,7 +81,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
       Cloud_P* cd = CloudFactory::load(objectNames[i]);
       toDraw.push_back(cd);
     }
-      else if (extension == "jpg"){
+    else if ((extension == "jpg") || (extension == "png"))  {
         Image<float>* img = new Image<float>(objectNames[i]);
         toDraw.push_back(img);
       }
