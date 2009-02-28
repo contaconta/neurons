@@ -149,7 +149,7 @@ switch ind
                 
     %% JUST THRESHOLD AND INVERT THE IMAGE
     case 36
-        EDGE = (I <.9);
+        EDGE = (I <.5);
 
 end
 
