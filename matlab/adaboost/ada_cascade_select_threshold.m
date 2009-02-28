@@ -19,7 +19,7 @@ if i > 1
 %    C = zeros(size(gt));            % re-init a vector for our cascade results
 else
     PASSTHROUGHS = 1:length(VALIDATION.class);
-    FPs = zeros(length(gt));
+    FPs = zeros(size(gt));
 end
 
 % TODO: need to handle the case when PASSTHROUGHS is empty !!
