@@ -149,8 +149,11 @@ switch ind
                 
     %% JUST THRESHOLD AND INVERT THE IMAGE
     case 36
-        EDGE = (I <.5);
-
+        EDGE = (I <.9);     % for contours / noncontours
+    case 37
+        EDGE = (I <.5);     % for open / closed
 end
 
-EDGE = bwmorph(EDGE, 'diag');
+if ind ~= 37
+    EDGE = bwmorph(EDGE, 'diag');
+end
