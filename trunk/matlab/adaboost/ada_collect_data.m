@@ -39,7 +39,7 @@ TRUE_OVERLAP_THRESH = .1;
 
 
 %% initial collection: POSITIVE (c = 1) and NEGATIVE (c = 2) images into SET
-if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate'))  %nargin == 2
+if  (~strcmp(set_type, 'update')) &&  (~strcmp(set_type, 'populate')) && (~strcmp(set_type,  'recollectFPs')) %nargin == 2
     SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);
     for c = 1:2  % the 2 classes
         % collect the training image files into d, and initialize the data struct
@@ -149,6 +149,35 @@ if strcmp(set_type, 'populate');
 end
 
 
+if strcmp(set_type, 'recollectFPs') 
+
+    SET = varargin{1};
+    DETECTOR = varargin{2};
+    LEARNERS = varargin{3};
+    DELTA = DATASETS.delta;     % how many pixels to skip by default when scanning
+    
+    % construct a list of files to search in
+    d = ada_trainingfiles(DATASETS.filelist, 'update', '-');   
+    
+    % construct a list of annotations to make sure we only get FP's
+    a = ada_trainingfiles(DATASETS.filelist, 'annotation', '+');
+    
+    % find a list of the current set of True Negatives in the data set
+    TN_LIST = find(SET.class == 0);
+    FPs_REQUIRED = length(TN_LIST);
+
+    % SCAN THE IMAGES!
+    disp('       ...raster/random scan.'); FP_LIST =[];
+    FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
+
+    % Replace the True Negatives with newly collected False Positives
+    for i = 1:length(TN_LIST)
+        SET.Images(:,:,TN_LIST(i)) = FP_LIST{i};
+%         disp(['replaced TN ' num2str(TN_LIST(i)) ' with an FP.']);        imshow(FP_LIST{i});        pause(0.1);
+    end
+        
+end  
+
 %% update collection: TRUE NEGATIVE examples are updated with False Positives.
 if strcmp(set_type, 'update')
 
@@ -169,7 +198,6 @@ if strcmp(set_type, 'update')
 
     % SCAN THE IMAGES!
     disp('       ...raster/random scan.'); FP_LIST =[];
-    %FP_LIST = randomscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, NORM, DETECTOR, LEARNERS, DATASETS, FPs_REQUIRED);
     FP_LIST = rasterscan(d, a, TRUE_OVERLAP_THRESH, IMSIZE, DELTA, NORM, DETECTOR, LEARNERS, DATASETS, FP_LIST, FPs_REQUIRED);
 
     

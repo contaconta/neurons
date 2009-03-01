@@ -4,10 +4,10 @@
 
 Ftarget         = 1e-5;     % target false positive rate for the entire cascade
 Dtarget         = .90;      % target detection rate for the entire cascade
-TRAIN_POS       = 1558;     % number of positive examples in the training set
-TRAIN_NEG       = 0;     % number of negative examples in the training set
-VALIDATION_POS  = 1558;     % number of positive examples in the validation set
-VALIDATION_NEG  = 0;     % number of negative examples in the validation set
+TRAIN_POS       = 500;     % number of positive examples in the training set
+TRAIN_NEG       = 500;     % number of negative examples in the training set
+VALIDATION_POS  = 500;     % number of positive examples in the validation set
+VALIDATION_NEG  = 500;     % number of negative examples in the validation set
 NORM            = 0;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
 
 rand('twister', 100);       % seed the random variable
@@ -35,9 +35,9 @@ path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to
 %DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2]; IMSIZE = [24 24];      
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];   
-DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
+%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
 %DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2]; IMSIZE = [24 24];
-%DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
+DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
 %DATASETS.filelist = 'opencontours24.txt';   DATASETS.scale_limits = [1];    IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [64 24];
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];

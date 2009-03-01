@@ -1,4 +1,4 @@
-function CLASSIFIER = ada_adaboost(varargin)
+function [CLASSIFIER, restart_flag] = ada_adaboost(varargin)
 %% ADA_ADABOOST trains a strong classifier from weak classifiers & training data.
 %
 %   CLASSIFIER = ada_adaboost(TRAIN, WEAK, ti, LEARNERS) trains a strong
@@ -15,7 +15,7 @@ function CLASSIFIER = ada_adaboost(varargin)
 
 
 %% set parameters and handle input arguments
-TRAIN = varargin{1}; WEAK = varargin{2}; ti = varargin{3}; LEARNERS = varargin{4};
+TRAIN = varargin{1}; WEAK = varargin{2}; ti = varargin{3}; LEARNERS = varargin{4}; restart_flag = 0;
 
 % either start or resume training, CLASSIFIER, w need to be passed or
 % initialized. start_t is the index of the first weak learner.
@@ -38,17 +38,6 @@ for t = start_t:ti
     %% 2. train weak learners for optimal class separation
     WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
     
-%     %================= debug ===============
-%     CLASSIFIER.wlog(t,:) = w; 
-%     wlog = CLASSIFIER.wlog;
-%     save([pwd '/tmp/WLOG' num2str(t) '.mat'], 'wlog');
-%     
-%     if t >= 46
-%         disp('about to start repeating!');  keyboard;
-%     end
-%     %=======================================
-    
-    
     %% 3. Use the best WEAK learner as the t-th CLASSIFIER hypothesis 
     [BEST_err, BEST_learner] = min(WEAK.error);
     
@@ -58,15 +47,26 @@ for t = start_t:ti
         disp(' !!!! REPEATED CLASSIFIER!!!! ');
         % if we have a repeated classifier, set the weight of the leading
         % classifier to 0.
-        maxinds = find(w == max(w));
-        w(w == max(w)) = 0;
-        filenm = 'BADEXAMPLES.txt';
-        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
-        fid = fopen(filenm, 'a', 'n');
-        cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
-        fwrite(fid, cstring);
-        fclose(fid);  
+%         maxinds = find(w == max(w));
+%         w(w == max(w)) = 0;
+%         filenm = 'BADEXAMPLES.txt';
+%         disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
+%         fid = fopen(filenm, 'a', 'n');
+%         cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
+%         fwrite(fid, cstring);
+%         fclose(fid);  
+    
+        disp('recollecting FPs and restarting this stage!');
+        restart_flag = 1; 
+        break;
     end
+    
+%     if t == 13
+%         disp(' !!!! REPEATED CLASSIFIER!!!! ');
+%         disp(['TEST recollecting FPs and restarting this stage!']);
+%         restart_flag = 1; 
+%         break;
+%     end
     %======================================================================
     
     
