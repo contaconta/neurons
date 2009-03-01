@@ -1,7 +1,7 @@
 function temp_comparelogs(varargin)
 
 
-NEGCLASS = 20000;
+NEGCLASS = 10000;
 
 for i = 1:nargin
     
@@ -13,7 +13,7 @@ for i = 1:nargin
     DATA = logfile(log_filenm, 'read');
 
     Di = DATA(:,4);
-    %Fi = round(DATA(:,5)*NEGCLASS) -8;
+    %Fi = round(DATA(:,5)*NEGCLASS) -6;
     %Fi = round(DATA(:,5)*NEGCLASS);
     Fi = DATA(:,5);
     fi = DATA(:,7);
@@ -31,7 +31,7 @@ for i = 1:nargin
 
 
 %    plot(Di, 'b-', 'LineWidth',2);
-    semilogy(Fi, color_select(i), 'LineWidth',2);
+    semilogy(Fi, color_select(i), 'LineWidth',1);
 %     plot(di, 'b-');
 %     plot(fi, 'r-');
 %     plot(dit, 'c-');
@@ -46,7 +46,7 @@ for i = 1:nargin
 %     legend('Overall Detection Rate D_i', 'Overall False Positive Rate F_i', 'Stage Detection Rate d_i', 'Stage False Positive Rate f_i', 'Training Data d_i', 'Training Data f_i');
     xlabel('Number of Weak Learners');
     ylabel('False Positive Count');
-    title('Cascade Learning Progress');
+    %title('Cascade Learning Progress');
     grid on;
     %ylim([0 .9]);
     %xlim([1 size(DATA,1)]);
@@ -54,6 +54,9 @@ for i = 1:nargin
      set(gca, 'YScale', 'log');
     
     xlim([1 200]);
+    %axis([0 500 3 10000])
+    
+    legend('Haar', 'HoG', 'Spoke')
     
     %xlim([1 100]);
 
@@ -75,17 +78,17 @@ function col = color_select(l)
 
 switch l
     case 1
-            col = 'r-';
-    case 2
-            col = 'b-';
-    case 3
             col = 'g-';
+    case 2
+            col = 'm-';
+    case 3
+            col = 'b-';
     case 4
             col = 'k-';
     case 5
-            col = 'm-';
+            col = 'g-';
     case 6
-            col = 'c-';
+            col = 'r-';
     case 7
             col = 'y-';
     case 8  
