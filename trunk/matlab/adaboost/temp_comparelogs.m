@@ -1,6 +1,8 @@
 function temp_comparelogs(varargin)
 
 
+NEGCLASS = 20000;
+
 for i = 1:nargin
     
     clear Di Fi di fi dit fit stages LEARNER;
@@ -11,8 +13,9 @@ for i = 1:nargin
     DATA = logfile(log_filenm, 'read');
 
     Di = DATA(:,4);
+    %Fi = round(DATA(:,5)*NEGCLASS) -8;
+    %Fi = round(DATA(:,5)*NEGCLASS);
     Fi = DATA(:,5);
-    di = DATA(:,6);
     fi = DATA(:,7);
     dit = DATA(:,8);
     fit = DATA(:,9);
@@ -41,8 +44,8 @@ for i = 1:nargin
     end
 
 %     legend('Overall Detection Rate D_i', 'Overall False Positive Rate F_i', 'Stage Detection Rate d_i', 'Stage False Positive Rate f_i', 'Training Data d_i', 'Training Data f_i');
-    xlabel('# of Weak Learners');
-    ylabel('Detection Rate / False Positive Rate');
+    xlabel('Number of Weak Learners');
+    ylabel('False Positive Count');
     title('Cascade Learning Progress');
     grid on;
     %ylim([0 .9]);

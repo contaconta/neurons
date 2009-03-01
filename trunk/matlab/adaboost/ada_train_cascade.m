@@ -87,10 +87,6 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
         break;
     end
     
-    %% ================= DEBUG ==========================================
-    if ada_cascade_length(CASCADE) >= 900
-        break;
-    end
     
     %% prepare training & validation data for the next stage of the cascade  
     %  recollect negative examples for the training and validation set which 
