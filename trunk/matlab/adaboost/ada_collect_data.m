@@ -302,8 +302,8 @@ while length(FP_LIST) < FPs_REQUIRED
         W = round(IMSIZE(2)*(1/s));
         H = round( (IMSIZE(1)/IMSIZE(2)) * W);
    
-        r = ceil(  (Isize(1) - H)  * rand(1));
-        c = ceil(  (Isize(2) - W)  * rand(1));
+        r = ceil(  (Isize(1) - H)  * rand(1));  r = max(r,1); r=min(r, Isize(1)-H);
+        c = ceil(  (Isize(2) - W)  * rand(1));  c = max(c,1); c=min(c, Isize(2)-W);
         
         scanlist(n,:) = [f_ind, r, c, W, H];
     end
