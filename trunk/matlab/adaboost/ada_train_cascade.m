@@ -109,7 +109,6 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
         disp('       ...updating the VALIDATION NEG set with a new set of false positives');
         VALIDATION = ada_collect_data(DATASETS, 'recollectFPs', VALIDATION, CASCADE, LEARNERS);
         VALIDATION = ada_recompute(VALIDATION, LEARNERS, WEAK, FILES);
-        keyboard;
     end
     
 end
