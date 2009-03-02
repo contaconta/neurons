@@ -448,8 +448,8 @@ while length(N_LIST) < NEG_REQUIRED
             H = IMSIZE(1);
         end
    
-        r = ceil(  (Isize(1) - H)  * rand(1));
-        c = ceil(  (Isize(2) - W)  * rand(1));
+        r = ceil(  (Isize(1) - H)  * rand(1));r = max(r,1); r=min(r, Isize(1)-H);
+        c = ceil(  (Isize(2) - W)  * rand(1));  c = max(c,1); c=min(c, Isize(2)-W);
         
         if (r < 0) || (c <0)
             disp('invalid r or c value');
