@@ -1,7 +1,7 @@
-function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename, varargin)
+function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, varargin)
 
 re = 0;
-if nargin > 6;  re = 1; end;
+if strcmp(varargin{1},'re');  re = 1; else filename = varargin{1}; end;
 
 if ~re
     %%  allocate the bigmatrix to store all precomputed features
