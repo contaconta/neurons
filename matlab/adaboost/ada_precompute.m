@@ -1,9 +1,12 @@
-function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename)
+function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename, varargin)
 
+re = 0;
+if nargin > 6;  re = 1; end;
 
-%%  allocate the bigmatrix to store all precomputed features
-SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', FILES.precision);
-
+if re
+    %%  allocate the bigmatrix to store all precomputed features
+    SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', FILES.precision);
+end
 
 %% precompute all weak learner responses
 %  precompute responses of each feature of each weak learner type over the
