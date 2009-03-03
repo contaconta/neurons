@@ -152,8 +152,24 @@ switch ind
         EDGE = (I <.9);     % for contours / noncontours
     case 37
         EDGE = (I <.5);     % for open / closed
+       
+    %% SOME RANDOM TESTS
+    case 38
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'canny');
+    case 39
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'canny');
+        EDGE = bwmorph(EDGE, 'diag');
+    case 40
+        THRESH = .05;
+        EDGE = (I > THRESH).*edge(I, 'canny');
+    case 41
+        THRESH = .05;
+        EDGE = (I > THRESH).*edge(I, 'canny');
+        EDGE = bwmorph(EDGE, 'diag');
 end
 
-if ind ~= 37
+if ind <= 37
     EDGE = bwmorph(EDGE, 'diag');
 end

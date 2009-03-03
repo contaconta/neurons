@@ -1,6 +1,9 @@
 function I = imnormalize(MODE, varargin)
 %IMNORMALIZE - normalizes the mean and variance of pixels in an image
 %
+%   I = imnormalize('image', I);
+%   I = imnormalize('integral_images', I);
+%
 %   REWRITE!!!!
 %   I = imnormalize(I, var) takes an input image I and returns an image I 
 %   with a uniform intensity variance.  The default variance is 0.055.  As
