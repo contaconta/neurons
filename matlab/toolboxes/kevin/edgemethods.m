@@ -153,19 +153,12 @@ switch ind
     case 37
         EDGE = (I <.5);     % for open / closed
        
-    %% SOME RANDOM TESTS
+    %% NON-NORMALIZED NUCLEI EDGES
     case 38
         THRESH = .025;
         EDGE = (I > THRESH).*edge(I, 'canny');
     case 39
         THRESH = .025;
-        EDGE = (I > THRESH).*edge(I, 'canny');
-        EDGE = bwmorph(EDGE, 'diag');
-    case 40
-        THRESH = .05;
-        EDGE = (I > THRESH).*edge(I, 'canny');
-    case 41
-        THRESH = .05;
         EDGE = (I > THRESH).*edge(I, 'canny');
         EDGE = bwmorph(EDGE, 'diag');
     case 42
@@ -200,6 +193,27 @@ switch ind
         THRESH = .02;
         EDGE = (I > THRESH).*edge(I, 'log', 0, 4);
         EDGE = bwmorph(EDGE, 'diag');
+        
+  %% SOBEL WITH NORMALIZATION
+  	case 50  % sobel 23
+        thresh = .01;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+    case 51  % sobel 24
+        thresh = .02;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+   	case 52  % sobel 25
+        thresh = .04;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+   	case 53  % sobel 26
+        thresh = .06;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+   	case 54  % sobel 27
+        thresh = .08;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+    case 55  % sobel 28
+        thresh = .1;
+        EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+        
 end
 
 if ind <= 37
