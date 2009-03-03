@@ -3,7 +3,7 @@ function SET = ada_precompute(SET, LEARNERS, WEAK, FILES, filename, varargin)
 re = 0;
 if nargin > 6;  re = 1; end;
 
-if re
+if ~re
     %%  allocate the bigmatrix to store all precomputed features
     SET.responses = bigmatrix( length(SET.class), length(WEAK.learners), 'filename', filename, 'memory', FILES.memory, 'precision', FILES.precision);
 end
