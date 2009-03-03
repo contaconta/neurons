@@ -62,6 +62,7 @@ for j = a
     c = c + 1;
 end
 figure; 
+%montage(I, 'size', [NaN 20]);
 montage(I);
 title([num2str(length(a)) ' examples of ' num2str(CLASS) ' class(es).']);
     

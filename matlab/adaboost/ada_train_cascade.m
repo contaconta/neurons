@@ -82,7 +82,7 @@ while (Fi > Ftarget)            % loop until we meet the target false positive r
         logfile(FILES.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr length(FPs) L_ind]);
         
         % save the cascade to a file in case something bad happens and we need to restart
-        save(FILES.cascade_filenm, 'CASCADE'); disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
+        save(FILES.cascade_filenm, 'CASCADE', 'FILES', 'DATASETS', 'LEARNERS'); disp(['       ...saved a temporary copy of CASCADE to ' FILES.cascade_filenm]);
     end
     
     %% check to see if we have completed training
