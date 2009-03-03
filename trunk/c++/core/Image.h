@@ -49,6 +49,8 @@ public:
 
   int fildes;
 
+  T* texels;
+
   T* pixels_origin;
   T** pixels;
 
@@ -124,6 +126,7 @@ Image<T>::Image() : VisibleE()
 
   img = NULL;
   texture_loaded = false;
+  texels = NULL;
 }
 
 template<class T>
@@ -134,6 +137,7 @@ Image<T>::~Image()
     close(fildes);
   }
   save();
+  delete[] texels;
   // cvReleaseImage(&img);
 }
 
@@ -157,6 +161,8 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
   height = img->height;
   widthStep = img->widthStep;
   nChannels = img->nChannels;
+
+  texels = new T[width*height];
 
   double mean  = 0;
   if(subtract_mean)
@@ -595,7 +601,6 @@ void Image<T>::draw()
         if(at(x,y) > max_val)
           max_val = at(x,y);
       }
-    T texels[width*height];
 
     for(int x = 0; x < width; x++)
       for(int y = 0; y < height; y++){
@@ -626,7 +631,6 @@ void Image<T>::draw()
                    width, height, 0, GL_LUMINANCE,
                    GL_UNSIGNED_BYTE, texels);
     texture_loaded = true;
-//     free texels;
   }
 
   glColor3f(1.0,1.0,1.0);
