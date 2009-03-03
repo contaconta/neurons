@@ -203,7 +203,8 @@ for l = 1:length(LEARNERS)
                 
                 SP = sp.spedges(:);
                 
-                R(j,:) = SP(ang1subs) - SP(ang2subs);
+                %R(j,:) = SP(ang1subs) - SP(ang2subs);
+                R(j,:) = (SP(ang1subs) - SP(ang2subs))./SP(ang1subs);   % test to see if normalzing helps
                 
 %                 % =======DEBUGGING - make sure my speed up stuff is computing
 %                 % features correctly.
