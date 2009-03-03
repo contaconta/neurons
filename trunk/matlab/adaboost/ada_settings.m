@@ -4,10 +4,10 @@
 
 Ftarget         = 1e-5;     % target false positive rate for the entire cascade
 Dtarget         = .90;      % target detection rate for the entire cascade
-TRAIN_POS       = 500;     % number of positive examples in the training set
-TRAIN_NEG       = 500;     % number of negative examples in the training set
-VALIDATION_POS  = 500;     % number of positive examples in the validation set
-VALIDATION_NEG  = 500;     % number of negative examples in the validation set
+TRAIN_POS       = 1000;     % number of positive examples in the training set
+TRAIN_NEG       = 5000;     % number of negative examples in the training set
+VALIDATION_POS  = 1000;     % number of positive examples in the validation set
+VALIDATION_NEG  = 5000;     % number of negative examples in the validation set
 NORM            = 0;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
 
 rand('twister', 100);       % seed the random variable
@@ -16,10 +16,10 @@ rand('twister', 100);       % seed the random variable
 % FILES & PATH INFORMATION
 %-------------------------------------------------------------------------
 
-FILES.datestr         = datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
-FILES.cascade_filenm  = ['NAME' FILES.datestr '.mat'];   % filename to store the cascaded classifier
-FILES.log_filenm      = ['NAME' FILES.datestr '.log'];   % filename to store the log file    
-FILES.temppath        = [pwd '/mat/'];                      % temporary storage path
+FILES.datestr         = datestr(now, 'mmmddyyyy-HHMMSS');  %datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
+FILES.computer        = 'calcifer';
+FILES.cascade_filenm  = ['NAME' FILES.computer FILES.datestr '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['NAME' FILES.computer FILES.datestr '.log'];   % filename to store the log file    
 FILES.train_filenm    = [pwd '/mat/TRAIN_FEATURES.dat'];    % temporary storage filename
 FILES.valid_filenm    = [pwd '/mat/VALID_FEATURES.dat'];
 FILES.memory          = 200000000;                          % size of memory to use in bytes for each bigmatrix 
@@ -36,7 +36,7 @@ path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];   
 %DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
-DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [.6 2]; IMSIZE = [24 24];
+DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; IMSIZE = [24 24];
 %DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
 %DATASETS.filelist = 'opencontours24.txt';   DATASETS.scale_limits = [1];    IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [64 24];

@@ -86,15 +86,15 @@ switch l
     case 4
             col = 'k-';
     case 5
-            col = 'g-';
+            col = 'c-';
     case 6
             col = 'r-';
     case 7
             col = 'y-';
     case 8  
-            col = 'c-.';
+            col = 'b-.';
     case 9
-            col = 'm-.';
+            col = 'k-.';
     otherwise
             col = 'k:';
 end

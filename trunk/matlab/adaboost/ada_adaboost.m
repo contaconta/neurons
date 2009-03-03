@@ -47,26 +47,17 @@ for t = start_t:ti
         disp(' !!!! REPEATED CLASSIFIER!!!! ');
         % if we have a repeated classifier, set the weight of the leading
         % classifier to 0.
-%         maxinds = find(w == max(w));
-%         w(w == max(w)) = 0;
-%         filenm = 'BADEXAMPLES.txt';
-%         disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
-%         fid = fopen(filenm, 'a', 'n');
-%         cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
-%         fwrite(fid, cstring);
-%         fclose(fid);  
-    
+        maxinds = find(w == max(w));w(w == max(w)) = 0; filenm = 'BADEXAMPLES.txt'; %#ok<NASGU>
+        disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
+        fid = fopen(filenm, 'a', 'n');
+        cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
+        fwrite(fid, cstring);fclose(fid);  
+    end
+    if (t > 5) && (BEST_learner == CLASSIFIER.feature_index(t-5)) && (BEST_learner == CLASSIFIER.feature_index(t-1))
         disp('recollecting FPs and restarting this stage!');
         restart_flag = 1; 
         break;
     end
-    
-%     if t == 13
-%         disp(' !!!! REPEATED CLASSIFIER!!!! ');
-%         disp(['TEST recollecting FPs and restarting this stage!']);
-%         restart_flag = 1; 
-%         break;
-%     end
     %======================================================================
     
     
