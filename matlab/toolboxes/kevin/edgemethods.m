@@ -168,6 +168,38 @@ switch ind
         THRESH = .05;
         EDGE = (I > THRESH).*edge(I, 'canny');
         EDGE = bwmorph(EDGE, 'diag');
+    case 42
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'canny', 0, .2);
+        %EDGE = edge(I, 'log', 0, 2);
+    case 43
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'canny', 0, .2);
+        EDGE = bwmorph(EDGE, 'diag');
+    case 44
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 2);
+        %EDGE = edge(I, 'log', 0, 2);
+    case 45
+        THRESH = .025;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 2);
+        EDGE = bwmorph(EDGE, 'diag');
+ 	case 46
+        THRESH = .02;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 3);
+        %EDGE = edge(I, 'log', 0, 2);
+    case 47
+        THRESH = .02;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 3);
+        EDGE = bwmorph(EDGE, 'diag');
+  	case 48
+        THRESH = .02;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 4);
+        %EDGE = edge(I, 'log', 0, 2);
+    case 49
+        THRESH = .02;
+        EDGE = (I > THRESH).*edge(I, 'log', 0, 4);
+        EDGE = bwmorph(EDGE, 'diag');
 end
 
 if ind <= 37
