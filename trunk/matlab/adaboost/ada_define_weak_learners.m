@@ -92,6 +92,20 @@ for t = 1:length(LEARNERS)
         clear spdiff;
     end
     
+    %% add spangle weak learners
+    if strcmp('spangle', LEARNERS(t).feature_type)
+        
+        spangle = ada_spangle_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).stride, LEARNERS(t).edge_methods);
+        WEAK.lists.spangle = [];
+        
+        for i = 1:length(spangle)
+            WEAK.learners{length(WEAK.learners)+1} = spangle(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'spangle';
+        end
+        disp(['   added ' num2str(length(spangle)) ' ' LEARNERS(t).feature_type ' learners']);
+        clear spangle;
+    end
+    
     %% add hog weak learners
     if strcmp('hog', LEARNERS(t).feature_type)
         
