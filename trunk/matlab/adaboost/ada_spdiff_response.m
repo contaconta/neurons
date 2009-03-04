@@ -1,4 +1,3 @@
-
 function [f, EDGE] = ada_spdiff_response(angle1,angle2,stride,edge_method,row,col,varargin)
 
 eta = .00001;

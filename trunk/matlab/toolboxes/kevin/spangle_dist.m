@@ -1,5 +1,5 @@
-function [FEAT, EDGE, G] = spangle_dist(I, angle, stride, edge_method)
-%SPEDGE_DIST computes a spedge feature in a given direction
+function [SPANGLE, SPNORM, EDGE, G] = spangle_dist(I, angle, stride, edge_method)
+%SPANGLE_DIST computes a spedge feature in a given direction
 %
 %   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
 %   feature on a grayscale image I at angle ANGLE.  Each pixel in FEATURE 
@@ -41,9 +41,9 @@ warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);
 warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
 
-
 % if there is a top-bottom intersection
-FEAT = zeros(size(EDGE));
+SPANGLE = zeros(size(EDGE));
+SPNORM = zeros(size(EDGE));
 
 % if the angle is pointing up/down
 if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
@@ -56,15 +56,19 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
         colx = col(inimage) + j;
         %lastedge = [rowx(1) colx(1)];  
         lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
+        lastnorm = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
                 %lastedge = [rowx(i) colx(i)];  
                 lastgrad = squeeze(G(rowx(i), colx(i),:));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                lastnorm = norm([gh(rowx(i), colx(i)) gv(rowx(i), colx(i))]);           
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             else
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             end
         end
         j = j-1;
@@ -82,15 +86,23 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
         colx = col(inimage) + j;
         %lastedge = [rowx(1) colx(1)]; 
         lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
+        lastnorm = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
                 %lastedge = [rowx(i) colx(i)]; 
                 lastgrad = squeeze(G(rowx(i), colx(i),:));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                lastnorm = norm([gh(rowx(i), colx(i)) gv(rowx(i), colx(i))]);
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
+                
+                if (rowx(i)==83 ) && (colx(i) == 67)
+                    keyboard;
+                end
             else
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             end
         end
         j = j+1;
@@ -109,15 +121,19 @@ else
         colx = col(inimage);
         %lastedge = [rowx(1) colx(1)]; 
         lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
+        lastnorm = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
                 %lastedge = [rowx(i) colx(i)]; 
                 lastgrad = squeeze(G(rowx(i), colx(i),:));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                lastnorm = norm([gh(rowx(i), colx(i)) gv(rowx(i), colx(i))]);
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             else
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             end
         end
         j = j-1;
@@ -135,15 +151,19 @@ else
         colx = col(inimage);
         %lastedge = [rowx(1) colx(1)]; 
         lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
+        lastnorm = 0;
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
                 %lastedge = [rowx(i) colx(i)];
                 lastgrad = squeeze(G(rowx(i), colx(i),:));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                lastnorm = norm([gh(rowx(i), colx(i)) gv(rowx(i), colx(i))]);
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             else
-                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
+                %SPANGLE(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                SPANGLE(rowx(i),colx(i)) = angvec * lastgrad;
+                SPNORM(rowx(i),colx(i)) = lastnorm;
             end
         end
         j = j+1;
@@ -153,11 +173,11 @@ else
 end
 
 
-FEAT = FEAT(1:stride:size(FEAT,1), 1:stride:size(FEAT,2));
+SPANGLE = SPANGLE(1:stride:size(SPANGLE,1), 1:stride:size(SPANGLE,2));
+SPNORM = SPNORM(1:stride:size(SPNORM,1), 1:stride:size(SPNORM,2));
 
 
-
-%figure; imagesc(FEAT); axis image;
+%figure; imagesc(SPANGLE); axis image;
 
 
 

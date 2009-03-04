@@ -82,7 +82,13 @@ LEARNERS(length(LEARNERS)+1).feature_type   = 'spangle';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 LEARNERS(length(LEARNERS)).stride           = 2; 
-LEARNERS(length(LEARNERS)).edge_methods     = [39];
+LEARNERS(length(LEARNERS)).edge_methods     = [58 59];
+
+% LEARNERS(length(LEARNERS)+1).feature_type   = 'spnorm';
+% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+% LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
+% LEARNERS(length(LEARNERS)).stride           = 2; 
+% LEARNERS(length(LEARNERS)).edge_methods     = [58 59];
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;

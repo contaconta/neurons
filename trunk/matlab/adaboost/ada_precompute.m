@@ -302,7 +302,49 @@ for l = 1:length(LEARNERS)
                 clear R;
             end
             
+        %% spnorm weak learners
+        %  unlike haars, spedges are faster to compute by looping through
+        %  the examples and computing all spedges for each example.
+        case 'spnorm'
             
+            % create a list of spedge feature indexes
+            f_list = []; 
+            for f = 1:length(WEAK.learners)
+                if strcmp(WEAK.learners{f}.type, 'spnorm')
+                    f_list = [f_list f];
+                end
+            end
+            
+            block = min(length(SET.class), round(FILES.memory / (length(f_list)*SET.responses.bytes))); 
+            W = wristwatch('start', 'end', length(SET.class), 'every', 200, 'text', '    ...precomputed spnorm for example ');
+            R = zeros(block, length(f_list));
+            j = 1;
+            
+            % loop through examples, compute all spedge responses for
+            % example i, store as rows
+            for i = 1:length(SET.class)
+            
+                sp = spangles(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
+                R(j,:) = sp.spnorms(:);
+                
+                if mod(i,block) == 0
+                    disp(['    ...writing to ' SET.responses.filename]);
+                    rows = i-block+1:i;
+                    cols = f_list;
+                    SET.responses.storeBlock(R, rows, cols);
+                    j = 0;
+                end
+                W = wristwatch(W, 'update', i);
+                j = j + 1;
+            end
+            
+            if j ~= 1
+                % store the last rows, if we have some left over
+                disp(['    ...writing to ' SET.responses.filename]);
+                rows = i-j+2:i;
+                SET.responses.storeBlock(R(1:j-1,:), rows, cols);
+                clear R;
+            end    
             
             
         case 'hog'

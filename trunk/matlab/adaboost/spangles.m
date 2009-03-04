@@ -27,6 +27,6 @@ A.edgemethods = edge_methods;
 
 for i = 1:length(angles)
     for s = 1:length(edge_methods)
-        [A.spangles(i,s,:,:), A.edge, A.G] = spangle_dist(I, angles(i), stride, edge_methods(s));   
+        [A.spangles(i,s,:,:), A.spnorms(i,s,:,:), A.edge, A.G] = spangle_dist(I, angles(i), stride, edge_methods(s));   
     end
 end

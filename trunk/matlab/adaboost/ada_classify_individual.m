@@ -29,10 +29,11 @@ for l = 1:length(LEARNERS)
         edgelist.EDGE = I;
     end
     
-    if strcmp(LEARNERS(l).feature_type, 'spangle')
+    if strcmp(LEARNERS(l).feature_type, 'spangle') || strcmp(LEARNERS(l).feature_type, 'spnorm')
         spanglelist.edge_method = 0;
         spanglelist.EDGE = I;
         spanglelist.G = repmat(I, [1 1 2]);
+        spanglelist.G = I;
     end
     
     if strcmp(LEARNERS(l).feature_type, 'hog') 
@@ -109,10 +110,10 @@ for s = 1:length(CASCADE)
                 if ~isempty(ind)
                     EDGE = spanglelist(ind).EDGE;
                     G = spanglelist(ind).G;
-                    [f(l) EDGE G] = single_spangle(angle, stride, edge_method, row, col, EDGE, G, 'edge');
+                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, EDGE, G, gh, gv, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE G] = single_spangle(angle, stride, edge_method, row, col, I);
+                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, I);
                     %disp('using a newly computed edge');
                 end
 
@@ -121,10 +122,46 @@ for s = 1:length(CASCADE)
                     spanglelist(length(spanglelist)+1).edge_method = edge_method;
                     spanglelist(length(spanglelist)).EDGE = EDGE;
                     spanglelist(length(spanglelist)).G = G;
+                    spanglelist(length(spanglelist)).gh = gh;
+                    spanglelist(length(spanglelist)).gv = gv;
                 end
 
                 polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
                 theta(l) = CASCADE(s).CLASSIFIER.theta(l);
+                
+            case 'spnorm'
+                angle = CASCADE(s).CLASSIFIER.weak_learners{l}.angle;
+                stride = CASCADE(s).CLASSIFIER.weak_learners{l}.stride;
+                edge_method = CASCADE(s).CLASSIFIER.weak_learners{l}.edge_method;
+                row = CASCADE(s).CLASSIFIER.weak_learners{l}.row;
+                col = CASCADE(s).CLASSIFIER.weak_learners{l}.col;
+                
+                % if we've already computed EDGE for SIGMA, use it, otherwise use I
+                ind = find([spanglelist(:).edge_method] == edge_method,1);
+                if ~isempty(ind)
+                    EDGE = spanglelist(ind).EDGE;
+                    G = spanglelist(ind).G;
+                    gh = spanglelist(ind).gh;
+                    gv = spanglelist(ind).gv;
+                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, EDGE, G, gh, gv, 'edge');
+                    %disp('using a previously stored edge');
+                else
+                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, I);
+                    %disp('using a newly computed edge');
+                end
+
+                % store EDGE for this EDGE_METHOD value
+                if isempty(find([spanglelist(:).edge_method] == edge_method,1));
+                    spanglelist(length(spanglelist)+1).edge_method = edge_method;
+                    spanglelist(length(spanglelist)).EDGE = EDGE;
+                    spanglelist(length(spanglelist)).G = G;
+                    spanglelist(length(spanglelist)).gh = gh;
+                    spanglelist(length(spanglelist)).gv = gv;
+                end
+
+                polarity(l) = CASCADE(s).CLASSIFIER.polarity(l);
+                theta(l) = CASCADE(s).CLASSIFIER.theta(l);    
+                
                 
             case 'spdiff'
                 angle1 = CASCADE(s).CLASSIFIER.weak_learners{l}.angle1;

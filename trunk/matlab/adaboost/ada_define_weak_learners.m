@@ -106,6 +106,19 @@ for t = 1:length(LEARNERS)
         clear spangle;
     end
     
+     %% add spnorm weak learners
+    if strcmp('spnorm', LEARNERS(t).feature_type)
+        
+        spnorm = ada_spnorm_define(LEARNERS(t).IMSIZE, LEARNERS(t).angles, LEARNERS(t).stride, LEARNERS(t).edge_methods);
+        WEAK.lists.spnorm = [];
+        
+        for i = 1:length(spnorm)
+            WEAK.learners{length(WEAK.learners)+1} = spnorm(i);
+            WEAK.learners{length(WEAK.learners)}.type = 'spnorm';
+        end
+        disp(['   added ' num2str(length(spnorm)) ' ' LEARNERS(t).feature_type ' learners']);
+        clear spnorm;
+    end
     %% add hog weak learners
     if strcmp('hog', LEARNERS(t).feature_type)
         
