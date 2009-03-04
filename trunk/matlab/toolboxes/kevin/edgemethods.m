@@ -214,6 +214,26 @@ switch ind
         thresh = .1;
         EDGE = edge(imnormalize('image', I),'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
         
+    %% MITOCHONDRIA EDGES
+    case 56
+        THRESH = 0;  SIGMA = 2.5;
+        EDGE = edge(I, 'log', THRESH, SIGMA); EDGE = bwmorph(EDGE, 'diag');
+    case 57
+        thresh = .075;
+        EDGE = edge(I,'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+    case 58
+        thresh = .1;
+        EDGE = edge(I,'sobel', thresh); EDGE = bwmorph(EDGE, 'diag');
+    case 59
+        EDGE = edge(I, 'canny'); EDGE = bwmorph(EDGE, 'diag');
+    case 60
+        sigma = .8;
+        thresh = .5;
+        EDGE = edge(I,'canny', thresh ,sigma); EDGE = bwmorph(EDGE, 'diag');
+    case 61
+        sigma = 1.25;
+        thresh = .5;
+        EDGE = edge(I,'canny', thresh ,sigma); EDGE = bwmorph(EDGE, 'diag'); 
 end
 
 if ind <= 37

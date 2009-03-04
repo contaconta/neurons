@@ -35,9 +35,9 @@ path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to
 %DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2]; IMSIZE = [24 24];      
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];   
-%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
+DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
 %DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; IMSIZE = [24 24];
-DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
+%DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
 %DATASETS.filelist = 'opencontours24.txt';   DATASETS.scale_limits = [1];    IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [64 24];
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
