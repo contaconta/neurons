@@ -1,4 +1,4 @@
-function [FEAT, EDGE] = spedge_dist(I, angle, stride, edge_method)
+function [FEAT, EDGE, G] = spangle_dist(I, angle, stride, edge_method)
 %SPEDGE_DIST computes a spedge feature in a given direction
 %
 %   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
@@ -27,15 +27,15 @@ if angle < 0;  angle = angle + 360; end;
 % we get our edge map based on the index edge_method
 EDGE = edgemethods(I, edge_method);
 
-% %=========================== NEED TO REWRITE=======================================
-% % we use a zero-crossing laplacian of gaussian to ensure closed contours
-% EDGE = edge(I, 'log', 0, sigma);
-% %EDGE = edge(I, 'sobel');
-% 
-% % to handle directions that pass through lines at an angle, thicken lines
-% % on diagonals
-% EDGE = bwmorph(EDGE, 'diag');
-% %==========================================================================
+% compute the gradient information
+gh = imfilter(I,fspecial('sobel')' /8,'replicate');
+gv = imfilter(I,fspecial('sobel')/8,'replicate');
+G(:,:,1) = gv;
+G(:,:,2) = gh;
+G = gradientnorm(G);
+
+angvec = unitvector(angle);
+
 
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);
@@ -54,13 +54,17 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     while ~isempty(inimage);
         rowx = row(inimage);
         colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
+        %lastedge = [rowx(1) colx(1)];  
+        lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                lastedge = [rowx(i) colx(i)];
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %lastedge = [rowx(i) colx(i)];  
+                lastgrad = squeeze(G(rowx(i), colx(i),:));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             end
         end
         j = j-1;
@@ -76,13 +80,17 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     while ~isempty(inimage);
         rowx = row(inimage);
         colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
+        %lastedge = [rowx(1) colx(1)]; 
+        lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                lastedge = [rowx(i) colx(i)];
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %lastedge = [rowx(i) colx(i)]; 
+                lastgrad = squeeze(G(rowx(i), colx(i),:));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             end
         end
         j = j+1;
@@ -99,13 +107,17 @@ else
     while ~isempty(inimage);
         rowx = row(inimage) + j;
         colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
+        %lastedge = [rowx(1) colx(1)]; 
+        lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                lastedge = [rowx(i) colx(i)];
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %lastedge = [rowx(i) colx(i)]; 
+                lastgrad = squeeze(G(rowx(i), colx(i),:));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             end
         end
         j = j-1;
@@ -121,13 +133,17 @@ else
     while ~isempty(inimage);
         rowx = row(inimage) + j;
         colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
+        %lastedge = [rowx(1) colx(1)]; 
+        lastgrad = angvec';  %squeeze(G(rowx(1), colx(1),:));
         for i = 1:length(rowx);
             if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                lastedge = [rowx(i) colx(i)];
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %lastedge = [rowx(i) colx(i)];
+                lastgrad = squeeze(G(rowx(i), colx(i),:));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                %FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
+                FEAT(rowx(i),colx(i)) = angvec * lastgrad;
             end
         end
         j = j+1;

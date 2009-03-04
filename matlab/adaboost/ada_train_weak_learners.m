@@ -46,6 +46,12 @@ for i = 1:length(WEAK.learners)
             wstring = '       optimized spdiff feature ';
             W = wristwatch(W, 'update', i, 'text', wstring);
             [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
+
+        case 'spangle'
+            wstring = '       optimized spangle feature ';
+            W = wristwatch(W, 'update', i, 'text', wstring);
+            [WEAK.error(i), WEAK.learners{i}.theta, WEAK.learners{i}.polarity] = ada_weak_learn(i, training_labels, TRAIN, w);
+            
 %             [err1, theta1, pol1] = ada_weak_learn(i, training_labels, TRAIN, w);
 %             [err2, theta2, pol2] = ada_weak_slow_learn(i, training_labels, TRAIN, w);
 %             %if ~isequal([err1 theta1 pol1], [err2 theta2 pol2]);
