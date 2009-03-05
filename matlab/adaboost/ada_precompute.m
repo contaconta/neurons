@@ -205,10 +205,11 @@ for l = 1:length(LEARNERS)
                 sp = spedges(SET.Images(:,:,i), LEARNERS(l).angles, LEARNERS(l).stride, LEARNERS(l).edge_methods);
                 
                 SP = sp.spedges(:);
-                R(j,:) = SP(ang1subs) - SP(ang2subs);
+                
+                %R(j,:) = SP(ang1subs) - SP(ang2subs);
                 % =============FOR NORMALIZING THE DISTANCES ===================
-                %eta = .00001;
-                %R(j,:) = (SP(ang1subs) - SP(ang2subs))./ (SP(ang1subs) + eta*ones(size(SP(ang1subs))));   % test to see if normalzing helps
+                eta = .00001;
+                R(j,:) = (SP(ang1subs) - SP(ang2subs))./ (SP(ang1subs) + eta*ones(size(SP(ang1subs))));   % test to see if normalzing helps
                 
                 
                 
