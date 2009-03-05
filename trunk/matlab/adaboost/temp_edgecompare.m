@@ -1,23 +1,28 @@
 clear IStack;
 
 % nuclei = ada_trainingfiles('nuclei24.txt', 'train', '+', 500);
-mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
+%mito = ada_trainingfiles('mitochondria24.txt', 'train', '+', 500);
 % nonnuclei = ada_trainingfiles('nuclei24.txt', 'train', '-', 500);
-nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
+%nonmito = ada_trainingfiles('mitochondria24.txt', 'train', '-', 500);
 %mito = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
 %nonmito = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
 %nuclei = ada_trainingfiles('persons24x64.txt', 'train', '+', 500);
 %nonnuclei = ada_trainingfiles('persons24x64.txt', 'train', '-', 500);
+faces = ada_trainingfiles('faces.txt', 'train', '+', 500);
+nonfaces = ada_trainingfiles('faces.txt', 'train', '-', 500);
 
 N_EXAMPLES = 15;
 
 % nuc_inds = ceil(length(nuclei) * rand([N_EXAMPLES 1]));
-mito_inds = ceil(length(mito) * rand([N_EXAMPLES 1]));
+% mito_inds = ceil(length(mito) * rand([N_EXAMPLES 1]));
 % nonnuc_inds = ceil(length(nonnuclei) * rand([N_EXAMPLES 1]));
-nonmito_inds = ceil(length(nonmito) * rand([N_EXAMPLES 1]));
+% nonmito_inds = ceil(length(nonmito) * rand([N_EXAMPLES 1]));
+face_inds = ceil(length(faces) * rand([N_EXAMPLES 1]));
+nonface_inds = ceil(length(nonfaces) * rand([N_EXAMPLES 1]));
 
 % files = {nuclei{nuc_inds}  mito{mito_inds} nonnuclei{nonnuc_inds}  nonmito{nonmito_inds}}';
-files = {mito{mito_inds} nonmito{nonmito_inds}}';
+%files = {mito{mito_inds} nonmito{nonmito_inds}}';
+files = {faces{face_inds} nonfaces{nonface_inds}}';
 
 IStack = [];
 
@@ -25,6 +30,7 @@ for f = 1:length(files)
 
     I = imread(files{f});
     cls = class(I);
+    if length(size(I)) > 2;  I = rgb2gray(I); end;
     I = mat2gray(I, [0 double(intmax(cls))]); 
     
     %I = imnormalize('image', I);
@@ -143,7 +149,7 @@ for f = 1:length(files)
     NORM = mat2gray(NORM, [min(NORM(:)) max(NORM(:))]);
     IStack(:,:,1,size(IStack,4)+1) = NORM;
     
-    EDGE = edge(I,'sobel', .05);
+    EDGE = edge(I,'sobel', .06);
     IStack(:,:,1,size(IStack,4)+1) = EDGE;
     
     EDGE = edge(I,'sobel', .075);

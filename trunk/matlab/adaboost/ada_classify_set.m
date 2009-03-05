@@ -36,7 +36,7 @@ for s = 1:length(CASCADE)
     positive_list = find(boolean(C));
     
     % handle the case where there are no positive examples left
-    if isempty(positive_list); C = zeros(size(C)); disp('no positives left!'); break; end
+    if isempty(positive_list); C = zeros(size(C)); disp('   no positives left!'); break; end
     
     % we only need feature responses for the positive examples
     f = f(positive_list, :);
