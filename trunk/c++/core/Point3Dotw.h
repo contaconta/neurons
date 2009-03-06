@@ -22,7 +22,7 @@ public:
   }
 
   Point3Dotw(float x, float y, float z,  float theta=0, float phi = 0,
-             int type = -1, double _weight = w) :
+             int type = -1, double _weight = 0.0) :
     Point3Dot(x,y,z,theta,phi,type)
   {
     weight = _weight;

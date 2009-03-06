@@ -11,6 +11,7 @@
 #include "Point3Dt.h"
 #include "Point3Do.h"
 #include "Point3Dot.h"
+#include "Point3Dotw.h"
 #include "utils.h"
 #include <string>
 #include "Object.h"
