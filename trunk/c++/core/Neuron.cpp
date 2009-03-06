@@ -977,6 +977,75 @@ void Neuron::printStatistics()
 
 }
 
+vector< double > Neuron::getAllEdgesLength(){
+  vector< double > toRet;
+  for(int i = 0; i < axon.size(); i++)
+    getAllEdgesLength(axon[i], toRet);
+  for(int i = 0; i < dendrites.size(); i++)
+    getAllEdgesLength(dendrites[i], toRet);
+  return toRet;
+}
+
+void Neuron::getAllEdgesLength(NeuronSegment* segment, vector<double> &toRet){
+  for(int i = 0; i < segment->childs.size(); i++)
+    getAllEdgesLength(segment->childs[i], toRet);
+
+  vector<float> p1;
+  vector<float> p2;
+  for(int i = 1; i < segment->points.size(); i++){
+    neuronToMicrometers(segment->points[i-1].coords, p1);
+    neuronToMicrometers(segment->points[i  ].coords, p2);
+    toRet.push_back(sqrt( (p1[0]-p2[0])*(p1[0]-p2[0]) +
+                          (p1[1]-p2[1])*(p1[1]-p2[1]) +
+                          (p1[2]-p2[2])*(p1[2]-p2[2])));
+  }
+}
+
+void Neuron::elliminateDuplicatedPoints(double threshold){
+  for(int i = 0; i < axon.size(); i++)
+    elliminateDuplicatedPoints(axon[i], threshold);
+  for(int i = 0; i < dendrites.size(); i++)
+    elliminateDuplicatedPoints(dendrites[i], threshold);
+}
+
+void Neuron::elliminateDuplicatedPoints(NeuronSegment* segment, double threshold){
+  for(int i = 0; i < segment->childs.size(); i++)
+    elliminateDuplicatedPoints(segment->childs[i], threshold);
+
+  vector<float> p1;
+  vector<float> p2;
+  vector< NeuronPoint > newPoints;
+  newPoints.push_back(
+                      NeuronPoint(segment->points[0].coords[0],
+                                  segment->points[0].coords[1],
+                                  segment->points[0].coords[2],
+                                  segment->points[0].noSenseNumber,
+                                  segment->points[0].pointNumber
+                                  ));
+
+
+  double distance;
+  for(int i = 1; i < segment->points.size(); i++){
+    neuronToMicrometers(segment->points[i-1].coords, p1);
+    neuronToMicrometers(segment->points[i  ].coords, p2);
+    distance = sqrt( (p1[0]-p2[0])*(p1[0]-p2[0]) +
+                     (p1[1]-p2[1])*(p1[1]-p2[1]) +
+                     (p1[2]-p2[2])*(p1[2]-p2[2]));
+    if(distance > threshold){
+      newPoints.push_back(
+                          NeuronPoint(segment->points[i].coords[0],
+                                      segment->points[i].coords[1],
+                                      segment->points[i].coords[2],
+                                      segment->points[i].noSenseNumber,
+                                      segment->points[i].pointNumber
+                                      )
+                          );
+    }
+  }
+  segment->points = newPoints;
+}
+
+
 void Neuron::getEdgeDistance(NeuronSegment* segment, int& nEdges, double& distances)
 {
   for(int i = 0; i < segment->childs.size(); i++)

@@ -310,6 +310,15 @@ public:
    float min_width = 0,
    float width_scale = 1.0);
 
+  //Returns a vector with the lengths of all the segments
+  vector< double >  getAllEdgesLength();
+  void getAllEdgesLength(NeuronSegment* segment, vector<double> &toRet);
+
+  /** Elliminates duplicated points. (whose distance is lower than threshold) */
+  void elliminateDuplicatedPoints(double threshold);
+  void elliminateDuplicatedPoints(NeuronSegment* segment, double threshold);
+
+
   /** Calculates the average length of the edge in the neuron.*/
   void getEdgeDistance(NeuronSegment* segment, int& nEdges, double& distances);
 
