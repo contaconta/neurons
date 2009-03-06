@@ -1,12 +1,10 @@
-function [F, EDGE, G, gh, gv] = single_spangle(angle, stride, edge_method, r, c, I, varargin)
-%SPEDGE_DIST computes a spedge feature in a given direction
+function [F, EDGE] = single_spedge(angle, stride, edge_method, r, c, I, varargin)
+%SINGLE_SPEDGE computes a spedge feature in a given direction
 %
-%   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
-%   feature on a grayscale image I at angle ANGLE.  Each pixel in FEATURE 
-%   contains the distance to the nearest edge in direction ANGLE.  Edges 
-%   are computed using Laplacian of Gaussian zero-crossings (!!! in the 
-%   future we may add more methods for generating edges).  SIGMA specifies 
-%   the standard deviation of the edge filter.  
+%   D = SINGLE_SPEDGE(ANGLE,SIGMA,STRIDE, EDGE_METHOD, ROW,COL,I,'edge')  computes the spedge
+%   feature response for a given point (ROW,COL), edge standard dev SIGMA, 
+%   and ANGLE.  D contains the distance to the nearest edge in direction 
+%   given by ANGLE.  
 %
 %   Example:
 %   -------------------------
@@ -18,27 +16,19 @@ function [F, EDGE, G, gh, gv] = single_spangle(angle, stride, edge_method, r, c,
 %
 %   See also SPEDGES, EDGE, VIEW_SPEDGES
 
+
+
+% normalize the angle
 angle = mod(angle,360);
 if angle < 0;  angle = angle + 360; end;
+
 
 % if we are provided with the EDGE image, we can skip computing it
 if nargin > 6
     EDGE = I;
-    G = varargin{1};
-    gh = varargin{2};
-    gv = varargin{3};
 else
     EDGE = edgemethods(I, edge_method);
-    % compute the gradient information
-    gh = imfilter(I,fspecial('sobel')' /8,'replicate');
-    gv = imfilter(I,fspecial('sobel')/8,'replicate');
-    G(:,:,1) = gv;
-    G(:,:,2) = gh;
-    G = gradientnorm(G);
 end
-
-angvec = unitvector(angle);
-
 
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 [row, col] = linepoints(I,angle);
@@ -49,6 +39,8 @@ warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
 % make r and c fit adjust for the stride
 r = 1 + (r-1)*stride;
 c = 1 + (c-1)*stride;
+
+%keyboard;
 
 % if the angle is pointing up/down
 if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
@@ -77,54 +69,43 @@ end
 
 
 %% step 2: scan until we get to the point (r,c)
-%lastedge = [row(1) col(1)];
-lastgrad = angvec';
+lastedge = [row(1) col(1)];
 
+% if the angle is pointing up/down
 
 for i = 1:length(row)
-    
-    if EDGE(row(i),col(i)) == 1
-        lastgrad = squeeze(G(row(i), col(i),:));
-        %lastedge = [row(i) col(i)];
-    end
     if isequal([r c], [row(i) col(i)])
-        F = angvec * lastgrad;
-        %F = abs(lastedge(1) - row(i));
+        F = abs(lastedge(1) - row(i));
         break
     end
+    if EDGE(row(i),col(i)) == 1
+        lastedge = [row(i) col(i)];
+    end
 end
+
 
 % % if the angle is pointing up/down
 % if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
 %     for i = 1:length(row)
-%         if EDGE(row(i),col(i)) == 1
-%             lastgrad = squeeze(G(row(i), col(i),:));
-%             %lastedge = [row(i) col(i)];
-%         end
 %         if isequal([r c], [row(i) col(i)])
-%             
-%             %F = abs(lastedge(1) - row(i));
-%             F = angvec * lastgrad;
+%             F = abs(lastedge(1) - row(i));
 %             break
 %         end
-%         
+%         if EDGE(row(i),col(i)) == 1
+%             lastedge = [row(i) col(i)];
+%         end
 %     end
 % else
 %     for i = 1:length(col)
-%          if EDGE(row(i),col(i)) == 1
-%             lastgrad = squeeze(G(row(i), col(i),:));
-%             %lastedge = [row(i) col(i)];
-%         end
 %         if isequal([r c], [row(i) col(i)])
-%             %F = abs(lastedge(2) - col(i));
-%             F = angvec * lastgrad;
+%             F = abs(lastedge(2) - col(i));
 %             break
 %         end
-%        
+%         if EDGE(row(i),col(i)) == 1
+%             lastedge = [row(i) col(i)];
+%         end
 %     end
 % end
-
-
 
 
 function [row, col] = linepoints(I,Angle)
