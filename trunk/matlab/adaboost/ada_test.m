@@ -1,30 +1,38 @@
 %% load the saved cascaded classifier
-%load HA-nuclei24-23-Feb-2009-20.41.11.mat;
-load SP-sobel-nuclei24-23-Feb-2009-20.41.22.mat
+ada_versioninfo;
 
+%load HA-nucleirays1bMar0309-211918.mat;
+%load HO-nuclei-rays2Mar0309-211959.mat;
+load SP-nucleicv25bMar042009-032411.mat;
+
+results_folder = [pwd '/results/'];
 
 %% load the test set
-%load TEST_faces.mat;                 DATASETS.VALIDATION_NEG = 100000;
-%load TEST_mitochondria.mat;          DATASETS.VALIDATION_NEG = 100000;
-load TEST_nuclei24.mat;              DATASETS.VALIDATION_NEG = 100000;
-%load TEST_persons48x128.mat;         DATASETS.VALIDATION_NEG = 20000;
+
+%load  TEST_nuclei_un-norm.mat       DATASETS.VALIDATION_NEG = 100000;
+load TEST_nuclei_norm.mat;          DATASETS.VALIDATION_NEG = 100000;
+%load TEST_mito_un-norm.mat          DATASETS.VALIDATION_NEG = 100000;
+%load TEST_faces_norm.mat            DATASETS.VALIDATION_NEG = 100000;
+%load TEST_persons_norm.mat          DATASETS.VALIDATION_NEG = 20000;
 
 
 %% load our settings, make sure they reflect the experiment!
-ada_settings; 
-ada_versioninfo;
+% ada_settings; 
+% ada_versioninfo;
 
 
 %% other preparation stuff - define the features this experiment used
 FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.dat'];
-tic;WEAK = ada_define_weak_learners(LEARNERS); toc; 
-TEST = ada_precompute(TEST, LEARNERS, WEAK, FILES, FILES.test_filenm);
+%tic;WEAK = ada_define_weak_learners(LEARNERS); toc; 
+%TEST = ada_precompute(TEST, LEARNERS, WEAK, FILES, FILES.test_filenm);
 
+TEST = ada_cascade_precom(TEST, CASCADE, LEARNERS, FILES);
 
+keyboard;
 
 %% compute the classifiers response to the test set
-FILES.log_filenm = 'HAAR.log';
-logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(TRAIN_POS) ' positive examples, ' num2str(TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' LEARNERS(:).feature_type],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+FILES.log_filenm = [results_folder 'nuclei-hog.log'];
+logfile(FILES.log_filenm, 'erase');logfile(FILES.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(DATASETS.TRAIN_POS) ' positive examples, ' num2str(DATASETS.TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' LEARNERS(:).feature_type],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(FILES.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'LEARNER'});
 
 

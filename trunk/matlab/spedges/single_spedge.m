@@ -1,4 +1,4 @@
-function [d, EDGE] = single_spedge(angle, stride, edge_method, r, c, I, varargin)
+function [F, EDGE] = single_spedge(angle, stride, edge_method, r, c, I, varargin)
 %SINGLE_SPEDGE computes a spedge feature in a given direction
 %
 %   D = SINGLE_SPEDGE(ANGLE,SIGMA,STRIDE, EDGE_METHOD, ROW,COL,I,'edge')  computes the spedge
@@ -35,113 +35,65 @@ warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
 warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
 
 
-% if there is a top-bottom intersection
-FEAT = zeros(size(EDGE));
+%% step 1:  align rowx colx with your scan point
+% make r and c fit adjust for the stride
+r = 1 + (r-1)*stride;
+c = 1 + (c-1)*stride;
+
+%keyboard;
 
 % if the angle is pointing up/down
 if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
-    % SCAN TO THE LEFT!
-    j = 0;
-    colx = col + j;
-    inimage = find(colx > 0);
-    while ~isempty(inimage);
-        rowx = row(inimage);
-        colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
-        for i = 1:length(rowx);
-            if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                lastedge = [rowx(i) colx(i)];
-            else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-            end
-        end
-        j = j-1;
-        colx = col + j;
-        inimage = find(colx > 0);
+    cdiff = (c - col(row == r));
+    if cdiff > 0
+        col = col + cdiff;
+        inimage = find(col <= size(I,2));
+    else
+        col = col + cdiff;
+        inimage = (col > 0);
     end
-
-
-    % SCAN TO THE RIGHT!
-    j = 1;
-    colx = col + j;
-    inimage = find(colx <= size(I,2));
-    while ~isempty(inimage);
-        rowx = row(inimage);
-        colx = col(inimage) + j;
-        lastedge = [rowx(1) colx(1)];
-        for i = 1:length(rowx);
-            if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-                lastedge = [rowx(i) colx(i)];
-            else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
-            end
-        end
-        j = j+1;
-        colx = col + j;
-        inimage = find(colx <= size(I,2));
-    end
-   
-% the angle is pointing left-right (-pi/4 > angle > pi/4) or (3pi/4 > angle > 5pi/4)
+    col = col(inimage);
+    row = row(inimage);
 else
-      % SCAN TO THE bottom!
-    j = 0;
-    rowx = row + j;
-    inimage = find(rowx > 0);
-    while ~isempty(inimage);
-        rowx = row(inimage) + j;
-        colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
-        for i = 1:length(rowx);
-            if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                lastedge = [rowx(i) colx(i)];
-            else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-            end
-        end
-        j = j-1;
-        rowx = row + j;
-        inimage = find(rowx > 0);
+    rdiff = (r - row(col == c));
+    if rdiff > 0
+        row = row + rdiff;
+        inimage = find(row <= size(I,1));
+    else
+        row = row + rdiff;
+        inimage = (row > 0);
     end
-
-
-    % SCAN TO THE top!
-    j = 1;
-    rowx = row + j;
-    inimage = find(rowx <= size(I,1));
-    while ~isempty(inimage);
-        rowx = row(inimage) + j;
-        colx = col(inimage);
-        lastedge = [rowx(1) colx(1)];
-        for i = 1:length(rowx);
-            if EDGE(rowx(i),colx(i)) == 1
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-                lastedge = [rowx(i) colx(i)];
-            else
-                FEAT(rowx(i),colx(i)) = abs(lastedge(2) - colx(i));
-            end
-        end
-        j = j+1;
-        rowx = row + j;
-        inimage = find(rowx <= size(I,1));
-    end
+    col = col(inimage);
+    row = row(inimage);
 end
 
 
-FEAT = FEAT(1:stride:size(FEAT,1), 1:stride:size(FEAT,2));
+%% step 2: scan until we get to the point (r,c)
+lastedge = [row(1) col(1)];
 
-d = FEAT(r,c);
+% if the angle is pointing up/down
+if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
+    for i = 1:length(row)
+        if isequal([r c], [row(i) col(i)])
+            F = abs(lastedge(1) - row(i));
+            break
+        end
+        if EDGE(row(i),col(i)) == 1
+            lastedge = [row(i) col(i)];
+        end
+    end
+else
+    for i = 1:length(col)
+        if isequal([r c], [row(i) col(i)])
+            F = abs(lastedge(2) - col(i));
+            break
+        end
+        if EDGE(row(i),col(i)) == 1
+            lastedge = [row(i) col(i)];
+        end
+    end
+end
 
-%figure; imagesc(FEAT); axis image;
-
-
-
-
-
-%function d = euclid(x,y)
-%d = sum((x-y).^2).^.5;
 
 
 
