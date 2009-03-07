@@ -1,7 +1,6 @@
 %%load the parameters and path information
 % ----------
-%ada_settings;
-insunrays2b_settings;
+ada_settings;
 ada_versioninfo;
 ada_stage_goals;
 
