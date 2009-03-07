@@ -121,7 +121,7 @@ for l = 1:length(LEARNERS)
             
             % store the last columns
             disp(['    ...writing to ' SET.responses.filename]);
-            cols = f_list;
+            cols = f_list;rows = 1:length(SET.class);
             SET.responses.storeBlock(R(:,1:j-1),rows,cols);
             
             clear R;

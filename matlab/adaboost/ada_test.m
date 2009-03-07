@@ -1,11 +1,12 @@
 %% load the saved cascaded classifier
-ada_versioninfo;
+
 
 %load HA-nucleirays1bMar0309-211918.mat;
 %load HO-nuclei-rays2Mar0309-211959.mat;
 load SP-nucleicv25bMar042009-032411.mat;
 
-results_folder = [pwd '/results/'];
+ada_versioninfo;
+results_folder = [pwd '/results/']; 
 
 %% load the test set
 
@@ -16,17 +17,24 @@ load TEST_nuclei_norm.mat;          DATASETS.VALIDATION_NEG = 100000;
 %load TEST_persons_norm.mat          DATASETS.VALIDATION_NEG = 20000;
 
 
+%=============DEBUG==================
+TEST.Images = TEST.Images(:,:,1:51000);
+TEST.class = TEST.class(1:51000);
+
+%====================================
+
+
 %% load our settings, make sure they reflect the experiment!
 % ada_settings; 
 % ada_versioninfo;
 
 
 %% other preparation stuff - define the features this experiment used
-FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.dat'];
+FILES.test_filenm    = [pwd '/mat/TESTD_FEATURES.mat'];
 %tic;WEAK = ada_define_weak_learners(LEARNERS); toc; 
 %TEST = ada_precompute(TEST, LEARNERS, WEAK, FILES, FILES.test_filenm);
 
-TEST = ada_cascade_precom(TEST, CASCADE, LEARNERS, FILES);
+A = ada_cascade_precom(TEST, CASCADE, LEARNERS, FILES.test_filenm);
 
 keyboard;
 
