@@ -4,8 +4,10 @@
 % dmin      - default minimum detection rate for cascade stage
 clear GOALS;
 
-Ftarget = 1e-4;
+% Ftarget = 1e-5;
+% NStages = 13;
 
+Ftarget = 1e-4;
 NStages = 12;
 
 GOALS(1).dmin = .99;
