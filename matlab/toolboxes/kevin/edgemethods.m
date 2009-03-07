@@ -234,6 +234,12 @@ switch ind
         sigma = 1.25;
         thresh = .5;
         EDGE = edge(I,'canny', thresh ,sigma); EDGE = bwmorph(EDGE, 'diag'); 
+        
+    %% PERSONS EDGES
+    case 62
+        sigma = 1.5;
+        thresh = .3;
+        EDGE = edge(I,'canny', thresh ,sigma); EDGE = bwmorph(EDGE, 'diag');
 end
 
 if ind <= 37
