@@ -360,7 +360,7 @@ for l = 1:length(LEARNERS)
                 end
             end
             
-
+            R = zeros(block, length(f_list));
             W = wristwatch('start', 'end', length(SET.class), 'every', 500, 'text', '    ...precomputed hog for example ');
             % loop through all examples, compute all hog feature responses
             % for example i, store as a block
