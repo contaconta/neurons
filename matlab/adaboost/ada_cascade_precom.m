@@ -1,4 +1,4 @@
-function [A, SET] = ada_cascade_precom(SET, CASCADE, LEARNERS, filenm)
+function [A, SET] = ada_cascade_precom(SET, CASCADE, LEARNERS, filenm, varargin)
 
 
 learner_list = ada_learner_list(CASCADE);  NLEARNERS = length(learner_list);
@@ -7,16 +7,23 @@ hog_stuff = extract_hog_stuff(LEARNERS);
 
 NIMAGES = size(SET.Images,3);  
 j = 1;
-%MEMORYLIMIT = 2000000000;
 
 load LN24.mat;
 
 disp('    beginning precomputing');
 
 W = wristwatch('start', 'end', NIMAGES, 'every', 1000, 'text', '    ...precomputed example ');
-%block = min(NIMAGES, round(FILES.memory / (NLEARNERS*SET.responses.bytes)));
 block = min(NIMAGES, 50000);
-A = single(zeros(block, NLEARNERS));
+
+% we will store it as a double unless varargin{1} = 'single'
+if nargin > 4
+    if strcmp(varargin{1}, 'single')
+        A = single(zeros(block, NLEARNERS));
+    else
+        A = zeros(block, NLEARNERS);
+    end
+end
+        
 
 for e = 1:NIMAGES
     
