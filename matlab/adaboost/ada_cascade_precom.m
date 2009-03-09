@@ -11,30 +11,30 @@ j = 1;
 load LN24.mat;
 
 disp('    beginning precomputing');
+block = min(NIMAGES, 100000);
 
-W = wristwatch('start', 'end', NIMAGES, 'every', 1000, 'text', '    ...precomputed example ');
-block = min(NIMAGES, 50000);
+W = wristwatch('start', 'end', block, 'every', 1000, 'text', '    ...precomputed example ');
 
 % we will store it as a double unless varargin{1} = 'single'
 if nargin > 4
     if strcmp(varargin{1}, 'single')
-        A = single(zeros(block, NLEARNERS));
-    else
-        A = zeros(block, NLEARNERS);
+        disp('using single precision');
+        A = single(ones(block, NLEARNERS));
     end
+else
+    disp('using double precision');
+   % A = ones(block, NLEARNERS);
+    A = rand(block, NLEARNERS);
 end
+
         
 
 for e = 1:NIMAGES
     
-    %I = imread('/osshare/Work/Data/nuclei24/train/pos/nuclei00001.png');
-%     ftemp = extract_features(SET.Images(:,:,j), learner_list, LEARNERS, types, edgems, hog_stuff);
-%     A(j,:) = ftemp;
     A(j,:) = extract_features(SET.Images(:,:,j), learner_list, LEARNERS, types, edgems, hog_stuff, LN);
 
     W = wristwatch(W, 'update', e); %#ok<NASGU>
     j = j + 1;
-    %if j > block; j = 1;   disp('saving A'); save A.mat A; end;
 end
 
 save(filenm, 'A');

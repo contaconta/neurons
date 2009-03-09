@@ -16,14 +16,14 @@ for s = 1:length(CASCADE)
         learner_count = learner_count + 1;
         
         if learner_count >= nlearners
-            disp('last learner found')
+            disp(['  ... cutting the cascade to ' num2str(nlearners) ' learners'])
             break;
         end
         
     end
     
     if learner_count >= nlearners
-        disp('last learner found')
+        %disp(['  ... cutting the cascade to ' num2str(nlearners) ' learners'])
         break;
     end
 end
