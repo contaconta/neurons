@@ -1,5 +1,7 @@
 %% load the data set we want to test on
 % make sure that it is normalized/un-normalize if necessary!!!
+path(path, [pwd '/..']);
+
 
 %load TEST_nuclei_un_norm.mat; N_POS = 1000; N_NEG = 50000;
 %oad TEST_nuclei_norm.mat;   N_POS = 1000; N_NEG = 50000;
