@@ -1,4 +1,4 @@
-function [F, EDGE] = single_spedge(angle, stride, edge_method, r, c, I, varargin)
+function [F, EDGE] = single_spedge(angle, stride, edge_method, r, c, LN, I, varargin)
 %SINGLE_SPEDGE computes a spedge feature in a given direction
 %
 %   D = SINGLE_SPEDGE(ANGLE,SIGMA,STRIDE, EDGE_METHOD, ROW,COL,I,'edge')  computes the spedge
@@ -30,9 +30,17 @@ else
     EDGE = edgemethods(I, edge_method);
 end
 
-warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
-[row, col] = linepoints(I,angle);
-warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
+if isempty(LN)
+    warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
+    [row, col] = linepoints(I,angle);
+    warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
+else
+    ang_ind = find(LN(1).angles == angle, 1);
+    row = LN(ang_ind).r;
+    col = LN(ang_ind).c;
+end
+
+
 
 
 %% step 1:  align rowx colx with your scan point
@@ -74,7 +82,8 @@ lastedge = [row(1) col(1)];
 % if the angle is pointing up/down
 if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     for i = 1:length(row)
-        if isequal([r c], [row(i) col(i)])
+        %if isequal([r c], [row(i) col(i)])
+        if (r == row(i)) && (c == col(i))
             F = abs(lastedge(1) - row(i));
             break
         end
@@ -84,7 +93,8 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
     end
 else
     for i = 1:length(col)
-        if isequal([r c], [row(i) col(i)])
+        if (r == row(i)) && (c == col(i))
+        %if isequal([r c], [row(i) col(i)])
             F = abs(lastedge(2) - col(i));
             break
         end

@@ -239,6 +239,7 @@ BYTES_LIMIT = 1500000;  % the total # of bytes we will scan in one chunk
 w = wristwatch('start', 'end', FPs_REQUIRED, 'every', 100); wstring = '       ...found a new FP #'; tic;
 
 
+load LN.mat;
     
 % while we don't have enough FP examples, keep searching for more.    
 while length(FP_LIST) < FPs_REQUIRED
@@ -348,7 +349,7 @@ while length(FP_LIST) < FPs_REQUIRED
         end
         
         % classify the example
-        C = ada_classify_individual(DETECTOR, Icrop, LEARNERS);
+        C = ada_classify_individual(DETECTOR, Icrop, LEARNERS, LN);
 
         if C
             %disp(['added (raster scan) false positive ' num2str(length(FP_LIST)+1) ]);

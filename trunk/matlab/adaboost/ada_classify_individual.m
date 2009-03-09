@@ -1,4 +1,4 @@
-function C = ada_classify_individual(CLASSIFIER, I, LEARNERS)
+function C = ada_classify_individual(CLASSIFIER, I, LEARNERS, LN)
 %function C = ada_classify_individual(CLASSIFIER, I, LEARNERS, TRAIN,i)
 %   TRAIN, and i are (i think temporary) and not necessary
 %
@@ -82,10 +82,10 @@ for s = 1:length(CASCADE)
                 ind = find([edgelist(:).edge_method] == edge_method,1);
                 if ~isempty(ind)
                     EDGE = edgelist(ind).EDGE;
-                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, EDGE, 'edge');
+                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, LN, EDGE, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, I);
+                    [f(l) EDGE] = single_spedge(angle, stride, edge_method, row, col, LN, I);
                     %disp('using a newly computed edge');
                 end
 
@@ -110,10 +110,10 @@ for s = 1:length(CASCADE)
                 if ~isempty(ind)
                     EDGE = spanglelist(ind).EDGE;
                     G = spanglelist(ind).G;
-                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, EDGE, G, gh, gv, 'edge');
+                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, LN, EDGE, G, gh, gv, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, I);
+                    [f(l) EDGE G gh gv] = single_spangle(angle, stride, edge_method, row, col, LN, I);
                     %disp('using a newly computed edge');
                 end
 
@@ -143,10 +143,10 @@ for s = 1:length(CASCADE)
                     G = spanglelist(ind).G;
                     gh = spanglelist(ind).gh;
                     gv = spanglelist(ind).gv;
-                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, EDGE, G, gh, gv, 'edge');
+                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, LN, EDGE, G, gh, gv, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, I);
+                    [f(l) EDGE G gh gv] = single_spnorm(angle, stride, edge_method, row, col, LN, I);
                     %disp('using a newly computed edge');
                 end
 
@@ -176,10 +176,10 @@ for s = 1:length(CASCADE)
                 ind = find([edgelist(:).edge_method] == edge_method,1);
                 if ~isempty(ind)
                     EDGE = edgelist(ind).EDGE;
-                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,EDGE, 'edge');
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,LN, EDGE, 'edge');
                     %disp('using a previously stored edge');
                 else
-                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,I);
+                    [f(l) EDGE] = ada_spdiff_response(angle1,angle2,stride, edge_method, row,col,LN, I);
                     %disp('using a newly computed edge');
                 end
                 

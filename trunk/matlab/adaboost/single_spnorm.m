@@ -1,4 +1,4 @@
-function [F, EDGE, G, gh, gv] = single_spnorm(angle, stride, edge_method, r, c, I, varargin)
+function [F, EDGE, G, gh, gv] = single_spnorm(angle, stride, edge_method, r, c, LN, I, varargin)
 %SPEDGE_DIST computes a spedge feature in a given direction
 %
 %   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
@@ -39,10 +39,16 @@ else
     G = gradientnorm(G);
 end
 
+if isempty(LN)
+    warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
+    [row, col] = linepoints(I,angle);
+    warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
+else
+    ang_ind = find(LN(1).angles == angle, 1);
+    row = LN(ang_ind).r;
+    col = LN(ang_ind).c;
+end
 
-warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
-[row, col] = linepoints(I,angle);
-warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
 
 
 
