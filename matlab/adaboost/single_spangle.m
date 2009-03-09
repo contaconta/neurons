@@ -1,4 +1,4 @@
-function [F, EDGE, G, gh, gv] = single_spangle(angle, stride, edge_method, r, c, I, varargin)
+function [F, EDGE, G, gh, gv] = single_spangle(angle, stride, edge_method, r, c, LN, I, varargin)
 %SPEDGE_DIST computes a spedge feature in a given direction
 %
 %   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
@@ -39,10 +39,15 @@ end
 
 angvec = unitvector(angle);
 
-
-warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
-[row, col] = linepoints(I,angle);
-warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
+if isempty(LN)
+    warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
+    [row, col] = linepoints(I,angle);
+    warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
+else
+    ang_ind = find(LN(1).angles == angle, 1);
+    row = LN(ang_ind).r;
+    col = LN(ang_ind).c;
+end
 
 
 %% step 1:  align rowx colx with your scan point

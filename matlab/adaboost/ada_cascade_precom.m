@@ -9,6 +9,8 @@ NIMAGES = size(SET.Images,3);
 j = 1;
 %MEMORYLIMIT = 2000000000;
 
+load LN24.mat;
+
 disp('    beginning precomputing');
 
 W = wristwatch('start', 'end', NIMAGES, 'every', 1000, 'text', '    ...precomputed example ');
@@ -21,7 +23,7 @@ for e = 1:NIMAGES
     %I = imread('/osshare/Work/Data/nuclei24/train/pos/nuclei00001.png');
 %     ftemp = extract_features(SET.Images(:,:,j), learner_list, LEARNERS, types, edgems, hog_stuff);
 %     A(j,:) = ftemp;
-    A(j,:) = extract_features(SET.Images(:,:,j), learner_list, LEARNERS, types, edgems, hog_stuff);
+    A(j,:) = extract_features(SET.Images(:,:,j), learner_list, LEARNERS, types, edgems, hog_stuff, LN);
 
     W = wristwatch(W, 'update', e); %#ok<NASGU>
     j = j + 1;
@@ -39,7 +41,7 @@ save(filenm, 'A');
 
 
 %% extracts the features belonging to example image I
-function flist = extract_features(I, learner_list, LEARNERS, types, edgems, hog_stuff)
+function flist = extract_features(I, learner_list, LEARNERS, types, edgems, hog_stuff, LN)
 
 flist = zeros(size(learner_list));
 
@@ -87,19 +89,19 @@ for l = 1:length(learner_list)
         case 'spedge'
             edge_method = learner_list{l}.edge_method;
             ind = find([edgelist(:).edge_method] == edge_method,1);
-            flist(l) = single_spedge(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col, edgelist(ind).EDGE, 'edge');
+            flist(l) = single_spedge(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col, LN, edgelist(ind).EDGE, 'edge');
         case 'spdiff'
             edge_method = learner_list{l}.edge_method;
             ind = find([edgelist(:).edge_method] == edge_method,1);
-            flist(l) = ada_spdiff_response(learner_list{l}.angle1,learner_list{l}.angle2,learner_list{l}.stride, edge_method, learner_list{l}.row,learner_list{l}.col, edgelist(ind).EDGE, 'edge');
+            flist(l) = ada_spdiff_response(learner_list{l}.angle1,learner_list{l}.angle2,learner_list{l}.stride, edge_method, learner_list{l}.row,learner_list{l}.col, LN, edgelist(ind).EDGE, 'edge');
         case 'spangle'
             edge_method = learner_list{l}.edge_method;
             ind = find([edgelist(:).edge_method] == edge_method,1);
-            flist(l) = single_spangle(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col, edgelist(ind).EDGE, G, gh, gv, 'edge');     
+            flist(l) = single_spangle(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col,  LN, edgelist(ind).EDGE, G, gh, gv,  'edge');     
         case 'spnorm'
             edge_method = learner_list{l}.edge_method;
             ind = find([edgelist(:).edge_method] == edge_method,1);
-            flist(l) = single_spnorm(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col, edgelist(ind).EDGE, G, gh, gv, 'edge');
+            flist(l) = single_spnorm(learner_list{l}.angle, learner_list{l}.stride, edge_method, learner_list{l}.row, learner_list{l}.col, LN, edgelist(ind).EDGE, G, gh, gv,  'edge');
     end
 end
 
