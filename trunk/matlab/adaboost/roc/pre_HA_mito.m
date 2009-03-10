@@ -2,6 +2,19 @@
 % make sure that it is normalized/un-normalize if necessary!!!
 path(path, [pwd '/..']);
 
+LEARNERS = []; 
+
+LEARNERS(length(LEARNERS)+1).feature_type   = 'intmean';
+LEARNERS(length(LEARNERS)).IMSIZE        	= IMSIZE;
+
+LEARNERS(length(LEARNERS)+1).feature_type 	= 'intvar';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+
+LEARNERS(length(LEARNERS)+1).feature_type 	= 'haar';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+LEARNERS(length(LEARNERS)).shapes           = {'vert2', 'horz2', 'vert3', 'checker'};
+LEARNERS(length(LEARNERS)).SCAN_Y_STEP      = 2;  % [6 persons, 1 all others]
+LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 2;  % [2 persons, 1 all others]
 
 %load TEST_nuclei_un_norm.mat; N_POS = 1000; N_NEG = 70000;
 %load TEST_nuclei_norm.mat;   N_POS = 1000; N_NEG = 70000;

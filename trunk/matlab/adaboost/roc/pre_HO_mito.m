@@ -2,6 +2,20 @@
 % make sure that it is normalized/un-normalize if necessary!!!
 path(path, [pwd '/..']);
 
+LEARNERS = []; 
+
+LEARNERS(length(LEARNERS)+1).feature_type   = 'intmean';
+LEARNERS(length(LEARNERS)).IMSIZE        	= IMSIZE;
+
+LEARNERS(length(LEARNERS)+1).feature_type 	= 'intvar';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+
+LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+LEARNERS(length(LEARNERS)).bins             = 9;
+LEARNERS(length(LEARNERS)).cellsize         = [4 4];   % [8 8] for persons
+LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+
 
 %load TEST_nuclei_un_norm.mat; N_POS = 1000; N_NEG = 70000;
 %load TEST_nuclei_norm.mat;   N_POS = 1000; N_NEG = 70000;
