@@ -33,7 +33,7 @@ CASCADE = ada_cut_cascade(CASCADE, nlearners);
 
 
 % define a place to store the files
-filenm    = [pwd 'pre_HO_nuclei.mat'];
+filenm    = [pwd '/' 'pre_HO_nuclei.mat'];
 
 %% precompute the feature responses, and store them in FILES.test_filenm
 ada_cascade_precom(TEST, CASCADE, LEARNERS, filenm);
