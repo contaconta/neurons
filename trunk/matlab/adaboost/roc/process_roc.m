@@ -47,6 +47,7 @@ roc_HA_faces = plot_roc(CASCADE, A, gt);
 %roc_HO_nuclei = plot_roc(CASCADE, A, gt);
 %roc_SP1_nuclei = plot_roc(CASCADE, A, gt);
 
+%% save the results!
 save roc_HA_faces.mat roc_HA_faces;
 %save roc_SP_faces.mat roc_SP_faces;
 %save roc_COMBO_faces.mat roc_COMBO_faces;
