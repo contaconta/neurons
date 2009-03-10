@@ -1886,7 +1886,10 @@ void Cube<T,U>::min_max(float* min, float* max)
 
 
 template <class T, class U>
-Cube_P*  Cube<T,U>::threshold(float thres, string outputName)
+Cube_P*  Cube<T,U>::threshold
+(float thres, string outputName,
+bool putHigherValuesTo, bool putLowerValuesTo,
+float highValue, float lowValue)
 {
   Cube<T,U>* result = duplicate_clean(outputName);
 
@@ -1894,11 +1897,16 @@ Cube_P*  Cube<T,U>::threshold(float thres, string outputName)
   for(int z = 0; z < cubeDepth; z++)
     for(int y = 0; y < cubeHeight; y++)
       for(int x = 0; x < cubeWidth; x++)
-        if( at(x,y,z) > thres)
-          result->put(x,y,z, at(x,y,z));
+        if (at(x,y,z) > thres)
+          if(putHigherValuesTo)
+            result->put(x,y,z, highValue);
+          else
+            result->put(x,y,z, at(x,y,z));
         else
-          //This is done for negative threshold (that might arise)
-          result->put(x,y,z, thres);
+          if(putLowerValuesTo)
+            result->put(x,y,z, lowValue);
+          else
+            result->put(x,y,z,  at(x,y,z));
 
   return (Cube_P*)result;
 

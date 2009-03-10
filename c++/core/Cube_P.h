@@ -81,7 +81,9 @@ public:
 
   virtual void min_max(float* min, float* max)=0;
 
-  virtual Cube_P* threshold(float threshold, string output = "output")=0;
+  virtual Cube_P* threshold(float threshold, string output = "output",
+                            bool putHigherValuesTo = false, bool putLowerValuesTo = true,
+                            float highValue = 1, float lowValue = 0)=0;
 
   virtual void print_statistics(string name = "")=0;
 

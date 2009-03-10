@@ -486,7 +486,9 @@ public:
   (string volume_nfo, string volume_positive, string volume_negative,
    string output_file = "ROC.txt", int nPoints = 100);
 
-  Cube_P* threshold(float thres, string outputName="output");
+  Cube_P* threshold(float thres, string outputName="output",
+                    bool putHigherValuesTo = false, bool putLowerValuesTo = true,
+                    float highValue = 1, float lowValue = 0);
 
 };
 
