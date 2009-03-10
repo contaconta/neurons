@@ -28,7 +28,7 @@ TEST.class = TEST.class(1:N_POS+N_NEG);
 %load COMBO-nucleigbMar082009-051944.mat;   % ON GANDALF!
 
 %load HA-mito02-Mar-2009-00.37.16.mat;
-load HO-mito-02-Mar-2009-00.38.37.mat
+load HO-mito-02-Mar-2009-00.38.37.mat;
 %load SP-mitorays4aMar052009-175430.mat;
 %load COMBO-mitorays4Mar072009-231100.mat;
 
