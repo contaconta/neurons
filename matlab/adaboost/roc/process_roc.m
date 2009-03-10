@@ -16,16 +16,18 @@ load SP-mitorays4aMar052009-175430.mat;
 %load COMBO-mitorays4Mar072009-231100.mat;
 
 
-nlearners = 1000;  %1800 NUCLEI, 1000 MITO, 500 FACES  (252 cvlabpc25)
+%nlearners = 500;
+%nlearners = 1800;  %1800 NUCLEI, 1000 MITO, 500 FACES  (252 cvlabpc25)
+nlearners = 1000;
 CASCADE = ada_cut_cascade(CASCADE, nlearners);
 
-gt = zeros([1 71200]);
+gt = zeros([1 71200]);   % mito
 gt(1:1200) = 1;
 
-% gt = zeros([1 101500]);
-% gt(1:1500) = 1;
+%gt = zeros([1 101500]);   % faces
+%gt(1:1500) = 1;
 
-%zeros([1 71000]);
+%gt = zeros([1 71000]);    % nuclei
 %gt(1:1000) = 1;
 
 
@@ -51,6 +53,7 @@ load pre_SP_mito.mat;
 %roc_HA_nuclei = plot_roc(CASCADE, A, gt);
 %roc_HO_nuclei = plot_roc(CASCADE, A, gt);
 %roc_SP1_nuclei = plot_roc(CASCADE, A, gt);
+%roc_SP2_nuclei = plot_roc(CASCADE, A, gt);
 %roc_HA_mito = plot_roc(CASCADE, A, gt);
 %roc_HO_mito = plot_roc(CASCADE, A, gt);
 roc_SP_mito = plot_roc(CASCADE, A, gt);
@@ -63,6 +66,7 @@ roc_SP_mito = plot_roc(CASCADE, A, gt);
 %save roc_HA_nuclei.mat roc_HA_nuclei;
 %save roc_HO_nuclei.mat roc_HO_nuclei;
 %save roc_SP1_nuclei.mat roc_SP1_nuclei;
+%save roc_SP2_nuclei.mat roc_SP2_nuclei;
 
 %save roc_HA_mito.mat roc_HA_mito;
 %save roc_HO_mito.mat roc_HO_mito;
