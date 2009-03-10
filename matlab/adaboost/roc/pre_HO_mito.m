@@ -2,7 +2,7 @@
 % make sure that it is normalized/un-normalize if necessary!!!
 path(path, [pwd '/..']);
 
-LEARNERS = []; 
+LEARNERS = []; IMSIZE = [24 24];
 
 LEARNERS(length(LEARNERS)+1).feature_type   = 'intmean';
 LEARNERS(length(LEARNERS)).IMSIZE        	= IMSIZE;
