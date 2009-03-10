@@ -43,10 +43,12 @@ LDFLAGSGTK    = $(shell pkg-config --libs gtk+-2.0)
 LDFLAGSGTKEXT = $(shell pkg-config --libs gtkglext-1.0 pangoft2)
 LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 
-LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
+#LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
+LDFLAGS =  $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
 INCLUDEFLAGSEXT = -Iexternal/graphCuts
 INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT)
-CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+#CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+CFLAGS = -w -c   $(OPENMP)  $(INCLUDEFLAGS)
 
 ## Relevant directories (I am dislexic)
 

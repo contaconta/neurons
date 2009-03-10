@@ -37,17 +37,18 @@ static char args_doc[] = "volume.nfo outputvolume";
 
 /* The options we understand. */
 static struct argp_option options[] = {
-  {"verbose"  ,  'v', 0,           0,  "Produce verbose output" },
-  {"threshold",  't' , "float",      0,
-   "Threshold above(bellow) the points" },
-  {"min"      ,  'm',  0, 0,"The important points are the low ones"},
+  {"threshold",  't' , "float",    0, "Threshold the cube" },
+  {"lowValue" ,  'l',  "value",    0, "The value to put points below the threshold"},
+  {"highValue" , 'h',  "value",    0, "The value to put points above the threshold"},
   { 0 }
 };
 
 struct arguments
 {
-  char *args[2];                /* arg1 & arg2 */
-  int flag_min, verbose;
+  char  *args[2];                /* arg1 & arg2 */
+  bool  putHigherValuesTo, putLowerValuesTo;
+  float lowValue;
+  float highValue;
   float threshold;
 };
 
@@ -62,14 +63,16 @@ parse_opt (int key, char *arg, struct argp_state *state)
 
   switch (key)
     {
-    case 'v':
-      argments->verbose = 1;
-      break;
     case 't':
       argments->threshold = atof(arg);
       break;
-    case 'm':
-      argments->flag_min = 1;
+    case 'l':
+      argments->lowValue = atof(arg);
+      argments->putLowerValuesTo = true;
+      break;
+    case 'h':
+      argments->highValue = atof(arg);
+      argments->putHigherValuesTo = true;
       break;
 
     case ARGP_KEY_ARG:
@@ -99,28 +102,28 @@ int main(int argc, char **argv) {
 
   struct arguments arguments;
   /* Default values. */
-  arguments.verbose = 0;
   arguments.threshold = 0;
-  arguments.flag_min = 0;
+  arguments.putLowerValuesTo  = false;
+  arguments.putHigherValuesTo = false;
+  arguments.highValue   = 1;
+  arguments.lowValue    = 0;
   arguments.args[1] = "output";
 
   argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
   printf ("Volume = %s\nOutput = %s\n"
-          "bool_min = %s\n"
+          "putHigherValuesTo = %s\n"
+          "putLowerValuesTo = %s\n"
           "threshold = %f \n",
           arguments.args[0], arguments.args[1],
-          arguments.flag_min ? "yes" : "no",
+          arguments.putHigherValuesTo ? "yes" : "no",
+          arguments.putLowerValuesTo ? "yes" : "no",
           arguments.threshold
           );
 
   Cube_P* cube = CubeFactory::load(arguments.args[0]);
 
-  cube->threshold(arguments.threshold, arguments.args[1]);
-
-
-
-
-
-
+  cube->threshold(arguments.threshold, arguments.args[1],
+                  arguments.putHigherValuesTo, arguments.putLowerValuesTo,
+                  arguments.highValue, arguments.lowValue);
 }
