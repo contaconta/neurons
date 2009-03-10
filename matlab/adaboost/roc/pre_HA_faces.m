@@ -4,9 +4,9 @@ path(path, [pwd '/..']);
 
 
 %load TEST_nuclei_un_norm.mat; N_POS = 1000; N_NEG = 50000;
-load TEST_nuclei_norm.mat;   N_POS = 1000; N_NEG = 100000;
+%load TEST_nuclei_norm.mat;   N_POS = 1000; N_NEG = 100000;
 %load TEST_mito_un_norm.mat;  N_POS = 1200; N_NEG = 50000; 
-%load TEST_faces_norm.mat;    N_POS = 1500; N_NEG = 100000;
+load TEST_faces_norm.mat;    N_POS = 1500; N_NEG = 100000;
 %load TEST_persons_norm.mat;  N_POS = 1000; N_NEG = 20000;
 
 %=============DEBUG==================
