@@ -61,7 +61,7 @@ public:
 
   virtual void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz)=0;
 
-  virtual void load_texture_brick(int row, int col)=0;
+  virtual void load_texture_brick(int row, int col, float scale = 1.0)=0;
 
   virtual void draw()=0;
 

@@ -79,7 +79,7 @@ void Cube<T,U>::load_whole_texture()
 }
 
 template <class T, class U>
-void Cube<T,U>::load_texture_brick(int row, int col)
+void Cube<T,U>::load_texture_brick(int row, int col, float scale)
 {
   nColToDraw = col;
   nRowToDraw = row;
@@ -160,7 +160,7 @@ void Cube<T,U>::load_texture_brick(int row, int col)
               for(int x = 0; x < limit_x; x++)
                 {
                   texels[depth_z + depth_y + x] =
-                    (GLubyte)at(col_offset+x,row_offset+y,z);
+                    (GLubyte)at(col_offset+x,row_offset+y,z)*scale;
                 }
             }
           printf("#");
@@ -212,7 +212,7 @@ void Cube<T,U>::load_texture_brick(int row, int col)
 //                   }
 //                   else{
                     texels[depth_z + depth_y + x] =
-                      (this->at(col_offset+x,row_offset+y,z) - min_texture)
+                      scale*(this->at(col_offset+x,row_offset+y,z) - min_texture)
                       / (max_texture - min_texture);
 //                   }
                 }
@@ -607,7 +607,7 @@ void Cube<T,U>::draw_layers_parallel()
 
 template< class T, class U>
 void Cube<T,U>::draw(){
-  draw(0,0,200,v_draw_projection*3,0);
+  draw(0,0,200,v_draw_projection*4,0);
 }
 
 template <class T, class U>
@@ -1045,14 +1045,16 @@ void Cube<T,U>::draw
           points_angles[min_index] = 1e3;
         }
 
-      if(min_max==0)
-        glColor3f(1.0,1.0,1.0);
-      if(min_max==1)
-        glColor3f(0.0,0.0,1.0);
-      if(min_max==2)
-        glColor3f(0.0,1.0,0.0);
-      if(min_max==3)
-        glColor3f(1.0,1.0,1.0);
+//       if(min_max==0)
+      glColor3f(v_r,v_g,v_b);
+//       if(min_max==1)
+//         glColor3f(1.0,0.0,0.0);
+//       if(min_max==2)
+//         glColor3f(0.0,1.0,0.0);
+//       if(min_max==3)
+//         glColor3f(0.0,0.0,1.0);
+//       if(min_max==4)
+//         glColor3f(1.0,1.0,1.0);
 
 
       glEnable(GL_BLEND);
@@ -1627,7 +1629,8 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
 //   printf("draw_layer_tile_XY %f %f size texture %i %f %f\n", increment_height, increment_width, size_texture, float(cubeWidth)/size_texture, float(cubeHeight)/size_texture);
 
   if(color == 0){
-    glColor3f(1.0,1.0,1.0);
+//     glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
     glBegin(GL_QUADS);
     glTexCoord3f(0,0,t_max*nLayerToDraw/(cubeDepth-1));
     glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
@@ -1660,7 +1663,7 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
 
 
   glDisable(GL_TEXTURE_3D);
-  glColor3f(0.0,0.0,0.7);
+//   glColor3f(0.0,0.0,0.7);
   glBegin(GL_LINE_LOOP);
   glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
              heightStep - nRowToDraw*size_texture*voxelHeight,
@@ -1675,7 +1678,7 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
              heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
              -depthStep + nLayerToDraw*voxelDepth);
   glEnd();
-  glColor3f(0.0,0.0,1.0);
+//   glColor3f(0.0,0.0,1.0);
   glBegin(GL_LINES);
 
   glEnd();
@@ -1721,6 +1724,7 @@ void Cube<T,U>::draw_layer_tile_XZ(float nLayerToDraw, int color)
 
   if(color == 0){
     glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
     glBegin(GL_QUADS);
     glTexCoord3f(0, s_max*nLayerToDraw/y_max, 0);
     glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
@@ -1750,7 +1754,7 @@ void Cube<T,U>::draw_layer_tile_XZ(float nLayerToDraw, int color)
 
 
   glDisable(GL_TEXTURE_3D);
-  glColor3f(0.7,0.0,0.0);
+//   glColor3f(0.7,0.0,0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
              heightStep - nRowToDraw*max_texture_size*voxelHeight
@@ -1809,8 +1813,8 @@ void Cube<T,U>::draw_layer_tile_YZ(float nLayerToDraw,int color)
   GLfloat depth_texture = nLayerToDraw/r_max;
 
   if(color == 0){
-    glColor3f(1.0,1.0,1.0);
-
+//     glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
     glBegin(GL_QUADS);
     glTexCoord3f(r_max*nLayerToDraw/x_max, 0, 0);
     glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
@@ -1839,7 +1843,7 @@ void Cube<T,U>::draw_layer_tile_YZ(float nLayerToDraw,int color)
 
 
   glDisable(GL_TEXTURE_3D);
-  glColor3f(0.0,0.7,0.0);
+//   glColor3f(0.0,0.7,0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
              + nLayerToDraw*voxelWidth,
