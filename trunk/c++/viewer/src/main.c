@@ -71,7 +71,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
       majorMode = MOD_ASCEDITOR;
       break;
     case 'c':
-      majorMode = MOD_CONTOUREDITOR;
+      majorMode = MOD_SELECT_EDITOR;
       break;
 
     case ARGP_KEY_ARG:
@@ -158,9 +158,9 @@ main (int argc, char *argv[])
     GtkWidget* controlsAsc = create_ascEditControls();
     gtk_widget_show (controlsAsc);
   }
-  else if(majorMode == MOD_CONTOUREDITOR){
-    contourEditor = create_ascEditControlsContours();
-    gtk_widget_show (contourEditor);
+  else if(majorMode == MOD_SELECT_EDITOR){
+    selectionEditor = create_ascEditControlsSelect();
+    gtk_widget_show (selectionEditor);
   }
 
 

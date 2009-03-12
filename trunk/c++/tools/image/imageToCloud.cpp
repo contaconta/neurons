@@ -192,6 +192,8 @@ void sampleWidthNormalization(arguments &args)
       int x, y;
       while(nPositivePoints < args.number_points)
         {
+	  printf("nPositivePoints:%d\n", nPositivePoints);
+
           y = (int)floor(gsl_rng_uniform(r)*img->height);
 
           //Check for the existance of one of the points supposed to be on the bin in the image
@@ -436,6 +438,8 @@ int main(int argc, char **argv) {
         int x, y;
         while(nPositivePoints < args.number_points)
           {
+	    printf("nPositivePoints:%d\n", nPositivePoints);
+
             x = (int)floor(gsl_rng_uniform(r)*img->width);
             y = (int)floor(gsl_rng_uniform(r)*img->height);
             if(img->at(x,y) < 100){
@@ -462,6 +466,7 @@ int main(int argc, char **argv) {
       if(args.save_negative)
         {
           Image<float>* mask = NULL;
+	  printf("args.name_mask:%s\n", args.name_mask.c_str());
           if(args.name_mask != ""){
             mask = new Image<float>(args.name_mask);
           }
@@ -475,7 +480,12 @@ int main(int argc, char **argv) {
           else
             limitNegative = args.number_negative_points;
 
+	  printf("limitNegative:%d\n", limitNegative);
+
           while(nNegativePoints < limitNegative){
+
+	    printf("nNegativePoints:%d\n", nNegativePoints);
+
             x = (int)floor(gsl_rng_uniform(r)*img->width);
             y = (int)floor(gsl_rng_uniform(r)*img->height);
             if(mask!=NULL){

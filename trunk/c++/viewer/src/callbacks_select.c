@@ -19,45 +19,45 @@
 #include <fstream>
 
 void
-on_create_contour_clicked              (GtkButton       *button,
+on_create_selection_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-  GtkComboBox* list_contours=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_contours"));
-  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
-  int active_id = gtk_combo_box_get_active(contour_type);
+  GtkComboBox* list_selections=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_selections"));
+  GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"selection_type"));
+  int active_id = gtk_combo_box_get_active(selection_type);
   printf("activeId: %d\n", active_id);
-  if(active_id == CT_SIMPLE_CONTOUR)
+  if(active_id == CT_SIMPLE_SELECTION)
     {
-      currentContour = new Contour<Point>;
-      lContours.push_back(currentContour);
-      gtk_combo_box_append_text(list_contours, currentContour->contour_name.c_str());
+      currentSelectionSet = new DoubleSet<Point>;
+      lSelections.push_back(currentSelectionSet);
+      gtk_combo_box_append_text(list_selections, currentSelectionSet->name.c_str());
     }
   else
     {
       currentGraphCut = new GraphCut<Point>(cube);
       lGraphCuts.push_back(currentGraphCut);
-      gtk_combo_box_append_text(list_contours, currentGraphCut->graphcut_name.c_str());
+      gtk_combo_box_append_text(list_selections, currentGraphCut->graphcut_name.c_str());
     }
 }
 
 void
-on_add_contour_point_toggled           (GtkToggleButton *togglebutton,
+on_add_selection_point_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    if(togglebutton->active)
-        contourEditor_action = CPA_ADD_POINTS;
-    else
-        contourEditor_action = CPA_SELECT;
+  if(togglebutton->active)
+    selectToolMode = CPA_ADD_POINTS;
+  else
+     selectToolMode = CPA_SELECT;
 }
 
-bool unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType pointType)
+bool unProjectMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointType pointType)
 {
   bool bRes = false;
-  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(contourEditor,"contour_selection_type"));
-  int active_id = gtk_combo_box_get_active(contour_type);
-  if(active_id == CT_SIMPLE_CONTOUR)
+  GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(selectionEditor,"selection_type"));
+  int active_id = gtk_combo_box_get_active(selection_type);
+  if(active_id == CT_SIMPLE_SELECTION)
     {
-      if(currentContour == 0)
+      if(currentSelectionSet == 0)
 	return false;
     }
   else
@@ -114,20 +114,20 @@ bool unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
 
   glPopMatrix();
 
-  printf("unProjectMouseContour %d %d\n", mouse_last_x, mouse_last_y);
+  printf("unProjectMouseSelectTool %d %d\n", mouse_last_x, mouse_last_y);
   printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
 
-  switch(contourEditor_action)
+  switch(selectToolMode)
     {
     case CPA_ADD_POINTS:
       {
-	if(active_id == CT_SIMPLE_CONTOUR)
+	if(active_id == CT_SIMPLE_SELECTION)
 	  {
 	    Point3D* point=new Point3D();
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
 	    point->coords.push_back((float)wz);
-	    currentContour->addPoint(point);
+	    currentSelectionSet->addPoint(point, pointType+1);
 	  }
 	else
 	  {
@@ -157,18 +157,18 @@ bool unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType 
 }
 
 void
-on_save_contour_clicked                (GtkButton       *button,
+on_save_selection_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
-  int active_id = gtk_combo_box_get_active(contour_type);
-  if(active_id == CT_SIMPLE_CONTOUR)
+  GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"selection_type"));
+  int active_id = gtk_combo_box_get_active(selection_type);
+  if(active_id == CT_SIMPLE_SELECTION)
     {
-      if(currentContour)
+      if(currentSelectionSet)
 	{
 	  //If the neuron is modified, the previous will be saved in the following name
-	  string contour_name_save = currentContour->contour_name + ".save";
-	  currentContour->save(contour_name_save);
+	  string selection_name_save = currentSelectionSet->name + ".save";
+	  currentSelectionSet->save(selection_name_save);
 	}
     }
   else
@@ -184,16 +184,16 @@ on_save_contour_clicked                (GtkButton       *button,
 }
 
 void
-on_clear_contour_clicked               (GtkButton       *button,
+on_clear_selection_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
-  int active_id = gtk_combo_box_get_active(contour_type);
-  if(active_id == CT_SIMPLE_CONTOUR)
+  GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"selection_type"));
+  int active_id = gtk_combo_box_get_active(selection_type);
+  if(active_id == CT_SIMPLE_SELECTION)
     {
-      if(currentContour)
+      if(currentSelectionSet)
 	{
-	  currentContour->clear();
+	  currentSelectionSet->clear();
 	}
     }
   else
@@ -208,25 +208,25 @@ on_clear_contour_clicked               (GtkButton       *button,
 
 
 void
-on_remove_contour_clicked              (GtkButton       *button,
+on_remove_selection_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-    GtkComboBox* list_contours=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_contours"));
-    gchar* active_text = gtk_combo_box_get_active_text(list_contours);
+    GtkComboBox* list_selections=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_selections"));
+    gchar* active_text = gtk_combo_box_get_active_text(list_selections);
     if(active_text != 0)
     {
-        gtk_combo_box_remove_text(list_contours, gtk_combo_box_get_active(list_contours));
-        for(vector< Contour<Point>* >::iterator itContours = lContours.begin();
-            itContours != lContours.end();)
+        gtk_combo_box_remove_text(list_selections, gtk_combo_box_get_active(list_selections));
+        for(vector< DoubleSet<Point>* >::iterator itSelections = lSelections.begin();
+            itSelections != lSelections.end();)
         {
-            if(strcmp((*itContours)->contour_name.c_str(), active_text)==0)
+            if(strcmp((*itSelections)->name.c_str(), active_text)==0)
             {
                 printf("Erase %s\n", active_text);
-                itContours = lContours.erase(itContours);
+                itSelections = lSelections.erase(itSelections);
                 break;
             }
             else
-                itContours++;
+                itSelections++;
         }
     }
 }
@@ -256,18 +256,18 @@ on_run_graph_cuts_clicked              (GtkButton       *button,
 
 
 void
-on_load_contour_clicked                (GtkButton       *button,
+on_load_selection_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-  GtkComboBox* contour_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"contour_selection_type"));
-  int active_id = gtk_combo_box_get_active(contour_type);
-  GtkComboBox* list_contours=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_contours"));
-  char* active_text = gtk_combo_box_get_active_text(list_contours);
-  if(active_id == CT_SIMPLE_CONTOUR)
+  GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"selection_type"));
+  int active_id = gtk_combo_box_get_active(selection_type);
+  GtkComboBox* list_selections=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_selections"));
+  char* active_text = gtk_combo_box_get_active_text(list_selections);
+  if(active_id == CT_SIMPLE_SELECTION)
     {
-      if(currentContour)
+      if(currentSelectionSet)
 	{
-	  //currentContour->load(active_text);
+	  //currentSelection->load(active_text);
 	}
     }
   else
