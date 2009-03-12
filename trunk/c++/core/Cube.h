@@ -274,7 +274,7 @@ public:
   void load_whole_texture();
 
   /** Loads the texture of the brick represented by the row, col. Both start at 0.*/
-  void load_texture_brick(int row, int col);
+  void load_texture_brick(int row, int col, float scale = 1.0);
 
   /** Loads a thresholded brick.*/
   void load_thresholded_texture_brick(int row, int col, float threshold);
@@ -451,6 +451,7 @@ public:
   /** Calculates the measure of Aguet05.*/
   void calculate_aguet(float sigma_xy, float sigma_z = 0);
   void calculate_aguet_flat(float sigma_xy, float sigma_z = 0);
+  void calculate_aguet_f_(float sigma_xy, float sigma_z);
 
   /** Creates three new volumes with the eigenvalues ordered.*/
   void order_eigen_values(float sigma_xy, float sigma_z);
