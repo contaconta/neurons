@@ -831,33 +831,34 @@ create_ascSelectShaders (void)
 }
 
 GtkWidget*
-create_ascEditControlsContours (void)
+create_ascEditControlsSelect (void)
 {
-  GtkWidget *ascEditControlsContours;
+  GtkWidget *ascEditControlsSelect;
+  AtkObject *atko;
   GtkWidget *table3;
   GtkWidget *label_a;
-  GtkWidget *create_contour;
+  GtkWidget *create_selection;
   GtkWidget *label_c;
-  GtkWidget *save_contour;
+  GtkWidget *save_selection;
   GtkWidget *label_s;
-  GtkWidget *clear_contour;
+  GtkWidget *clear_selection;
   GtkWidget *label_e;
-  GtkWidget *list_contours;
-  GtkWidget *remove_contour;
+  GtkWidget *list_selections;
+  GtkWidget *remove_selection;
   GtkWidget *label_r;
-  GtkWidget *add_contour_point;
+  GtkWidget *add_selection_point;
   GtkWidget *run_graph_cuts;
   GtkWidget *label_g;
-  GtkWidget *contour_selection_type;
-  GtkWidget *load_contour;
+  GtkWidget *selection_type;
+  GtkWidget *load_selection;
   GtkWidget *label_l;
 
-  ascEditControlsContours = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (ascEditControlsContours), _("Select contours"));
+  ascEditControlsSelect = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (ascEditControlsSelect), _("Select tool"));
 
   table3 = gtk_table_new (13, 2, FALSE);
   gtk_widget_show (table3);
-  gtk_container_add (GTK_CONTAINER (ascEditControlsContours), table3);
+  gtk_container_add (GTK_CONTAINER (ascEditControlsSelect), table3);
 
   label_a = gtk_label_new (_("a"));
   gtk_widget_show (label_a);
@@ -866,9 +867,9 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_a), 0, 0.5);
 
-  create_contour = gtk_button_new_with_mnemonic (_("Create contour"));
-  gtk_widget_show (create_contour);
-  gtk_table_attach (GTK_TABLE (table3), create_contour, 0, 1, 2, 3,
+  create_selection = gtk_button_new_with_mnemonic (_("Create new selection"));
+  gtk_widget_show (create_selection);
+  gtk_table_attach (GTK_TABLE (table3), create_selection, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -879,9 +880,9 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_c), 0, 0.5);
 
-  save_contour = gtk_button_new_with_mnemonic (_("Save contour"));
-  gtk_widget_show (save_contour);
-  gtk_table_attach (GTK_TABLE (table3), save_contour, 0, 1, 6, 7,
+  save_selection = gtk_button_new_with_mnemonic (_("Save"));
+  gtk_widget_show (save_selection);
+  gtk_table_attach (GTK_TABLE (table3), save_selection, 0, 1, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -892,9 +893,9 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_s), 0, 0.5);
 
-  clear_contour = gtk_button_new_with_mnemonic (_("Clear"));
-  gtk_widget_show (clear_contour);
-  gtk_table_attach (GTK_TABLE (table3), clear_contour, 0, 1, 4, 5,
+  clear_selection = gtk_button_new_with_mnemonic (_("Clear"));
+  gtk_widget_show (clear_selection);
+  gtk_table_attach (GTK_TABLE (table3), clear_selection, 0, 1, 4, 5,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -905,15 +906,15 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_e), 0, 0.5);
 
-  list_contours = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (list_contours);
-  gtk_table_attach (GTK_TABLE (table3), list_contours, 0, 1, 0, 1,
+  list_selections = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (list_selections);
+  gtk_table_attach (GTK_TABLE (table3), list_selections, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
-  remove_contour = gtk_button_new_with_mnemonic (_("Remove"));
-  gtk_widget_show (remove_contour);
-  gtk_table_attach (GTK_TABLE (table3), remove_contour, 0, 1, 5, 6,
+  remove_selection = gtk_button_new_with_mnemonic (_("Remove"));
+  gtk_widget_show (remove_selection);
+  gtk_table_attach (GTK_TABLE (table3), remove_selection, 0, 1, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -924,9 +925,9 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_r), 0, 0.5);
 
-  add_contour_point = gtk_toggle_button_new_with_mnemonic (_("Add contour points"));
-  gtk_widget_show (add_contour_point);
-  gtk_table_attach (GTK_TABLE (table3), add_contour_point, 0, 1, 3, 4,
+  add_selection_point = gtk_toggle_button_new_with_mnemonic (_("Add new points"));
+  gtk_widget_show (add_selection_point);
+  gtk_table_attach (GTK_TABLE (table3), add_selection_point, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -943,17 +944,17 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_g), 0, 0.5);
 
-  contour_selection_type = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (contour_selection_type);
-  gtk_table_attach (GTK_TABLE (table3), contour_selection_type, 0, 1, 1, 2,
+  selection_type = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (selection_type);
+  gtk_table_attach (GTK_TABLE (table3), selection_type, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (contour_selection_type), _("Simple contour"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (contour_selection_type), _("GraphCut"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (selection_type), _("Simple contour"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (selection_type), _("GraphCut"));
 
-  load_contour = gtk_button_new_with_mnemonic (_("Load contour"));
-  gtk_widget_show (load_contour);
-  gtk_table_attach (GTK_TABLE (table3), load_contour, 0, 1, 7, 8,
+  load_selection = gtk_button_new_with_mnemonic (_("Load"));
+  gtk_widget_show (load_selection);
+  gtk_table_attach (GTK_TABLE (table3), load_selection, 0, 1, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -964,48 +965,52 @@ create_ascEditControlsContours (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_l), 0, 0.5);
 
-  g_signal_connect ((gpointer) create_contour, "clicked",
-                    G_CALLBACK (on_create_contour_clicked),
+  g_signal_connect ((gpointer) create_selection, "clicked",
+                    G_CALLBACK (on_create_selection_clicked),
                     NULL);
-  g_signal_connect ((gpointer) save_contour, "clicked",
-                    G_CALLBACK (on_save_contour_clicked),
+  g_signal_connect ((gpointer) save_selection, "clicked",
+                    G_CALLBACK (on_save_selection_clicked),
                     NULL);
-  g_signal_connect ((gpointer) clear_contour, "clicked",
-                    G_CALLBACK (on_clear_contour_clicked),
+  g_signal_connect ((gpointer) clear_selection, "clicked",
+                    G_CALLBACK (on_clear_selection_clicked),
                     NULL);
-  g_signal_connect ((gpointer) remove_contour, "clicked",
-                    G_CALLBACK (on_remove_contour_clicked),
+  g_signal_connect ((gpointer) remove_selection, "clicked",
+                    G_CALLBACK (on_remove_selection_clicked),
                     NULL);
-  g_signal_connect ((gpointer) add_contour_point, "toggled",
-                    G_CALLBACK (on_add_contour_point_toggled),
+  g_signal_connect ((gpointer) add_selection_point, "toggled",
+                    G_CALLBACK (on_add_selection_point_toggled),
                     NULL);
   g_signal_connect ((gpointer) run_graph_cuts, "clicked",
                     G_CALLBACK (on_run_graph_cuts_clicked),
                     NULL);
-  g_signal_connect ((gpointer) load_contour, "clicked",
-                    G_CALLBACK (on_load_contour_clicked),
+  g_signal_connect ((gpointer) load_selection, "clicked",
+                    G_CALLBACK (on_load_selection_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (ascEditControlsContours, ascEditControlsContours, "ascEditControlsContours");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, table3, "table3");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_a, "label_a");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, create_contour, "create_contour");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_c, "label_c");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, save_contour, "save_contour");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_s, "label_s");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, clear_contour, "clear_contour");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_e, "label_e");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, list_contours, "list_contours");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, remove_contour, "remove_contour");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_r, "label_r");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, add_contour_point, "add_contour_point");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, run_graph_cuts, "run_graph_cuts");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_g, "label_g");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, contour_selection_type, "contour_selection_type");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, load_contour, "load_contour");
-  GLADE_HOOKUP_OBJECT (ascEditControlsContours, label_l, "label_l");
+  atko = gtk_widget_get_accessible (ascEditControlsSelect);
+  atk_object_set_name (atko, _("Select tools"));
 
-  return ascEditControlsContours;
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (ascEditControlsSelect, ascEditControlsSelect, "ascEditControlsSelect");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, table3, "table3");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_a, "label_a");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, create_selection, "create_selection");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_c, "label_c");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, save_selection, "save_selection");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_s, "label_s");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, clear_selection, "clear_selection");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_e, "label_e");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, list_selections, "list_selections");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, remove_selection, "remove_selection");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_r, "label_r");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, add_selection_point, "add_selection_point");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, run_graph_cuts, "run_graph_cuts");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_g, "label_g");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, selection_type, "selection_type");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, load_selection, "load_selection");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_l, "label_l");
+
+  return ascEditControlsSelect;
 }
 

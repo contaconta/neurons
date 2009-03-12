@@ -224,6 +224,7 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
 
 template<class T>
 T Image<T>::at(int x, int y){
+  //printf("xy : %d %d %x\n",x,y,pixels);
   return pixels[y][x];
 }
 
@@ -602,6 +603,10 @@ void Image<T>::draw()
           max_val = at(x,y);
       }
 
+    // Allocate dynamic memory for texels
+    // Warning : this has to be allocated dynamically to avoid stack overflow
+    T* texels = new T[width*height];
+
     for(int x = 0; x < width; x++)
       for(int y = 0; y < height; y++){
         texels[x + y*width] = (at(x,y) - min_val)/
@@ -631,6 +636,7 @@ void Image<T>::draw()
                    width, height, 0, GL_LUMINANCE,
                    GL_UNSIGNED_BYTE, texels);
     texture_loaded = true;
+    delete[] texels;
   }
 
   glColor3f(1.0,1.0,1.0);

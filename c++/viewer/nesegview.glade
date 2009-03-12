@@ -1511,9 +1511,9 @@ Gaussian 3*3</property>
   </child>
 </widget>
 
-<widget class="GtkWindow" id="ascEditControlsContours">
+<widget class="GtkWindow" id="ascEditControlsSelect">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Select contours</property>
+  <property name="title" translatable="yes">Select tool</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -1526,6 +1526,9 @@ Gaussian 3*3</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <accessibility>
+    <atkproperty name="AtkObject::accessible_name" translatable="yes">Select tools</atkproperty>
+  </accessibility>
 
   <child>
     <widget class="GtkTable" id="table3">
@@ -1565,14 +1568,14 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkButton" id="create_contour">
+	<widget class="GtkButton" id="create_selection">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">Create contour</property>
+	  <property name="label" translatable="yes">Create new selection</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_create_contour_clicked" last_modification_time="Wed, 21 Jan 2009 13:50:42 GMT"/>
+	  <signal name="clicked" handler="on_create_selection_clicked" last_modification_time="Thu, 12 Mar 2009 20:08:30 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1613,14 +1616,14 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkButton" id="save_contour">
+	<widget class="GtkButton" id="save_selection">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">Save contour</property>
+	  <property name="label" translatable="yes">Save</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_save_contour_clicked" last_modification_time="Wed, 21 Jan 2009 14:34:47 GMT"/>
+	  <signal name="clicked" handler="on_save_selection_clicked" last_modification_time="Thu, 12 Mar 2009 20:11:58 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1661,14 +1664,14 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkButton" id="clear_contour">
+	<widget class="GtkButton" id="clear_selection">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
 	  <property name="label" translatable="yes">Clear</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_clear_contour_clicked" last_modification_time="Thu, 22 Jan 2009 10:52:12 GMT"/>
+	  <signal name="clicked" handler="on_clear_selection_clicked" last_modification_time="Thu, 12 Mar 2009 20:09:59 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1709,7 +1712,7 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="list_contours">
+	<widget class="GtkComboBoxEntry" id="list_selections">
 	  <property name="visible">True</property>
 	  <property name="add_tearoffs">False</property>
 	  <property name="has_frame">True</property>
@@ -1725,14 +1728,14 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkButton" id="remove_contour">
+	<widget class="GtkButton" id="remove_selection">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
 	  <property name="label" translatable="yes">Remove</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_remove_contour_clicked" last_modification_time="Thu, 22 Jan 2009 10:54:50 GMT"/>
+	  <signal name="clicked" handler="on_remove_selection_clicked" last_modification_time="Thu, 12 Mar 2009 20:11:44 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1773,16 +1776,16 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkToggleButton" id="add_contour_point">
+	<widget class="GtkToggleButton" id="add_selection_point">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">Add contour points</property>
+	  <property name="label" translatable="yes">Add new points</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
 	  <property name="active">False</property>
 	  <property name="inconsistent">False</property>
-	  <signal name="toggled" handler="on_add_contour_point_toggled" last_modification_time="Mon, 26 Jan 2009 14:17:54 GMT"/>
+	  <signal name="toggled" handler="on_add_selection_point_toggled" last_modification_time="Thu, 12 Mar 2009 20:09:49 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1843,7 +1846,7 @@ Gaussian 3*3</property>
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="contour_selection_type">
+	<widget class="GtkComboBoxEntry" id="selection_type">
 	  <property name="visible">True</property>
 	  <property name="items" translatable="yes">Simple contour
 GraphCut</property>
@@ -1861,14 +1864,14 @@ GraphCut</property>
       </child>
 
       <child>
-	<widget class="GtkButton" id="load_contour">
+	<widget class="GtkButton" id="load_selection">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">Load contour</property>
+	  <property name="label" translatable="yes">Load</property>
 	  <property name="use_underline">True</property>
 	  <property name="relief">GTK_RELIEF_NORMAL</property>
 	  <property name="focus_on_click">True</property>
-	  <signal name="clicked" handler="on_load_contour_clicked" last_modification_time="Thu, 29 Jan 2009 10:54:22 GMT"/>
+	  <signal name="clicked" handler="on_load_selection_clicked" last_modification_time="Thu, 12 Mar 2009 20:12:31 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>

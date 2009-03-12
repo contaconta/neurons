@@ -25,7 +25,7 @@ void exposeAsc(GtkWidget       *widget,
 
 void unProjectMouseAsc(int mouse_last_x, int mouse_last_y);
 
-bool unProjectMouseContour(int mouse_last_x, int mouse_last_y, ContourPointType pointType);
+bool unProjectMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointType objectType);
 
 void keyPressedAsc(GtkWidget       *widget,
                    GdkEventKey        *event,

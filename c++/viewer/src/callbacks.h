@@ -241,29 +241,29 @@ on_select_shaders_changed              (GtkComboBox     *combobox,
                                         gpointer         user_data);
 
 void
-on_create_contour_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_save_contour_clicked                (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_clear_contour_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_remove_contour_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
 on_run_graph_cuts_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_add_contour_point_toggled           (GtkToggleButton *togglebutton,
+on_create_selection_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_load_contour_clicked                (GtkButton       *button,
+on_save_selection_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_clear_selection_clicked             (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_remove_selection_clicked            (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_add_selection_point_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_load_selection_clicked              (GtkButton       *button,
                                         gpointer         user_data);

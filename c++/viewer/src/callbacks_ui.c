@@ -209,26 +209,25 @@ void unProjectMouse()
   if(majorMode == MOD_ASCEDITOR){
     unProjectMouseAsc(mouse_last_x, mouse_last_y);
   }
-  if(majorMode == MOD_CONTOUREDITOR){
-    unProjectMouseContour(mouse_last_x, mouse_last_y, CPT_SOURCE);
+  if(majorMode == MOD_SELECT_EDITOR){
+    unProjectMouseSelectTool(mouse_last_x, mouse_last_y, CPT_SOURCE);
   }
 
 }
 
-bool contour_handle_mouse(int x, int y)
+bool select_tool_handle_mouse(int x, int y)
 {
   bool bRes = false;
-  if(majorMode == MOD_CONTOUREDITOR)
+  if(majorMode == MOD_SELECT_EDITOR)
     {
     if( mouse_buttons[2] )
       {
-	printf("contour_handle_mouse %d %d\n", x, y);
-	bRes = unProjectMouseContour(x, y, CPT_SINK);
+	bRes = unProjectMouseSelectTool(x, y, CPT_SINK);
       }
     else
       if( mouse_buttons[0] )
 	{
-	  bRes = unProjectMouseContour(x, y, CPT_SOURCE);
+	  bRes = unProjectMouseSelectTool(x, y, CPT_SOURCE);
 	}
     }
   return bRes;
@@ -243,7 +242,7 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
   GdkModifierType state;
   gdk_window_get_pointer (event->window, &x, &y, &state);
 
-  if(contour_handle_mouse(x,y))
+  if(select_tool_handle_mouse(x,y))
     return true;
 
   mouse_current_x = x;
@@ -310,8 +309,8 @@ on_drawing3D_button_press_event        (GtkWidget       *widget,
       break;
     case 3:
       mouse_buttons[2] = (mouse_buttons[2]==0)?1:0;
-      if(majorMode == MOD_CONTOUREDITOR){
-	unProjectMouseContour(mouse_last_x, mouse_last_y,CPT_SINK);
+      if(majorMode == MOD_SELECT_EDITOR){
+	unProjectMouseSelectTool(mouse_last_x, mouse_last_y,CPT_SINK);
       }
       break;
     default:

@@ -190,12 +190,12 @@ void setUpMatricesXZ(int layerSpan)
 
 }
 
-void draw_contours()
+void draw_selection()
 {
-    for(vector< Contour<Point>* >::iterator itContours = lContours.begin();
-        itContours != lContours.end(); itContours++)
+    for(vector< DoubleSet<Point>* >::iterator itSel = lSelections.begin();
+        itSel != lSelections.end(); itSel++)
     {
-        (*itContours)->draw();
+        (*itSel)->draw();
     }
 }
 
@@ -276,7 +276,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
 	neuronita->draw();
         //glCallList(1);
       draw_last_point();
-      draw_contours();
+      draw_selection();
       draw_graphcuts();
     }
 
@@ -298,7 +298,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */
       draw_last_point();
-      draw_contours();
+      draw_selection();
       draw_graphcuts();
       glDisable(GL_DEPTH_TEST);
     }
@@ -317,7 +317,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
 	neuronita->draw();
       //glCallList(1);
       draw_last_point();
-      draw_contours();
+      draw_selection();
       draw_graphcuts();
       glDisable(GL_DEPTH_TEST);
     }
@@ -336,7 +336,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
 	neuronita->draw();
       //glCallList(1);
       draw_last_point();
-      draw_contours();
+      draw_selection();
       draw_graphcuts();
       glDisable(GL_DEPTH_TEST);
     }

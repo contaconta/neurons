@@ -8,7 +8,7 @@
 #include "GraphFactory.h"
 #include "utils.h"
 #include "Axis.h"
-#include "Contour.h"
+#include "DoubleSet.h"
 #include "GraphCut.h"
 
 //Camera parameters
@@ -26,7 +26,7 @@ double rot3DY = 0;
 //Canvas parameters
 GtkWidget *ascEditor;
 GtkWidget* drawing3D;
-GtkWidget* contourEditor;
+GtkWidget* selectionEditor;
 double widgetWidth = 0;
 double widgetHeight = 0;
 
@@ -91,10 +91,11 @@ bool  ascEditor2D = false;
 Modes:
 MOD_VIEWER ---- the mode per default.
 MOD_ASCEDITOR - to edit asc files
+MOD_SELECT_EDITOR - select tool
 */
 enum MayorMode { MOD_VIEWER,
                  MOD_ASCEDITOR,
-                 MOD_CONTOUREDITOR};
+                 MOD_SELECT_EDITOR};
 
 int majorMode = MOD_VIEWER;
 
@@ -132,7 +133,7 @@ string volume_name;
 /** Objects that are there.*/
 vector< string >    objectNames;
 vector< VisibleE* > toDraw;
-vector< Contour<Point>* > lContours;
+vector< DoubleSet<Point>* > lSelections;
 vector< GraphCut<Point>* > lGraphCuts;
 
 // Parameters
@@ -144,27 +145,27 @@ GLuint shader_v = 0; // vertex shader id
 GLuint shader_f = 0; // fragment shader id
 GLuint shader_p = 0; // program shader id
 
-// Control of the contours editor
 
-enum ContourPointActions{
+// Select tool mode
+enum SelectToolMode{
   CPA_SELECT,
   CPA_ADD_POINTS,
   CPA_NONE
 };
 
-enum ContourPointType{
+enum SelectToolPointType{
   CPT_SOURCE,
   CPT_SINK
 };
 
-enum ContourType{
-  CT_SIMPLE_CONTOUR=0,
+enum SelectToolObjectType{
+  CT_SIMPLE_SELECTION=0,
   CT_GRAPHCUT
 };
 
-ContourPointActions contourEditor_action = CPA_SELECT;
+SelectToolMode selectToolMode = CPA_SELECT;
 
-Contour<Point>* currentContour = 0;
+DoubleSet<Point>* currentSelectionSet = 0;
 
 GraphCut<Point>* currentGraphCut = 0;
 
