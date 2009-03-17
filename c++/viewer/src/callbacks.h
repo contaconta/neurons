@@ -261,9 +261,31 @@ on_remove_selection_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_add_selection_point_toggled         (GtkToggleButton *togglebutton,
+on_load_selection_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_selection_mode_button_press_event   (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+void
+on_mode_point_toggled                  (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data);
 
 void
-on_load_selection_clicked              (GtkButton       *button,
+on_mode_select_toggled                 (GtkToggleToolButton *toggletoolbutton,
                                         gpointer         user_data);
+
+void
+on_mode_rect_toggled                   (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data);
+
+void
+on_menu_plugins_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+/*
+void
+on_menu_plugins_submenu_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+*/

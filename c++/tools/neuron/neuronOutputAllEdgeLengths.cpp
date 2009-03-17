@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   }
 
   Neuron* neuronita = new Neuron(argv[1]);
-  vector< double > lengths =  neuronita->getAllEdgesLength();
+  vector< double > lengths; // =  neuronita->getAllEdgesLength();
   for(int i = 0; i < lengths.size(); i++){
     std::cout << lengths[i] << std::endl;
   }

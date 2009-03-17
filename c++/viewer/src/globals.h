@@ -124,6 +124,8 @@ int mouse_last_x = 0;
 int mouse_last_y = 0;
 int mouse_current_x = 0;
 int mouse_current_y = 0;
+int mouse_startSel_x = 0;
+int mouse_startSel_y = 0;
 
 //Names of the stuff
 string neuron_name = "";
@@ -145,12 +147,21 @@ GLuint shader_v = 0; // vertex shader id
 GLuint shader_f = 0; // fragment shader id
 GLuint shader_p = 0; // program shader id
 
+// Plugins
+vector<string> plugins;
+
+/** Select tool parameters */
+
+// const
+int rect_sel_step_x = 10;
+int rect_sel_step_y = 10;
 
 // Select tool mode
 enum SelectToolMode{
-  CPA_SELECT,
-  CPA_ADD_POINTS,
-  CPA_NONE
+  SELTOOL_MODE_SELECT,
+  SELTOOL_MODE_ADD_POINTS,
+  SELTOOL_MODE_RECTANGLE,
+  SELTOOL_MODE_NONE
 };
 
 enum SelectToolPointType{
@@ -163,7 +174,7 @@ enum SelectToolObjectType{
   CT_GRAPHCUT
 };
 
-SelectToolMode selectToolMode = CPA_SELECT;
+SelectToolMode selectToolMode = SELTOOL_MODE_SELECT;
 
 DoubleSet<Point>* currentSelectionSet = 0;
 

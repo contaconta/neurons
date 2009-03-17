@@ -71,7 +71,7 @@ bool Cloud<T>::load(istream &in){
   in >> s;
   orig = s.find(T::className()+">");
   if(orig == string::npos){
-    printf("Cloud::error load called when there is no type of the class\n");
+    printf("Cloud::error load called when there is no type of the class %s\n", T::className().c_str());
     in.seekg(start);
     return false;
   }

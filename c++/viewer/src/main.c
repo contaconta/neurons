@@ -20,11 +20,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <gmodule.h>
 #include "interface.h"
 #include "support.h"
 #include <argp.h>
 #include <assert.h>
 #include "globalsE.h"
+#include "utils.h"
 using namespace std;
 
 
@@ -47,7 +49,7 @@ static struct argp_option options[] = {
   {"projection",  'p', 0, 0,
    "Toogles to maximum projection" },
   {"ascEditor",   'e', 0, 0, "Turns the ascEditor mode on"},
-  {"contourEditor",   'c', 0, 0, "Turns the contourEditor mode on"},
+  {"selectEditor",   's', 0, 0, "Turns the selectEditor mode on"},
   { 0 }
 };
 
@@ -70,7 +72,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'e':
       majorMode = MOD_ASCEDITOR;
       break;
-    case 'c':
+    case 's':
       majorMode = MOD_SELECT_EDITOR;
       break;
 
@@ -88,6 +90,138 @@ parse_opt (int key, char *arg, struct argp_state *state)
       return ARGP_ERR_UNKNOWN;
     }
   return 0;
+}
+
+void init_GUI()
+{
+  GtkComboBox* view_entry=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(ascEditor),"view_entry"));
+  gtk_combo_box_set_active(view_entry,1);
+
+  if(majorMode == MOD_SELECT_EDITOR)
+    {
+      GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(selectionEditor),"selection_type"));
+      gtk_combo_box_set_active(selection_type,0);
+    }
+}
+
+int get_files_in_dir2(string dir, vector<string> &files)
+{
+  DIR *dp;
+  struct dirent *dirp;
+  if((dp  = opendir(dir.c_str())) == NULL) {
+    cout << "Error(" << errno << ") opening " << dir << endl;
+    return errno;
+  }
+
+  while ((dirp = readdir(dp)) != NULL) {
+    files.push_back(string(dirp->d_name));
+  }
+  closedir(dp);
+  return 0;
+}
+
+void
+on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
+                                                     gpointer         user_data)
+{
+  string dir("plugins/bin/");
+  GtkWidget *menu_label = gtk_bin_get_child(GTK_BIN(menuitem));
+  const gchar* label = gtk_label_get_text(GTK_LABEL(menu_label));
+
+  string sfile = dir+label;
+  const char* plugin_name=(char*)sfile.c_str();
+
+  plugin_run p_run;
+  GModule *module = g_module_open (plugin_name, G_MODULE_BIND_LAZY);
+  if (!module)
+    {
+      printf("Error while linking module %s\n", plugin_name);
+    }
+  else
+    {
+      if (!g_module_symbol (module, "plugin_run", (gpointer *)&p_run))
+        {
+          printf("Error while searching for symbol\n");
+        }
+      if (p_run == NULL)
+        {
+          printf("Symbol plugin_init is NULL\n");
+        }
+      else
+        {
+          p_run(); // execture init function
+        }
+
+      if (!g_module_close (module))
+        g_warning ("%s: %s", plugin_name, g_module_error ());
+    }
+
+}
+
+void load_plugins()
+{
+  printf("*** Loading plugins\n");
+  vector<string> files;
+  string dir("plugins/bin");
+  int bRes = get_files_in_dir2(dir, files);
+  printf("%d %d\n", bRes, files.size());
+  if(bRes==0)
+    {
+      GtkMenuItem* menu_plugins=GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(ascEditor),"menu_plugins"));
+
+      for(vector<string>::iterator itFile = files.begin();
+          itFile != files.end();itFile++)
+        {
+          const char* filename=itFile->c_str();
+          if(strcmp(filename,".")==0 || strcmp(filename,"..")==0)
+            continue;
+
+          string sfile = dir+"/";
+          sfile += *itFile;
+          filename=(char*)sfile.c_str();
+
+          plugin_init p_init;
+          GModule *module = g_module_open (filename, G_MODULE_BIND_LAZY);
+          if (!module)
+            {
+              printf("Error while linking module %s\n", filename);
+            }
+          else
+            {
+              if (!g_module_symbol (module, "plugin_init", (gpointer *)&p_init))
+                {
+                  printf("Error while searching for symbol\n");
+                }
+              if (p_init == NULL)
+                {
+                  printf("Symbol plugin_init is NULL\n");
+                }
+              else
+                {
+                  p_init(); // execture init function
+
+                  plugins.push_back(*itFile);
+                  printf("Module %s has been loaded\n", filename);
+
+
+                  GtkWidget *menu_plugins_ct = gtk_menu_new ();
+                  gtk_menu_item_set_submenu (menu_plugins, menu_plugins_ct);
+
+                  GtkWidget *menu_plugins_submenu = gtk_menu_item_new_with_label(_(itFile->c_str()));
+                  gtk_widget_show (menu_plugins_submenu);
+                  gtk_container_add (GTK_CONTAINER (menu_plugins_ct), menu_plugins_submenu);
+
+                  g_signal_connect ((gpointer) menu_plugins_submenu, "activate",
+                                    G_CALLBACK (on_menu_plugins_submenu_activate),
+                                    NULL);
+
+                }
+
+              if (!g_module_close (module))
+                g_warning ("%s: %s", *itFile, g_module_error ());
+            }
+        }
+    }
 }
 
 /* Our argp parser. */
@@ -163,6 +297,8 @@ main (int argc, char *argv[])
     gtk_widget_show (selectionEditor);
   }
 
+  init_GUI();
+  load_plugins();
 
   gtk_main ();
   return 0;

@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
   
   Neuron* neuronita = new Neuron(argv[1]);
-  neuronita->elliminateDuplicatedPoints(0.5);
+  //neuronita->elliminateDuplicatedPoints(0.5);
   neuronita->save(argv[2]);
 
 

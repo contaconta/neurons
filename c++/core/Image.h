@@ -349,7 +349,9 @@ Image<float>* Image<T>::calculate_derivative(int dx, int dy,double sigma,  strin
   vector< float > m_x = Mask::gaussian_mask(dx,sigma,true);
   vector< float > m_y = Mask::gaussian_mask(dy,sigma,true);
 
-  string tmp_name = directory + "tmp.jpg";
+  string tmp_name = directory + getNameFromPathWithoutExtension(filename) + "tmp.jpg";
+
+  printf("tmp:%s\n", tmp_name.c_str());
 
   Image<float>* tmp;
   ifstream inp;
@@ -361,6 +363,9 @@ Image<float>* Image<T>::calculate_derivative(int dx, int dy,double sigma,  strin
   inp.close();
 
   Image<float>* result = create_blank_image_float(filename);
+
+  printf("tmp:%d %d\n", tmp->width, tmp->height);
+  printf("result:%s %d %d\n", filename.c_str(), result->width, result->height);
 
   this->convolve_horizontally(m_x,tmp);
   tmp->convolve_vertically(m_y, result);

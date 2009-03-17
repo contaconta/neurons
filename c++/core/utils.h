@@ -28,6 +28,9 @@
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
+#include <dirent.h>
+#include <string>
+#include <errno.h>
 
 #include "Mask.h"
 
@@ -42,6 +45,8 @@ string getNameFromPath(string path);
 string getNameFromPathWithoutExtension(string path);
 
 string getExtension(string path);
+
+int get_files_in_dir(string dir, vector<string> &files);
 
 string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,
@@ -70,7 +75,6 @@ void saveVectorDouble(vector< double >& vc, string filename);
 vector< double > readVectorDouble(string filename);
 
 void saveFloatVector( vector< float >& vc, string filename);
-
 
 // This class will be used to plot vectors using matlab from the C++ code.
 

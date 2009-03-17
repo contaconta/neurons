@@ -10,6 +10,9 @@
 #include "DoubleSet.h"
 #include "GraphCut.h"
 
+// the plugin function signatures
+#include "plugin_info.h"
+
 //Camera parameters
 extern double fovy3D;
 extern double aspect3D;
@@ -109,6 +112,8 @@ extern int mouse_last_x;
 extern int mouse_last_y;
 extern int mouse_current_x;
 extern int mouse_current_y;
+extern int mouse_startSel_x;
+extern int mouse_startSel_y;
 
 //Names of the stuff
 extern string neuron_name;
@@ -128,11 +133,23 @@ extern GLuint shader_v; // vertex shader id
 extern GLuint shader_f; // fragment shader id
 extern GLuint shader_p; // program shader id
 
+/** Plugins */
+
+// Plugin names
+extern vector<string> plugins;
+
+/** Select tool parameters */
+
+// const
+extern int rect_sel_step_x;
+extern int rect_sel_step_y;
+
 // Select tool mode
 enum SelectToolMode{
-  CPA_SELECT,
-  CPA_ADD_POINTS,
-  CPA_NONE
+  SELTOOL_MODE_SELECT,
+  SELTOOL_MODE_ADD_POINTS,
+  SELTOOL_MODE_RECTANGLE,
+  SELTOOL_MODE_NONE
 };
 
 enum SelectToolPointType{

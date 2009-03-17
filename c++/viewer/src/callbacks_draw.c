@@ -83,12 +83,11 @@ void setUpMatricesXY(int layerSpan)
     step_y = float(cube->cubeHeight)/max_texture_size;
   }
 
-
   glOrtho(-widthStep + cubeColToDraw*max_texture_size*cube->voxelWidth,
           -widthStep + (cubeColToDraw+step_x)*max_texture_size*cube->voxelWidth,
           heightStep - (cubeRowToDraw+step_y)*max_texture_size*cube->voxelHeight,
           heightStep - cubeRowToDraw*max_texture_size*cube->voxelHeight,
-          (layerToDrawXY-layerSpan)*cube->voxelDepth,
+          -1.0f, //(layerToDrawXY-layerSpan)*cube->voxelDepth,
           (layerToDrawXY+layerSpan)*cube->voxelDepth);
 
   glScalef(1.0,1.0,-1.0);
@@ -192,10 +191,19 @@ void setUpMatricesXZ(int layerSpan)
 
 void draw_selection()
 {
-    for(vector< DoubleSet<Point>* >::iterator itSel = lSelections.begin();
-        itSel != lSelections.end(); itSel++)
+  if(majorMode == MOD_SELECT_EDITOR)
     {
-        (*itSel)->draw();
+      float radius = 0.1f;
+      GtkSpinButton* brush_size=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(selectionEditor),"brush_size"));
+      if(brush_size)
+        radius = gtk_spin_button_get_value(brush_size);
+      //printf("Radius : %f\n", radius);
+      //radius = 0.1f;
+      for(vector< DoubleSet<Point>* >::iterator itSel = lSelections.begin();
+          itSel != lSelections.end(); itSel++)
+        {
+          (*itSel)->draw(radius);
+        }
     }
 }
 

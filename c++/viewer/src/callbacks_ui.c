@@ -210,7 +210,7 @@ void unProjectMouse()
     unProjectMouseAsc(mouse_last_x, mouse_last_y);
   }
   if(majorMode == MOD_SELECT_EDITOR){
-    unProjectMouseSelectTool(mouse_last_x, mouse_last_y, CPT_SOURCE);
+    pressMouseSelectTool(mouse_last_x, mouse_last_y, CPT_SOURCE);
   }
 
 }
@@ -222,12 +222,12 @@ bool select_tool_handle_mouse(int x, int y)
     {
     if( mouse_buttons[2] )
       {
-	bRes = unProjectMouseSelectTool(x, y, CPT_SINK);
+	bRes = motionMouseSelectTool(x, y, CPT_SINK);
       }
     else
       if( mouse_buttons[0] )
 	{
-	  bRes = unProjectMouseSelectTool(x, y, CPT_SOURCE);
+	  bRes = motionMouseSelectTool(x, y, CPT_SOURCE);
 	}
     }
   return bRes;
@@ -296,6 +296,7 @@ on_drawing3D_button_press_event        (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
+  printf("on_drawing3D_button_press_event\n");
   mouse_last_x= (int)event->x;
   mouse_last_y= (int)event->y;
   switch(event->button)
@@ -310,7 +311,7 @@ on_drawing3D_button_press_event        (GtkWidget       *widget,
     case 3:
       mouse_buttons[2] = (mouse_buttons[2]==0)?1:0;
       if(majorMode == MOD_SELECT_EDITOR){
-	unProjectMouseSelectTool(mouse_last_x, mouse_last_y,CPT_SINK);
+	pressMouseSelectTool(mouse_last_x, mouse_last_y,CPT_SINK);
       }
       break;
     default:
@@ -331,12 +332,16 @@ on_drawing3D_button_release_event      (GtkWidget       *widget,
   {
   case 1:
     mouse_buttons[0] = 0;
+    if(majorMode == MOD_SELECT_EDITOR)
+      releaseMouseSelectTool(mouse_last_x, mouse_last_y,CPT_SOURCE);
     break;
   case 2:
     mouse_buttons[1] = 0;
     break;
   case 3:
     mouse_buttons[2] = 0;
+    if(majorMode == MOD_SELECT_EDITOR)
+      releaseMouseSelectTool(mouse_last_x, mouse_last_y,CPT_SINK);
     break;
   default:
     break;

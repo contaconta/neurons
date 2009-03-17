@@ -51,6 +51,7 @@ create_ascEditor (void)
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *editAsc;
+  GtkWidget *menu_plugins;
   GtkWidget *menuitem7;
   GtkWidget *menuitem7_menu;
   GtkWidget *about1;
@@ -173,6 +174,10 @@ create_ascEditor (void)
   editAsc = gtk_menu_item_new_with_mnemonic (_("editAsc"));
   gtk_widget_show (editAsc);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), editAsc);
+
+  menu_plugins = gtk_menu_item_new_with_mnemonic (_("_Plugins"));
+  gtk_widget_show (menu_plugins);
+  gtk_container_add (GTK_CONTAINER (menubar1), menu_plugins);
 
   menuitem7 = gtk_menu_item_new_with_mnemonic (_("_Help"));
   gtk_widget_show (menuitem7);
@@ -367,6 +372,9 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) editAsc, "activate",
                     G_CALLBACK (on_editAsc_activate),
                     NULL);
+  g_signal_connect ((gpointer) menu_plugins, "activate",
+                    G_CALLBACK (on_menu_plugins_activate),
+                    NULL);
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
                     NULL);
@@ -454,6 +462,7 @@ create_ascEditor (void)
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (ascEditor, editAsc, "editAsc");
+  GLADE_HOOKUP_OBJECT (ascEditor, menu_plugins, "menu_plugins");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem7, "menuitem7");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem7_menu, "menuitem7_menu");
   GLADE_HOOKUP_OBJECT (ascEditor, about1, "about1");
@@ -846,12 +855,21 @@ create_ascEditControlsSelect (void)
   GtkWidget *list_selections;
   GtkWidget *remove_selection;
   GtkWidget *label_r;
-  GtkWidget *add_selection_point;
   GtkWidget *run_graph_cuts;
   GtkWidget *label_g;
   GtkWidget *selection_type;
   GtkWidget *load_selection;
   GtkWidget *label_l;
+  GtkWidget *selection_mode;
+  GtkIconSize tmp_toolbar_icon_size;
+  GtkWidget *mode_select;
+  GtkWidget *mode_point;
+  GtkWidget *mode_rect;
+  GtkWidget *toggletoolbutton3;
+  GtkWidget *hbox2;
+  GtkWidget *label23;
+  GtkObject *brush_size_adj;
+  GtkWidget *brush_size;
 
   ascEditControlsSelect = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (ascEditControlsSelect), _("Select tool"));
@@ -925,12 +943,6 @@ create_ascEditControlsSelect (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_r), 0, 0.5);
 
-  add_selection_point = gtk_toggle_button_new_with_mnemonic (_("Add new points"));
-  gtk_widget_show (add_selection_point);
-  gtk_table_attach (GTK_TABLE (table3), add_selection_point, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   run_graph_cuts = gtk_button_new_with_mnemonic (_("Run Graph cuts"));
   gtk_widget_show (run_graph_cuts);
   gtk_table_attach (GTK_TABLE (table3), run_graph_cuts, 0, 1, 8, 9,
@@ -965,6 +977,51 @@ create_ascEditControlsSelect (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_l), 0, 0.5);
 
+  selection_mode = gtk_toolbar_new ();
+  gtk_widget_show (selection_mode);
+  gtk_table_attach (GTK_TABLE (table3), selection_mode, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_toolbar_set_style (GTK_TOOLBAR (selection_mode), GTK_TOOLBAR_BOTH);
+  tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (selection_mode));
+
+  mode_select = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (mode_select), _("Select"));
+  gtk_widget_show (mode_select);
+  gtk_container_add (GTK_CONTAINER (selection_mode), mode_select);
+  gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (mode_select), TRUE);
+
+  mode_point = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (mode_point), _("Point"));
+  gtk_widget_show (mode_point);
+  gtk_container_add (GTK_CONTAINER (selection_mode), mode_point);
+
+  mode_rect = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (mode_rect), _("Rect"));
+  gtk_widget_show (mode_rect);
+  gtk_container_add (GTK_CONTAINER (selection_mode), mode_rect);
+
+  toggletoolbutton3 = (GtkWidget*) gtk_toggle_tool_button_new ();
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (toggletoolbutton3), "");
+  gtk_widget_show (toggletoolbutton3);
+  gtk_container_add (GTK_CONTAINER (selection_mode), toggletoolbutton3);
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (table3), hbox2, 0, 1, 9, 10,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+  label23 = gtk_label_new (_("Brush size"));
+  gtk_widget_show (label23);
+  gtk_box_pack_start (GTK_BOX (hbox2), label23, FALSE, FALSE, 0);
+
+  brush_size_adj = gtk_adjustment_new (0.5, 0, 2, 0.10000000149, 1, 1);
+  brush_size = gtk_spin_button_new (GTK_ADJUSTMENT (brush_size_adj), 1, 4);
+  gtk_widget_show (brush_size);
+  gtk_box_pack_start (GTK_BOX (hbox2), brush_size, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (brush_size), TRUE);
+
   g_signal_connect ((gpointer) create_selection, "clicked",
                     G_CALLBACK (on_create_selection_clicked),
                     NULL);
@@ -977,14 +1034,20 @@ create_ascEditControlsSelect (void)
   g_signal_connect ((gpointer) remove_selection, "clicked",
                     G_CALLBACK (on_remove_selection_clicked),
                     NULL);
-  g_signal_connect ((gpointer) add_selection_point, "toggled",
-                    G_CALLBACK (on_add_selection_point_toggled),
-                    NULL);
   g_signal_connect ((gpointer) run_graph_cuts, "clicked",
                     G_CALLBACK (on_run_graph_cuts_clicked),
                     NULL);
   g_signal_connect ((gpointer) load_selection, "clicked",
                     G_CALLBACK (on_load_selection_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) mode_select, "toggled",
+                    G_CALLBACK (on_mode_select_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) mode_point, "toggled",
+                    G_CALLBACK (on_mode_point_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) mode_rect, "toggled",
+                    G_CALLBACK (on_mode_rect_toggled),
                     NULL);
 
   atko = gtk_widget_get_accessible (ascEditControlsSelect);
@@ -1004,13 +1067,21 @@ create_ascEditControlsSelect (void)
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, list_selections, "list_selections");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, remove_selection, "remove_selection");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_r, "label_r");
-  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, add_selection_point, "add_selection_point");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, run_graph_cuts, "run_graph_cuts");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_g, "label_g");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, selection_type, "selection_type");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, load_selection, "load_selection");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label_l, "label_l");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, selection_mode, "selection_mode");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, mode_select, "mode_select");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, mode_point, "mode_point");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, mode_rect, "mode_rect");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, toggletoolbutton3, "toggletoolbutton3");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, hbox2, "hbox2");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, label23, "label23");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, brush_size, "brush_size");
 
+  gtk_widget_grab_default (selection_type);
   return ascEditControlsSelect;
 }
 
