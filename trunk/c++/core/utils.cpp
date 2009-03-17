@@ -40,6 +40,21 @@ string getExtension(string path){
   return path.substr(path.find_last_of(".")+1);
 }
 
+int get_files_in_dir(string dir, vector<string> &files)
+{
+  DIR *dp;
+  struct dirent *dirp;
+  if((dp  = opendir(dir.c_str())) == NULL) {
+    cout << "Error(" << errno << ") opening " << dir << endl;
+    return errno;
+  }
+
+  while ((dirp = readdir(dp)) != NULL) {
+    files.push_back(string(dirp->d_name));
+  }
+  closedir(dp);
+  return 0;
+}
 
 string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,

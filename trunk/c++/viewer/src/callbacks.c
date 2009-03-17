@@ -305,3 +305,11 @@ on_screenshot_activate                 (GtkMenuItem     *menuitem,
 
 //-------------------------------------------------
 
+
+void
+on_menu_plugins_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+

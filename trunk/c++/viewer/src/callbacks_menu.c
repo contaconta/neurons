@@ -109,4 +109,3 @@ on_editAsc_activate                    (GtkMenuItem     *menuitem,
   GtkWidget* window  = create_ascEditControls ();
   gtk_widget_show (window);
 }
-
