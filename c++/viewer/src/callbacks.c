@@ -67,6 +67,9 @@ on_drawing3D_realize                   (GtkWidget       *widget,
     if(extension == "nfo"){
       cube = CubeFactory::load(objectNames[i]);
       cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+      cube->v_r = 1.0;
+      cube->v_g = 1.0;
+      cube->v_b = 1.0;
       toDraw.push_back(cube);
     }
     else if( (extension == "asc") || (extension == "ASC") ){
