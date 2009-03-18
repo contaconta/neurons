@@ -33,9 +33,9 @@ void getStatisticsForThreshold
   int fp = 0;
   int tn = 0;
   int fn = 0;
-  for(int z = 0; z < cube->cubeDepth; z++){
-    for(int y = 0; y < cube->cubeHeight; y++){
-      for(int x = 0; x < cube->cubeWidth; x++){
+  for(int z = 2; z < cube->cubeDepth -2; z++){
+    for(int y = 2; y < cube->cubeHeight-2; y++){
+      for(int x = 2; x < cube->cubeWidth-2; x++){
         if (cube->at(x,y,z) >= thres){
           if(gt->at(x,y,z) < 0.5) tp++;
           else fp ++;
@@ -180,14 +180,25 @@ int main(int argc, char **argv) {
   Cube<float, double>* cube        = new Cube<float, double>(argv[1]);
   Cube<uchar, ulong>*  groundTruth = new Cube<uchar, ulong> (argv[2]);
 
-  /** Test of getROCEvenlyLinear ******/
-  vector< float > TPR;
-  vector< float > FPR;
-  vector< float > thresholds;
+  /** To get the TPR for a FPR */
+  double fpr = 0.001;
+  float cubeMin, cubeMax, threshold, tpr;
+  cube->min_max(&cubeMin, &cubeMax);
+  getThresholdAndTPRForFPR( cube, groundTruth, fpr, cubeMax, cubeMin,  tpr, threshold);
+  printf("The FPR id %f, tpr found is  %f and threshold %f %f\n",
+         fpr, tpr, threshold);
 
-  getROCEvenlyLog(cube, groundTruth, TPR, FPR, 9, thresholds, -3);
-  for(int i = 0; i < TPR.size(); i++)
-    printf("Thres: %f, TPR: %f, FPR = %f\n", thresholds[i], TPR[i], FPR[i]);
+
+
+
+  /** Test of getROCEvenlyLog ******/
+//   vector< float > TPR;
+//   vector< float > FPR;
+//   vector< float > thresholds;
+
+//   getROCEvenlyLog(cube, groundTruth, TPR, FPR, 9, thresholds, -3);
+//   for(int i = 0; i < TPR.size(); i++)
+//     printf("Thres: %f, TPR: %f, FPR = %f\n", thresholds[i], TPR[i], FPR[i]);
 
 
 

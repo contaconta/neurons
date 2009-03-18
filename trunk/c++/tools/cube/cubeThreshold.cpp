@@ -114,11 +114,15 @@ int main(int argc, char **argv) {
   printf ("Volume = %s\nOutput = %s\n"
           "putHigherValuesTo = %s\n"
           "putLowerValuesTo = %s\n"
-          "threshold = %f \n",
+          "threshold = %f \n"
+          "highValue = %f\n"
+          "lowValue = %f\n",
           arguments.args[0], arguments.args[1],
           arguments.putHigherValuesTo ? "yes" : "no",
           arguments.putLowerValuesTo ? "yes" : "no",
-          arguments.threshold
+          arguments.threshold,
+          arguments.highValue,
+          arguments.lowValue
           );
 
   Cube_P* cube = CubeFactory::load(arguments.args[0]);

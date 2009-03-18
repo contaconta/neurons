@@ -2087,7 +2087,7 @@ float highValue, float lowValue)
 {
   Cube<T,U>* result = duplicate_clean(outputName);
 
-  #pragma omp parallel for
+//   #pragma omp parallel for
   for(int z = 0; z < cubeDepth; z++)
     for(int y = 0; y < cubeHeight; y++)
       for(int x = 0; x < cubeWidth; x++)
