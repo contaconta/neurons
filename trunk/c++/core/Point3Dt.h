@@ -33,7 +33,7 @@ public:
 
   double distanceTo(Point* p);
 
-  static string className(){
+  virtual string className(){
     return "Point3Dt";
   }
 };

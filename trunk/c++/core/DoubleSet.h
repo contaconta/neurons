@@ -70,7 +70,7 @@ class DoubleSet : public VisibleE
 
  bool load(istream &in);
 
- static string className(){
+ virtual string className(){
    return "DoubleSet";
  }
 
@@ -148,7 +148,7 @@ bool DoubleSet<P>::load(const string& filename)
 
 template< class P>
 bool DoubleSet<P>::load(istream &in)
-{
+{  
   int start = in.tellg();
   string s;
   in >> s;
@@ -160,12 +160,16 @@ bool DoubleSet<P>::load(istream &in)
     return false;
   }
   in >> s;
-  orig = s.find(P::className()+">");
+  P* tp = new P();
+  orig = s.find(tp->className()+">");
+  
   if(orig == string::npos){
-    printf("Cloud::error load called when there is no type of the class %s\n", P::className().c_str());
+    printf("Cloud::error load called when there is no type of the class %s\n", tp->className().c_str());
     in.seekg(start);
+    delete tp;
     return false;
   }
+  delete tp;
 
   if(!VisibleE::load(in))
     return false;
@@ -202,7 +206,9 @@ void DoubleSet<P>::save(const string& filename){
       return;
     }
   
-  out << "<Cloud " << P::className() << ">" << std::endl;
+  P* tp = new P();
+  out << "<Cloud " << tp->className() << ">" << std::endl;
+  delete tp;
   VisibleE::save(out);
 
   for(vector< Point3Dc* >::iterator itPoint3Dcs = set1.begin();

@@ -135,8 +135,8 @@ string volume_name;
 /** Objects that are there.*/
 vector< string >    objectNames;
 vector< VisibleE* > toDraw;
-vector< DoubleSet<Point>* > lSelections;
-vector< GraphCut<Point>* > lGraphCuts;
+vector< DoubleSet<Point3D>* > lSelections;
+vector< GraphCut<Point3D>* > lGraphCuts;
 
 // Parameters
 int argcp;
@@ -176,8 +176,8 @@ enum SelectToolObjectType{
 
 SelectToolMode selectToolMode = SELTOOL_MODE_SELECT;
 
-DoubleSet<Point>* currentSelectionSet = 0;
+DoubleSet<Point3D>* currentSelectionSet = 0;
 
-GraphCut<Point>* currentGraphCut = 0;
+GraphCut<Point3D>* currentGraphCut = 0;
 
 #endif

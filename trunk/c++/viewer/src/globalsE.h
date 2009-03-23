@@ -121,8 +121,8 @@ extern string volume_name;
 
 extern vector< string >    objectNames;
 extern vector< VisibleE* > toDraw;
-extern vector< DoubleSet<Point>* > lSelections;
-extern vector< GraphCut<Point>* > lGraphCuts;
+extern vector< DoubleSet<Point3D>* > lSelections;
+extern vector< GraphCut<Point3D>* > lGraphCuts;
 
 // Parameters
 extern int argcp;
@@ -164,8 +164,8 @@ enum SelectToolObjectType{
 
 extern SelectToolMode selectToolMode;
 
-extern DoubleSet<Point>* currentSelectionSet;
+extern DoubleSet<Point3D>* currentSelectionSet;
 
-extern GraphCut<Point>* currentGraphCut;
+extern GraphCut<Point3D>* currentGraphCut;
 
 #endif

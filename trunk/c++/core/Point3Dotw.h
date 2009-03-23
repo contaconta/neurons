@@ -28,7 +28,7 @@ public:
     weight = _weight;
   }
 
-  static string className(){
+  virtual string className(){
     return "Point3Dotw";
   }
 };

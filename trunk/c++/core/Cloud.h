@@ -22,6 +22,10 @@ public:
   bool load(istream &in);
 
   void save(ostream &out);
+
+  virtual string className(){
+    return "Cloud";
+  }
 };
 
 
@@ -58,7 +62,6 @@ template <class T>
 
 template <class T>
 bool Cloud<T>::load(istream &in){
-  T* t = new T();
   int start = in.tellg();
   string s;
   in >> s;
@@ -70,7 +73,9 @@ bool Cloud<T>::load(istream &in){
     return false;
   }
   in >> s;
+  T* t = new T();
   orig = s.find(t->className()+">");
+  delete t;
   if(orig == string::npos){
     printf("Cloud::error load called when there is no type of the class %s\n", t->className().c_str());
     in.seekg(start);
@@ -84,8 +89,8 @@ bool Cloud<T>::load(istream &in){
     points.push_back(p);
     p = new T();
   }
+  //delete p;
   in >> s;
-  delete t;
   if(s.find("</Cloud>")==string::npos){
     printf("Cloud::error load can not find </Cloud>\n");
     in.seekg(start);

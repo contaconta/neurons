@@ -199,7 +199,7 @@ void draw_selection()
         radius = gtk_spin_button_get_value(brush_size);
       //printf("Radius : %f\n", radius);
       //radius = 0.1f;
-      for(vector< DoubleSet<Point>* >::iterator itSel = lSelections.begin();
+      for(vector< DoubleSet<Point3D>* >::iterator itSel = lSelections.begin();
           itSel != lSelections.end(); itSel++)
         {
           (*itSel)->draw(radius);
@@ -235,7 +235,7 @@ void draw_graphcuts()
     }
 
 
-  for(vector< GraphCut<Point>* >::iterator itGraphCut = lGraphCuts.begin();
+  for(vector< GraphCut<Point3D>* >::iterator itGraphCut = lGraphCuts.begin();
       itGraphCut != lGraphCuts.end(); itGraphCut++)
     {
       (*itGraphCut)->draw(x,y,z);

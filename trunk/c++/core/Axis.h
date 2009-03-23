@@ -12,6 +12,10 @@ public:
 
   void draw();
 
+ virtual string className(){
+   return "Axis";
+ }
+
 };
 
 

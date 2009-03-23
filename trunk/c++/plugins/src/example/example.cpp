@@ -10,7 +10,7 @@ extern "C"
     return true;
   }
 
-  G_MODULE_EXPORT const bool plugin_run()
+  G_MODULE_EXPORT const bool plugin_run(vector<Object*>& objects)
   {
 
     printf("Hello world !!!\n");

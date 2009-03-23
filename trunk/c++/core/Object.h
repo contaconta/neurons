@@ -33,7 +33,7 @@ public:
     in.close();
   }
 
-  static string className(){
+  virtual string className(){
     return "Object";
   }
 };

@@ -5,9 +5,11 @@
 #ifndef CUBE_P_H_
 #define CUBE_P_H_
 
-#include "Cube.h"
+//#include "Cube.h"
 
-template<typename T, typename U> class Cube;
+//template<typename T, typename U> class Cube;
+
+#include "VisibleE.h"
 
 class Cube_P : public VisibleE
 {
@@ -104,6 +106,10 @@ public:
   (int nLayer, float threshold, int window_xy, string filename)=0;
 
   ~Cube_P(){}
+
+  virtual string className(){
+    return "Cube";
+  }
 
 };
 
