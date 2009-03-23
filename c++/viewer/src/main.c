@@ -149,7 +149,9 @@ on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
         }
       else
         {
-          p_run(); // execture init function
+          vector<Object*> cubes;
+          cubes.push_back(cube);
+          p_run(cubes); // execute init function
         }
 
       if (!g_module_close (module))
@@ -163,11 +165,14 @@ void load_plugins()
   printf("*** Loading plugins\n");
   vector<string> files;
   string dir("plugins/bin");
-  int bRes = get_files_in_dir2(dir, files);
+  int bRes = get_files_in_dir(dir, files);
   printf("%d %d\n", bRes, files.size());
   if(bRes==0)
     {
       GtkMenuItem* menu_plugins=GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(ascEditor),"menu_plugins"));
+
+      GtkWidget *menu_plugins_ct = gtk_menu_new ();
+      gtk_menu_item_set_submenu (menu_plugins, menu_plugins_ct);
 
       for(vector<string>::iterator itFile = files.begin();
           itFile != files.end();itFile++)
@@ -202,10 +207,6 @@ void load_plugins()
 
                   plugins.push_back(*itFile);
                   printf("Module %s has been loaded\n", filename);
-
-
-                  GtkWidget *menu_plugins_ct = gtk_menu_new ();
-                  gtk_menu_item_set_submenu (menu_plugins, menu_plugins_ct);
 
                   GtkWidget *menu_plugins_submenu = gtk_menu_item_new_with_label(_(itFile->c_str()));
                   gtk_widget_show (menu_plugins_submenu);

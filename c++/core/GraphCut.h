@@ -87,7 +87,7 @@ class GraphCut : public VisibleE
  template <class T, class U>
  void run_maxflow(Cube<T,U>* cube, int layer_id);
  
- static string className(){
+ virtual string className(){
    return "GraphCut";
  }
 

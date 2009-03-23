@@ -118,6 +118,10 @@ public:
 
   /** The image will be drawn between (0,0) and (width,height).*/
   void draw();
+
+  virtual string className(){
+    return "Image";
+  }
 };
 
 template<class T>

@@ -86,8 +86,8 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale)
   GLint max_texture_size = 0;
   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
 //   max_texture_size = min(max_texture_size,max((int)cubeWidth,(int)cubeHeight));;
-  max_texture_size = 512;
-//   printf("Max texture size %i\n", max_texture_size);
+//  max_texture_size = 512;
+  printf("Max texture size %i\n", max_texture_size);
 
   #if debug
   printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);

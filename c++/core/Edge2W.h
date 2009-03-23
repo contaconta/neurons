@@ -21,7 +21,7 @@ public:
 
   bool load(istream &in);
 
-  static string className(){
+  virtual string className(){
     return "Edge2W";
   }
 

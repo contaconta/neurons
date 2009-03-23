@@ -27,13 +27,13 @@ on_create_selection_clicked              (GtkButton       *button,
   int active_id = gtk_combo_box_get_active(selection_type);
   if(active_id == CT_SIMPLE_SELECTION)
     {
-      currentSelectionSet = new DoubleSet<Point>;
+      currentSelectionSet = new DoubleSet<Point3D>;
       lSelections.push_back(currentSelectionSet);
       gtk_combo_box_append_text(list_selections, currentSelectionSet->name.c_str());
     }
   else
     {
-      currentGraphCut = new GraphCut<Point>(cube);
+      currentGraphCut = new GraphCut<Point3D>(cube);
       lGraphCuts.push_back(currentGraphCut);
       gtk_combo_box_append_text(list_selections, currentGraphCut->graphcut_name.c_str());
     }
@@ -325,7 +325,7 @@ on_remove_selection_clicked              (GtkButton       *button,
     if(active_text != 0)
     {
         gtk_combo_box_remove_text(list_selections, gtk_combo_box_get_active(list_selections));
-        for(vector< DoubleSet<Point>* >::iterator itSelections = lSelections.begin();
+        for(vector< DoubleSet<Point3D>* >::iterator itSelections = lSelections.begin();
             itSelections != lSelections.end();)
         {
             if(strcmp((*itSelections)->name.c_str(), active_text)==0)

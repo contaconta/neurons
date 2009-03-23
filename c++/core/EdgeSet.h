@@ -48,7 +48,6 @@ EdgeSet<P,E>::EdgeSet(string filename)
 
 template< class P, class E>
 bool EdgeSet<P,E>::load(istream& in){
-  E* et = new E();
   int start = in.tellg();
   string s;
   in >> s;
@@ -59,7 +58,9 @@ bool EdgeSet<P,E>::load(istream& in){
     return false;
   }
   in >> s;
+  E* et = new E();
   orig = s.find(et->className()+">");
+  delete et;
   if(orig == string::npos){
     printf("EdgeSet::error load called when there is no type of the class\n");
     in.seekg(start);
@@ -73,7 +74,7 @@ bool EdgeSet<P,E>::load(istream& in){
     edges.push_back(e);
     e = new E();
   }
-  delete et;
+  //delete e;
   in >> s;
   if(s.find("</EdgeSet>")==string::npos){
     printf("EdgeSet::error load can not find </EdgeSet>\n");
