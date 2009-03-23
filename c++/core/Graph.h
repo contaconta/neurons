@@ -52,27 +52,35 @@ Graph<P,E>::Graph(Cloud_P* cl) : Graph_P(){
 
 template< class P, class E>
 bool Graph<P,E>::load(istream &in){
+  P* p = new P();
+  E* e = new E();
   string s;
   in >> s;
   assert(s=="<Graph");
   in >> s;
-  assert(s == P::className());
+  assert(s == p->className());
   in >> s;
-  assert(s == (E::className()+">"));
+  assert(s == (e->className()+">"));
   assert(VisibleE::load(in));
   assert(cloud.load(in));
   assert(eset.load(in));
   eset.setPointVector(&cloud.points);
+  delete p;
+  delete e;
   return true;
 }
 
 template< class P, class E>
 void Graph<P,E>::save(ostream &out){
-  out << "<Graph " << P::className() << " " << E::className() << ">\n";
+  P* p = new P();
+  E* e = new E();
+  out << "<Graph " << p->className() << " " << e->className() << ">\n";
   VisibleE::save(out);
   cloud.save(out);
   eset.save(out);
   out << "</Graph>\n";
+  delete p;
+  delete e;
 }
 
 template< class P, class E>

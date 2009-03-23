@@ -58,6 +58,7 @@ template <class T>
 
 template <class T>
 bool Cloud<T>::load(istream &in){
+  T* t = new T();
   int start = in.tellg();
   string s;
   in >> s;
@@ -69,9 +70,9 @@ bool Cloud<T>::load(istream &in){
     return false;
   }
   in >> s;
-  orig = s.find(T::className()+">");
+  orig = s.find(t->className()+">");
   if(orig == string::npos){
-    printf("Cloud::error load called when there is no type of the class %s\n", T::className().c_str());
+    printf("Cloud::error load called when there is no type of the class %s\n", t->className().c_str());
     in.seekg(start);
     return false;
   }
@@ -84,6 +85,7 @@ bool Cloud<T>::load(istream &in){
     p = new T();
   }
   in >> s;
+  delete t;
   if(s.find("</Cloud>")==string::npos){
     printf("Cloud::error load can not find </Cloud>\n");
     in.seekg(start);
@@ -94,11 +96,13 @@ bool Cloud<T>::load(istream &in){
 
 template <class T>
 void Cloud<T>::save(ostream &out){
-  out << "<Cloud " << T::className() << ">" << std::endl;
+  T* t = new T();
+  out << "<Cloud " << t->className() << ">" << std::endl;
   VisibleE::save(out);
   for(int i = 0; i < points.size(); i++)
     points[i]->save(out);
   out << "</Cloud>" << std::endl;
+  delete t;
 }
 
 #endif
