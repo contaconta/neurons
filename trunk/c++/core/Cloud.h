@@ -102,7 +102,7 @@ bool Cloud<T>::load(istream &in){
 template <class T>
 void Cloud<T>::save(ostream &out){
   T* t = new T();
-  out << "<Cloud " << t->className() << ">" << std::endl;
+    out << "<Cloud " << t->className() << ">" << std::endl;
   VisibleE::save(out);
   for(int i = 0; i < points.size(); i++)
     points[i]->save(out);

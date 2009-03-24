@@ -176,29 +176,30 @@ neuronTools: library $(TOOLS_NEURON_OBJ) $(TOOLS_NEURON_EXEC)
 
 imageTools: library $(TOOLS_IMAGE_OBJ) $(TOOLS_IMAGE_EXEC)
 
-plugins : library $(PLUGINS_OBJ) $(PLUGINS_EXEC)
+plugins : mkobjdirs library $(PLUGINS_OBJ) $(PLUGINS_EXEC)
 
-install: library
-	cp lib/libneseg.so /usr/lib
-	cp lib/libneseg.a /usr/lib
+# install: library
+# 	cp lib/libneseg.so /usr/lib
+# 	cp lib/libneseg.a /usr/lib
 
 include  $(ALL_SOURCES:.cpp=.d)
 
 #Creates the obj directory structure
 # I know mkdir -p might not be portable, but it is easy to use.
-#mkobjdirs : objects
-# 	mkdir -p $@
-# 	mkdir -p objects
-# 	mkdir -p objects/core
-# 	mkdir -p objects/tools
-# 	mkdir -p objects/tools/cube
-# 	mkdir -p objects/tools/graph
-# 	mkdir -p objects/tools/neuron
-# 	mkdir -p objects/tools/image
-# 	mkdir -p objects/viewer
-# 	mkdir -p objects/viewer/src
-# 	mkdir -p bin
-# 	mkdir -p lib
+mkobjdirs : objects
+	mkdir -p $@
+	mkdir -p objects
+	mkdir -p objects/core
+	mkdir -p objects/tools
+	mkdir -p objects/tools/cube
+	mkdir -p objects/tools/graph
+	mkdir -p objects/tools/neuron
+	mkdir -p objects/tools/image
+	mkdir -p objects/viewer
+	mkdir -p objects/viewer/src
+	mkdir -p bin
+	mkdir -p lib
+	mkdir -p objects/plugins/src/CubeInfo/
 
 print:
 	echo $(TOOLS_CUBE_OBJ)
