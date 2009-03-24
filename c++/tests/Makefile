@@ -19,16 +19,16 @@ SRCS = $(shell ls *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 EXEC = $(SRCS:.cpp=)
 
-all: depend lib $(EXEC)
+all: depend $(EXEC)
 
-lib:
-	make -C ../ depend
-	make -C ../ lib
+# lib:
+# 	make -C ../ depend
+# 	make -C ../ lib
 
 $(OBJS):%.o:%.cpp
 	g++ $(CFLAGS) $< -o $@
 
-$(EXEC):$(OBJS) lib
+$(EXEC):$(OBJS)
 	g++ $(LDFLAGS) $@.o -o $@ -lneseg
 
 print:
@@ -51,12 +51,7 @@ cloud.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
 cloud.o: ../core/Cloud.h ../core/Cloud_P.h ../core/Point.h ../core/Point2D.h
 cloud.o: ../core/Point2Do.h ../core/Point2Dot.h ../core/Point3D.h
 cloud.o: ../core/Point3Dt.h ../core/Point3Do.h ../core/Point3Dot.h
-cubeCreator.o: ../core/Cube.h ../core/neseg.h ../core/Image.h
-cubeCreator.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
-cubeCreator.o: ../core/Object.h ../core/utils.h ../core/Mask.h
-cubeCreator.o: ../core/Cube_P.h ../core/Cube_data.h ../core/Cube_display.h
-cubeCreator.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h
-cubeCreator.o: ../core/Cube_image.h
+cloud.o: ../core/Point3Dotw.h
 dfactorial.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
 generalParser.o: ../core/Parser.h ../core/utils.h ../core/Mask.h
 generalParser.o: ../core/polynomial.h
@@ -68,14 +63,18 @@ graph.o: ../core/Cube_drawBetween.h ../core/Cube_aux.h ../core/Cube_image.h
 graph.o: ../core/Graph.h ../core/Cloud.h ../core/Cloud_P.h ../core/Point.h
 graph.o: ../core/Point2D.h ../core/Point2Do.h ../core/Point2Dot.h
 graph.o: ../core/Point3D.h ../core/Point3Dt.h ../core/Point3Do.h
-graph.o: ../core/Point3Dot.h ../core/EdgeSet.h ../core/Edge.h ../core/EdgeW.h
-graph.o: ../core/Edge2W.h ../core/Graph_P.h ../core/GraphFactory.h
+graph.o: ../core/Point3Dot.h ../core/Point3Dotw.h ../core/EdgeSet.h
+graph.o: ../core/Edge.h ../core/EdgeW.h ../core/Edge2W.h ../core/Graph_P.h
+graph.o: ../core/GraphFactory.h
 hermitePolynomials.o: ../core/Mask.h ../core/utils.h ../core/polynomial.h
 hermitePolynomials.o: ../core/Cube.h ../core/neseg.h ../core/Image.h
 hermitePolynomials.o: ../core/VisibleE.h ../core/Visible.h ../core/Object.h
 hermitePolynomials.o: ../core/Cube_P.h ../core/Cube_data.h
 hermitePolynomials.o: ../core/Cube_display.h ../core/Cube_drawBetween.h
 hermitePolynomials.o: ../core/Cube_aux.h ../core/Cube_image.h
+imageTest.o: ../core/neseg.h ../core/Image.h ../core/polynomial.h
+imageTest.o: ../core/VisibleE.h ../core/Visible.h ../core/Object.h
+imageTest.o: ../core/utils.h ../core/Mask.h
 matlabControl.o: ../core/utils.h ../core/Mask.h ../core/polynomial.h
 neuronToMicrometers.o: ../core/Image.h ../core/neseg.h ../core/polynomial.h
 neuronToMicrometers.o: ../core/VisibleE.h ../core/Visible.h ../core/Object.h
