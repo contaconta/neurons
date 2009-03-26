@@ -11,8 +11,10 @@ SHELL=/bin/bash
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
 CPP = g++-4.2
+RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
+USE_BBP=1
 
 ## Compilation flags
 ifeq ($(USE_OPENMP),1)
@@ -33,6 +35,19 @@ else
   GLEWL =
 endif
 
+## Interface with the BBP_SDK for visualization of their morphologies
+ifeq ($(USE_BBP),1)
+  D_BBP = -D WITH_BBP
+  CFLAGSBBP  = -I/usr/local/include/boost-1_38 -I/usr/local/include/boost-1_38
+  LDFLAGSBBP = -L/usr/local/lib -lboost_system-gcc43-mt -lboost_serialization-gcc43-mt -lBBP-SDK
+else
+  D_BBP =
+  CFLAGSBBP  =
+  LDFLAGSBBP =
+endif
+
+
+
 CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags gsl)
 CFLAGSGTK    = $(shell pkg-config --cflags gtk+-2.0)
 CFLAGSGTKEXT    = $(shell pkg-config --cflags gtkglext-1.0 pangoft2)
@@ -46,16 +61,15 @@ LDFLAGSOPENGL = -L/usr -L/usr/lib -L/usr/X11R6/lib $(GLEWL) -lglut -lGLU -lGL
 LDFLAGSPLUGINS = $(shell pkg-config --libs gmodule-2.0)
 
 INCLUDEFLAGSEXT = -Iexternal/graphCuts
-INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT) $(CFLAGSPLUGINS)
+INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(D_BBP) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT) $(CFLAGSPLUGINS) $(CFLAGSBBP)
+LINKFLAGS    = $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL) $(LDFLAGSBBP)
 
-ifeq (${release}, 1)
-	#CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+ifeq ($(RELEASE), 1)
 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
-	LDFLAGS =  -O3 $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
+	LDFLAGS =  -O3 $(LINKFLAGS)
 else
 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
-	#CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
-	LDFLAGS =  -g -pg $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL)
+	LDFLAGS =  -g -pg $(LINKFLAGS)
 endif
 
 ## Relevant directories (I am dislexic)
