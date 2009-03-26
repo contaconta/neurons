@@ -10,6 +10,7 @@
 #include "Axis.h"
 #include "DoubleSet.h"
 #include "GraphCut.h"
+#include "BBP_Morphology.h"
 
 //Camera parameters
 double fovy3D = 60;

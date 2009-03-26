@@ -17,6 +17,7 @@
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
+#include "BBP_Morphology.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -51,9 +52,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
     return;
   }
 
-  Axis* axis = new Axis();
-  toDraw.push_back(axis);
-  objectNames.push_back("Axis");
+
 
   //Create the objects
   string extension;
@@ -88,12 +87,26 @@ on_drawing3D_realize                   (GtkWidget       *widget,
         Image<float>* img = new Image<float>(objectNames[i]);
         toDraw.push_back(img);
       }
+
+#ifdef WITH_BBP
+    else if ((extension == "h5")){
+      BBP_Morphology* bbpmorph = new BBP_Morphology(objectNames[i]);
+      toDraw.push_back(bbpmorph);
+    }
+#endif
     else{
       printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
              objectNames[i].c_str());
       exit(0);
     }
   }
+
+  Axis* axis = new Axis();
+  toDraw.push_back(axis);
+  objectNames.push_back("Axis");
+
+
+
 
   if(cube == NULL){
     cube = new Cube<uchar, ulong>();

@@ -43,6 +43,7 @@ clean :
 
 # DO NOT DELETE
 
+BBP_morphology.o: ../core/BBP_Morphology.h ../core/neseg.h
 cloud.o: ../core/CubeFactory.h ../core/Cube.h ../core/neseg.h ../core/Image.h
 cloud.o: ../core/polynomial.h ../core/VisibleE.h ../core/Visible.h
 cloud.o: ../core/Object.h ../core/utils.h ../core/Mask.h ../core/Cube_P.h
