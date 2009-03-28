@@ -27,9 +27,24 @@ using namespace std;
 int main(int argc, char **argv) {
   int x = 0;
   int y = 0;
-  Image<float>* imgT = new Image<float>("data/rk2.jpg");
+  string filename = "GT001.png";
+  Image<float>* imgT = new Image<float>(filename);
   printf("The uchar value is: %f\nThe float value is %f\n",
          (float)((uchar *)(imgT->img->imageData + y*imgT->img->widthStep))[x],
          imgT->at(x,y));
 
+  //IplImage* img=imgT->img;
+  // Access color image
+  IplImage* img = cvLoadImage(filename.c_str(),CV_LOAD_IMAGE_COLOR);
+  printf("nChannels: %d\n", img->nChannels);
+  if(img->nChannels==3)
+    {
+      uchar* ptrColImage = &((uchar*)(img->imageData + img->widthStep*y))[x*3];
+      printf("img(%d,%d): %d,%d,%d\n",x,y,*ptrColImage++,*ptrColImage++,*ptrColImage);
+    }
+  else
+    {
+      uchar* ptrColImage = &((uchar*)(img->imageData + img->widthStep*y))[x];
+      printf("img(%d,%d): %d\n",x,y,*ptrColImage);
+    }
 }
