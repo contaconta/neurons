@@ -6,22 +6,24 @@
 #include "Point.h"
 #include "VisibleE.h"
 
-class Point3Dc
+class PointDs
 {
  public:
-  //vector<float> w_coords; // world coordinates
   vector<float> coords;
 
   void save(ostream &out){
-    for(int i = 0; i < 2; i++)
-      out << coords[i] << " ";
-    out << coords[2] << std::endl;
+    if(coords.size()>0)
+      {
+        for(int i = 0; i < coords.size()-1; i++)
+          out << coords[i] << " ";
+        out << coords[coords.size()-1] << std::endl;
+      }
   }
 
-  bool load(istream &in){
-    coords.resize(3);
+  bool load(istream &in, int ptSize=4){
+    coords.resize(ptSize);
     int start = in.tellg();
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < ptSize; i++){
       in >> coords[i];
       if(in.fail()){
         in.clear();
@@ -51,14 +53,14 @@ class DoubleSet : public VisibleE
  public:
  string name;
 
- vector< Point3Dc* > set1;
- vector< Point3Dc* > set2;
+ vector< PointDs* > set1;
+ vector< PointDs* > set2;
 
  DoubleSet();
 
  ~DoubleSet();
 
- void addPoint(Point3Dc* point, int setId);
+ void addPoint(PointDs* point, int setId);
 
  void clear();
 
@@ -89,22 +91,22 @@ void DoubleSet<P>::init(){
   std::string s;
   std::stringstream out;
   out << id;
-  name = "Double_set " + out.str();
+  name = "Double_set_" + out.str();
   id++;
 }
 
 template< class P>
 //DoubleSet<P>::~DoubleSet() : ~Visible(){
 DoubleSet<P>::~DoubleSet() {
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set1.begin();
-      itPoint3Dcs != set1.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set1.begin();
+      itPointDss != set1.end(); itPointDss++)
     {
-      delete *itPoint3Dcs;
+      delete *itPointDss;
     }
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set2.begin();
-      itPoint3Dcs != set2.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set2.begin();
+      itPointDss != set2.end(); itPointDss++)
     {
-      delete *itPoint3Dcs;
+      delete *itPointDss;
     }
 }
 
@@ -120,18 +122,18 @@ void DoubleSet<P>::draw(float point_radius){
   //glLineWidth(6.0f);
   //glBegin(GL_LINE_STRIP);
   glColor3f(1,0,0);
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set1.begin();
-      itPoint3Dcs != set1.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set1.begin();
+      itPointDss != set1.end(); itPointDss++)
     {
-      //glVertex3f((*itPoint3Dcs)->coords[0],(*itPoint3Dcs)->coords[1],(*itPoint3Dcs)->coords[2]);
-      (*itPoint3Dcs)->draw(point_radius);
+      //glVertex3f((*itPointDss)->coords[0],(*itPointDss)->coords[1],(*itPointDss)->coords[2]);
+      (*itPointDss)->draw(point_radius);
     }
   glColor3f(0,1,0);
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set2.begin();
-      itPoint3Dcs != set2.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set2.begin();
+      itPointDss != set2.end(); itPointDss++)
     {
-      //glVertex3f((*itPoint3Dcs)->coords[0],(*itPoint3Dcs)->coords[1],(*itPoint3Dcs)->coords[2]);
-      (*itPoint3Dcs)->draw(point_radius);
+      //glVertex3f((*itPointDss)->coords[0],(*itPointDss)->coords[1],(*itPointDss)->coords[2]);
+      (*itPointDss)->draw(point_radius);
     }
   //glEnd();
   //glPopAttrib();
@@ -174,15 +176,15 @@ bool DoubleSet<P>::load(istream &in)
   if(!VisibleE::load(in))
     return false;
   
-  Point3Dc* p = new Point3Dc();
+  PointDs* p = new PointDs();
   while(p->load(in)){
-    float z = p->coords[2];
+    float z = p->coords[p->coords.size()-1];
     printf("p.z : %f\n", z);
     if(z==0)
       set1.push_back(p);
     else if(z==1)
       set2.push_back(p);    
-    p = new Point3Dc();
+    p = new PointDs();
   }
   delete p;
 
@@ -211,15 +213,15 @@ void DoubleSet<P>::save(const string& filename){
   delete tp;
   VisibleE::save(out);
 
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set1.begin();
-      itPoint3Dcs != set1.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set1.begin();
+      itPointDss != set1.end(); itPointDss++)
     {
-      (*itPoint3Dcs)->save(out);
+      (*itPointDss)->save(out);
     }
-  for(vector< Point3Dc* >::iterator itPoint3Dcs = set2.begin();
-      itPoint3Dcs != set2.end(); itPoint3Dcs++)
+  for(vector< PointDs* >::iterator itPointDss = set2.begin();
+      itPointDss != set2.end(); itPointDss++)
     {
-      (*itPoint3Dcs)->save(out);
+      (*itPointDss)->save(out);
     }
 
   out << "</Cloud>" << std::endl;
@@ -227,7 +229,7 @@ void DoubleSet<P>::save(const string& filename){
 }
 
 template< class P>
-void DoubleSet<P>::addPoint(Point3Dc* point, int setId)
+void DoubleSet<P>::addPoint(PointDs* point, int setId)
 {
   if(setId == 1)
     set1.push_back(point);

@@ -27,6 +27,13 @@ using namespace std;
 int main(int argc, char **argv) {
   int x = 0;
   int y = 0;
+
+  if(argc > 2)
+    {
+      x=atoi(argv[1]);
+      y=atoi(argv[2]);
+    }
+
   string filename = "GT001.png";
   Image<float>* imgT = new Image<float>(filename);
   printf("The uchar value is: %f\nThe float value is %f\n",
@@ -40,7 +47,7 @@ int main(int argc, char **argv) {
   if(img->nChannels==3)
     {
       uchar* ptrColImage = &((uchar*)(img->imageData + img->widthStep*y))[x*3];
-      printf("img(%d,%d): %d,%d,%d\n",x,y,*ptrColImage++,*ptrColImage++,*ptrColImage);
+      printf("img(%d,%d): B=%d,G=%d,R=%d\n",x,y,*ptrColImage,*(ptrColImage+1),*(ptrColImage+2));
     }
   else
     {

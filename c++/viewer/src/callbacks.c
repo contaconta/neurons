@@ -100,7 +100,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
       exit(0);
     }
   }
-
+  
   Axis* axis = new Axis();
   toDraw.push_back(axis);
   objectNames.push_back("Axis");
@@ -110,6 +110,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
 
   if(cube == NULL){
     cube = new Cube<uchar, ulong>();
+    cube->dummy = true;
   }
 
   /** Loads the drawing parameters to the cube.*/

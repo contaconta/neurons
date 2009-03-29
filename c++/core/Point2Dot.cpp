@@ -62,3 +62,7 @@ bool Point2Dot::load(istream &in){
   }
   return true;
 }
+
+string Point2Dot::className(){
+  return "Point2Dot";
+}

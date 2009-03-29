@@ -22,10 +22,7 @@ public:
 
   void save(ostream &out);
 
-  virtual string className(){
-    return "Point2Dot";
-  }
-
+  string className();
 
 };
 
