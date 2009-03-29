@@ -72,10 +72,14 @@ bool pressMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTyp
 	if(active_id == CT_SIMPLE_SELECTION)
 	  {
             printf("Add new point\n");
-	    Point3Dc* point=new Point3Dc();
+	    PointDs* point=new PointDs();
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
 	    point->coords.push_back((float)wz);
+            if(pointType == CPT_SOURCE)
+              point->coords.push_back(0.0f);
+            else
+              point->coords.push_back(1.0f);
 	    currentSelectionSet->addPoint(point, pointType+1);
 	  }
 	else
@@ -135,10 +139,14 @@ bool motionMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTy
 	if(active_id == CT_SIMPLE_SELECTION)
 	  {
             printf("Add new point\n");
-	    Point3Dc* point=new Point3Dc();
+	    PointDs* point=new PointDs();
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
 	    point->coords.push_back((float)wz);
+            if(pointType == CPT_SOURCE)
+              point->coords.push_back(0.0f);
+            else
+              point->coords.push_back(1.0f);
 	    currentSelectionSet->addPoint(point, pointType+1);
 	  }
 	else
@@ -225,12 +233,15 @@ bool releaseMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointT
             for(int x=min_x;x<max_x;x+=rect_sel_step_x)
               for(int y=min_y;y<max_y;y+=rect_sel_step_y)
                 {
-                  Point3Dc* point=new Point3Dc();
+                  PointDs* point=new PointDs();
                   get_world_coordinates(wx, wy, wz, x, y);
                   point->coords.push_back((float)wx);
                   point->coords.push_back((float)wy);
                   point->coords.push_back((float)wz);
-                  //printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
+                  if(pointType == CPT_SOURCE)
+                    point->coords.push_back(0.0f);
+                  else
+                    point->coords.push_back(1.0f);
                   currentSelectionSet->addPoint(point, pointType+1);
                 }
 	  }

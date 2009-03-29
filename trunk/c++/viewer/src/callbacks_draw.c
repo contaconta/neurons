@@ -63,44 +63,81 @@ void setUpVolumeMatrices()
 
 void setUpMatricesXY(int layerSpan)
 {
-  //Gets the cube coordinates
-  GLfloat widthStep = float(cube->cubeWidth)*cube->voxelWidth/2;
-  GLfloat heightStep = float(cube->cubeHeight)*cube->voxelHeight/2;
-  GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = 512;
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+  if(cube->dummy)
+    {
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Image")
+            {
+              Image<float>* img = (Image<float>*)*itObj;
+              
+              //Gets the cube coordinates
+              GLfloat widthStep = float(img->width/2);
+              GLfloat heightStep = float(img->height/2);
+              GLfloat depthStep = -1.0f;
+              //GLint max_texture_size = 0;
+              //glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+              //max_texture_size = 512;
+              glMatrixMode(GL_PROJECTION);
+              glLoadIdentity();
 
-  float step_x = 1.0;
-  float step_y = 1.0;
+              glOrtho (-widthStep, widthStep, -heightStep, heightStep, depthStep, 100.0f);
 
-  if(cube->cubeWidth < max_texture_size){
-    step_x = float(cube->cubeWidth)/max_texture_size;
-  }
-  if(cube->cubeHeight < max_texture_size){
-    step_y = float(cube->cubeHeight)/max_texture_size;
-  }
+              //glScalef(1.0,1.0,-1.0);
+              glMatrixMode(GL_MODELVIEW);
+              glLoadIdentity();
+              //glTranslatef(0,0,depthStep);
 
-  glOrtho(-widthStep + cubeColToDraw*max_texture_size*cube->voxelWidth,
-          -widthStep + (cubeColToDraw+step_x)*max_texture_size*cube->voxelWidth,
-          heightStep - (cubeRowToDraw+step_y)*max_texture_size*cube->voxelHeight,
-          heightStep - cubeRowToDraw*max_texture_size*cube->voxelHeight,
-          -1.0f, //(layerToDrawXY-layerSpan)*cube->voxelDepth,
-          (layerToDrawXY+layerSpan)*cube->voxelDepth);
+              /*if(!flag_draw_combo)
+                glViewport ((GLsizei)0,(GLsizei)0,
+                (GLsizei)widgetWidth, (GLsizei)widgetHeight);*/
 
-  glScalef(1.0,1.0,-1.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glTranslatef(0,0,depthStep);
+              break;
+            }
+        }
+    }
+  else
+    {
+      //Gets the cube coordinates
+      GLfloat widthStep = float(cube->cubeWidth)*cube->voxelWidth/2;
+      GLfloat heightStep = float(cube->cubeHeight)*cube->voxelHeight/2;
+      GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
+      GLint max_texture_size = 0;
+      glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+      max_texture_size = 512;
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
 
-  float tileWidth = min(float(cube->cubeWidth - max_texture_size*cubeColToDraw), float(max_texture_size));
-  float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowToDraw), float(max_texture_size));
+      float step_x = 1.0;
+      float step_y = 1.0;
 
-  if(!flag_draw_combo)
-    glViewport ((GLsizei)0,(GLsizei)0,
-                (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+      if(cube->cubeWidth < max_texture_size){
+        step_x = float(cube->cubeWidth)/max_texture_size;
+      }
+      if(cube->cubeHeight < max_texture_size){
+        step_y = float(cube->cubeHeight)/max_texture_size;
+      }
+
+      glOrtho(-widthStep + cubeColToDraw*max_texture_size*cube->voxelWidth,
+              -widthStep + (cubeColToDraw+step_x)*max_texture_size*cube->voxelWidth,
+              heightStep - (cubeRowToDraw+step_y)*max_texture_size*cube->voxelHeight,
+              heightStep - cubeRowToDraw*max_texture_size*cube->voxelHeight,
+              -1.0f, //(layerToDrawXY-layerSpan)*cube->voxelDepth,
+              (layerToDrawXY+layerSpan)*cube->voxelDepth);
+
+      glScalef(1.0,1.0,-1.0);
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      glTranslatef(0,0,depthStep);
+
+      //float tileWidth = min(float(cube->cubeWidth - max_texture_size*cubeColToDraw), float(max_texture_size));
+      //float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowToDraw), float(max_texture_size));
+
+      if(!flag_draw_combo)
+        glViewport ((GLsizei)0,(GLsizei)0,
+                    (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+    }
 }
 
 
@@ -302,6 +339,21 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glEnable(GL_DEPTH_TEST);
       if(flag_draw_neuron && neuronita)
 	neuronita->draw();
+
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Image")
+            {
+              Image<float>* img = (Image<float>*)*itObj;
+              glPushMatrix();
+              glTranslatef(-img->width/2,-img->height/2,0);
+              img->draw();
+              glPopMatrix();
+            }
+          else
+            (*itObj)->draw();
+        }
       //glCallList(1);
       /* for(int i = 0; i < toDraw.size(); i++) */
         /* toDraw[i]->draw(); */

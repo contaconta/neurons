@@ -15,8 +15,8 @@
 //Camera parameters
 double fovy3D = 60;
 double aspect3D = 1;
-double zNear3D = 30;
-double zFar3D = 1000;
+double zNear3D = 1;
+double zFar3D = 5000;
 double disp3DX = 0;
 double disp3DY = 0;
 double disp3DZ = 200;

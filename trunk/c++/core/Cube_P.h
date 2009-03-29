@@ -53,7 +53,9 @@ public:
   //Type of data that the cube is. Type = "uchar, float..."
   string type;
 
-  Cube_P() : VisibleE(){}
+  bool dummy;
+
+ Cube_P() : VisibleE(),dummy(false){}
 
   virtual void print_size()=0;
 

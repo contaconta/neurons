@@ -9,7 +9,7 @@
 // General Public License for more details.                            //
 //                                                                     //
 // Written and (C) by Aurelien Lucchi                                  //
-// Contact <ggonzale@atenea> for comments & bug reports                //
+// Contact <aurelien.lucchi@gmail.com> for comments & bug reports      //
 /////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -401,6 +401,7 @@ int main(int argc, char **argv) {
     }
   else
     {
+      // Save type
       const gsl_rng_type * T2;
       gsl_rng * r;
       gsl_rng_env_setup();
