@@ -282,6 +282,30 @@ void draw_graphcuts()
   glPopMatrix();
 }
 
+void draw_objects()
+{
+  if(flag_draw_neuron && neuronita)
+    neuronita->draw();
+
+  for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+      itObj != toDraw.end(); itObj++)
+    {
+      if((*itObj)->className()=="Image")
+        {
+          Image<float>* img = (Image<float>*)*itObj;
+          glPushMatrix();
+          glTranslatef(-img->width/2,-img->height/2,0);
+          img->draw();
+          glPopMatrix();
+        }
+      else
+        (*itObj)->draw();
+    }
+  draw_last_point();
+  draw_selection();
+  draw_graphcuts();
+}
+
 gboolean
 on_drawing3D_expose_event              (GtkWidget       *widget,
                                         GdkEventExpose  *event,
@@ -317,9 +341,10 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
+
       if(flag_draw_neuron && neuronita)
-	neuronita->draw();
-        //glCallList(1);
+        neuronita->draw();
+
       draw_last_point();
       draw_selection();
       draw_graphcuts();
@@ -337,29 +362,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron && neuronita)
-	neuronita->draw();
 
-      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
-          itObj != toDraw.end(); itObj++)
-        {
-          if((*itObj)->className()=="Image")
-            {
-              Image<float>* img = (Image<float>*)*itObj;
-              glPushMatrix();
-              glTranslatef(-img->width/2,-img->height/2,0);
-              img->draw();
-              glPopMatrix();
-            }
-          else
-            (*itObj)->draw();
-        }
-      //glCallList(1);
-      /* for(int i = 0; i < toDraw.size(); i++) */
-        /* toDraw[i]->draw(); */
-      draw_last_point();
-      draw_selection();
-      draw_graphcuts();
+      draw_objects();
+
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -373,12 +378,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron && neuronita)
-	neuronita->draw();
-      //glCallList(1);
-      draw_last_point();
-      draw_selection();
-      draw_graphcuts();
+
+      draw_objects();
+
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -392,12 +394,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron && neuronita)
-	neuronita->draw();
-      //glCallList(1);
-      draw_last_point();
-      draw_selection();
-      draw_graphcuts();
+
+      draw_objects();
+
       glDisable(GL_DEPTH_TEST);
     }
 

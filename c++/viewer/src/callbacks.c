@@ -106,8 +106,6 @@ on_drawing3D_realize                   (GtkWidget       *widget,
   objectNames.push_back("Axis");
 
 
-
-
   if(cube == NULL){
     cube = new Cube<uchar, ulong>();
     cube->dummy = true;

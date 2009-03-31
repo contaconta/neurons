@@ -124,6 +124,9 @@ public:
   /** The image will be drawn between (0,0) and (width,height).*/
   void draw();
 
+  /** Reload the OpenGL texture associated to the image */
+  void reloadTexture();
+
   virtual string className(){
     return "Image";
   }
@@ -594,7 +597,11 @@ void Image<T>::threshold
   toThreshold->save();
 }
 
-
+template<class T>
+void Image<T>::reloadTexture()
+{
+  texture_loaded = false;
+}
 
 template<class T>
 void Image<T>::draw()
