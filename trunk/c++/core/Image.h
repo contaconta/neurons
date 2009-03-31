@@ -103,6 +103,11 @@ public:
 
   void histogram(int nbins, vector<int>& n_points, vector<float>& range, bool ignoreLowerValue = false);
 
+  /** Calculate Hessian. Computes the hessian of the image at a given scale and saves the eigenvalues in an image */
+  void computeHessian(float sigma, string eigenValueH = "l1.jpg",
+                      string eigenValueL = "l2.jpg", bool saveOrientation = false,
+                      string orientationFile = "theta.jpg");
+
   double getMean();
 
   T at(int x, int y);
@@ -734,6 +739,80 @@ void Image<T>::histogram(int nbins, vector<int>& boxes, vector<float>& rangev, b
     rangev[i] = min + range*i/nbins;
   // }
 }
+
+template< class T>
+void Image<T>::computeHessian
+(float sigma, string eigenValueH,
+ string eigenValueL, bool saveOrientation,
+ string orientationFile)
+{
+  Image<float>* gxx;
+  Image<float>* gxy;
+  Image<float>* gyy;
+  char name[1024];
+  sprintf(name, "%s/g_xx_%.02f.jpg", directory.c_str(), sigma);
+  if(!fileExists(name))
+    gxx = calculate_derivative(2,0,sigma,name);
+  else
+    gxx = new Image<float>(name);
+  sprintf(name, "%s/g_xy_%.02f.jpg", directory.c_str(), sigma);
+  if(!fileExists(name))
+    gxy = calculate_derivative(1,1,sigma,name);
+  else
+    gxy = new Image<float>(name);
+  sprintf(name, "%s/g_yy_%.02f.jpg", directory.c_str(), sigma);
+  if(!fileExists(name))
+    gyy = calculate_derivative(0,2,sigma,name);
+  else
+    gyy = new Image<float>(name);
+
+  Image<float>* l1 = create_blank_image_float(eigenValueH);
+  Image<float>* l2 = create_blank_image_float(eigenValueL);
+  Image<float>* orientation;
+  if(saveOrientation)
+    orientation = create_blank_image_float(orientationFile);
+
+  gsl_vector *eign = gsl_vector_alloc (2);
+  gsl_matrix *evec = gsl_matrix_alloc (2, 2);
+
+  gsl_eigen_symm_workspace* w =  gsl_eigen_symm_alloc (2);
+  gsl_eigen_symmv_workspace* w2 =  gsl_eigen_symmv_alloc (2);
+
+  double data[4];
+  double v_x, v_y, l1_t, l2_t;
+
+  for(int x = 0; x < width; x++)
+    for(int y = 0; y < height; y++){
+      data[0] = gxx->at(x,y);
+      data[1] = gxy->at(x,y);
+      data[2] = data[1];
+      data[3] = gyy->at(x,y);
+      gsl_matrix_view M
+        = gsl_matrix_view_array (data, 2, 2);
+      gsl_eigen_symmv (&M.matrix, eign, evec, w2);
+      l1_t = gsl_vector_get (eign, 0);
+      l2_t = gsl_vector_get (eign, 1);
+      if(l1_t > l2_t){
+        l1->put(x,y,l1_t);
+        l2->put(x,y,l2_t);
+      }
+      else{
+        l1->put(x,y,l2_t);
+        l2->put(x,y,l1_t);
+      }
+      if(saveOrientation){
+        v_x = gsl_matrix_get(&M.matrix, 0,0);
+        v_y = gsl_matrix_get(&M.matrix, 0,1);
+        orientation->put(x,y,atan2(v_y, v_x));
+      }
+    }
+
+  l1->save();
+  l2->save();
+  if(saveOrientation)
+    orientation->save();
+}
+
 
 
 
