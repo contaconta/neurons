@@ -133,9 +133,25 @@ on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
         }
       else
         {
-          vector<Object*> cubes;
-          cubes.push_back(cube);
-          p_run(cubes); // execute init function
+          vector<Object*> lObjects;
+          lObjects.push_back(cube);
+
+          for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+              itObj != toDraw.end(); itObj++)
+            {
+              if((*itObj)->className()=="Image")
+                {
+                  Image< float >* img = (Image<float>*)*itObj;
+                  if(img!=0)
+                    {
+                      lObjects.push_back(img);
+                    }
+                  else
+                    printf("Null img\n");
+                }
+            }
+
+          p_run(lObjects); // execute init function
         }
 
       if (!g_module_close (module))

@@ -14,7 +14,7 @@ CPP = g++-4.2
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
-USE_BBP=1
+USE_BBP=0
 
 ## Compilation flags
 ifeq ($(USE_OPENMP),1)
@@ -213,7 +213,7 @@ mkobjdirs : objects
 	mkdir -p objects/viewer/src
 	mkdir -p bin
 	mkdir -p lib
-	mkdir -p objects/plugins/src/CubeInfo/
+	mkdir -p objects/plugins/src/Samples/
 
 print:
 	echo $(TOOLS_CUBE_OBJ)

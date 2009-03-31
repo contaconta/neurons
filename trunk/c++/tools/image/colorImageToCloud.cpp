@@ -47,7 +47,9 @@ static struct argp_option options[] = {
   {"symmetrize",    'z', 0,                    0, "if true generates also positive points rotated Pi degrees"},
   {"numberPositive", 'N', "positive_points",-  0, "if defined, the number of positive points to get"},
   {"numberNegative", 'M', "negative_points",-  0, "if defined, the number of negative points to get"},
-  {"numberBlueNegative", 'B', "blue_negative_points",-  0, "if defined, the number of blue negative points to get"},
+  {"numberBlueSample", 'B', "number_blue_sample_points",-  0, "if defined, the number of blue sample points to get"},
+  {"classBlueSample", 'B', "class_blue_sample_points",-  0, "if defined, the number of blue sample points to get"},
+  {"stepBlueSample", 'p', "step_blue_sample_points",-  0, "if defined, the space between the blue sample points"},
   { 0 }
 };
 
@@ -59,11 +61,13 @@ struct arguments
   string name_scale_normalization;
   bool   save_type;
   bool   save_negative;
-  bool   save_blue_negative;
+  bool   save_blue_sample;
   bool   flag_symmetrize;
   int    number_points;
   int    number_negative_points;
-  int    number_blue_negative_points;
+  int    number_blue_sample_points;
+  int    class_blue_sample_points;
+  int    step_blue_sample_points;
 };
 
 
@@ -100,9 +104,14 @@ parse_opt (int key, char *arg, struct argp_state *state)
       argments->save_negative = true;
       break;
     case 'B':
-      printf("number_blue_negative_points\n");
-      argments->number_blue_negative_points = atoi(arg);
-      argments->save_blue_negative = true;
+      argments->number_blue_sample_points = atoi(arg);
+      argments->save_blue_sample = true;
+      break;
+    case 'c':
+      argments->class_blue_sample_points = atoi(arg);
+      break;
+    case 'p':
+      argments->step_blue_sample_points = atoi(arg);
       break;
 
     case ARGP_KEY_ARG:
@@ -130,181 +139,6 @@ parse_opt (int key, char *arg, struct argp_state *state)
 /* Our argp parser. */
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
-
-void sampleWidthNormalization(arguments &args)
-{
-  /*
-  printf("In theory I should be here: img %s\n", args.name_scale_normalization.c_str());
-
-  Image< float >* img  = new Image< float >(args.name_image);
-
-  vector< int > indexes(3);
-  vector< float > micrometers(3);
-  indexes[2] = 0;
-
-  if( (args.name_orientation != "") &&
-      args.save_type
-      )
-    {
-
-      const gsl_rng_type * T2;
-      gsl_rng * r;
-      gsl_rng_env_setup();
-      T2 = gsl_rng_default;
-      r = gsl_rng_alloc (T2);
-
-      Image< float >* ors = new Image< float >(args.name_orientation);
-      Image< float >* scale = new Image< float>(args.name_scale_normalization);
-      Cloud< Point2Dot >* cloud = new Cloud< Point2Dot >();
-
-      // // If we pass all the image
-      // if(args.number_points == 0){
-        // for(int x = 0; x < img->width; x++){
-          // for(int y = 0; y < img->height; y++){
-            // if(img->at(x,y) < 100){
-              // indexes[0] = x;
-              // indexes[1] = y;
-              // img->indexesToMicrometers(indexes, micrometers);
-              // cloud->points.push_back(
-                                      // new Point2Dot(micrometers[0],micrometers[1]
-                                                    // , ors->at(x,y), +1));
-              // if(args.flag_symmetrize){
-                // cloud->points.push_back(
-                                        // new Point2Dot(micrometers[0],micrometers[1]
-                                                      // , ors->at(x,y)+M_PI, 1 ));
-              // }
-            // }
-          // }
-        // }
-      // } // In case we want to limit the positive points
-      // else {
-
-      //Calculates the histogram ignoring the lower value (in this case, 0)
-      vector< int   > hist;
-      vector< float > values;
-      scale->histogram(6, hist, values, true);
-
-      for(int i = 0; i < hist.size(); i++){
-        printf("%f : %i\n", values[i], hist[i]);
-      }
-
-      int nBin = 1; //ignore the first bin
-      int nPositivePoints = 0;
-      int x, y;
-      while(nPositivePoints < args.number_points)
-        {
-          y = (int)floor(gsl_rng_uniform(r)*img->height);
-
-          //Check for the existance of one of the points supposed to be on the bin in the image
-          int nLinePointsInBin = 0;
-          float min = values[nBin];
-          float max = 0;
-          if(nBin == values.size()-1)
-            max = values[nBin]*values.size();
-          else
-            max = values[nBin+1];
-
-          for(int x_i = 0; x_i < scale->width; x_i++)
-            if( (scale->at(x_i,y) >= min) &&
-                (scale->at(x_i,y) <= max) )
-              nLinePointsInBin+=1;
-          // printf("Row %i min %f max %f nLinePointsInBin %i\n", y, min, max, nLinePointsInBin);
-          // printf("nBin = %i, max = %f and min = %f\n", nBin, max, min);
-          // exit(0);
-
-
-          if(nLinePointsInBin == 0)
-            continue;
-          else{
-            int idx_p = (int)floor(gsl_rng_uniform(r)*(nLinePointsInBin+1));
-            int idx_c = 0;
-            for(int x_i = 0; x_i < img->width; x_i++)
-              if( (scale->at(x_i,y) >= min) &&
-                  (scale->at(x_i,y) < max) ){
-                if(idx_c == idx_p){
-                  x = x_i;
-                  break;
-                } else {
-                  idx_c++;
-                }
-              }
-          }
-
-          //Just to check if the point is part of the mask
-          if( img->at(x,y) > 100)
-            continue;
-
-          //If we have reached this point, we already have x and y
-          indexes[0] = x;
-          indexes[1] = y;
-          img->indexesToMicrometers(indexes, micrometers);
-          cloud->points.push_back(
-                                  new Point2Dot(micrometers[0],micrometers[1],
-                                                ors->at(x,y), 1));
-          nPositivePoints++;
-          if(args.flag_symmetrize){
-            cloud->points.push_back(
-                                    new Point2Dot(micrometers[0],micrometers[1]
-                                                  , ors->at(x,y)+M_PI, 1 ));
-            nPositivePoints ++;
-          }
-          //And now we advance in the bin
-          nBin++;
-          if(nBin == hist.size()-2) //ignore the last bin
-            nBin = 0; // we skip the first bin
-        }
-      // }
-
-      // In case we want to save the negative points
-      // generate as many negative points as there are positive
-      // they will be taken as random from the clear points
-      if(args.save_negative)
-        {
-          printf("Should generate the negative points\n");
-          Image<float>* mask = NULL;
-          if(args.name_mask != ""){
-            mask = new Image<float>(args.name_mask);
-          }
-          //Creates the random number generator
-          int nNegativePoints = 0;
-          int nPositivePoints = cloud->points.size();
-          int x, y;
-          int limitNegative = 0;
-          if(args.number_negative_points == 0)
-            limitNegative = nPositivePoints;
-          else
-            limitNegative = args.number_negative_points;
-
-          while(nNegativePoints < limitNegative){
-            x = (int)floor(gsl_rng_uniform(r)*img->width);
-            y = (int)floor(gsl_rng_uniform(r)*img->height);
-            if(mask!=NULL){
-              if(mask->at(x,y) < 100)
-                continue;
-            }
-            if(img->at(x,y) > 100){
-              indexes[0] = x;
-              indexes[1] = y;
-              img->indexesToMicrometers(indexes, micrometers);
-              cloud->points.push_back(
-                                      new Point2Dot(micrometers[0],micrometers[1]
-                                                    , (gsl_rng_uniform(r)-0.5)*2*M_PI,
-                                                    -1));
-              nNegativePoints++;
-            }
-          }
-        }
-      cloud->saveToFile(args.name_cloud);
-    }
-  else {
-    printf("You called to construct the cloud with a histogram normalization, nevertheless, you did not indicated many other things, exiting ...\n");
-  }
-
-*/
-}
-
-
-
 int main(int argc, char **argv) {
 
   struct arguments args;
@@ -313,36 +147,30 @@ int main(int argc, char **argv) {
   args.name_scale_normalization = "";
   args.name_orientation = "";
   args.name_cloud = "cloud.cl";
-  args.save_blue_negative = false;
+  args.save_blue_sample = false;
   args.save_negative = false;
   args.save_type     = false;
   args.flag_symmetrize = false;
-  args.number_points   = 0;
-  args.number_negative_points = 0;
-  args.number_blue_negative_points = 0;
+  args.number_points   = -1;
+  args.number_negative_points = -1;
+  args.number_blue_sample_points = 0;
+  args.class_blue_sample_points = 1;
+  args.step_blue_sample_points = 10;
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
 
   printf("Img: %s\nOrs: %s\nScl: %s\nSave_negative: %i\nSave_type: %i\nSymmetrize: %i\nNumber_points: %i\n"
-         "Scale_norm: %s\n",
+         "Scale_norm: %s\nNumber_blue_points: %d\nClass_blue_points: %d\nStep_blue_points: %d\n",
          args.name_image.c_str(),args.name_orientation.c_str(),
          args.name_cloud.c_str(),
          args.save_negative, args.save_type,
          args.flag_symmetrize, args.number_points,
-         args.name_scale_normalization.c_str() );
-
-
-
-  //If we want to do equally sampling in width
-  if(args.name_scale_normalization != ""){
-    sampleWidthNormalization(args);
-    exit(0);
-  }
-
+         args.name_scale_normalization.c_str(),
+         args.number_blue_sample_points, args.class_blue_sample_points, args.step_blue_sample_points);
 
   Image< float >* imgf  = new Image< float >(args.name_image);
   IplImage* img = cvLoadImage(args.name_image.c_str(),CV_LOAD_IMAGE_COLOR);
-  printf("nChannels: %d\n", img->nChannels);
+  printf("width %d, height %d, nChannels: %d\n", img->width, img->height, img->nChannels);
   if(img->nChannels!=3)
     {
       printf("Error : input image is not a color image");
@@ -481,7 +309,7 @@ int main(int argc, char **argv) {
           int nPositivePoints = cloud->points.size();
           int x, y;
           int limitNegative = 0;
-          if(args.number_negative_points == 0)
+          if(args.number_negative_points == -1)
             limitNegative = nPositivePoints;
           else
             limitNegative = args.number_negative_points;
@@ -489,7 +317,7 @@ int main(int argc, char **argv) {
 	  printf("limitNegative:%d\n", limitNegative);
 
           int idx = 0;
-          const int maxTry = limitNegative*10000;
+          const int maxTry = limitNegative*100000;
           while(nNegativePoints < limitNegative){
 
             x = (int)floor(gsl_rng_uniform(r)*img->width);
@@ -520,51 +348,45 @@ int main(int argc, char **argv) {
           }
         }
 
-      if(args.save_blue_negative)
+      if(args.save_blue_sample)
         {
           //Creates the random number generator
           int nNegativePoints = 0;
           int nPositivePoints = cloud->points.size();
-          int x, y;
           int limitNegative = 0;
-          if(args.number_blue_negative_points == 0)
+          int x= 0;
+          int y = 0;
+          if(args.number_blue_sample_points == 0)
             limitNegative = nPositivePoints;
           else
-            limitNegative = args.number_blue_negative_points;
+            limitNegative = args.number_blue_sample_points;
 
-	  printf("limitBlueNegative:%d\n", limitNegative);
+	  printf("limitBlueNegative:%d\n", limitNegative);          
 
-          int idx = 0;
-          const int maxTry = limitNegative*10000;
-          while(nNegativePoints < limitNegative){
+          for(int x = 0; x < img->width && (nNegativePoints < limitNegative); x+=args.step_blue_sample_points){
+            for(int y = 0; y < img->height; y+=args.step_blue_sample_points){
 
-            x = (int)floor(gsl_rng_uniform(r)*img->width);
-            y = (int)floor(gsl_rng_uniform(r)*img->height);            
-
-            uchar* ptrColImage = &((uchar*)(img->imageData + img->widthStep*y))[x*3];
-            if(ptrColImage[2] != ptrColImage[0]){ // Blue channel tagged
-
-              printf("xy %d %d\n", x,y);
-              indexes[0] = x;
-              indexes[1] = y;
-              imgf->indexesToMicrometers(indexes, micrometers);
-	      if(ors)
-		orientation=(gsl_rng_uniform(r)-0.5)*2*M_PI;
-	      else
-		orientation=0;
-              cloud->points.push_back(
-                                      new Point2Dot(micrometers[0],micrometers[1],
-                                                    orientation,
-                                                    -1));
-              nNegativePoints++;
-            }
-
-            idx++;
-            if(idx > maxTry)
-              {
-                printf("Warning : Number of max try achieved. Are you sure you have enough blue negative points in your image ?\n");
+              if(nNegativePoints >= limitNegative)
                 break;
+              
+              uchar* ptrColImage = &((uchar*)(img->imageData + img->widthStep*y))[x*3];
+              if(ptrColImage[2] != ptrColImage[0]){ // Blue channel tagged
+
+                //printf("add xy %d %d\n", x,y);
+                indexes[0] = x;
+                indexes[1] = y;
+                imgf->indexesToMicrometers(indexes, micrometers);
+                if(ors)
+                  orientation=(gsl_rng_uniform(r)-0.5)*2*M_PI;
+                else
+                  orientation=0;
+                cloud->points.push_back(
+                                        new Point2Dot(micrometers[0],micrometers[1],
+                                                      orientation,
+                                                      args.class_blue_sample_points));
+                nNegativePoints++;
               }
+            }
           }
         }
 
