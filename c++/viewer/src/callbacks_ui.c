@@ -213,6 +213,11 @@ void unProjectMouse()
     pressMouseSelectTool(mouse_last_x, mouse_last_y, CPT_SOURCE);
   }
 
+  if(p_unproject_mouse != NULL){
+    p_unproject_mouse(mouse_last_x, mouse_last_y);
+  }
+
+
 }
 
 bool select_tool_handle_mouse(int x, int y)
@@ -405,6 +410,10 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
 
   if(majorMode == MOD_ASCEDITOR)
     keyPressedAsc(widget,event,user_data);
+
+  if(p_key_press_event != NULL){
+    p_key_press_event(widget, event, user_data);
+  }
 
   return FALSE;
 }

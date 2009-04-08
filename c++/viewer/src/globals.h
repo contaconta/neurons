@@ -2,6 +2,7 @@
 #ifndef GLOBAL_VARIABLES_FILE_H_
 #define GLOBAL_VARIABLES_FILE_H_
 
+#include <gtk/gtk.h>
 #include "Neuron.h"
 #include "CubeFactory.h"
 #include "CloudFactory.h"
@@ -11,6 +12,8 @@
 #include "DoubleSet.h"
 #include "GraphCut.h"
 #include "BBP_Morphology.h"
+
+#include "plugin_info.h"
 
 //Camera parameters
 double fovy3D = 60;
@@ -150,6 +153,9 @@ GLuint shader_p = 0; // program shader id
 
 // Plugins
 vector<string> plugins;
+plugin_key_press_event p_key_press_event = NULL;
+plugin_unproject_mouse p_unproject_mouse = NULL;
+plugin_expose          p_expose          = NULL;
 
 /** Select tool parameters */
 

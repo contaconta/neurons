@@ -534,6 +534,10 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     exposeAsc(widget, event, user_data);
   }
 
+  if(p_expose != NULL){
+    p_expose(widget, event, user_data);
+  }
+
 
   //Show what has been drawn
   if (gdk_gl_drawable_is_double_buffered (gldrawable))
