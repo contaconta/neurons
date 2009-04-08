@@ -1011,7 +1011,10 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
 #pragma omp parallel for
 #endif
   for(int z = margin; z < cubeDepth-margin; z++){
-    int tn = omp_get_thread_num();
+    int tn = 1;
+#ifdef WITH_OPENMP
+    tn = omp_get_thread_num();
+#endif
     //Variables defined in the loop for easy parallel processing
     float l1,l2,l3, theta, phi, r;
     double data[9];
@@ -1156,7 +1159,10 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
 #pragma omp parallel for
 #endif
   for(int z = margin; z < cubeDepth-margin; z++){
-    int tn = omp_get_thread_num();
+    int tn = 1;
+#ifdef WITH_OPENMP
+    tn = omp_get_thread_num();
+#endif
     //Variables defined in the loop for easy parallel processing
     float l1,l2,l3, theta, phi, r, l1_t, l2_t, l3_t;
     double data[9];
@@ -1208,7 +1214,10 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
 #pragma omp parallel for
 #endif
   for(int z = margin; z < cubeDepth-margin; z++){
-    int tn = omp_get_thread_num();
+    int tn = 1;
+#ifdef WITH_OPENMP
+    tn = omp_get_thread_num();
+#endif
     //Variables defined in the loop for easy parallel processing
     float l1,l2,l3, theta, phi, r, l1_t, l2_t, l3_t;
     double data[9];
@@ -1356,7 +1365,10 @@ void Cube<T,U>::calculate_aguet_flat(float sigma_xy, float sigma_z)
 #pragma omp parallel for
 #endif
   for(int z = margin; z < cubeDepth-margin; z++){
-    int tn = omp_get_thread_num();
+    int tn = 1;
+#ifdef WITH_OPENMP
+    tn = omp_get_thread_num();
+#endif
     //Variables defined in the loop for easy parallel processing
     float l1,l2,l3, theta, phi, r;
     double data[9];
