@@ -1,5 +1,7 @@
 #include <gmodule.h>
 #include <stdio.h>
+#include <vector.h>
+#include "Object.h"
 
 extern "C"
 {
