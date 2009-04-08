@@ -38,9 +38,6 @@ void draw_last_point()
   }
 }
 
-
-
-
 void setUpVolumeMatrices()
 {
   glMatrixMode(GL_PROJECTION);
