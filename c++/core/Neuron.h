@@ -386,6 +386,12 @@ public:
 
   /** To parse the neuron.*/
   ascParser2* asc;
+
+  /** Name of the neuron.*/
+  string className(){
+    return "Neuron";
+  }
+
 };
 
 
