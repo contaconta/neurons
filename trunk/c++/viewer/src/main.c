@@ -136,26 +136,59 @@ on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
           vector<Object*> lObjects;
           lObjects.push_back(cube);
 
-          for(vector< VisibleE* >::iterator itObj = toDraw.begin();
-              itObj != toDraw.end(); itObj++)
+          /* for(vector< VisibleE* >::iterator itObj = toDraw.begin(); */
+              /* itObj != toDraw.end(); itObj++ */
+          for(int i = 0; i < toDraw.size(); i++)
             {
-              if((*itObj)->className()=="Image")
-                {
-                  Image< float >* img = (Image<float>*)*itObj;
-                  if(img!=0)
-                    {
-                      lObjects.push_back(img);
-                    }
-                  else
-                    printf("Null img\n");
-                }
+              lObjects.push_back(toDraw[i]);
+              /* if((*itObj)->className()=="Image") */
+                /* { */
+                  /* Image< float >* img = (Image<float>*)*itObj; */
+                  /* if(img!=0) */
+                    /* { */
+                      /* lObjects.push_back(img); */
+                    /* } */
+                  /* else */
+                    /* printf("Null img\n"); */
+                /* } */
             }
 
           p_run(lObjects); // execute init function
         }
 
-      if (!g_module_close (module))
-        g_warning ("%s: %s", plugin_name, g_module_error ());
+      //Loads the key_pressed_symbol
+      if (!g_module_symbol (module, "plugin_key_press_event",
+                            (gpointer *)&p_key_press_event))
+        {
+          printf("Error while searching for symbol plugin_key_press_event\n");
+        }
+      if (p_key_press_event == NULL)
+        {
+          printf("Symbol p_key_press_event is NULL\n");
+        }
+      if (!g_module_symbol (module, "plugin_unproject_mouse",
+                            (gpointer *)&p_unproject_mouse))
+        {
+          printf("Error while searching for symbol plugin_unproject_mouse\n");
+        }
+      if (p_unproject_mouse == NULL)
+        {
+          printf("Symbol p_unproject_mouse is NULL\n");
+        }
+      if (!g_module_symbol (module, "plugin_expose",
+                            (gpointer *)&p_expose))
+        {
+          printf("Error while searching for symbol plugin_expose\n");
+        }
+      if (p_expose == NULL)
+        {
+          printf("Symbol p_expose is NULL\n");
+        }
+
+
+      /* if (!g_module_close (module)) */
+        /* g_warning ("%s: %s", plugin_name, g_module_error ()); */
+
     }
 
 }

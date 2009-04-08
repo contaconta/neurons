@@ -74,6 +74,8 @@ on_drawing3D_realize                   (GtkWidget       *widget,
     else if( (extension == "asc") || (extension == "ASC") ){
       neuron_name = objectNames[i];
       neuronita = new Neuron(objectNames[i]);
+      string classN = neuronita->className();
+      printf("There is a neuron and its class is: %s\n", classN.c_str());
       toDraw.push_back(neuronita);
     }
     else if (extension == "gr") {

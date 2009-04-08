@@ -1,6 +1,7 @@
 #ifndef GLOBAL_VARIABLES_FILEE_H_
 #define GLOBAL_VARIABLES_FILEE_H_
 
+#include <gtk/gtk.h>
 #include "Neuron.h"
 #include "CubeFactory.h"
 #include "CloudFactory.h"
@@ -138,6 +139,10 @@ extern GLuint shader_p; // program shader id
 
 // Plugin names
 extern vector<string> plugins;
+extern plugin_key_press_event p_key_press_event;
+extern plugin_unproject_mouse p_unproject_mouse;
+extern plugin_expose          p_expose         ;
+
 
 /** Select tool parameters */
 
