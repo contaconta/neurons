@@ -109,6 +109,7 @@ bool flag_draw_XY = false;
 bool flag_draw_XZ = false;
 bool flag_draw_YZ = false;
 bool flag_draw_combo = false;
+bool flag_draw_dual = false;
 bool flag_draw_neuron = true;
 int layerSpanViewZ = 1;
 bool drawCube_flag = true;

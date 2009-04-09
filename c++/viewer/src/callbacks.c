@@ -150,21 +150,28 @@ on_view_entry_changed                  (GtkComboBox     *combobox,
   flag_draw_XZ = false;
   flag_draw_YZ = false;
   flag_draw_combo = false;
+  flag_draw_dual = false;
   gint active = gtk_combo_box_get_active(combobox);
-  if(active == 0){
-    flag_draw_3D = true;
-  }
-  if(active == 1){
-    flag_draw_XY = true;
-  }
-  if(active == 2){
-    flag_draw_XZ = true;
-  }
-  if(active == 3){
-    flag_draw_YZ = true;
-  }
-  if(active == 4){
-    flag_draw_combo = true;
+  switch(active)
+    {
+    case 0:
+      flag_draw_3D = true;
+      break;
+    case 1:
+      flag_draw_XY = true;
+      break;
+    case 2:
+      flag_draw_XZ = true;
+      break;
+    case 3:
+      flag_draw_YZ = true;
+      break;
+    case 4:
+      flag_draw_combo = true;
+      break;
+    case 5:
+      flag_draw_dual = true;
+      break;
   }
 
   on_drawing3D_expose_event(drawing3D,NULL, user_data);

@@ -32,6 +32,7 @@ extern bool flag_draw_XY;
 extern bool flag_draw_XZ;
 extern bool flag_draw_YZ;
 extern bool flag_draw_combo;
+extern bool flag_draw_dual;
 extern bool flag_draw_neuron;
 extern int layerSpanViewZ;
 extern bool drawCube_flag;

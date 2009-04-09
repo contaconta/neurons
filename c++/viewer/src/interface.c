@@ -239,6 +239,7 @@ create_ascEditor (void)
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XZ"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("YZ"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
 
   cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
   gtk_widget_show (cube_transparency);
