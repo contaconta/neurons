@@ -397,6 +397,42 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glDisable(GL_DEPTH_TEST);
     }
 
+  if(flag_draw_dual){
+    if( toDraw.size() == 3)
+      {
+        // The first objects in the toDraw list are the 2 images passed in arguments.
+        // The last one is the list is the dummy cube created at initilization
+        setUpVolumeMatrices();
+        glViewport ((GLsizei)0,(GLsizei)0,
+                    (GLsizei)(widgetWidth/2)-1, (GLsizei)widgetHeight);
+
+        if(toDraw[0]->className()=="Image")
+          {
+            Image<float>* img = (Image<float>*)toDraw[0];
+            glPushMatrix();
+            glTranslatef(-img->width/2,-img->height/2,0);
+            img->draw();
+            glPopMatrix();
+          }
+        else
+          toDraw[0]->draw();
+
+        glViewport ((GLsizei)widgetWidth/2,(GLsizei)0,
+                    (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+
+        if(toDraw[1]->className()=="Image")
+          {
+            Image<float>* img = (Image<float>*)toDraw[1];
+            glPushMatrix();
+            glTranslatef(-img->width/2,-img->height/2,0);
+            img->draw();
+            glPopMatrix();
+          }
+        else
+          toDraw[1]->draw();
+      }
+  }
+
   if(flag_draw_combo){
     setUpVolumeMatrices();
     glViewport ((GLsizei)0,(GLsizei)0,

@@ -355,7 +355,8 @@
 XY
 XZ
 YZ
-Combo</property>
+Combo
+Dual</property>
 		  <property name="add_tearoffs">False</property>
 		  <property name="has_frame">True</property>
 		  <property name="focus_on_click">True</property>
