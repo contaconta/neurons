@@ -65,10 +65,12 @@ INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(D_BBP) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore
 LINKFLAGS    = $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL) $(LDFLAGSBBP)
 
 ifeq ($(RELEASE), 1)
-	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+# 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+	CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -O3 $(LINKFLAGS)
 else
-	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+# 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+	CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -g -pg $(LINKFLAGS)
 endif
 
@@ -83,7 +85,7 @@ GRAPH_TOOLS_SRC_DIR = tools/graph/
 NEURON_TOOLS_SRC_DIR = tools/neuron/
 IMAGE_TOOLS_SRC_DIR = tools/image/
 VIEWER_SRC_DIR = viewer/src/
-PLUGINS_SRC_DIR = plugins/src/CubeInfo/
+PLUGINS_SRC_DIR = plugins/src/Samples/
 PLUGINS_BIN_DIR = plugins/bin/
 CORE_SRC_DIR  = core/
 # DIR = $(PWD)
@@ -155,7 +157,7 @@ $(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P) $(PLUGINS_SRC_N_P
 
 # For the dependencies
 %.d: %.cpp
-	$(CPP) -M $(INCLUDEFLAGS) $< > $@.tmp
+	$(CPP) -M $(INCLUDEFLAGS) $(CFLAGSGTK) $< > $@.tmp
 	sed 's;$(@F:.d=.o);$(@:.d=.o) $@;' $@.tmp > $@
 	rm -f $@.tmp
 
@@ -172,7 +174,8 @@ lib/libneseg.a:  $(OBJ_CORE)
 	ar rcs $@ $(OBJ_CORE)
 
 lib/libneseg.so:  $(OBJ_CORE)
-	gcc -fPIC -shared -Wl -o $@   $(OBJ_CORE)
+# 	gcc -fPIC -shared -Wl -o $@   $(OBJ_CORE)
+	gcc -shared -Wl -o $@   $(OBJ_CORE)
 
 $(OBJ_CORE):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
@@ -267,7 +270,7 @@ endif
 
 # Compilation of the plugins
 $(PLUGINS_OBJ):$(OBJ_DIR)%.o:%.cpp
-	$(CPP) $(CFLAGS) $(CFLAGSPLUGINS) $< -o $@
+	$(CPP) $(CFLAGS) $(CFLAGSPLUGINS) $(CFLAGSGTK) $(CFLAGSGTKEXT)  $< -o $@
 
 $(PLUGINS_EXEC): bin/%:$(OBJ_DIR)$(PLUGINS_SRC_DIR)%.o lib/libneseg.a
 	$(CPP) -shared -Wl $(LDFLAGS) $(LDFLAGSPLUGINS) $(OBJ_DIR)$(PLUGINS_SRC_DIR)$(@F).o -o $@ -lneseg

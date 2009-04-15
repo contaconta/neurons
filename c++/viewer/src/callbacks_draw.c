@@ -60,6 +60,7 @@ void setUpVolumeMatrices()
 
 void setUpMatricesXY(int layerSpan)
 {
+  //Aurelien part of the code to deal with images
   if(cube->dummy)
     {
       for(vector< VisibleE* >::iterator itObj = toDraw.begin();
@@ -94,6 +95,7 @@ void setUpMatricesXY(int layerSpan)
             }
         }
     }
+  //In case there is a real cube in the toDraw objects
   else
     {
       //Gets the cube coordinates
@@ -295,6 +297,17 @@ void draw_objects()
           img->draw();
           glPopMatrix();
         }
+      else if((*itObj)->className()=="Cube"){
+        Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
+        if(flag_draw_3D)
+          cubeDraw->draw();
+        else if (flag_draw_XY)
+          cubeDraw->draw_layer_tile_XY(layerToDrawXY);
+        else if (flag_draw_XZ)
+          cubeDraw->draw_layer_tile_XZ(layerToDrawXZ);
+        else if (flag_draw_YZ)
+          cubeDraw->draw_layer_tile_YZ(layerToDrawYZ);
+      }
       else
         (*itObj)->draw();
     }
