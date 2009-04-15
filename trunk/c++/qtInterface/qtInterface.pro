@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 QT += opengl
 CONFIG += console
+QMAKE_CFLAGS += -openmp -D WITH_OPENMP
 
 # Input
 FORMS += main.ui CubeDialog.ui
@@ -16,5 +17,5 @@ SOURCES += main.cpp Stage.cpp CubeDialog.cpp
 
 
 # External libraries
-LIBS += -L../lib/ -lneseg -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml
+LIBS += -L../lib/ -lneseg -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml -lpthread -lgomp
 INCLUDEPATH = ../core /usr/include /usr/include/opencv /usr/include/GL

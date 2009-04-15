@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include "Neuron.h"
-#include "../../../viewer/src/globalsE.h"
+// #include "../../../viewer/src/globalsE.h"
 
 extern "C"
 {
