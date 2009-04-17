@@ -52,6 +52,7 @@ extern double widgetHeight;
 
 //Cube variables
 extern Cube_P* cube;
+extern Image<float>* img;
 extern int cubeColToDraw;
 extern int cubeRowToDraw;
 extern float layerToDrawXY;
