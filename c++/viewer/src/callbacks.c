@@ -86,7 +86,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
       toDraw.push_back(cd);
     }
     else if ((extension == "jpg") || (extension == "png"))  {
-        Image<float>* img = new Image<float>(objectNames[i]);
+        img = new Image<float>(objectNames[i]);
         toDraw.push_back(img);
       }
 
