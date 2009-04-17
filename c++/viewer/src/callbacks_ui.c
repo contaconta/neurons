@@ -201,9 +201,22 @@ void unProjectMouse()
 /*         layerToDrawXZ = indexes[1]%512; */
 /*         layerToDrawYZ = indexes[0]%512; */
 
-/*         printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]); */
+        printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
+
+  if(img!=NULL){
+    vector< int > indexes(3);
+    img->micrometersToIndexes(world, indexes);
+
+/*         layerToDrawXY = indexes[2]%512; */
+/*         layerToDrawXZ = indexes[1]%512; */
+/*         layerToDrawYZ = indexes[0]%512; */
+
+        printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+
 
   /** If the mode is MOD_ASCEDITOR, change the asc.*/
   if(majorMode == MOD_ASCEDITOR){

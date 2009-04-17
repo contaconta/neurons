@@ -36,6 +36,7 @@ double widgetHeight = 0;
 
 //Cube variables
 Cube_P* cube;
+Image<float>* img = NULL;
 int cubeColToDraw = 0;
 int cubeRowToDraw = 0;
 float layerToDrawXY = 0;
