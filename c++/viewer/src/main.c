@@ -109,6 +109,11 @@ on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
                                                      gpointer         user_data)
 {
   string dir("plugins/bin/");
+
+  char * pPath = getenv ("NESEG_PATH");
+  if (pPath!=0)
+    dir = string(pPath) + dir;
+
   GtkWidget *menu_label = gtk_bin_get_child(GTK_BIN(menuitem));
   const gchar* label = gtk_label_get_text(GTK_LABEL(menu_label));
 
@@ -197,8 +202,13 @@ void load_plugins()
   printf("*** Loading plugins\n");
   vector<string> files;
   string dir("plugins/bin");
+
+  char * pPath = getenv ("NESEG_PATH");
+  if (pPath!=0)
+    dir = string(pPath) + dir;
+
   int bRes = get_files_in_dir(dir, files);
-  printf("%d %d\n", bRes, files.size());
+  printf("Plugin directory : %s, Number of files : %d\n", dir.c_str(), files.size());
   if(bRes==0)
     {
       GtkMenuItem* menu_plugins=GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(ascEditor),"menu_plugins"));

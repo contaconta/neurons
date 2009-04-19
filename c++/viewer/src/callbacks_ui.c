@@ -185,6 +185,7 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
 void unProjectMouse()
 {
   GLdouble wx, wy, wz;
+  vector< int > indexes(3);
 
   get_world_coordinates(wx, wy, wz, true);
 
@@ -193,27 +194,23 @@ void unProjectMouse()
   world[0] = wx;
   world[1] = wy;
   world[2] = wz;
-  if(cube!=NULL){
-    vector< int > indexes(3);
+  if(cube!=NULL && cube->dummy == false){
+    //vector< int > indexes(3);
     cube->micrometersToIndexes(world, indexes);
 
 /*         layerToDrawXY = indexes[2]%512; */
 /*         layerToDrawXZ = indexes[1]%512; */
 /*         layerToDrawYZ = indexes[0]%512; */
 
-        printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
+    printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
 
   if(img!=NULL){
-    vector< int > indexes(3);
     img->micrometersToIndexes(world, indexes);
-
-/*         layerToDrawXY = indexes[2]%512; */
-/*         layerToDrawXZ = indexes[1]%512; */
-/*         layerToDrawYZ = indexes[0]%512; */
-
-        printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
+    indexes[0]+=img->width/2;
+    indexes[1]-=img->height/2;
+    printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
 
@@ -227,7 +224,8 @@ void unProjectMouse()
   }
 
   if(p_unproject_mouse != NULL){
-    p_unproject_mouse(mouse_last_x, mouse_last_y);
+    //p_unproject_mouse(mouse_last_x, mouse_last_y);
+    p_unproject_mouse(indexes[0], indexes[1]);
   }
 
 
@@ -450,35 +448,35 @@ void
 on_shaders_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    GtkWidget* ascSelectShaders = create_ascSelectShaders();
-    gtk_widget_show (ascSelectShaders);
+  GtkWidget* ascSelectShaders = create_ascSelectShaders();
+  gtk_widget_show (ascSelectShaders);
 }
 
 char *shaders_textFileRead(char *fn)
 {
-	FILE *fp;
-	char *content = NULL;
+  FILE *fp;
+  char *content = NULL;
 
-	int count=0;
+  int count=0;
 
-	if (fn != NULL) {
-		fp = fopen(fn,"rt");
+  if (fn != NULL) {
+    fp = fopen(fn,"rt");
 
-		if (fp != NULL) {
+    if (fp != NULL) {
 
       fseek(fp, 0, SEEK_END);
       count = ftell(fp);
       rewind(fp);
 
-			if (count > 0) {
-				content = (char *)malloc(sizeof(char) * (count+1));
-				count = fread(content,sizeof(char),count,fp);
-				content[count] = '\0';
-			}
-			fclose(fp);
-		}
-	}
-	return content;
+      if (count > 0) {
+        content = (char *)malloc(sizeof(char) * (count+1));
+        count = fread(content,sizeof(char),count,fp);
+        content[count] = '\0';
+      }
+      fclose(fp);
+    }
+  }
+  return content;
 }
 
 void shaders_activation(gint active)

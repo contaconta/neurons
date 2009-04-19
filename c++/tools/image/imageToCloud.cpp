@@ -443,6 +443,9 @@ int main(int argc, char **argv) {
       else {
         int nPositivePoints = 0;
         int x, y;
+
+        int idx = 0;
+        const int maxTry = args.number_points*100000;
         while(nPositivePoints < args.number_points)
           {
             x = (int)floor(gsl_rng_uniform(r)*img->width);
@@ -466,6 +469,14 @@ int main(int argc, char **argv) {
                 nPositivePoints ++;
               }
             }
+
+            // Check if number of max try achieved
+            idx++;
+            if(idx > maxTry)
+              {
+                printf("Number of max try achieved. Are you sure you have enough negative points in your image ?\n");
+                break;
+              }
           }
       }
 
@@ -491,29 +502,40 @@ int main(int argc, char **argv) {
 
 	  printf("limitNegative:%d\n", limitNegative);
 
-          while(nNegativePoints < limitNegative){
+          int idx = 0;
+          const int maxTry = limitNegative*100000;
+          while(nNegativePoints < limitNegative)
+            {
 
-            x = (int)floor(gsl_rng_uniform(r)*img->width);
-            y = (int)floor(gsl_rng_uniform(r)*img->height);
-            if(mask!=NULL){
-              if(mask->at(x,y) < 100)
-                continue;
+              x = (int)floor(gsl_rng_uniform(r)*img->width);
+              y = (int)floor(gsl_rng_uniform(r)*img->height);
+              if(mask!=NULL){
+                if(mask->at(x,y) < 100)
+                  continue;
+              }
+              if(img->at(x,y) > 100){
+                indexes[0] = x;
+                indexes[1] = y;
+                img->indexesToMicrometers(indexes, micrometers);
+                if(ors)
+                  orientation=(gsl_rng_uniform(r)-0.5)*2*M_PI;
+                else
+                  orientation=0;
+                cloud->points.push_back(
+                                        new Point2Dot(micrometers[0],micrometers[1],
+                                                      orientation,
+                                                      -1));
+                nNegativePoints++;
+              }
+
+              // Check if number of max try achieved
+              idx++;
+              if(idx > maxTry)
+                {
+                  printf("Number of max try achieved. Are you sure you have enough negative points in your image ?\n");
+                  break;
+                }
             }
-            if(img->at(x,y) > 100){
-              indexes[0] = x;
-              indexes[1] = y;
-              img->indexesToMicrometers(indexes, micrometers);
-	      if(ors)
-		orientation=(gsl_rng_uniform(r)-0.5)*2*M_PI;
-	      else
-		orientation=0;
-              cloud->points.push_back(
-                                      new Point2Dot(micrometers[0],micrometers[1],
-                                                    orientation,
-                                                    -1));
-              nNegativePoints++;
-            }
-          }
         }
       cloud->saveToFile(args.name_cloud);
     }
