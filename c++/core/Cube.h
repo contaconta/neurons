@@ -529,12 +529,17 @@ Cube<T,U>::Cube
   this->z_offset = 0;
   this->filenameVoxelData = getNameFromPath(nameFile) + ".vl";
   //Hack to get if it is uchar or float, really bad but fast
-  if(sizeof(T) == 1)
+  if(typeid(T) == typeid(uchar))
     this->type = "uchar";
-  else if (sizeof(T)==4)
+  else if (typeid(T) == typeid(float))
     this->type = "float";
+  else if (typeid(T) == typeid(int))
+    this->type = "int";
+  else if (typeid(T) == typeid(bool))
+    this->type = "bool";
   else{
-    printf("Find me in Cube.h and fix me, I am a bug\n");
+    printf("Find me in Cube.h and fix me, I am a bug. The type id of T is %i and the typeids of int=%i, float=%i and uchar = %i and bool = %i\n",
+           typeid(T), typeid(int), typeid(float), typeid(uchar));
     exit(0);
   }
   this->create_volume_file(nameFile + ".vl");
