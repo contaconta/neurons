@@ -159,6 +159,10 @@ void Cube<T,U>::create_volume_file(string filename)
 {
 
   printf("Creating volume file in %s\n", filename.c_str());
+  if(fileExists(filename)){
+    printf("The volume file %s exists, returning\n", filename.c_str());
+    return;
+  }
   FILE* fp = fopen(filename.c_str(), "w");
   int line_length = 0;
 //   if ((colOffset == 0) && (rowOffset == 0))

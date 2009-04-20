@@ -1094,7 +1094,7 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
         phi   = acos(gsl_matrix_get(evec[tn],2,higher_eival)/r);
 
         aguet_theta->put(x,y,z,theta);
-        aguet_phi->put(x,y,z,theta);
+        aguet_phi->put(x,y,z,phi);
       }
     }
     printf("#");fflush(stdout);
