@@ -85,6 +85,7 @@ void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y)
                 mvmatrix, projmatrix, viewport, &wx, &wy, &wz);
 }
 
+
 void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers )
 {
   GLint realy; /*  OpenGL y coordinate position, not the Mouse one of Gdk */

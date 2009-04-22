@@ -4,7 +4,8 @@
 
 Cloud<Point3D>*
 CubeDijkstra::findShortestPath
-(int x0, int y0, int z0, int x1, int y1, int z1)
+(int x0, int y0, int z0, int x1, int y1, int z1,
+ Cloud<Point3D>& boundaryCl)
 {
   Cloud<Point3D>* result = new Cloud<Point3D>();
   if (cube->type == "uchar"){
@@ -80,22 +81,22 @@ CubeDijkstra::findShortestPath
       printf("Evaluated %i points\r", nPointsEvaluated);
       fflush(stdout);
     }
-    if(0){
+    if(&boundaryCl!=NULL){
       nPointsEvaluated ++;
       if((nPointsEvaluated % 1000)==0) {
+        boundaryCl.points.resize(0);
         // printf("Evaluated %i points\r", nPointsEvaluated);
         char buff[512];
-        sprintf(buff,"boundary_%i.cl", nPointsEvaluated);
-        Cloud<Point3D>* cloud = new Cloud<Point3D>(buff);
+        // boundaryCl = new Cloud<Point3D>();
         vector< int > indexes(3);
         vector< float > micrometers(3);
         for(it = boundary.begin(); it != boundary.end(); it++){
           int idx = it->second;
           toCubeIndex(idx, indexes[0], indexes[1], indexes[2], cube);
           cube->indexesToMicrometers(indexes, micrometers);
-          cloud->points.push_back(new Point3D(micrometers[0], micrometers[1], micrometers[2]));
+          boundaryCl.points.push_back
+            (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
         }
-        cloud->saveToFile(buff);
       }
     } //if(save)
   } //while

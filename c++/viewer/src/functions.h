@@ -1,6 +1,5 @@
+
 void unProjectMouse();
-
-
 
 void setUpVolumeMatrices();
 
@@ -12,7 +11,9 @@ void setUpMatricesXZ(int layerSpan);
 
 void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers = false);
 
+extern "C"{
 void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y);
+}
 
 void draw_last_point();
 
@@ -38,3 +39,5 @@ void keyPressedAsc(GtkWidget       *widget,
 void scrollAsc(GtkWidget       *widget,
                GdkEvent        *event,
                gpointer         user_data);
+
+

@@ -15,6 +15,4 @@ typedef const void (* plugin_expose)(GtkWidget       *widget,
                                      gpointer        user_data);
 
 
-
-
 #endif
