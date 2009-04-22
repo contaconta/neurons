@@ -59,7 +59,7 @@ CubeDijkstra::findShortestPath
         // int dist = peval->distance + distance(cube,xA,yA,zA,xN,yN,zN);
         // float dist = distance->distance(cube,xA,yA,zA,x0,y0,z0);
         //FIXMEEE
-        float dist = distance->distance();
+        float dist = distance->distance(xA,yA,zA,xN,yN,zN);
         boundary.insert(pair<float, int>( dist,
                                        toLinearIndex(xA,yA,zA,cube)));
         pointsTakenIntoAccount.insert(
