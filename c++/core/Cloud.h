@@ -12,7 +12,6 @@ public:
 
   // Points in the cloud
   // vector< T* > points;
-  
   Cloud() : Cloud_P() {}
 
   Cloud(string filename);
