@@ -52,7 +52,7 @@ CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags g
 CFLAGSGTK    = $(shell pkg-config --cflags gtk+-2.0)
 CFLAGSGTKEXT    = $(shell pkg-config --cflags gtkglext-1.0 pangoft2)
 CFLAGSGL = -I/usr/include/ -I/usr/include/GL
-CFLAGSPLUGINS = $(shell pkg-config --cflags gmodule-2.0)
+CFLAGSPLUGINS = $(shell pkg-config --cflags gmodule-2.0) -lpthread
 
 LDFLAGSOPENCV = $(shell pkg-config --libs opencv) $(shell pkg-config --libs gsl)
 LDFLAGSGTK    = $(shell pkg-config --libs gtk+-2.0)

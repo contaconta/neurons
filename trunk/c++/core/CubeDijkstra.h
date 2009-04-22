@@ -149,7 +149,8 @@ public:
 
 
   Cloud<Point3D>* findShortestPath(int x0, int y0, int z0,
-                                   int x1, int y1, int z1);
+                                   int x1, int y1, int z1,
+                                   Cloud<Point3D>& boundary);
 
 };
 
