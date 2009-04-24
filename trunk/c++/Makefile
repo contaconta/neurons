@@ -10,7 +10,7 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.2
+CPP = g++-4.3
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
@@ -85,11 +85,10 @@ GRAPH_TOOLS_SRC_DIR = tools/graph/
 NEURON_TOOLS_SRC_DIR = tools/neuron/
 IMAGE_TOOLS_SRC_DIR = tools/image/
 VIEWER_SRC_DIR = viewer/src/
-PLUGINS_SRC_DIR = plugins/src/Samples/
-PLUGINS_BIN_DIR = plugins/bin/
 CORE_SRC_DIR  = core/
 # DIR = $(PWD)
 DIR=/home/ggonzale/ggonzale/neseg/
+PLUGINS_SRC_DIR = plugins/src/
 
 # Files for the cube tools. For each of the files here, a program with the same name will be created in the bin directory
 TOOLS_CUBE_SRC_N_P = $(shell ls $(CUBE_TOOLS_SRC_DIR)*.cpp)
@@ -128,15 +127,6 @@ TOOLS_IMAGE_SRC      = $(addprefix $(IMAGE_TOOLS_SRC_DIR),$(TOOLS_IMAGE_SRC_N))
 TOOLS_IMAGE_OBJ_T    = $(TOOLS_IMAGE_SRC:.cpp=.o)
 TOOLS_IMAGE_OBJ      = $(addprefix objects/,$(TOOLS_IMAGE_OBJ_T))
 
-#Files for the plugins
-PLUGINS_SRC_N_P  = $(shell ls $(PLUGINS_SRC_DIR)*.cpp)
-PLUGINS_SRC_N    = $(subst $(PLUGINS_SRC_DIR),,$(PLUGINS_SRC_N_P))
-PLUGINS_EXEC_P   = $(PLUGINS_SRC_N:.cpp=)
-PLUGINS_EXEC     = $(addprefix $(PLUGINS_BIN_DIR),$(PLUGINS_EXEC_P))
-PLUGINS_SRC      = $(addprefix $(PLUGINS_SRC_DIR),$(PLUGINS_SRC_N))
-PLUGINS_OBJ_T    = $(PLUGINS_SRC:.cpp=.o)
-PLUGINS_OBJ      = $(addprefix objects/,$(PLUGINS_OBJ_T))
-
 #Files for the core of the library
 SRC_CORE_N_P   = $(shell ls $(CORE_SRC_DIR)*.cpp)
 SRC_CORE_N     = $(subst $(CORE_SRC_DIR),,$(SRC_CORE_N_P))
@@ -153,7 +143,7 @@ OBJ_VIEWER_O=$(SRC_VIEWER_N:.c=.o)
 OBJ_VIEWER=$(addprefix $(OBJ_DIR)$(VIEWER_SRC_DIR),$(OBJ_VIEWER_O))
 
 ALL_SOURCES = $(TOOLS_CUBE_SRC_N_P) $(TOOLS_IMAGE_SRC_N_P)	\
-$(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P) $(PLUGINS_SRC_N_P)
+$(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P)
 
 # For the dependencies
 %.d: %.cpp
@@ -193,7 +183,11 @@ neuronTools: library $(TOOLS_NEURON_OBJ) $(TOOLS_NEURON_EXEC)
 
 imageTools: library $(TOOLS_IMAGE_OBJ) $(TOOLS_IMAGE_EXEC)
 
-plugins : mkobjdirs library $(PLUGINS_OBJ) $(PLUGINS_EXEC)
+PLUGINS_DIR = `ls $(PLUGINS_SRC_DIR)`
+pg:
+	for dir in $(PLUGINS_DIR); do \
+		(cd plugins/src/$$dir; ${MAKE} all); \
+	done
 
 # install: library
 # 	cp lib/libneseg.so /usr/lib
@@ -264,16 +258,6 @@ $(TOOLS_IMAGE_OBJ):$(OBJ_DIR)%.o:%.cpp
 
 $(TOOLS_IMAGE_EXEC): bin/%:$(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)%.o lib/libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
-ifndef NESEG_NO_LINKS
-	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
-endif
-
-# Compilation of the plugins
-$(PLUGINS_OBJ):$(OBJ_DIR)%.o:%.cpp
-	$(CPP) $(CFLAGS) $(CFLAGSPLUGINS) $(CFLAGSGTK) $(CFLAGSGTKEXT)  $< -o $@
-
-$(PLUGINS_EXEC): bin/%:$(OBJ_DIR)$(PLUGINS_SRC_DIR)%.o lib/libneseg.a
-	$(CPP) -shared -Wl $(LDFLAGS) $(LDFLAGSPLUGINS) $(OBJ_DIR)$(PLUGINS_SRC_DIR)$(@F).o -o $@ -lneseg
 ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
 endif
