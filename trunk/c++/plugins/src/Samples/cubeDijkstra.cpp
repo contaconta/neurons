@@ -10,7 +10,6 @@
 #include "Point3D.h"
 #include "Cloud.h"
 #include <pthread.h>
-// #include "../../../viewer/src/globalsE.h"
 
 extern "C"
 {
@@ -28,6 +27,8 @@ extern "C"
   Cloud<Point3D>*    shortestPath;
   Cloud<Point3D>*    boundary;
   pthread_t          thread;
+  pthread_mutex_t    mutexBoundary;
+  bool               drawBoundary;
 
   // Function to be done in the thread
   static void *thread_func(void *vptr_args)
@@ -36,9 +37,12 @@ extern "C"
     vector<int > iEnd(3);  //indexes end point
     localCube->micrometersToIndexes(initPoint->coords, iInit);
     localCube->micrometersToIndexes(endPoint->coords, iEnd);
+    printf("  computing the shortest path between %i %i %i and %i %i %i\n",
+           iInit[0], iInit[1], iInit[2],
+           iEnd[0],  iEnd[1],  iEnd[2]);
     shortestPath = cubeDijkstra->findShortestPath(iInit[0], iInit[1], iInit[2],
                                                   iEnd[0],  iEnd[1],  iEnd[2],
-                                                  *boundary);
+                                                  *boundary, mutexBoundary);
   }
 
   G_MODULE_EXPORT const bool plugin_init()
@@ -48,12 +52,30 @@ extern "C"
     endPoint  = NULL;
     cubeDijkstra == NULL;
     action = CD_NONE;
-    boundary = new Cloud<Point3D>();
     return true;
   }
 
   G_MODULE_EXPORT const bool plugin_run(vector<Object*>& objects)
   {
+    action = CD_NONE;
+    // initPoint = new Point3D(-15.558399, 16.319525, -18.224996);
+    // endPoint  = new Point3D(-15.308799,  7.543466, -17.414998);
+    initPoint = NULL;
+    endPoint  = NULL;
+    drawBoundary  = true;
+    boundary  = new Cloud<Point3D>();
+    Cube<float, double>* cubeAguet = new Cube<float, double>
+      ("/media/neurons/cut/aguet_4.00_4.00.nfo");
+    Cube<float, double>* cubeAguetTheta = new Cube<float, double>
+      ("/media/neurons/cut/aguet_4.00_4.00_theta.nfo");
+    Cube<float, double>* cubeAguetPhi = new Cube<float, double>
+      ("/media/neurons/cut/aguet_4.00_4.00_phi.nfo");
+    // DistanceDijkstraColorAngle* djkc = new DistanceDijkstraColorAngle
+      // (cubeAguet, cubeAguetTheta, cubeAguetPhi);
+    DistanceDijkstraColorInverse* djkc = new DistanceDijkstraColorInverse
+      (cubeAguet);
+
+
     printf("Plugin: run\n");
     for(vector<Object*>::iterator itObject = objects.begin();
         itObject != objects.end(); itObject++)
@@ -64,7 +86,8 @@ extern "C"
           {
             localCube = dynamic_cast<Cube_P*>((*itObject));
             printf("There is a Cube in here\n");
-            DistanceDijkstraColor* djkc = new DistanceDijkstraColor(localCube);
+            // DistanceDijkstraColor* djkc = new DistanceDijkstraColor
+              // (localCube);
             cubeDijkstra = new CubeDijkstra(localCube, djkc);
             // printf("Cube : %d\n",cube->cubeWidth);
           }
@@ -87,7 +110,6 @@ extern "C"
       printf("The action is CD_CALCULATE\n");
       if ((initPoint != NULL) && (endPoint!=NULL)){
         printf("  computing the path... patience\n");
-        //Here
         if (pthread_create(&thread, NULL, thread_func, NULL) != 0)
           {
             return false;
@@ -103,8 +125,8 @@ extern "C"
   {
     double wx, wy, wz;
     get_world_coordinates(wx, wy, wz, x, y);
-    // printf("The world coordinates are %f %f %f\n", wx, wy, wz);
-    // printf("Plugin: The position of the mouse is %i %i\n", x, y);
+    printf("The world coordinates are %f %f %f\n", wx, wy, wz);
+    printf("Plugin: The position of the mouse is %i %i\n", x, y);
     switch(action){
     case CD_NONE:
       printf("UnprojectMouse: The action is CD_NONE\n");
@@ -125,6 +147,7 @@ extern "C"
   G_MODULE_EXPORT const bool plugin_expose
   (GtkWidget *widget, GdkEventKey* event, gpointer user_data)
   {
+    // printf("init: %i, end %i, boundary: %i\n", initPoint, endPoint, boundary);
     // glDisable(GL_DEPTH_TEST);
     if(initPoint != NULL){
       glColor3f(0.0,1.0,0.0);
@@ -134,13 +157,17 @@ extern "C"
       glColor3f(1.0,0.0,0.0);
       endPoint->draw();
     }
-    if(shortestPath!=NULL)
+    if(shortestPath!=NULL){
+      shortestPath->v_r = 1.0;
+      shortestPath->v_g = 1.0;
+      shortestPath->v_radius = 0.05;
       shortestPath->draw();
-
-    // if(boundary!=NULL){
-      // boundary->draw();
-      // printf("  boundary points: %i\n",boundary->points.size());
-    // }
+    }
+    if(drawBoundary && (boundary!=NULL) && (!cubeDijkstra->pathFound)){
+        pthread_mutex_lock(&mutexBoundary);
+        boundary->draw();
+        pthread_mutex_unlock(&mutexBoundary);
+    }
   }
 
   G_MODULE_EXPORT const bool plugin_quit()

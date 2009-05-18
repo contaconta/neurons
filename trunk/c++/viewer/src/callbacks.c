@@ -103,9 +103,9 @@ on_drawing3D_realize                   (GtkWidget       *widget,
     }
   }
   
-  Axis* axis = new Axis();
-  toDraw.push_back(axis);
-  objectNames.push_back("Axis");
+  /* Axis* axis = new Axis(); */
+  /* toDraw.push_back(axis); */
+  /* objectNames.push_back("Axis"); */
 
 
   if(cube == NULL){

@@ -158,6 +158,7 @@ vector<string> plugins;
 plugin_key_press_event p_key_press_event = NULL;
 plugin_unproject_mouse p_unproject_mouse = NULL;
 plugin_expose          p_expose          = NULL;
+plugin_motion_notify   p_motion_notify   = NULL;
 
 /** Select tool parameters */
 

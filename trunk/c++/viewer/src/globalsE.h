@@ -144,6 +144,7 @@ extern vector<string> plugins;
 extern plugin_key_press_event p_key_press_event;
 extern plugin_unproject_mouse p_unproject_mouse;
 extern plugin_expose          p_expose         ;
+extern plugin_motion_notify   p_motion_notify  ;
 
 
 /** Select tool parameters */

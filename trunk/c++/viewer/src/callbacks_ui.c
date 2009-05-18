@@ -225,8 +225,8 @@ void unProjectMouse()
   }
 
   if(p_unproject_mouse != NULL){
-    //p_unproject_mouse(mouse_last_x, mouse_last_y);
-    p_unproject_mouse(indexes[0], indexes[1]);
+    p_unproject_mouse(mouse_last_x, mouse_last_y);
+    /* p_unproject_mouse(indexes[0], indexes[1]); */
   }
 
 
@@ -303,6 +303,10 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
 
   if(MOD_ASCEDITOR)
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
+
+  if(p_motion_notify!= NULL){
+    p_motion_notify(widget, event, user_data);
+  }
 
   return FALSE;
 }
