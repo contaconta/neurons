@@ -1,24 +1,16 @@
 #ifndef BBP_MORPHOLOGY_H_
 #define BBP_MORPHOLOGY_H_
 
-#include "neseg.h"
-
 #ifdef WITH_BBP
 
-
-#include "bbp.h"
+#include "neseg.h"
+#include <bbp.h>
+#include <iostream>
+#include <BBP/Model/Microcircuit/Morphology.h>
 #include <BBP/Model/Microcircuit/Morphology_RW.h>
-#include <BBP/Model/Microcircuit/Section_RW.h>
-#include <BBP/Model/Microcircuit/Containers/Sections_RW.h>
-#include "BBP/Model/Microcircuit/Segment_RW.h"
+#include <BBP/Model/Microcircuit/Readers/Morphology_Reader.h>
+#include <BBP/Model/Microcircuit/Containers/Morphologies.h>
 
-// This is done to read the Morphology from an hd5 file. 
-#include "BBP/Model/Microcircuit/Readers/Morphology_Reader.h"
-#include "BBP/Model/Microcircuit/Containers/Morphologies.h"
-#include "BBP/Model/Microcircuit/Readers/File/Parsers/Morphology_HDF5_File_Parser.h"
-
-
-// using namespace bbp::rw; // Collision of the Neuron Class - arghhhh
 
 class BBP_Morphology : public VisibleE
 {
@@ -30,14 +22,14 @@ public:
   BBP_Morphology(){
 
     morph = new bbp::rw::Morphology();
-    bbp::rw::Section & axon = morph->create_branch(bbp::rw::AXON, 2.5f,
-                                              1.0f, 1.0, 1.0f, 1.5f);
+    bbp::rw::Section axon = morph->create_branch(bbp::AXON, 2.5f,
+                                                 1.0f, 1.0, 1.0f, 1.5f);
 
     axon.push_back(2.0f, 2.0, 2.0f, 1.0f);
     axon.push_back(3.0f, 3.0, 3.0f, 1.0f);
     axon.push_back(4.0f, 4.0, 4.0f, 1.0f);
 
-    bbp::rw::Section & dendrite = morph->create_branch(bbp::rw::DENDRITE, 3.5f,
+    bbp::rw::Section dendrite = morph->create_branch(bbp::DENDRITE, 3.5f,
                                                   -1.0f, -1.0, -1.0f, 1.5f);
 
     dendrite.push_back(-2.0f, -2.0, -2.0f, 1.0f);
@@ -56,8 +48,8 @@ public:
         ++count;
       }
 
-    bbp::rw::Section & apical_dendrite =
-      morph->create_branch(bbp::rw::APICAL_DENDRITE, 3.5f,
+    bbp::rw::Section apical_dendrite =
+      morph->create_branch(bbp::APICAL_DENDRITE, 3.5f,
                                +2.0f, -2.0, -2.0f, 2.5f);
 
     apical_dendrite.push_back(2.0f, -2.0, -2.0f, 4.0f);
@@ -70,8 +62,8 @@ public:
       {
         if (count == 1)
           {
-            bbp::rw::Section & new_section = morph->fork_branch(
-                                                           j, 0.75f, -10.0f, 10.0f, 10.0f, 0.5f);
+            bbp::rw::Section new_section = 
+              morph->fork_branch(j, 0.75f, -10.0f, 10.0f, 10.0f, 0.5f);
             morph->mark_tuft(new_section.parent());
             morph->mark_cut_point(new_section);
             break;
@@ -85,7 +77,7 @@ public:
   }
 
   BBP_Morphology(string filename){
-
+    bbp::Morphologies morphologies;
     string dir = getDirectoryFromPath(filename);
     string name = getNameFromPathWithoutExtension(filename);
 
@@ -93,15 +85,10 @@ public:
 
     bbp::Morphology_Reader_Ptr reader =
       bbp::Morphology_Reader::create_reader(dir.c_str());
-    reader->open();
-    bbp::Morphologies morphologies;
-    std::set<bbp::Label> names;
-    names.insert(name.c_str());
-    reader->load(morphologies, names);
-    assert(morphologies.size() == 1);
-    assert(morphologies.find(name.c_str()) != morphologies.end());
-    const bbp::Morphology &morphology = *morphologies.find(name.c_str());
-    morph = new bbp::rw::Morphology(morphology);
+    std::set < std::string > names;
+    names.insert(name);
+    reader->load (morphologies, names);
+    morph = new bbp::rw::Morphology(*(morphologies.begin()));
   }
 
 

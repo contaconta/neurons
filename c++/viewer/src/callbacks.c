@@ -17,8 +17,9 @@
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
+#ifdef WITH_BBP
 #include "BBP_Morphology.h"
-
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <gtk/gtk.h>

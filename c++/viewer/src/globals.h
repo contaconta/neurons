@@ -11,7 +11,6 @@
 #include "Axis.h"
 #include "DoubleSet.h"
 #include "GraphCut.h"
-#include "BBP_Morphology.h"
 
 #include "plugin_info.h"
 

@@ -34,6 +34,7 @@
 #include <set>
 #include <algorithm>
 #include <cctype>
+#include <typeinfo>
 
 //For some math stuff
 #include <gsl/gsl_math.h>

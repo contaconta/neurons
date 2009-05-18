@@ -10,11 +10,11 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.3
+CPP = g++-4.2
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
-USE_BBP=0
+USE_BBP=1
 
 ## Compilation flags
 ifeq ($(USE_OPENMP),1)
