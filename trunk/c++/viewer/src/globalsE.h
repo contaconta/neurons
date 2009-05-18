@@ -10,7 +10,6 @@
 #include "Axis.h"
 #include "DoubleSet.h"
 #include "GraphCut.h"
-#include "BBP_Morphology.h"
 
 // the plugin function signatures
 #include "plugin_info.h"
