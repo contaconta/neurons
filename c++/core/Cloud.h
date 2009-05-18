@@ -53,6 +53,7 @@ template <class T>
       points[(int)i]->draw(v_radius);
     }
     glEndList();
+    glCallList(v_glList);
   }
   else{
     glCallList(v_glList);

@@ -907,7 +907,7 @@ void Cube<T,U>::histogram(string filename)
 {
 
   printf("Cube<T,U>::histogram [");
-  float max = 1e-12;
+  float max = -1e12;
   float min = 1e12;
   float mean = 0;
   for(int z = 0; z < cubeDepth; z++)
@@ -939,7 +939,7 @@ void Cube<T,U>::histogram(string filename)
 
   if(filename == ""){
     for(int i =0; i < boxes.size(); i++)
-      printf("[%f %f] - %i\n", i*range/100, (i+1)*range/100,  boxes[i]);
+      printf("[%f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i]);
     printf("\n");
   }
   else{

@@ -5,8 +5,9 @@
 Cloud<Point3D>*
 CubeDijkstra::findShortestPath
 (int x0, int y0, int z0, int x1, int y1, int z1,
- Cloud<Point3D>& boundaryCl)
+ Cloud<Point3D>& boundaryCl, pthread_mutex_t& mutex)
 {
+  pathFound = false;
   Cloud<Point3D>* result = new Cloud<Point3D>();
   if (cube->type == "uchar"){
     cube = dynamic_cast<Cube< uchar, ulong>* >(cube);
@@ -35,6 +36,8 @@ CubeDijkstra::findShortestPath
   int nPointsEvaluated = 0;
   while( !((xN==x1) && (yN==y1) && (zN==z1)) ){
 
+    nPointsEvaluated ++;
+
     //Eliminate the first point
     itb = boundary.begin();
     boundary.erase(itb);
@@ -56,49 +59,49 @@ CubeDijkstra::findShortestPath
         continue;
       // if they have not yet been visited
       if( pointsTakenIntoAccount.find(toLinearIndex(xA,yA,zA,cube))
-          == pointsTakenIntoAccount.end()) {
-        // int dist = peval->distance + distance(cube,xA,yA,zA,xN,yN,zN);
-        // float dist = distance->distance(cube,xA,yA,zA,x0,y0,z0);
-        //FIXMEEE
-        float dist = distance->distance(xA,yA,zA,xN,yN,zN);
-        boundary.insert(pair<float, int>( dist,
-                                       toLinearIndex(xA,yA,zA,cube)));
-        pointsTakenIntoAccount.insert(
-                            pair<int, PointDijkstra*>(
-                                toLinearIndex(xA,yA,zA,cube),
-                                new PointDijkstra(toLinearIndex(xN,yN,zN,cube), dist)));
-      }
+          == pointsTakenIntoAccount.end())
+        {
+          float dist = peval->distance + distance->distance(xA,yA,zA,xN,yN,zN);
+          // float dist = distance->distance(xA,yA,zA,x0,y0,z0);
+          // float dist = distance->distance(xA,yA,zA,xN,yN,zN);
+          boundary.insert(pair<float, int>(dist,
+                                           toLinearIndex(xA,yA,zA,cube)));
+          pointsTakenIntoAccount.insert(
+                      pair<int, PointDijkstra*>(
+                             toLinearIndex(xA,yA,zA,cube),
+                             new PointDijkstra(toLinearIndex(xN,yN,zN,cube), dist)));
+        }
     }
 
-    //Take the closest point of the cubein in the boundary
+    //Take the closest point of the cube in in the boundary
     multimap< float, int >::iterator it = boundary.begin();
     int linIndex = it->second;
     toCubeIndex(linIndex, xN, yN, zN, cube);
 
-    // Save the points in a cloud
-    nPointsEvaluated ++;
-    if((nPointsEvaluated % 1000)==0){
-      printf("Evaluated %i points\r", nPointsEvaluated);
-      fflush(stdout);
-    }
     if(&boundaryCl!=NULL){
-      nPointsEvaluated ++;
-      if((nPointsEvaluated % 1000)==0) {
-        boundaryCl.points.resize(0);
-        // printf("Evaluated %i points\r", nPointsEvaluated);
-        char buff[512];
-        // boundaryCl = new Cloud<Point3D>();
+      if((nPointsEvaluated % 5000)==0) {
         vector< int > indexes(3);
         vector< float > micrometers(3);
+        // boundaryCl.points.resize(0);
+        // char buff[512];
+        Cloud<Point3D> boundaryCl2 = Cloud<Point3D>();
+        // boundaryCl.points.resize(0);
         for(it = boundary.begin(); it != boundary.end(); it++){
           int idx = it->second;
           toCubeIndex(idx, indexes[0], indexes[1], indexes[2], cube);
           cube->indexesToMicrometers(indexes, micrometers);
-          boundaryCl.points.push_back
+          boundaryCl2.points.push_back
             (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
-        }
+        } //population of the boundary
+        pthread_mutex_lock(&mutex);
+        boundaryCl = boundaryCl2;
+        pthread_mutex_unlock(&mutex);
+        printf("Evaluated %i points, boundary points: %i\n", nPointsEvaluated,
+               boundaryCl.points.size());
+        fflush(stdout);
       }
-    } //if(save)
+    } //if(&boundaryCl!=NULL)
+
   } //while
 
 
@@ -118,6 +121,7 @@ CubeDijkstra::findShortestPath
     PointDijkstra* pd = pointsIt2->second;
     toCubeIndex(pd->previous, xP, yP, zP, cube);
   }
+  pathFound = true;
 
   return result;
 }

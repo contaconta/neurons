@@ -987,6 +987,14 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
   Cube<float,double>* aguet_phi = create_blank_cube(vol_name);
 
 
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_vx", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_vx = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_vy", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_vy = create_blank_cube(vol_name);
+  sprintf(vol_name, "aguet_%02.2f_%02.2f_vz", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_vz = create_blank_cube(vol_name);
+
+
 
   int nthreads = 1;
 #ifdef WITH_OPENMP
@@ -1081,7 +1089,7 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
           aguet_l->put(x,y,z,l3);
         }
 
-        r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival)*
+        r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival) *
                  gsl_matrix_get(evec[tn],0,higher_eival)+
                  gsl_matrix_get(evec[tn],1,higher_eival)*
                  gsl_matrix_get(evec[tn],1,higher_eival)+
@@ -1089,12 +1097,20 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
                  gsl_matrix_get(evec[tn],2,higher_eival)
                  );
 
-        theta = atan2(gsl_matrix_get(evec[tn],1,higher_eival),
-                      gsl_matrix_get(evec[tn],0,higher_eival));
+        // theta = atan2(gsl_matrix_get(evec[tn],1,higher_eival),
+                      // gsl_matrix_get(evec[tn],0,higher_eival));
+        theta = atan(gsl_matrix_get(evec[tn],1,higher_eival)/
+                     gsl_matrix_get(evec[tn],0,higher_eival));
+
         phi   = acos(gsl_matrix_get(evec[tn],2,higher_eival)/r);
 
         aguet_theta->put(x,y,z,theta);
         aguet_phi->put(x,y,z,phi);
+        aguet_vx->put(x,y,z,gsl_matrix_get(evec[tn],0,higher_eival));
+        aguet_vy->put(x,y,z,gsl_matrix_get(evec[tn],1,higher_eival));
+        aguet_vz->put(x,y,z,gsl_matrix_get(evec[tn],2,higher_eival));
+
+
       }
     }
     printf("#");fflush(stdout);

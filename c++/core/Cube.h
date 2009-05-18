@@ -25,6 +25,7 @@ Y s                    |/            |/
 
 #include "neseg.h"
 #include "Image.h"
+
 #include "polynomial.h"
 #include "utils.h"
 #include "VisibleE.h"
