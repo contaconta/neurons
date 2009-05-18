@@ -48,7 +48,7 @@ endif
 
 
 
-CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags gsl)
+CFLAGSOPENCV = $(shell pkg-config --cflags opencv) $(shell pkg-config --cflags gsl) -lpthread
 CFLAGSGTK    = $(shell pkg-config --cflags gtk+-2.0)
 CFLAGSGTKEXT    = $(shell pkg-config --cflags gtkglext-1.0 pangoft2)
 CFLAGSGL = -I/usr/include/ -I/usr/include/GL
@@ -152,10 +152,11 @@ $(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P)
 	rm -f $@.tmp
 
 
+
 ############ THE RULES START HERE #########################
 
 # This will compile all the library
-all:  library tools neseg
+all:  library neseg
 
 library:  lib/libneseg.a lib/libneseg.so
 
@@ -188,6 +189,10 @@ pg:
 	for dir in $(PLUGINS_DIR); do \
 		(cd plugins/src/$$dir; ${MAKE} all); \
 	done
+
+plugins2:
+	echo "Esto es un mensaje"
+
 
 # install: library
 # 	cp lib/libneseg.so /usr/lib
