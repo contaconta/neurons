@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 
   Cube<uchar, ulong>* cube = new Cube<uchar, ulong>(argv[1]);
   cube->calculate_second_derivates(atof(argv[2]), atof(argv[3]));
-  cube->calculate_eigen_values(atof(argv[2]), atof(argv[3]),atoi(argv[5]));
+  // cube->calculate_eigen_values(atof(argv[2]), atof(argv[3]),atoi(argv[5]));
+  cube->calculate_eigen_values(atof(argv[2]), atof(argv[3]),false);
   cube->calculate_f_measure(atof(argv[2]), atof(argv[3]));
 }

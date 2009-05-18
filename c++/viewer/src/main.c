@@ -189,10 +189,19 @@ on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
         {
           printf("Symbol p_expose is NULL\n");
         }
+      if (!g_module_symbol (module, "plugin_motion_notify",
+                            (gpointer *)&p_motion_notify))
+        {
+          printf("Error while searching for symbol plugin_motion_notify\n");
+        }
+      if (p_motion_notify == NULL)
+        {
+          printf("Symbol p_motion_notify is NULL\n");
+        }
 
       /* if (!g_module_close (module)) */
         /* g_warning ("%s: %s", plugin_name, g_module_error ()); */
-
+      plugin_init();
     }
 
 }

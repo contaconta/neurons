@@ -13,6 +13,9 @@ typedef const void (* plugin_unproject_mouse) (int x, int y);
 typedef const void (* plugin_expose)(GtkWidget       *widget,
                                      GdkEventExpose  *event,
                                      gpointer        user_data);
+typedef const void (* plugin_motion_notify)(GtkWidget       *widget,
+                                            GdkEventMotion  *event,
+                                            gpointer        user_data);
 
 
 #endif
