@@ -61,6 +61,8 @@ public:
 
   virtual void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes)=0;
 
+  virtual void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z)=0;
+
   virtual void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers)=0;
 
   virtual void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz)=0;

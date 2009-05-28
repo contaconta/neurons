@@ -841,6 +841,15 @@ void Cube<T,U>::micrometersToIndexes(vector< float >& micrometers, vector< int >
   indexes.push_back((int)(float(cubeDepth)/2 + micrometers[2]/voxelDepth));
 }
 
+/** Converts from 3d coordinates in micrometers to a position in indexes.*/
+template <class T, class U>
+void Cube<T,U>::micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z)
+{
+  x = (int)(float(cubeWidth)/2 + mx/voxelWidth);
+  y = (int)(float(cubeHeight)/2 - my/voxelHeight);
+  z = (int)(float(cubeDepth)/2 + mz/voxelDepth);
+}
+
 template <class T, class U>
 void Cube<T,U>::indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers)
 {

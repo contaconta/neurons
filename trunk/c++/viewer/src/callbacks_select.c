@@ -27,15 +27,9 @@ on_create_selection_clicked              (GtkButton       *button,
   int active_id = gtk_combo_box_get_active(selection_type);
   if(active_id == CT_SIMPLE_SELECTION)
     {
-      currentSelectionSet = new DoubleSet<Point3D>;
+      currentSelectionSet = new DoubleSet<float>;
       lSelections.push_back(currentSelectionSet);
       gtk_combo_box_append_text(list_selections, currentSelectionSet->name.c_str());
-    }
-  else
-    {
-      currentGraphCut = new GraphCut<Point3D>(cube);
-      lGraphCuts.push_back(currentGraphCut);
-      gtk_combo_box_append_text(list_selections, currentGraphCut->graphcut_name.c_str());
     }
 }
 
@@ -49,14 +43,12 @@ bool pressMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTyp
       if(currentSelectionSet == 0)
 	return false;
     }
-  else
-    {
-      if(currentGraphCut == 0)
-	return false;
-    }
+
+  GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+  int z = gtk_spin_button_get_value_as_int(layer_XY_spin);
 
   GLdouble wx, wy, wz;
-  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y);
+  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y, z);
 
   printf("pressMouseSelectTool %d %d %d\n", mouse_last_x, mouse_last_y, layerSpanViewZ);
   printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
@@ -71,34 +63,22 @@ bool pressMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTyp
       {
 	if(active_id == CT_SIMPLE_SELECTION)
 	  {
-            printf("Add new point\n");
-	    PointDs* point=new PointDs();
+            printf("Adding new point\n");
+	    PointDs<float>* point=new PointDs<float>();
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
 	    point->coords.push_back((float)wz);
-            if(pointType == CPT_SOURCE)
-              point->coords.push_back(0.0f);
-            else
-              point->coords.push_back(1.0f);
+
+            int x,y,z;
+            cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                        x,y,z);
+            point->indexes.push_back(x);
+            point->indexes.push_back(y);
+            point->indexes.push_back(z);
+
+            printf("x %d y %d z %d\n",x,y,z);
+
 	    currentSelectionSet->addPoint(point, pointType+1);
-	  }
-	else
-	  {
-	    Point3Di* point=new Point3Di();
-	    point->w_coords.push_back((float)wx);
-	    point->w_coords.push_back((float)wy);
-	    point->w_coords.push_back((float)wz);
-	    cube->micrometersToIndexes(point->w_coords, point->coords);
-	    if(pointType == CPT_SOURCE)
-	      {
-		printf("Add source point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSourcePoint(point);
-	      }
-	    else
-	      {
-		printf("Add sink point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSinkPoint(point);
-	      }
 	  }
         on_drawing3D_expose_event(drawing3D,NULL,NULL);
 	bRes = true;
@@ -120,14 +100,12 @@ bool motionMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTy
       if(currentSelectionSet == 0)
 	return false;
     }
-  else
-    {
-      if(currentGraphCut == 0)
-	return false;
-    }
+
+  GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+  int z = gtk_spin_button_get_value_as_int(layer_XY_spin);
 
   GLdouble wx, wy, wz;
-  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y);
+  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y, z);
 
   switch(selectToolMode)
     {
@@ -139,34 +117,29 @@ bool motionMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTy
 	if(active_id == CT_SIMPLE_SELECTION)
 	  {
             printf("Add new point\n");
-	    PointDs* point=new PointDs();
+	    PointDs<float>* point=new PointDs<float>;
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
 	    point->coords.push_back((float)wz);
+            /*
             if(pointType == CPT_SOURCE)
               point->coords.push_back(0.0f);
             else
               point->coords.push_back(1.0f);
+            */
+
+            int x,y,z;
+            cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                        x,y,z);
+            point->indexes.push_back(x);
+            point->indexes.push_back(y);
+            point->indexes.push_back(z);
+
+            printf("x %d y %d z %d\n",x,y,z);
+
 	    currentSelectionSet->addPoint(point, pointType+1);
 	  }
-	else
-	  {
-	    Point3Di* point=new Point3Di();
-	    point->w_coords.push_back((float)wx);
-	    point->w_coords.push_back((float)wy);
-	    point->w_coords.push_back((float)wz);
-	    cube->micrometersToIndexes(point->w_coords, point->coords);
-	    if(pointType == CPT_SOURCE)
-	      {
-		printf("Add source point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSourcePoint(point);
-	      }
-	    else
-	      {
-		printf("Add sink point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSinkPoint(point);
-	      }
-	  }
+
         on_drawing3D_expose_event(drawing3D,NULL,NULL);
 	bRes = true;
 	break;
@@ -187,14 +160,12 @@ bool releaseMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointT
       if(currentSelectionSet == 0)
 	return false;
     }
-  else
-    {
-      if(currentGraphCut == 0)
-	return false;
-    }
+
+  GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+  int z = gtk_spin_button_get_value_as_int(layer_XY_spin);
 
   GLdouble wx, wy, wz;
-  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y);
+  get_world_coordinates(wx, wy, wz, mouse_last_x, mouse_last_y, z);
 
   printf("releaseMouseSelectTool %d %d %d\n", mouse_last_x, mouse_last_y, layerSpanViewZ);
   printf("World  coordinates: [%f %f %f]\n", wx, wy, wz);
@@ -230,41 +201,35 @@ bool releaseMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointT
                 max_y = mouse_startSel_y;
               }
 
+            GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+            int z = gtk_spin_button_get_value_as_int(layer_XY_spin);
+
             for(int x=min_x;x<max_x;x+=rect_sel_step_x)
               for(int y=min_y;y<max_y;y+=rect_sel_step_y)
                 {
-                  PointDs* point=new PointDs();
-                  get_world_coordinates(wx, wy, wz, x, y);
+                  PointDs<float>* point = new PointDs<float>();
+                  get_world_coordinates(wx, wy, wz, x, y, z);
                   point->coords.push_back((float)wx);
                   point->coords.push_back((float)wy);
                   point->coords.push_back((float)wz);
+                  /*
                   if(pointType == CPT_SOURCE)
                     point->coords.push_back(0.0f);
                   else
                     point->coords.push_back(1.0f);
+                  */
+
+                  int s,t,u;
+                  cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                              s,t,u);
+                  point->indexes.push_back(s);
+                  point->indexes.push_back(t);
+                  point->indexes.push_back(u);
+
                   currentSelectionSet->addPoint(point, pointType+1);
                 }
 	  }
-	else
-	  {
-            /*
-	    Point3Di* point=new Point3Di();
-	    point->w_coords.push_back((float)wx);
-	    point->w_coords.push_back((float)wy);
-	    point->w_coords.push_back((float)wz);
-	    cube->micrometersToIndexes(point->w_coords, point->coords);
-	    if(pointType == CPT_SOURCE)
-	      {
-		printf("Add source point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSourcePoint(point);
-	      }
-	    else
-	      {
-		printf("Add sink point : %d %d %d\n", point->coords[0], point->coords[1], point->coords[2]);
-		currentGraphCut->addSinkPoint(point);
-	      }
-            */
-	  }
+
         on_drawing3D_expose_event(drawing3D,NULL,NULL);
 	bRes = true;
 	break;
@@ -291,16 +256,6 @@ on_save_selection_clicked                (GtkButton       *button,
 	  currentSelectionSet->save(selection_name_save);
 	}
     }
-  else
-    {
-      if(currentGraphCut)
-	{
-	  //If the neuron is modified, the previous will be saved in the following name
-	  string graphcut_name_save = currentGraphCut->graphcut_name + ".save";
-	  printf("Saving file %s\n", graphcut_name_save.c_str());
-	  currentGraphCut->save(graphcut_name_save);
-	}
-    }
 }
 
 void
@@ -316,14 +271,6 @@ on_clear_selection_clicked               (GtkButton       *button,
 	  currentSelectionSet->clear();
 	}
     }
-  else
-    {
-      if(currentGraphCut)
-	{
-	  printf("Clearing %s\n", currentGraphCut->graphcut_name.c_str());
-	  currentGraphCut->clear();
-	}
-    }
 }
 
 
@@ -336,7 +283,7 @@ on_remove_selection_clicked              (GtkButton       *button,
     if(active_text != 0)
     {
         gtk_combo_box_remove_text(list_selections, gtk_combo_box_get_active(list_selections));
-        for(vector< DoubleSet<Point3D>* >::iterator itSelections = lSelections.begin();
+        for(vector< DoubleSet<float>* >::iterator itSelections = lSelections.begin();
             itSelections != lSelections.end();)
         {
             if(strcmp((*itSelections)->name.c_str(), active_text)==0)
@@ -351,11 +298,101 @@ on_remove_selection_clicked              (GtkButton       *button,
     }
 }
 
+void plugin_activate(char* label)
+{
+  string dir("plugins/bin/");
+
+  char * pPath = getenv ("NESEG_PATH");
+  if (pPath!=0)
+    dir = string(pPath) + dir;
+
+  string sfile = dir+label;
+  const char* plugin_name=(char*)sfile.c_str();
+
+  plugin_run p_run;
+  GModule *module = g_module_open (plugin_name, G_MODULE_BIND_LAZY);
+  if (!module)
+    {
+      printf("Error while linking module %s\n", plugin_name);
+    }
+  else
+    {
+      if (!g_module_symbol (module, "plugin_run", (gpointer *)&p_run))
+        {
+          printf("Error while searching for symbol\n");
+        }
+      if (p_run == NULL)
+        {
+          printf("Symbol plugin_init is NULL\n");
+        }
+      else
+        {
+          vector<Object*> lObjects;
+          lObjects.push_back(cube);
+          lObjects.push_back(currentSelectionSet);
+
+          for(int i = 0; i < toDraw.size(); i++)
+            {
+              lObjects.push_back(toDraw[i]);
+              /* if((*itObj)->className()=="Image") */
+                /* { */
+                  /* Image< float >* img = (Image<float>*)*itObj; */
+                  /* if(img!=0) */
+                    /* { */
+                      /* lObjects.push_back(img); */
+                    /* } */
+                  /* else */
+                    /* printf("Null img\n"); */
+                /* } */
+            }
+
+          p_run(lObjects); // execute init function
+        }
+
+      //Loads the key_pressed_symbol
+      if (!g_module_symbol (module, "plugin_key_press_event",
+                            (gpointer *)&p_key_press_event))
+        {
+          printf("Error while searching for symbol plugin_key_press_event\n");
+        }
+      if (p_key_press_event == NULL)
+        {
+          printf("Symbol p_key_press_event is NULL\n");
+        }
+      if (!g_module_symbol (module, "plugin_unproject_mouse",
+                            (gpointer *)&p_unproject_mouse))
+        {
+          printf("Error while searching for symbol plugin_unproject_mouse\n");
+        }
+      if (p_unproject_mouse == NULL)
+        {
+          printf("Symbol p_unproject_mouse is NULL\n");
+        }
+      if (!g_module_symbol (module, "plugin_expose",
+                            (gpointer *)&p_expose))
+        {
+          printf("Error while searching for symbol plugin_expose\n");
+        }
+      if (p_expose == NULL)
+        {
+          printf("Symbol p_expose is NULL\n");
+        }
+
+      /* if (!g_module_close (module)) */
+        /* g_warning ("%s: %s", plugin_name, g_module_error ()); */
+
+    }
+
+}
+
 void
 on_run_graph_cuts_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
   printf("run_graph_cut %s\n", cube->type.c_str());
+  plugin_activate("GraphCuts");
+
+  /*
   if(currentGraphCut)
     {
       gint layer_xy = -1;
@@ -372,6 +409,7 @@ on_run_graph_cuts_clicked              (GtkButton       *button,
 	currentGraphCut->run_maxflow((Cube<float,double>*)cube, layer_xy);
       }
     }
+  */
 }
 
 
@@ -383,15 +421,18 @@ on_load_selection_clicked                (GtkButton       *button,
   int active_id = gtk_combo_box_get_active(selection_type);
   GtkComboBox* list_selections=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(button),"list_selections"));
   char* active_text = gtk_combo_box_get_active_text(list_selections);
+  string selName(active_text);
+  selName += ".save";
   if(active_id == CT_SIMPLE_SELECTION)
     {
       if(currentSelectionSet)
 	{
-	  printf("Loading %s in %s\n", active_text, currentSelectionSet->name.c_str());
+	  printf("Loading %s in %s\n", selName.c_str(), currentSelectionSet->name.c_str());
 
-	  currentSelectionSet->load(active_text);
+	  currentSelectionSet->load(selName,cube);
 	}
     }
+  /*
   else
     {
       if(currentGraphCut)
@@ -407,6 +448,7 @@ on_load_selection_clicked                (GtkButton       *button,
 	  currentGraphCut->list();
 	}
     }
+  */
 }
 
 gboolean

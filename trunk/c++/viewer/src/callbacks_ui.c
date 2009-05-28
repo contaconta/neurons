@@ -22,7 +22,7 @@
 #include <gtk/gtkgl.h>
 #include <fstream>
 
-void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y)
+void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y, int z)
 {
   GLint realy; /*  OpenGL y coordinate position, not the Mouse one of Gdk */
                /*   realy = widgetHeight - mouse_last_y; */
@@ -68,13 +68,16 @@ void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y)
   glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
   glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
   GLfloat depth;
-  glReadPixels( x,
-                realy,
-                1,
-                1,
-                GL_DEPTH_COMPONENT,
-                GL_FLOAT,
-                &depth );
+  //if(z!=-1)
+  //  depth = z;
+  //else
+    glReadPixels( x,
+                  realy,
+                  1,
+                  1,
+                  GL_DEPTH_COMPONENT,
+                  GL_FLOAT,
+                  &depth );
 
 
   /*
@@ -86,7 +89,7 @@ void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y)
 }
 
 
-void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers )
+void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers, int z )
 {
   GLint realy; /*  OpenGL y coordinate position, not the Mouse one of Gdk */
                /*   realy = widgetHeight - mouse_last_y; */
@@ -140,13 +143,16 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
   glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);
   glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);
   GLfloat depth;
-  glReadPixels( mouse_last_x,
-                realy,
-                1,
-                1,
-                GL_DEPTH_COMPONENT,
-                GL_FLOAT,
-                &depth );
+  //if(z!=-1)
+  //  depth = z;
+  //else
+    glReadPixels( mouse_last_x,
+                  realy,
+                  1,
+                  1,
+                  GL_DEPTH_COMPONENT,
+                  GL_FLOAT,
+                  &depth );
 
 
   gluUnProject ((GLdouble) mouse_last_x, (GLdouble) realy, depth,

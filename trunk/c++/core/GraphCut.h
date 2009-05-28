@@ -12,9 +12,11 @@
 #include "VisibleE.h"
 #include "float.h"
 #include "Cube.h"
+#include "DoubleSet.h"
 
 using namespace std;
 
+/*
 class Point3Di
 {
  public:
@@ -23,6 +25,7 @@ class Point3Di
 
   friend ostream& operator <<(ostream &os,const Point3Di &point);
 };
+*/
 
 typedef maxflow::Graph<float,float,float> GraphType;
 
@@ -54,26 +57,25 @@ class GraphCut : public VisibleE
  public:
  string graphcut_name;
 
- vector< Point3Di* >* sink_points;
-
- vector< Point3Di* >* source_points;
+ //vector< Point3Di* >* sink_points;
+ //vector< Point3Di* >* source_points;
+ DoubleSet<P>* set_points;
 
  //template <class T, class U>
  GraphCut(Cube_P* cube);
 
  ~GraphCut();
 
- void addSinkPoint(Point3Di* point);
- 
- void addSourcePoint(Point3Di* point);
+ //void addSinkPoint(Point3Di* point);
+ //void addSourcePoint(Point3Di* point);
  
  void clear();
  
+ void drawSeeds(int x, int y, int z);
+ 
  void draw(int x, int y, int z);
  
- void drawSegmentation(int x, int y, int z);
- 
- void drawSegmentation_in_DL(int x, int y, int z);
+ void draw_in_DL(int x, int y, int z);
 
  void list();
  
@@ -100,8 +102,9 @@ template< class P>
 //template <class T, class U>
 GraphCut<P>::GraphCut(Cube_P* cube) : VisibleE(){
     init();
-    source_points = new vector<Point3Di*>;
-    sink_points = new vector<Point3Di*>;
+    //source_points = new vector<Point3Di*>;
+    //sink_points = new vector<Point3Di*>;
+    set_points = 0;
     m_node_ids = 0;
     m_graph = 0;
     m_cube = cube;
@@ -136,6 +139,7 @@ GraphCut<P>::~GraphCut() {
   if(m_graph!=0)
     delete m_graph;
 
+  /*
   for(vector< Point3Di* >::iterator itPoints = source_points->begin();
       itPoints != source_points->end(); itPoints++)
     {
@@ -148,16 +152,20 @@ GraphCut<P>::~GraphCut() {
       delete *itPoints;
     }
   delete sink_points;
+  */
+  delete set_points;
 }
 
 template< class P>
 void GraphCut<P>::clear(){
-    source_points->clear();
-    sink_points->clear();
+  //source_points->clear();
+  //sink_points->clear();
+  set_points->clear();
 }
 
 template< class P>
-void GraphCut<P>::draw(int x, int y, int z){
+void GraphCut<P>::drawSeeds(int x, int y, int z){
+  /*
   glColor3f(1,0,0);
   for(vector< Point3Di* >::iterator itPoints = source_points->begin();
       itPoints != source_points->end(); itPoints++)
@@ -181,11 +189,13 @@ void GraphCut<P>::draw(int x, int y, int z){
 	  glutSolidSphere(0.5, 10, 10);
 	  glPopMatrix();
 	}
-    }
+        }   
+  */
+  //set_points->draw();
 }
 
 template< class P>
-void GraphCut<P>::drawSegmentation(int x, int y, int z){
+void GraphCut<P>::draw(int x, int y, int z){
   if(m_graph==0)
     return;
 
@@ -200,7 +210,7 @@ void GraphCut<P>::drawSegmentation(int x, int y, int z){
       m_segDL = glGenLists(1);
   
       glNewList(m_segDL,GL_COMPILE);
-      drawSegmentation_in_DL(x, y, z);
+      draw_in_DL(x, y, z);
       glEndList();
 
       lastX = x;
@@ -211,7 +221,7 @@ void GraphCut<P>::drawSegmentation(int x, int y, int z){
 }
 
 template< class P>
-void GraphCut<P>::drawSegmentation_in_DL(int x, int y, int z){
+void GraphCut<P>::draw_in_DL(int x, int y, int z){
 
   if(x==-1)
     {
@@ -268,6 +278,7 @@ void GraphCut<P>::drawSegmentation_in_DL(int x, int y, int z){
 template< class P>
 void GraphCut<P>::save(const string& filename){
 
+  /*
   if(source_points->size()==0 && sink_points->size()==0)
     return;
 
@@ -294,11 +305,16 @@ void GraphCut<P>::save(const string& filename){
     }
 
   writer.close();
+  */
+  set_points->save(filename);
 }
 
 template< class P>
 template<class T, class U>
-bool GraphCut<P>::load(Cube<T,U>* cube, const char* fileName){
+bool GraphCut<P>::load(Cube<T,U>* cube, const char* fileName)
+{
+  set_points->load(fileName);
+  /*
   string sName(fileName);
   sName += ".save";
   std::ifstream reader(sName.c_str());
@@ -348,11 +364,12 @@ bool GraphCut<P>::load(Cube<T,U>* cube, const char* fileName){
 	}
     }
 
-
   reader.close();
+  */
   return true;
 }
 
+/*
 template< class P>
 void GraphCut<P>::addSourcePoint(Point3Di* point)
 {
@@ -364,6 +381,7 @@ void GraphCut<P>::addSinkPoint(Point3Di* point)
 {
     sink_points->push_back(point);
 }
+*/
 
 template< class P>
 void GraphCut<P>::setCube(Cube_P* cube)
@@ -443,6 +461,8 @@ template<class T, class U>
 	}
     }
 
+  printf("GraphCut : Nodes added\n");
+
   // Debug
   nEdges = 0;
 
@@ -459,8 +479,10 @@ template<class T, class U>
     }
   */
 
+  typename vector< PointDs<P>* >::iterator itPoint;
   for(int i = 0;i<ni;i++)
     {
+      printf("i %d\n",i);
       for(int j = 0;j<nj;j++)
 	{
 	for(int k = 0;k<nk;k++)
@@ -472,19 +494,20 @@ template<class T, class U>
 	  weightToSink = 0;
 	  weightToSource = 0;
 	  // Compute weights to source and sink nodes
-	  for(vector< Point3Di* >::iterator itPoint=source_points->begin();
-	      itPoint != source_points->end();itPoint++)
+          
+	  for(itPoint=set_points->set1.begin();
+              itPoint != set_points->set1.end();itPoint++)
 	    {
-	      if((*itPoint)->coords[0] == i && (*itPoint)->coords[1] == j && (*itPoint)->coords[2] == (k+startK))
+	      if((*itPoint)->indexes[0] == i && (*itPoint)->indexes[1] == j && (*itPoint)->indexes[2] == (k+startK))
 		{
 		  //printf("Source found %d %d %d\n", i, j, k+startK);
 		  weightToSource = K;
 		}
 	    }
-	  for(vector< Point3Di* >::iterator itPoint=sink_points->begin();
-	      itPoint != sink_points->end();itPoint++)
+	  for(itPoint=set_points->set2.begin();
+              itPoint != set_points->set2.end();itPoint++)
 	    {
-	      if((*itPoint)->coords[0] == i && (*itPoint)->coords[1] == j && (*itPoint)->coords[2] == (k+startK))
+	      if((*itPoint)->indexes[0] == i && (*itPoint)->indexes[1] == j && (*itPoint)->indexes[2] == (k+startK))
 		{
 		  //printf("Sink found %d %d %d\n", i, j, k+startK);
 		  weightToSink = K;
@@ -546,7 +569,7 @@ template<class T, class U>
 	  for(vector< Point3Di* >::iterator itPoint=source_points->begin();
 	      itPoint != source_points->end();itPoint++)
 	    {
-	      if((*itPoint)->coords[0] == (i-1) && (*itPoint)->coords[1] == (j-1)) // && (*itPoint)->coords[2] == k)
+	      if((*itPoint)->indexes[0] == (i-1) && (*itPoint)->indexes[1] == (j-1)) // && (*itPoint)->indexes[2] == k)
 		{
 		  printf("Source found %d %d\n", i-1, j-1);
 		  weightToSource = K;
@@ -555,7 +578,7 @@ template<class T, class U>
 	  for(vector< Point3Di* >::iterator itPoint=sink_points->begin();
 	      itPoint != sink_points->end();itPoint++)
 	    {
-	      if((*itPoint)->coords[0] == (i-1) && (*itPoint)->coords[1] == (j-1)) // && (*itPoint)->coords[2] == k)
+	      if((*itPoint)->indexes[0] == (i-1) && (*itPoint)->indexes[1] == (j-1)) // && (*itPoint)->indexes[2] == k)
 		{
 		  printf("Sink found %d %d\n", i-1, j-1);
 		  weightToSink = K;
@@ -618,6 +641,7 @@ template<class T, class U>
 	}
     }
 
+  printf("GraphCut : Computing max flow\n");
   int flow = m_graph->maxflow();
 			
   // TODO : debug only, get rid of this part
@@ -656,17 +680,17 @@ template<class T, class U>
 
 template< class P>
 void GraphCut<P>::list() {
-    for(vector< Point3Di* >::iterator itPoints = source_points->begin();
-        itPoints != source_points->end(); itPoints++)
+    for(vector< PointDs<>* >::iterator itPoints = set_points->set1.begin();
+        itPoints != set_points->set1.end(); itPoints++)
     {
       cout << "Coords: " << (*itPoints)->coords[0] << " " << (*itPoints)->coords[1] << " " << (*itPoints)->coords[2] << endl;
-      cout << "w_Coords: " << (*itPoints)->w_coords[0] << " " << (*itPoints)->w_coords[1] << " " << (*itPoints)->w_coords[2] << endl;
+      cout << "indexes: " << (*itPoints)->indexes[0] << " " << (*itPoints)->indexes[1] << " " << (*itPoints)->indexes[2] << endl;
     }
-   for(vector< Point3Di* >::iterator itPoints = sink_points->begin();
-        itPoints != sink_points->end(); itPoints++)
+   for(vector< PointDs<>* >::iterator itPoints = set_points->set2.begin();
+        itPoints != set_points->set2.end(); itPoints++)
     {
       cout << "Coords: " << (*itPoints)->coords[0] << " " << (*itPoints)->coords[1] << " " << (*itPoints)->coords[2] << endl;
-      cout << "w_Coords: " << (*itPoints)->w_coords[0] << " " << (*itPoints)->w_coords[1] << " " << (*itPoints)->w_coords[2] << endl;
+      cout << "indexes: " << (*itPoints)->indexes[0] << " " << (*itPoints)->indexes[1] << " " << (*itPoints)->indexes[2] << endl;
     }
 }
 

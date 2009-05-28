@@ -66,6 +66,11 @@ on_drawing3D_realize                   (GtkWidget       *widget,
 
     if(extension == "nfo"){
       cube = CubeFactory::load(objectNames[i]);
+      float* tf = new float[256];
+      for(int i=0;i<255;i++)
+        tf[i] = i;
+      tf[255] = 0;
+      //((Cube<float,double>*)cube)->set_tf(tf);
       cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
       cube->v_r = 1.0;
       cube->v_g = 1.0;
