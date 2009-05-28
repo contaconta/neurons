@@ -9,10 +9,10 @@ void setUpMatricesYZ(int layerSpan);
 
 void setUpMatricesXZ(int layerSpan);
 
-void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers = false);
+void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers = false, int z = -1);
 
 extern "C"{
-void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y);
+  void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y, int z = -1);
 }
 
 void draw_last_point();

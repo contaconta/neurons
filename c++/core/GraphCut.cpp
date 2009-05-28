@@ -1,5 +1,6 @@
 #include "GraphCut.h"
 
+/*
 ostream& operator <<(ostream &os,const Point3Di &point)
 {
     for(int i=0;i<point.coords.size();i++)
@@ -11,3 +12,4 @@ ostream& operator <<(ostream &os,const Point3Di &point)
     }
     return os;
 }
+*/

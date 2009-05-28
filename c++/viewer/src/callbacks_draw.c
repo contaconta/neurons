@@ -23,6 +23,14 @@
 #include <gtk/gtkgl.h>
 #include <fstream>
 
+// TODO : where should we put this declaration ?
+struct
+{
+  int x;
+  int y;
+  int z;
+} aPoint3d;
+
 void draw_last_point()
 {
   if(last_point != NULL){
@@ -225,6 +233,7 @@ void setUpMatricesXZ(int layerSpan)
 
 }
 
+// TODO : Create a call list to speed display
 void draw_selection()
 {
   if(majorMode == MOD_SELECT_EDITOR)
@@ -233,52 +242,38 @@ void draw_selection()
       GtkSpinButton* brush_size=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(selectionEditor),"brush_size"));
       if(brush_size)
         radius = gtk_spin_button_get_value(brush_size);
+
+      int x = -1;
+      int y = -1;
+      int z = -1;
+      //float wx,wy,wz;
+
+      if(flag_draw_XY)
+        {
+          GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+          z = gtk_spin_button_get_value_as_int(layer_XY_spin);
+        }
+      else
+        if(flag_draw_XZ)
+          {
+            GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
+            y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
+          }
+        else
+          if(flag_draw_YZ)
+            {
+              GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
+              x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
+            }
+
       //printf("Radius : %f\n", radius);
       //radius = 0.1f;
-      for(vector< DoubleSet<Point3D>* >::iterator itSel = lSelections.begin();
+      for(vector< DoubleSet<float>* >::iterator itSel = lSelections.begin();
           itSel != lSelections.end(); itSel++)
         {
-          (*itSel)->draw(radius);
+          (*itSel)->draw(x,y,z,radius);
         }
     }
-}
-
-void draw_graphcuts()
-{
-  int x = -1;
-  int y = -1;
-  int z = -1;
-
-  glPushMatrix();
-
-  if(flag_draw_XY)
-    {
-      GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
-      z = gtk_spin_button_get_value_as_int(layer_XY_spin);
-      //glTranslatef(0.0f,0.0f,-0.2f);
-    }
-  else
-  if(flag_draw_XZ)
-    {
-      GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
-      y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
-    }
-  else
-  if(flag_draw_YZ)
-    {
-      GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
-      x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
-    }
-
-
-  for(vector< GraphCut<Point3D>* >::iterator itGraphCut = lGraphCuts.begin();
-      itGraphCut != lGraphCuts.end(); itGraphCut++)
-    {
-      (*itGraphCut)->draw(x,y,z);
-      (*itGraphCut)->drawSegmentation(x,y,z);
-    }
-
-  glPopMatrix();
 }
 
 void draw_objects()
@@ -313,7 +308,6 @@ void draw_objects()
     }
   draw_last_point();
   draw_selection();
-  draw_graphcuts();
 }
 
 gboolean
@@ -335,6 +329,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glClearColor(0.0,0.0,0.0,0.0);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Test AL
+  //glClearStencil(0);
+  //glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
   if(flag_draw_3D)
     {
@@ -357,7 +354,6 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
 
       draw_last_point();
       draw_selection();
-      draw_graphcuts();
     }
 
   //Draws the XY view
@@ -584,7 +580,30 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
   }
 
   if(p_expose != NULL){
-    p_expose(widget, event, user_data);
+    aPoint3d.x = -1;
+    aPoint3d.y = -1;
+    aPoint3d.z = -1;
+
+    if(flag_draw_XY)
+      {
+        GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
+        aPoint3d.z = gtk_spin_button_get_value_as_int(layer_XY_spin);
+      }
+    else
+      if(flag_draw_XZ)
+        {
+          GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
+          aPoint3d.y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
+        }
+      else
+        if(flag_draw_YZ)
+          {
+            GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
+            aPoint3d.x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
+          }
+
+    printf("p_expose %d %d %d\n",aPoint3d.x,aPoint3d.y,aPoint3d.z);
+    p_expose(widget, event, &aPoint3d);
   }
 
 

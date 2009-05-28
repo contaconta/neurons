@@ -30,6 +30,7 @@ Y s                    |/            |/
 #include "utils.h"
 #include "VisibleE.h"
 #include "Cube_P.h"
+#include <typeinfo>
 
 #ifdef WITH_OPENMP
 
@@ -58,6 +59,9 @@ public:
   //Pointer to the volume data
   T* voxels_origin;
   U* voxels_integral_origin;
+
+  // Transfer function
+  T* tf;
 
   unsigned int wholeTexture;
   unsigned int wholeTextureTrue;
@@ -205,6 +209,9 @@ public:
   /** Converts from coordinates in micrometers to a position in indexes.*/
   void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
+  /** Converts from 3d coordinates in micrometers to a position in indexes.*/
+  void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z);
+
   /** Converts from coordinates in cube indexes to micrometers.*/
   void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
 
@@ -272,10 +279,14 @@ public:
    **           DISPLAY FUNCTIONS                                      **
    **********************************************************************/
 
-  /** Subsamples the volume and loads it as a texture.*/
+  void set_tf(T* atf) { tf=atf; }
+
+  /** Subsamples the volume and loads it as a texture.
+   A transfer function can be supplied to change the color of the voxels */
   void load_whole_texture();
 
-  /** Loads the texture of the brick represented by the row, col. Both start at 0.*/
+  /** Loads the texture of the brick represented by the row, col. Both start at 0.
+      A transfer function can be supplied to change the color of the voxels*/
   void load_texture_brick(int row, int col, float scale = 1.0);
 
   /** Loads a thresholded brick.*/
@@ -504,6 +515,7 @@ Cube<T,U>::Cube()
 {
   fildes = -1;
   filenameVoxelData = "";
+  tf = 0;
 }
 template <class T, class U>
 Cube<T,U>::~Cube()
@@ -546,6 +558,8 @@ Cube<T,U>::Cube
   this->create_volume_file(nameFile + ".vl");
   this->load_volume_data(nameFile + ".vl");
   this->save_parameters(nameFile + ".nfo");
+
+  tf = 0;
 }
 
 
@@ -566,7 +580,7 @@ Cube<T,U>::Cube(string filenameParams, string _filenameVoxelData)
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
 
-
+  tf = 0;
 }
 
 template <class T, class U>
@@ -586,6 +600,8 @@ Cube<T,U>::Cube(string filenameParams, string filenameVoxelData, string filename
   nRowToDraw = -1;
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
+
+  tf = 0;
 }
 
 template <class T, class U>
@@ -624,6 +640,7 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
 
+  tf = 0;
 }
 
 template <class T, class U>

@@ -10,7 +10,7 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.2
+CPP = g++-4.3
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
@@ -62,7 +62,7 @@ LDFLAGSPLUGINS = $(shell pkg-config --libs gmodule-2.0)
 
 INCLUDEFLAGSEXT = -Iexternal/graphCuts
 INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(D_BBP) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore $(INCLUDEFLAGSEXT) $(CFLAGSPLUGINS) $(CFLAGSBBP)
-LINKFLAGS    = $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -Llib $(OPENMPL) $(LDFLAGSBBP)
+LINKFLAGS    = $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -L$(LIB_DIR) $(OPENMPL) $(LDFLAGSBBP)
 
 ifeq ($(RELEASE), 1)
 # 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
@@ -75,10 +75,14 @@ else
 endif
 
 ## Relevant directories (I am dislexic)
-
-OBJ_DIR = objects/
+ifeq ($(RELEASE), 1)
+	OBJ_DIR = objects/release/
+	LIB_DIR = lib/release/
+else
+	OBJ_DIR = objects/debug/
+	LIB_DIR = lib/debug/
+endif
 BIN_DIR = bin/
-LIB_DIR = lib/
 INST_DIR=/home/ggonzale/bin/
 CUBE_TOOLS_SRC_DIR = tools/cube/
 GRAPH_TOOLS_SRC_DIR = tools/graph/
@@ -97,7 +101,7 @@ TOOLS_CUBE_EXEC_P  = $(TOOLS_CUBE_SRC_N:.cpp=)
 TOOLS_CUBE_EXEC    = $(addprefix $(BIN_DIR),$(TOOLS_CUBE_EXEC_P))
 TOOLS_CUBE_SRC     = $(addprefix $(CUBE_TOOLS_SRC_DIR),$(TOOLS_CUBE_SRC_N))
 TOOLS_CUBE_OBJ_T   = $(TOOLS_CUBE_SRC:.cpp=.o)
-TOOLS_CUBE_OBJ     = $(addprefix objects/,$(TOOLS_CUBE_OBJ_T))
+TOOLS_CUBE_OBJ     = $(addprefix $(OBJ_DIR),$(TOOLS_CUBE_OBJ_T))
 ## Makefile syntax : $(makefiles_function argument,variable_where_to_do_the_function)
 
 # Files for the graph tools
@@ -107,7 +111,7 @@ TOOLS_GRAPH_EXEC_P  = $(TOOLS_GRAPH_SRC_N:.cpp=)
 TOOLS_GRAPH_EXEC    = $(addprefix $(BIN_DIR),$(TOOLS_GRAPH_EXEC_P))
 TOOLS_GRAPH_SRC     = $(addprefix $(GRAPH_TOOLS_SRC_DIR),$(TOOLS_GRAPH_SRC_N))
 TOOLS_GRAPH_OBJ_T   = $(TOOLS_GRAPH_SRC:.cpp=.o)
-TOOLS_GRAPH_OBJ     = $(addprefix objects/,$(TOOLS_GRAPH_OBJ_T))
+TOOLS_GRAPH_OBJ     = $(addprefix $(OBJ_DIR),$(TOOLS_GRAPH_OBJ_T))
 
 #Files for the neuron tools
 TOOLS_NEURON_SRC_N_P = $(shell ls $(NEURON_TOOLS_SRC_DIR)*.cpp)
@@ -116,7 +120,7 @@ TOOLS_NEURON_EXEC_P  = $(TOOLS_NEURON_SRC_N:.cpp=)
 TOOLS_NEURON_EXEC    = $(addprefix $(BIN_DIR),$(TOOLS_NEURON_EXEC_P))
 TOOLS_NEURON_SRC     = $(addprefix $(NEURON_TOOLS_SRC_DIR),$(TOOLS_NEURON_SRC_N))
 TOOLS_NEURON_OBJ_T   = $(TOOLS_NEURON_SRC:.cpp=.o)
-TOOLS_NEURON_OBJ     = $(addprefix objects/,$(TOOLS_NEURON_OBJ_T))
+TOOLS_NEURON_OBJ     = $(addprefix $(OBJ_DIR),$(TOOLS_NEURON_OBJ_T))
 
 #Files for the image tools
 TOOLS_IMAGE_SRC_N_P  = $(shell ls $(IMAGE_TOOLS_SRC_DIR)*.cpp)
@@ -125,7 +129,7 @@ TOOLS_IMAGE_EXEC_P   = $(TOOLS_IMAGE_SRC_N:.cpp=)
 TOOLS_IMAGE_EXEC     = $(addprefix $(BIN_DIR),$(TOOLS_IMAGE_EXEC_P))
 TOOLS_IMAGE_SRC      = $(addprefix $(IMAGE_TOOLS_SRC_DIR),$(TOOLS_IMAGE_SRC_N))
 TOOLS_IMAGE_OBJ_T    = $(TOOLS_IMAGE_SRC:.cpp=.o)
-TOOLS_IMAGE_OBJ      = $(addprefix objects/,$(TOOLS_IMAGE_OBJ_T))
+TOOLS_IMAGE_OBJ      = $(addprefix $(OBJ_DIR),$(TOOLS_IMAGE_OBJ_T))
 
 #Files for the core of the library
 SRC_CORE_N_P   = $(shell ls $(CORE_SRC_DIR)*.cpp)
@@ -158,13 +162,13 @@ $(TOOLS_GRAPH_SRC_N_P) $(TOOLS_NEURON_SRC_N_P) $(SRC_CORE_N_P)
 # This will compile all the library
 all:  library neseg
 
-library:  lib/libneseg.a lib/libneseg.so
+library:  $(LIB_DIR)libneseg.a $(LIB_DIR)libneseg.so
 
 #Compilation of the library
-lib/libneseg.a:  $(OBJ_CORE)
+$(LIB_DIR)libneseg.a:  $(OBJ_CORE)
 	ar rcs $@ $(OBJ_CORE)
 
-lib/libneseg.so:  $(OBJ_CORE)
+$(LIB_DIR)libneseg.so:  $(OBJ_CORE)
 # 	gcc -fPIC -shared -Wl -o $@   $(OBJ_CORE)
 	gcc -shared -Wl -o $@   $(OBJ_CORE)
 
@@ -195,8 +199,8 @@ plugins2:
 
 
 # install: library
-# 	cp lib/libneseg.so /usr/lib
-# 	cp lib/libneseg.a /usr/lib
+# 	cp $(LIB_DIR)libneseg.so /usr/lib
+# 	cp $(LIB_DIR)libneseg.a /usr/lib
 
 include  $(ALL_SOURCES:.cpp=.d)
 
@@ -204,18 +208,18 @@ include  $(ALL_SOURCES:.cpp=.d)
 # I know mkdir -p might not be portable, but it is easy to use.
 mkobjdirs : objects
 	mkdir -p $@
-	mkdir -p objects
-	mkdir -p objects/core
-	mkdir -p objects/tools
-	mkdir -p objects/tools/cube
-	mkdir -p objects/tools/graph
-	mkdir -p objects/tools/neuron
-	mkdir -p objects/tools/image
-	mkdir -p objects/viewer
-	mkdir -p objects/viewer/src
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)core
+	mkdir -p $(OBJ_DIR)tools
+	mkdir -p $(OBJ_DIR)tools/cube
+	mkdir -p $(OBJ_DIR)tools/graph
+	mkdir -p $(OBJ_DIR)tools/neuron
+	mkdir -p $(OBJ_DIR)tools/image
+	mkdir -p $(OBJ_DIR)viewer
+	mkdir -p $(OBJ_DIR)viewer/src
 	mkdir -p bin
-	mkdir -p lib
-	mkdir -p objects/plugins/src/Samples/
+	mkdir -p $(LIB_DIR)
+	mkdir -p $(OBJ_DIR)plugins/src/Samples/
 
 print:
 	echo $(TOOLS_CUBE_OBJ)
@@ -231,7 +235,7 @@ doc: $(SRC_CORE_N_P)
 $(TOOLS_CUBE_OBJ):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
 
-$(TOOLS_CUBE_EXEC): bin/%:$(OBJ_DIR)$(CUBE_TOOLS_SRC_DIR)%.o lib/libneseg.a
+$(TOOLS_CUBE_EXEC): bin/%:$(OBJ_DIR)$(CUBE_TOOLS_SRC_DIR)%.o $(LIB_DIR)libneseg.a
 # 	echo $(TOOLS_CUBE_EXEC)
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(CUBE_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
 # 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
@@ -241,7 +245,7 @@ $(TOOLS_GRAPH_OBJ):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
 
 # $(TOOLS_GRAPH_EXEC): $(OBJ_DIR)/tools/graph/ 
-$(TOOLS_GRAPH_EXEC): bin/%:$(OBJ_DIR)$(GRAPH_TOOLS_SRC_DIR)%.o lib/libneseg.a
+$(TOOLS_GRAPH_EXEC): bin/%:$(OBJ_DIR)$(GRAPH_TOOLS_SRC_DIR)%.o $(LIB_DIR)libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(GRAPH_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
 ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$@ $(INST_DIR)$(@F)
@@ -251,7 +255,7 @@ endif
 $(TOOLS_NEURON_OBJ):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
 
-$(TOOLS_NEURON_EXEC): bin/%:$(OBJ_DIR)$(NEURON_TOOLS_SRC_DIR)%.o lib/libneseg.a
+$(TOOLS_NEURON_EXEC): bin/%:$(OBJ_DIR)$(NEURON_TOOLS_SRC_DIR)%.o $(LIB_DIR)libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(NEURON_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
 ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
@@ -261,7 +265,7 @@ endif
 $(TOOLS_IMAGE_OBJ):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $< -o $@
 
-$(TOOLS_IMAGE_EXEC): bin/%:$(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)%.o lib/libneseg.a
+$(TOOLS_IMAGE_EXEC): bin/%:$(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)%.o $(LIB_DIR)libneseg.a
 	$(CPP) $(LDFLAGS) $(OBJ_DIR)$(IMAGE_TOOLS_SRC_DIR)$(@F).o -o $@ -lneseg
 ifndef NESEG_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
@@ -285,11 +289,12 @@ cleanDepend:
 
 clean :
 	rm -f bin/*
-	rm -f lib/l*
-	rm -f objects/core/*
-	rm -f objects/viewer/src/*
-	rm -f objects/tools/cube/*
-	rm -f objects/tools/graph/*
-	rm -f objects/tools/neuron/*
-	rm -f objects/tools/image/*
+	rm -f $(LIB_DIR)l*
+	rm -f $(OBJ_DIR)core/*
+	rm -f $(OBJ_DIR)viewer/src/*
+	rm -f $(OBJ_DIR)tools/cube/*
+	rm -f $(OBJ_DIR)tools/graph/*
+	rm -f $(OBJ_DIR)tools/neuron/*
+	rm -f $(OBJ_DIR)tools/image/*
+	rm -f $(OBJ_DIR)plugins/src/*
 

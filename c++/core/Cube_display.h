@@ -1,6 +1,8 @@
 
 #include "Cube_drawBetween.h"
 
+//#define USE_ALPHA
+
 template <class T, class U>
 void Cube<T,U>::load_whole_texture()
 {
@@ -41,6 +43,9 @@ void Cube<T,U>::load_whole_texture()
               temp_x_i = (int)temp_x;
               T voxel = voxels[temp_z_i][temp_y_i][temp_x_i];
 //               if(voxel < 128)
+              if(tf!=0)
+                texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = tf[(int)voxel];
+              else
                 texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = voxel;
 //               else
 //                 texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = 255;
@@ -79,7 +84,7 @@ void Cube<T,U>::load_whole_texture()
 }
 
 template <class T, class U>
-void Cube<T,U>::load_texture_brick(int row, int col, float scale)
+  void Cube<T,U>::load_texture_brick(int row, int col, float scale)
 {
   nColToDraw = col;
   nRowToDraw = row;
@@ -145,6 +150,7 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale)
 
   int size_texture = max_texture_size;
 
+  /*
   if(sizeof(T) == 1)
     {
       GLubyte* texels =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
@@ -173,13 +179,89 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale)
                    GL_UNSIGNED_BYTE, texels);
       free(texels);
     }
+*/
+
+  if(sizeof(T) == 1)
+    {
+      GLubyte voxel;
+      
+      //GLubyte* texels =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
+      //for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
+      //      texels[t] = 0;
+
+      int texture_size;
+#ifdef USE_ALPHA
+      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
+#else
+      texture_size = texture_size_x*texture_size_y*texture_size_z;
+#endif
+      GLubyte* texels =(GLubyte*)(malloc(texture_size*sizeof(GLubyte)));
+      for(int t = 0; t < texture_size; t++)
+        texels[t] = 0;
+
+      int depth_y;
+      int depth_z;
+      for(int z = 0; z < limit_z; z++)
+        {
+#ifdef USE_ALPHA
+          depth_z = z*texture_size_x*texture_size_y*2;
+#else
+          depth_z = z*texture_size_x*texture_size_y;
+#endif
+          for(int y = 0; y < limit_y; y++)
+            {
+#ifdef USE_ALPHA
+              depth_y = y*texture_size_x*2;
+#else
+              depth_y = y*texture_size_x;
+#endif
+              for(int x = 0; x < limit_x; x++)
+                {
+                  voxel = (GLubyte)at(col_offset+x,row_offset+y,z)*scale;
+
+#ifdef USE_ALPHA
+                  texels[depth_z + depth_y + x*2] = voxel;
+                  texels[depth_z + depth_y + x*2+1] = voxel;
+#else
+                  if(tf!=0)
+                    texels[depth_z + depth_y + x] = tf[voxel];
+                  else
+                    texels[depth_z + depth_y + x] = voxel;
+#endif
+                }
+            }
+          printf("#");
+          fflush(stdout);
+//           printf("%u\n", texels[depth_z + 200*limit_x + 120]);
+        }
+      printf("]\n");
+      //printf("Cube::load_whole_texture() 8 bits\n");
+#ifdef USE_ALPHA
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8_ALPHA8,
+                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
+                   GL_UNSIGNED_BYTE, texels);
+#else
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8,
+                   texture_size_x, texture_size_y, texture_size_z, 0, GL_LUMINANCE,
+                   GL_UNSIGNED_BYTE, texels);
+#endif
+      free(texels);
+    }
 
   if(sizeof(T) == 4)
     {
-      float* texels =(float*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(float)));
-      for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
+      float voxel;
+      int texture_size;
+#ifdef USE_ALPHA
+      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
+#else
+      texture_size = texture_size_x*texture_size_y*texture_size_z;
+#endif
+      float* texels =(float*)(calloc(texture_size*sizeof(float),0));
+      /*
+      for(int t = 0; t < texture_size; t++)
             texels[t] = 0;
-
+      */
 
       printf("Cube::load_texture_brick() creating texture from floats\n");
       float max_texture = -10e6;
@@ -199,21 +281,40 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale)
         }
       printf("Cube::load_texture_brick(): max=%f and min=%f\n", (float)max_texture, (float)min_texture);
       printf("Loading texture brick %i %i [", row, col);
+      int depth_y;
+      int depth_z;
       for(int z = 0; z < limit_z; z++)
         {
-          int depth_z = z*texture_size_x*texture_size_y;
+#ifdef USE_ALPHA
+          depth_z = z*texture_size_x*texture_size_y*2;
+#else
+          depth_z = z*texture_size_x*texture_size_y;
+#endif
           for(int y = 0; y < limit_y; y++)
             {
-              int depth_y = y*texture_size_x;
+#ifdef USE_ALPHA
+              depth_y = y*texture_size_x*2;
+#else
+              depth_y = y*texture_size_x;
+#endif
               for(int x = 0; x < limit_x; x++)
                 {
 //                   if((y<20) || (z>86) || (z<10) ){
 //                     texels[depth_z + depth_y + x] = 0;
 //                   }
 //                   else{
-                    texels[depth_z + depth_y + x] =
-                      scale*(this->at(col_offset+x,row_offset+y,z) - min_texture)
-                      / (max_texture - min_texture);
+                  voxel = scale*(this->at(col_offset+x,row_offset+y,z) - min_texture)
+                    / (max_texture - min_texture);
+
+#ifdef USE_ALPHA
+                  texels[depth_z + depth_y + x*2] = voxel;
+                  texels[depth_z + depth_y + x*2+1] = voxel;
+#else
+                  if(tf != 0)
+                    texels[depth_z + depth_y + x] = tf[(int)voxel];
+                  else
+                      texels[depth_z + depth_y + x] = voxel;                      
+#endif                  
 //                   }
                 }
             }
@@ -221,10 +322,16 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale)
           fflush(stdout);
         }
       printf("]\n");
+#ifdef USE_ALPHA
+      printf("Cube::load_whole_texture() USE_ALPHA float\n");
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE_ALPHA,
+                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
+                   GL_FLOAT, texels);
+#else
       glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE,
                    texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE,
                    GL_FLOAT, texels);
-
+#endif
       free(texels);
     }
   #if debug
@@ -1057,18 +1164,31 @@ void Cube<T,U>::draw
 //         glColor3f(1.0,1.0,1.0);
 
 
-      glEnable(GL_BLEND);
+      //glEnable(GL_BLEND);
+      /*
       if(min_max == 0)
         glBlendEquation(GL_MIN);
       else
         glBlendEquation(GL_MAX);
+      */
+
+      // Alpha function : Test AL
+      glDisable(GL_BLEND);
+      glEnable(GL_ALPHA_TEST);
+      glAlphaFunc(GL_GREATER, 0.8f);
+      //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+      //glEnable(GL_STENCIL_TEST);
+      //glStencilFunc(GL_GREATER,1.0f,~0);
+      //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
       glEnable(GL_TEXTURE_3D);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
 
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-      //All the previous was preparation, here with draw the poligon
+      //All the previous was preparation, here with draw the polygon
       glBegin(GL_POLYGON);
       for(int i = 0; i < intersectionPointsIdx; i++)
         {
@@ -1083,6 +1203,8 @@ void Cube<T,U>::draw
 
       glDisable(GL_TEXTURE_3D);
       glDisable(GL_BLEND);
+      glDisable(GL_ALPHA_TEST); // Test AL
+      //glDisable(GL_STENCIL_TEST);
 
       //Draws an sphere on all the intersection points
       if(0)

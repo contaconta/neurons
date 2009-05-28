@@ -22,3 +22,4 @@ Questions :
 Everybody :
 
 - In Cloud::Load, load allocates a p at the end of the while loop that is unused
+- Al : Do we need to keep a list of open modules ? should be discussed...
