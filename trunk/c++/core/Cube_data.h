@@ -111,7 +111,7 @@ void Cube<T,U>::load_volume_data(string filenameVoxelData)
 
  if(mapped_file == MAP_FAILED)
     {
-      printf("Cube<T,U>::load_volume_data: There is a bug here, volume not loaded. %s\n", 
+      printf("Cube<T,U>::load_volume_data: There is a bug here, volume not loaded. %s\n",
               filenameVoxelData.c_str());
       exit(0);
     }

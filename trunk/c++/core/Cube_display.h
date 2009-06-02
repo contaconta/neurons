@@ -257,7 +257,7 @@ template <class T, class U>
 #else
       texture_size = texture_size_x*texture_size_y*texture_size_z;
 #endif
-      float* texels =(float*)(calloc(texture_size*sizeof(float),0));
+      float* texels =(float*)(calloc(texture_size,sizeof(float)));
       /*
       for(int t = 0; t < texture_size; t++)
             texels[t] = 0;
@@ -313,8 +313,8 @@ template <class T, class U>
                   if(tf != 0)
                     texels[depth_z + depth_y + x] = tf[(int)voxel];
                   else
-                      texels[depth_z + depth_y + x] = voxel;                      
-#endif                  
+                      texels[depth_z + depth_y + x] = voxel;
+#endif
 //                   }
                 }
             }
