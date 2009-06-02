@@ -26,6 +26,10 @@ class Cloud_P : public VisibleE
 
   Cloud_P() : VisibleE(){}
 
+  virtual string className(){
+    return "Cloud_P";
+  }
+
 };
 
 

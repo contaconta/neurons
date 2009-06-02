@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
         new Graph<Point3D,Edge2W<Point3D> >(cl);
       for(int i = 0; i < edges.size(); i++){
         Edge2W<Point3D>* e =
-          new Edge2W<Point3D>(&gr->cloud.points,
+          new Edge2W<Point3D>(&gr->cloud->points,
                               edges[i][0], edges[i][1],
                               edges[i][3], edges[i][4]);
         gr->eset.edges.push_back(e);
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
         new Graph<Point3Dt,Edge2W<Point3Dt> >(cl);
       for(int i = 0; i < edges.size(); i++){
         Edge2W<Point3Dt>* e =
-          new Edge2W<Point3Dt>(&gr->cloud.points,
+          new Edge2W<Point3Dt>(&gr->cloud->points,
                                edges[i][0], edges[i][1],
                                edges[i][3], edges[i][4]);
         gr->eset.edges.push_back(e) ;

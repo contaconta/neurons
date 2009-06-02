@@ -10,7 +10,7 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.3
+CPP = g++-4.2
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
@@ -217,8 +217,15 @@ mkobjdirs : objects
 	mkdir -p $(OBJ_DIR)tools/image
 	mkdir -p $(OBJ_DIR)viewer
 	mkdir -p $(OBJ_DIR)viewer/src
+	mkdir -p $(OBJ_DIR)debug/core
+	mkdir -p $(OBJ_DIR)debug/viewer/src
+	mkdir -p $(OBJ_DIR)debug/tools/cube
+	mkdir -p $(OBJ_DIR)debug/tools/graph
+	mkdir -p $(OBJ_DIR)debug/tools/neuron
+	mkdir -p $(OBJ_DIR)debug/tools/image
 	mkdir -p bin
 	mkdir -p $(LIB_DIR)
+	mkdir -p $(LIB_DIR)/debug
 	mkdir -p $(OBJ_DIR)plugins/src/Samples/
 
 print:
