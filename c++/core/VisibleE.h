@@ -36,7 +36,7 @@ public:
     v_blend = true;
   }
 
-  void save(ostream &out)
+  virtual void save(ostream &out)
   {
     if(v_saveVisibleAttributes){
       out << "<VisibleE>" << std::endl;

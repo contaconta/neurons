@@ -10,8 +10,8 @@ class Graph : public Graph_P
 {
 public:
   EdgeSet<P, E> eset;
-//   Cloud<P>   cloud;
-  Cloud_P cloud;
+  // Cloud<P>   cloud;
+  Cloud_P* cloud;
 
   Graph() : Graph_P(){}
 
@@ -40,14 +40,17 @@ typedef Graph<Point3D, Edge<Point3D> > g1;
 template< class P, class E>
 Graph<P,E>::Graph(string filename) : Graph_P(){
   v_saveVisibleAttributes = true;
+  cloud = new Cloud<P>();
   loadFromFile(filename);
 }
 
 template< class P, class E>
 Graph<P,E>::Graph(Cloud_P* cl) : Graph_P(){
   v_saveVisibleAttributes = true;
-  this->cloud = *cl;
-  eset.setPointVector(&cloud.points);
+  this->cloud = cl;
+  eset.setPointVector(&cloud->points);
+  string className = cloud->className();
+  printf("Graph created with a: %s\n", className.c_str());
 }
 
 template< class P, class E>
@@ -62,9 +65,9 @@ bool Graph<P,E>::load(istream &in){
   in >> s;
   assert(s == (e->className()+">"));
   assert(VisibleE::load(in));
-  assert(cloud.load(in));
+  assert(cloud->load(in));
   assert(eset.load(in));
-  eset.setPointVector(&cloud.points);
+  eset.setPointVector(&cloud->points);
   delete p;
   delete e;
   return true;
@@ -72,11 +75,12 @@ bool Graph<P,E>::load(istream &in){
 
 template< class P, class E>
 void Graph<P,E>::save(ostream &out){
+  // printf("Saving the graph\n");
   P* p = new P();
   E* e = new E();
   out << "<Graph " << p->className() << " " << e->className() << ">\n";
   VisibleE::save(out);
-  cloud.save(out);
+  cloud->save(out);
   eset.save(out);
   out << "</Graph>\n";
   delete p;
@@ -90,7 +94,7 @@ void Graph<P,E>::draw(){
     glNewList(v_glList, GL_COMPILE);
     VisibleE::draw();
     eset.draw();
-    cloud.draw();
+    cloud->draw();
     glEndList();
   }
   else{
@@ -98,7 +102,7 @@ void Graph<P,E>::draw(){
   }
   // VisibleE::draw();
   // eset.draw();
-  // cloud.draw();
+  // cloud->draw();
 }
 
 template< class P, class E>
@@ -108,30 +112,30 @@ double Graph<P,E>::distanceEuclidean(Point* p1, Point* p2){
 
 template< class P, class E>
 void Graph<P,E>::prim(){
-  printf("Graph<P,E>::prim of %i points  [", cloud.points.size());
+  printf("Graph<P,E>::prim of %i points  [", cloud->points.size());
   //Erases the edges
   eset.edges.resize(0);
 
   //Implementation of Prim's algtrithm as described in "Algorithms in C", by Robert Sedgewick
-  vector< int > parents(cloud.points.size());
-  vector< int > closest_in_tree(cloud.points.size());
-  vector< double > distances_to_tree(cloud.points.size());
+  vector< int > parents(cloud->points.size());
+  vector< int > closest_in_tree(cloud->points.size());
+  vector< double > distances_to_tree(cloud->points.size());
 
   //Initialization
-  for(int i = 0; i < cloud.points.size(); i++)
+  for(int i = 0; i < cloud->points.size(); i++)
     {
       parents[i] = -1;
       closest_in_tree[i] = 0;
-      distances_to_tree[i] = distanceEuclidean(cloud.points[0],cloud.points[i]);
+      distances_to_tree[i] = distanceEuclidean(cloud->points[0],cloud->points[i]);
     }
   parents[0] = 0;
 
-  for(int i = 0; i < cloud.points.size(); i++)
+  for(int i = 0; i < cloud->points.size(); i++)
     {
       //Find the point that is not in the graph but closer to the graph
       int cls_idx = 0;
       double min_distance = 2e9;
-      for(int cls = 0; cls < cloud.points.size(); cls++)
+      for(int cls = 0; cls < cloud->points.size(); cls++)
         if( (parents[cls] == -1) && (distances_to_tree[cls] < min_distance) ){
             min_distance = distances_to_tree[cls];
             cls_idx = cls;}
@@ -139,11 +143,11 @@ void Graph<P,E>::prim(){
       //Now we update the data structures for new iterations
       parents[cls_idx] = closest_in_tree[cls_idx];
       double distance_update = 0;
-      for(int cls2 = 0; cls2 < cloud.points.size(); cls2++)
+      for(int cls2 = 0; cls2 < cloud->points.size(); cls2++)
         {
           if (parents[cls2] == -1)
             {
-              distance_update = distanceEuclidean(cloud.points[cls2], cloud.points[cls_idx]);
+              distance_update = distanceEuclidean(cloud->points[cls2], cloud->points[cls_idx]);
               if(distance_update < distances_to_tree[cls2])
                 {
                   distances_to_tree[cls2] = distance_update;
@@ -151,7 +155,7 @@ void Graph<P,E>::prim(){
                 }
             }
         }
-      // if(i%max(cloud.points.size()/100,1)==0)
+      // if(i%max(cloud->points.size()/100,1)==0)
         // { printf("#"); fflush(stdout);}
     }
 

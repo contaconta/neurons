@@ -101,6 +101,7 @@ bool Cloud<T>::load(istream &in){
 
 template <class T>
 void Cloud<T>::save(ostream &out){
+  // printf("Saving the cloud\n");
   T* t = new T();
     out << "<Cloud " << t->className() << ">" << std::endl;
   VisibleE::save(out);
