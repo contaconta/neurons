@@ -875,6 +875,17 @@ void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
 
   printf("Cube<T,U>::calculate_f_measure, getting the max norm of the hessians [");
 
+  sprintf(buff, "./frangi_l1_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign1_s = create_blank_cube(buff);
+//  new Cube<float,double>(buff);
+  sprintf(buff, "./frangi_l2_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign2_s =create_blank_cube(buff);
+//  new Cube<float,double>(buff);
+  sprintf(buff, "./frangi_l3_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign3_s =create_blank_cube(buff);
+
+
+
   float max_s = 0;
   float s;
 
@@ -940,6 +951,10 @@ void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
             exp(-l1*l1/(fabs(l2*l3)*0.5) )*
             (1 - exp(-2*f_measure->at(x,y,z)/(max_s)));
         f_measure->put(x,y,z,s);
+
+        eign1_s->put(x,y,z,l1);
+        eign2_s->put(x,y,z,l2);
+        eign3_s->put(x,y,z,l3);
 
 //         printf("%f %f %f \n", l1, l2, l3);
       }
@@ -1119,6 +1134,124 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
 }
 
 template <class T, class U>
+void Cube<T,U>::calculate_hessian(float sigma_xy, float sigma_z)
+{
+
+  if(sigma_z == 0) sigma_z = sigma_xy;
+
+  char vol_name[1024];
+
+  vector< float > Mask0, Mask1;
+  gaussian_mask_second(sigma_xy, Mask0, Mask1);
+  // int margin = Mask0.size()/2;
+  int margin = 0;
+
+  calculate_second_derivates(sigma_xy, sigma_z);
+
+  //Load the input of the hessian
+  sprintf(vol_name, "%sgxx_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxx = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgxy_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxy = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgxz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gxz = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgyy_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gyy = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgyz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gyz = new Cube<float,double>(vol_name);
+  sprintf(vol_name, "%sgzz_%02.2f_%02.2f.nfo", directory.c_str(), sigma_xy, sigma_z);
+  Cube<float,double>* gzz = new Cube<float,double>(vol_name);
+
+  sprintf(vol_name, "hessian_%02.2f_%02.2f", sigma_xy, sigma_z);
+  Cube<float,double>* aguet_l = create_blank_cube(vol_name);
+
+
+  int nthreads = 1;
+#ifdef WITH_OPENMP
+  nthreads = omp_get_max_threads();
+  printf("Cube<T,U>::calculate_aguet: using %i threads\n", nthreads);
+#endif
+
+  printf("Cube<T,U>::calculate_aguet [");
+  fflush(stdout);
+
+  //Initialization of the places where each thread will work
+  vector< gsl_vector* > eign(nthreads);
+  vector< gsl_matrix* > evec(nthreads);
+  vector< gsl_eigen_symmv_workspace* > w2(nthreads);
+  for(int i = 0; i < nthreads; i++){
+    eign[i] = gsl_vector_alloc (3);
+    evec[i] = gsl_matrix_alloc (3, 3);
+    w2[i]   = gsl_eigen_symmv_alloc (3);
+  }
+
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
+  for(int z = margin; z < cubeDepth-margin; z++){
+    int tn = 1;
+#ifdef WITH_OPENMP
+    tn = omp_get_thread_num();
+#endif
+    //Variables defined in the loop for easy parallel processing
+    float l1,l2,l3, theta, phi, r;
+    double data[9];
+    int higher_eival = 0;
+
+    for(int y = margin; y < cubeHeight-margin; y++){
+      for(int x = margin; x < cubeWidth-margin; x++){
+
+        data[0] = gxx->at(x,y,z);
+        data[1] = gxy->at(x,y,z);
+        data[2] = gxz->at(x,y,z);
+        data[3] = data[1];
+        data[4] = gxx->at(x,y,z);
+        data[5] = gyz->at(x,y,z);
+        data[6] = data[2];
+        data[7] = data[5];
+        data[8] = gzz->at(x,y,z);
+
+
+        gsl_matrix_view M
+          = gsl_matrix_view_array (data, 3, 3);
+
+        gsl_eigen_symmv (&M.matrix, eign[tn], evec[tn], w2[tn]);
+
+        l1 = gsl_vector_get (eign[tn], 0);
+        l2 = gsl_vector_get (eign[tn], 1);
+        l3 = gsl_vector_get (eign[tn], 2);
+
+        if( (l1>=l2)&&(l1>=l3)){
+          higher_eival = 0;
+          aguet_l->put(x,y,z,l1);
+        }
+        if( (l2>=l1)&&(l2>=l3)){
+          higher_eival = 1;
+          aguet_l->put(x,y,z,l2);
+        }
+        if( (l3>=l2)&&(l3>=l1)){
+          higher_eival = 2;
+          aguet_l->put(x,y,z,l3);
+        }
+
+        r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival)*
+                 gsl_matrix_get(evec[tn],0,higher_eival)+
+                 gsl_matrix_get(evec[tn],1,higher_eival)*
+                 gsl_matrix_get(evec[tn],1,higher_eival)+
+                 gsl_matrix_get(evec[tn],2,higher_eival)*
+                 gsl_matrix_get(evec[tn],2,higher_eival)
+                 );
+
+      }
+    }
+    printf("#");fflush(stdout);
+  }
+  printf("]\n");
+}
+
+
+
+template <class T, class U>
 void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
 {
 
@@ -1150,6 +1283,19 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
   sprintf(vol_name, "aguet_f_%02.2f_%02.2f", sigma_xy, sigma_z);
   Cube<float,double>* aguet_l = create_blank_cube(vol_name);
 
+  char buff[1024];
+  sprintf(buff, "./aguet_l1_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign1 = create_blank_cube(buff);
+//  new Cube<float,double>(buff);
+  sprintf(buff, "./aguet_l2_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign2 =create_blank_cube(buff);
+//  new Cube<float,double>(buff);
+  sprintf(buff, "./aguet_l3_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
+  Cube<float,double>* eign3 =create_blank_cube(buff);
+//  new Cube<float,double>(buff);
+
+
+
   int nthreads = 1;
 #ifdef WITH_OPENMP
   nthreads = omp_get_max_threads();
@@ -1168,6 +1314,7 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
     w2[i]   = gsl_eigen_symmv_alloc (3);
   }
 
+  float l1, l2, l3;
   float max_s = 0;
   float s = 0;
   //Get the maximum of the absolute value of the eigenvalues of the hessian like matrix
@@ -1190,6 +1337,7 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
         // the inversion of all the coefficients with one derivative
         // in y
 
+        //Original implementation
         data[0] = -2.0*gxx->at(x,y,z)/3.0
           + gyy->at(x,y,z)
           + gzz->at(x,y,z);
@@ -1207,59 +1355,34 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
           + gxx->at(x,y,z);
 
 
-        gsl_matrix_view M
-          = gsl_matrix_view_array (data, 3, 3);
+        //To make it Frangi - works
+//         data[0] = gxx->at(x,y,z);
+//         data[1] = gxy->at(x,y,z);
+//         data[2] = gxz->at(x,y,z);
+//         data[3] = data[1];
+//         data[4] = gyy->at(x,y,z);
+//         data[5] = gyz->at(x,y,z);
+//         data[6] = data[2];
+//         data[7] = data[5];
+//         data[8] = gzz->at(x,y,z);
 
-        gsl_eigen_symmv (&M.matrix, eign[tn], evec[tn], w2[tn]);
+        //Swapping the polarity of gy
+//         data[0] = -2.0*gxx->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gzz->at(x,y,z);
+//         data[1] = -5.0*gxy->at(x,y,z)/3.0;
+//         data[2] = -5.0*gxz->at(x,y,z)/3.0;
+//         data[3] = data[1];
+//         data[4] = gxx->at(x,y,z)
+//           - 2.0*gyy->at(x,y,z)/3.0
+//           + gzz->at(x,y,z);
+//         data[5] = -5.0*gyz->at(x,y,z)/3.0;
+//         data[6] = data[2];
+//         data[7] = data[5];
+//         data[8] = -2.0*gzz->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gxx->at(x,y,z);
 
-        l1_t = gsl_vector_get (eign[tn], 0);
-        l2_t = gsl_vector_get (eign[tn], 1);
-        l3_t = gsl_vector_get (eign[tn], 2);
-        s = l1_t*l1_t +  l2_t*l2_t + l3_t*l3_t;
-
-        aguet_l->put(x,y,z,s);
-        if(s > max_s)
-          max_s = s;
-
-      }
-    }
-  }
-
-
-#ifdef WITH_OPENMP
-#pragma omp parallel for
-#endif
-  for(int z = margin; z < cubeDepth-margin; z++){
-    int tn = 1;
-#ifdef WITH_OPENMP
-    tn = omp_get_thread_num();
-#endif
-    //Variables defined in the loop for easy parallel processing
-    float l1,l2,l3, theta, phi, r, l1_t, l2_t, l3_t;
-    double data[9];
-    int higher_eival = 0;
-
-    for(int y = margin; y < cubeHeight-margin; y++){
-      for(int x = margin; x < cubeWidth-margin; x++){
-        //There is an screwed sign in the computation of gy, therefore
-        // the inversion of all the coefficients with one derivative
-        // in y
-
-        data[0] = -2.0*gxx->at(x,y,z)/3.0
-          + gyy->at(x,y,z)
-          + gzz->at(x,y,z);
-        data[1] = 5.0*gxy->at(x,y,z)/3.0;
-        data[2] = -5.0*gxz->at(x,y,z)/3.0;
-        data[3] = data[1];
-        data[4] = gxx->at(x,y,z)
-          - 2.0*gyy->at(x,y,z)/3.0
-          + gzz->at(x,y,z);
-        data[5] = 5.0*gyz->at(x,y,z)/3.0;
-        data[6] = data[2];
-        data[7] = data[5];
-        data[8] = -2.0*gzz->at(x,y,z)/3.0
-          + gyy->at(x,y,z)
-          + gxx->at(x,y,z);
 
 
         gsl_matrix_view M
@@ -1270,7 +1393,6 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
         l1_t = gsl_vector_get (eign[tn], 0);
         l2_t = gsl_vector_get (eign[tn], 1);
         l3_t = gsl_vector_get (eign[tn], 2);
-
 
         if( (l1_t <= l2_t) && (l2_t <= l3_t)){
           l1 = l1_t;
@@ -1302,6 +1424,97 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
           l2 = l1_t;
           l3 = l2_t;
         }
+        eign1->put(x,y,z,l1);
+        eign2->put(x,y,z,l2);
+        eign3->put(x,y,z,l3);
+
+
+        s = l1_t*l1_t +  l2_t*l2_t + l3_t*l3_t;
+
+        aguet_l->put(x,y,z,s);
+        if(s > max_s)
+          max_s = s;
+
+      }
+    }
+  }
+
+
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
+  for(int z = margin; z < cubeDepth-margin; z++){
+    int tn = omp_get_thread_num();
+    //Variables defined in the loop for easy parallel processing
+    float theta, phi, r, l1_t, l2_t, l3_t;
+    double data[9];
+    int higher_eival = 0;
+
+    for(int y = margin; y < cubeHeight-margin; y++){
+      for(int x = margin; x < cubeWidth-margin; x++){
+        //There is an screwed sign in the computation of gy, therefore
+        // the inversion of all the coefficients with one derivative
+        // in y
+
+//         data[0] = -2.0*gxx->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gzz->at(x,y,z);
+//         data[1] = 5.0*gxy->at(x,y,z)/3.0;
+//         data[2] = -5.0*gxz->at(x,y,z)/3.0;
+//         data[3] = data[1];
+//         data[4] = gxx->at(x,y,z)
+//           - 2.0*gyy->at(x,y,z)/3.0
+//           + gzz->at(x,y,z);
+//         data[5] = 5.0*gyz->at(x,y,z)/3.0;
+//         data[6] = data[2];
+//         data[7] = data[5];
+//         data[8] = -2.0*gzz->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gxx->at(x,y,z);
+
+//         data[0] = gxx->at(x,y,z);
+//         data[1] = gxy->at(x,y,z);
+//         data[2] = gxz->at(x,y,z);
+//         data[3] = data[1];
+//         data[4] = gyy->at(x,y,z);
+//         data[5] = gyz->at(x,y,z);
+//         data[6] = data[2];
+//         data[7] = data[5];
+//         data[8] = gzz->at(x,y,z);
+
+
+        //Swapping the polarity of gy
+//         data[0] = -2.0*gxx->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gzz->at(x,y,z);
+//         data[1] = -5.0*gxy->at(x,y,z)/3.0;
+//         data[2] = -5.0*gxz->at(x,y,z)/3.0;
+//         data[3] = data[1];
+//         data[4] = gxx->at(x,y,z)
+//           - 2.0*gyy->at(x,y,z)/3.0
+//           + gzz->at(x,y,z);
+//         data[5] = -5.0*gyz->at(x,y,z)/3.0;
+//         data[6] = data[2];
+//         data[7] = data[5];
+//         data[8] = -2.0*gzz->at(x,y,z)/3.0
+//           + gyy->at(x,y,z)
+//           + gxx->at(x,y,z);
+
+
+
+//         gsl_matrix_view M
+//           = gsl_matrix_view_array (data, 3, 3);
+
+//         gsl_eigen_symmv (&M.matrix, eign[tn], evec[tn], w2[tn]);
+
+//         l1_t = gsl_vector_get (eign[tn], 0);
+//         l2_t = gsl_vector_get (eign[tn], 1);
+//         l3_t = gsl_vector_get (eign[tn], 2);
+
+
+        l1 = eign1->at(x,y,z);
+        l2 = eign2->at(x,y,z);
+        l3 = eign3->at(x,y,z);
 
         r = l1*l1 + l2*l2 + l3*l3;
         s = ( 1 - exp( -l2*l2/(l3*l3*0.5) ) )*
