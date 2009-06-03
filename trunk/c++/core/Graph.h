@@ -5,6 +5,7 @@
 #include "EdgeSet.h"
 #include "Graph_P.h"
 #include "Cube_P.h"
+#include "Cube.h"
 
 template< class P=Point, class E=Edge<P> >
 class Graph : public Graph_P
@@ -177,8 +178,9 @@ void Graph<P,E>::prim(){
 
 template< class P, class E>
 vector< vector< double > > Graph<P,E>::sampleLatticeArroundEdges
-(Cube_P* cube, int nx, int ny, int nz, double sy, double sz)
+(Cube_P* cubep, int nx, int ny, int nz, double sy, double sz)
 {
+  Cube<float, double>* cube = dynamic_cast< Cube< float, double >* >(cubep);
   vector< vector< double > > toReturn;
 
   float m_p0_p1, length, length_step, dot_z_p0p1;
@@ -190,6 +192,8 @@ vector< vector< double > > Graph<P,E>::sampleLatticeArroundEdges
   vector< float > anchor(3);
   vector< float > dz(3);
   vector< float > dy(3);
+  vector< float > micrometers(3);
+  vector< int   > indexes(3);
   for(int nEdge; nEdge < eset.edges.size(); nEdge++){
     // Gets the coordinates at the points
     vector< Point* > vp = *eset.points;
@@ -234,16 +238,31 @@ vector< vector< double > > Graph<P,E>::sampleLatticeArroundEdges
         anchor[1] = p0[1] + step*p0_p1_n[1];
         anchor[2] = p0[2] + step*p0_p1_n[2];
 
-      for(float z = sz*nz/2; z >= -sz*nz/2; nz-=sz)
-        for(float y = ny*sy/2; y >= -ny*sy/2; y-=sy){
-            float p_x = anchor[0] + z*dz[0] + y*dy[0];
-            float p_y = anchor[1] + z*dz[1] + y*dy[1];
-            float p_z = anchor[2] + z*dz[2] + y*dy[2];
-            // toReturn.push_back(cube->sample(p_x, p_y, p_z));
+        for(float z = sz*nz/2; z >= -sz*nz/2; nz-=sz){
+          for(float y = ny*sy/2; y >= -ny*sy/2; y-=sy){
+            micrometers[0] = anchor[0] + z*dz[0] + y*dy[0];
+            micrometers[1] = anchor[1] + z*dz[1] + y*dy[1];
+            micrometers[2] = anchor[2] + z*dz[2] + y*dy[2];
+            cube->micrometersToIndexes(micrometers, indexes);
+            if((indexes[0] < 0) || (indexes[1] < 0) || (indexes[2] < 0) ||
+               (indexes[0] >= cube->cubeWidth)  ||
+               (indexes[1] >= cube->cubeHeight) ||
+               (indexes[2] >= cube->cubeDepth) )
+              {
+                break;
+              }
+            else{
+              latticeEdge.push_back(cube->at(indexes[0],indexes[1],indexes[2]));
+            }
           }
-      }
-  }
-}
+        }
+        if(latticeEdge.size() == nx*ny*nz){
+          toReturn.push_back(latticeEdge);
+        }
+      } //step
+  } // all edges
+  return toReturn;
+} //method
 
 
 
