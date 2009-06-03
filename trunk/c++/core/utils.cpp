@@ -134,6 +134,17 @@ vector< vector< double > > loadMatrix(istream &file){
 }
 
 
+void saveMatrix(vector< vector< double > > & matrix, string filename)
+{
+  std::ofstream out(filename.c_str());
+  for(int j = 0; j < matrix.size(); j++){
+    for(int i = 0; i < matrix[j].size()-1; i++)
+      out << matrix[j][i] << " ";
+    out << matrix[j][matrix[j].size()-1] << std::endl;
+  }
+  out.close();
+}
+
 int factorial_n(int n){
   int ret = 1;
   for(int i = 1; i <= n; i++)
