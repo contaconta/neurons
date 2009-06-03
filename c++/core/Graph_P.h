@@ -13,6 +13,7 @@
 #include "VisibleE.h"
 #include "EdgeSet.h"
 #include "Edge.h"
+#include "Cube_P.h"
 
 class Graph_P : public VisibleE
 {
@@ -21,6 +22,9 @@ class Graph_P : public VisibleE
   Graph_P() : VisibleE(){}
 
   virtual void prim() = 0;
+
+//   virtual vector< vector< double > > sampleLatticeArroundEdges
+//   (Cube_P* cube, int nx, int ny, int nz, double dy, double dz);
 
 };
 
