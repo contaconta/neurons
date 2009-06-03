@@ -59,6 +59,8 @@ vector< vector< double > > loadMatrix(string filename);
 
 vector< vector< double > > loadMatrix(istream &in);
 
+void saveMatrix(vector< vector< double > > & matrix, string filename);
+
 int factorial_n(int n);
 
 /** Returns the double factorial of an int. That is, the product of n*(n-2)*(n-4).... by definition, dfactorial(0) = dfactorial(-1) = dfactorial(1) = 1.*/
