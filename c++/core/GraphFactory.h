@@ -54,7 +54,6 @@ public:
         return NULL;
       }
     }
-
     else if(s1 == "Point2D"){
       if(s2 == "Edge>"){
         return new Graph<Point2D,Edge<Point2D> >(filename);
@@ -70,8 +69,6 @@ public:
         return NULL;
       }
     }
-
-
     else{
       printf("GraphFactory::load error: no idea what kind of point it is %s\n", s1.c_str());
       return NULL;
