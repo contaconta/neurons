@@ -4,6 +4,7 @@
 #include "Cloud.h"
 #include "EdgeSet.h"
 #include "Graph_P.h"
+#include "Cube_P.h"
 
 template< class P=Point, class E=Edge<P> >
 class Graph : public Graph_P
@@ -30,6 +31,15 @@ public:
   // Calculates the Minimum spanning tree using prim algorithm
   void prim();
 
+  /** Samples a lattice split of dimension nx, ny, nz arround the
+      edges in the given cube, the distance in micrometers between the
+      points is indicated in dy, dz. It returns the values on
+      those points.  ~X is defined allong the line of the edge, Z is
+      defined as the vector perpendicular to ~X in the plane ~XZ and Y
+      is perpendicular to both.
+   */
+  vector< vector< double > > sampleLatticeArroundEdges
+  (Cube_P* cube, int nx, int ny, int nz, double dy, double dz);
 
 } ;
 
@@ -163,6 +173,76 @@ void Graph<P,E>::prim(){
 
   for(int i = 0; i < parents.size(); i++)
     eset.addEdge(i, parents[i]);
+}
+
+template< class P, class E>
+vector< vector< double > > Graph<P,E>::sampleLatticeArroundEdges
+(Cube_P* cube, int nx, int ny, int nz, double sy, double sz)
+{
+  vector< vector< double > > toReturn;
+
+  float m_p0_p1, length, length_step, dot_z_p0p1;
+  vector< double > latticeEdge;
+  vector< float > p0(3);
+  vector< float > p1(3);
+  vector< float > p0_p1(3);
+  vector< float > p0_p1_n(3);
+  vector< float > anchor(3);
+  vector< float > dz(3);
+  vector< float > dy(3);
+  for(int nEdge; nEdge < eset.edges.size(); nEdge++){
+    // Gets the coordinates at the points
+    vector< Point* > vp = *eset.points;
+    p0[0] = vp[eset.edges[nEdge]->p0]->coords[0];
+    p0[1] = vp[eset.edges[nEdge]->p0]->coords[1];
+    p0[2] = vp[eset.edges[nEdge]->p0]->coords[2];
+    p1[0] = vp[eset.edges[nEdge]->p1]->coords[0];
+    p1[1] = vp[eset.edges[nEdge]->p1]->coords[1];
+    p1[2] = vp[eset.edges[nEdge]->p1]->coords[2];
+
+    // Direction between the point
+    p0_p1[0] = p1[0] - p0[0];
+    p0_p1[1] = p1[1] - p0[1];
+    p0_p1[2] = p1[2] - p0[2];
+    m_p0_p1 = sqrt(p0_p1[0]*p0_p1[0]+
+                   p0_p1[1]*p0_p1[1]+
+                   p0_p1[2]*p0_p1[2]);
+    p0_p1_n[0] = p0_p1[0] / m_p0_p1;
+    p0_p1_n[1] = p0_p1[1] / m_p0_p1;
+    p0_p1_n[2] = p0_p1[2] / m_p0_p1;
+
+    // And the perpendicular in the ~Z direction and in the ~Y direction
+    dot_z_p0p1 = p0_p1_n[2];
+    dz[0] =   - dot_z_p0p1 * p0_p1_n[0];
+    dz[1] =   - dot_z_p0p1 * p0_p1_n[1];
+    dz[2] = 1 - dot_z_p0p1 * p0_p1_n[2];
+
+    dy[0] =  p0_p1_n[1]*dz[2] - dz[1]*p0_p1_n[2] ;
+    dy[1] =-(p0_p1_n[0]*dz[2] - dz[0]*p0_p1_n[2]);
+    dy[2] =  p0_p1_n[0]*dz[1] - dz[0]*p0_p1_n[1];
+
+    // Gets the length of the 
+    length = m_p0_p1;
+    length_step = length / nx;
+
+    // Travels the lattice in the direction of p0_p1
+    latticeEdge.resize(0);
+    for( float step = length_step/2; step < length; step+=length_step)
+      {
+        //Point from who to spand the perpendicular plane
+        anchor[0] = p0[0] + step*p0_p1_n[0];
+        anchor[1] = p0[1] + step*p0_p1_n[1];
+        anchor[2] = p0[2] + step*p0_p1_n[2];
+
+      for(float z = sz*nz/2; z >= -sz*nz/2; nz-=sz)
+        for(float y = ny*sy/2; y >= -ny*sy/2; y-=sy){
+            float p_x = anchor[0] + z*dz[0] + y*dy[0];
+            float p_y = anchor[1] + z*dz[1] + y*dy[1];
+            float p_z = anchor[2] + z*dz[2] + y*dy[2];
+            // toReturn.push_back(cube->sample(p_x, p_y, p_z));
+          }
+      }
+  }
 }
 
 
