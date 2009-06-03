@@ -3,6 +3,7 @@ SHELL=/bin/bash
 
 ## Compilation options (at some points this should be done automatically)
 
+
 # Compiler to use - if you want to use openmp you neefd g++ >= 4.2
 # if the flags are 1, you enable the use of the libraries
 # libraries required:
