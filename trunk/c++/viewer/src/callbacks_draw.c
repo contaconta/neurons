@@ -362,12 +362,20 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glEnable(GL_DEPTH_TEST);
       setUpMatricesXY(layerSpanViewZ);
       glColor3f(1.0,1.0,1.0);
-      if(drawCube_flag)
-        cube->draw_layer_tile_XY(layerToDrawXY);
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
+      glEnable(GL_BLEND);
+      glBlendEquation(GL_MAX);
+
+      /* if(drawCube_flag) */
+        /* for(int i = 0; i < toDraw.size(); i++){ */
+          /* if(getExtension(objectNames[i]) == "nfo"){ */
+            /* Cube_P* cp = dynamic_cast< Cube_P* >(toDraw[i]); */
+            /* cp->draw_layer_tile_XY(layerToDrawXY); */
+          /* } */
+        /* } */
 
       draw_objects();
 

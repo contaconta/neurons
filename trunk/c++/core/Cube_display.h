@@ -1164,18 +1164,16 @@ void Cube<T,U>::draw
 //         glColor3f(1.0,1.0,1.0);
 
 
-      //glEnable(GL_BLEND);
-      /*
+      glEnable(GL_BLEND);
       if(min_max == 0)
         glBlendEquation(GL_MIN);
       else
         glBlendEquation(GL_MAX);
-      */
 
       // Alpha function : Test AL
-      glDisable(GL_BLEND);
-      glEnable(GL_ALPHA_TEST);
-      glAlphaFunc(GL_GREATER, 0.8f);
+      // glDisable(GL_BLEND);
+      // glEnable(GL_ALPHA_TEST);
+      // glAlphaFunc(GL_GREATER, 0.8f);
       //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
       //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
