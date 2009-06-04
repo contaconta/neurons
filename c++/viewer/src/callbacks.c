@@ -37,10 +37,6 @@ on_drawing3D_realize                   (GtkWidget       *widget,
 
   /* glutInit(&argc, argv); */
   /* glutInit(NULL, NULL); */
-
-
-
-
   std::cout << "on_drawing3D_realize" << std::endl;
 
   GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
@@ -53,10 +49,9 @@ on_drawing3D_realize                   (GtkWidget       *widget,
     return;
   }
 
-
-
   //Create the objects
   string extension;
+  int    nCube = 0;
   for(int i = 0; i < objectNames.size(); i++){
 
     if(objectNames[i] == "Axis")
@@ -72,9 +67,27 @@ on_drawing3D_realize                   (GtkWidget       *widget,
       tf[255] = 0;
       //((Cube<float,double>*)cube)->set_tf(tf);
       cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
-      cube->v_r = 1.0;
-      cube->v_g = 1.0;
-      cube->v_b = 1.0;
+      if(nCube == 0){
+        cube->v_r = 1.0;
+        cube->v_g = 1.0;
+        cube->v_b = 1.0;
+        nCube++;
+      } else if(nCube == 1){
+        cube->v_r = 1.0;
+        cube->v_g = 0.0;
+        cube->v_b = 0.0;
+        nCube++;
+      } else if(nCube == 2){
+        cube->v_r = 0.0;
+        cube->v_g = 1.0;
+        cube->v_b = 0.0;
+        nCube++;
+      } else if(nCube == 3){
+        cube->v_r = 0.0;
+        cube->v_g = 0.0;
+        cube->v_b = 1.0;
+        nCube++;
+      }
       toDraw.push_back(cube);
     }
     else if( (extension == "asc") || (extension == "ASC") ){
@@ -216,7 +229,15 @@ on_cube_col_spin_value_changed         (GtkSpinButton   *spinbutton,
                                         gpointer         user_data)
 {
   cubeColToDraw = (int)gtk_spin_button_get_value(spinbutton);
-  cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+      itObj != toDraw.end(); itObj++)
+    {
+      if((*itObj)->className()=="Cube"){
+        Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
+        cubeDraw->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+      }
+    }
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 
@@ -226,7 +247,14 @@ on_cube_row_spin_value_changed         (GtkSpinButton   *spinbutton,
                                         gpointer         user_data)
 {
   cubeRowToDraw = (int)gtk_spin_button_get_value(spinbutton);
-  cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+      itObj != toDraw.end(); itObj++)
+    {
+      if((*itObj)->className()=="Cube"){
+        Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
+        cubeDraw->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+      }
+    }
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 
