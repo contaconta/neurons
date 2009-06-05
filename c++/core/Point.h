@@ -26,7 +26,7 @@ public:
 
   virtual void draw(float width)=0;
 
-    friend ostream& operator <<(ostream &os,const Point &point);
+  friend ostream& operator <<(ostream &os,const Point &point);
 
 };
 

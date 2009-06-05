@@ -19,9 +19,13 @@ class Graph_P : public VisibleE
 {
  public:
 
+  Cloud_P* cloud;
+
   Graph_P() : VisibleE(){}
 
-  virtual void prim() = 0;
+  virtual void prim()=0;
+
+  virtual void changeCloud(Cloud_P* cl)=0;
 
 //   virtual vector< vector< double > > sampleLatticeArroundEdges
 //   (Cube_P* cube, int nx, int ny, int nz, double dy, double dz);

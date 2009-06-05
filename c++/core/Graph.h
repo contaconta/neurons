@@ -13,13 +13,14 @@ class Graph : public Graph_P
 public:
   EdgeSet<P, E> eset;
   // Cloud<P>   cloud;
-  Cloud_P* cloud;
 
   Graph() : Graph_P(){}
 
   Graph(string filename);
 
   Graph(Cloud_P* cl);
+
+  void changeCloud(Cloud_P* cl);
 
   bool load(istream &in);
 
@@ -58,10 +59,16 @@ Graph<P,E>::Graph(string filename) : Graph_P(){
 template< class P, class E>
 Graph<P,E>::Graph(Cloud_P* cl) : Graph_P(){
   v_saveVisibleAttributes = true;
-  this->cloud = cl;
-  eset.setPointVector(&cloud->points);
+  changeCloud(cl);
   string className = cloud->className();
   printf("Graph created with a: %s\n", className.c_str());
+}
+
+template< class P, class E>
+void Graph<P,E>::changeCloud(Cloud_P* cl)
+{
+  this->cloud = cl;
+  eset.setPointVector(&cloud->points);
 }
 
 template< class P, class E>
