@@ -10,8 +10,6 @@ class Cloud : public Cloud_P
 {
 public:
 
-  // Points in the cloud
-  // vector< T* > points;
   Cloud() : Cloud_P() {}
 
   Cloud(string filename);
@@ -25,6 +23,10 @@ public:
   virtual string className(){
     return "Cloud";
   }
+
+  /** Returns the maximum and minimum coordinates of the cloud. The
+      return vector would be in the form: [xmin, xmax, ymin, ymax, zmin, zmax]*/
+  vector< double > spread();
 };
 
 
@@ -110,5 +112,12 @@ void Cloud<T>::save(ostream &out){
   out << "</Cloud>" << std::endl;
   delete t;
 }
+
+template <class T>
+vector<double> Cloud<T>::spread(){
+  string pointType = CloudFactory::inferPointType(this);
+
+}
+
 
 #endif

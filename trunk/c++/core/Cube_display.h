@@ -809,7 +809,7 @@ void Cube<T,U>::draw
   glLoadIdentity();
 //   GLfloat* cubePoints_c[8];
   GLfloat** cubePoints_c = (GLfloat**) malloc(8*sizeof(GLfloat*));
-  glColor3f(0,0,0);
+  // glColor3f(0,0,0);
   for(int i=0; i < 8; i++)
     cubePoints_c[i] = matrix_vector_product(pModelViewMatrix, cubePoints[i]);
 
