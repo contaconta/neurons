@@ -36,11 +36,11 @@ path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];   
 %DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  IMSIZE = [24 24];
-%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; IMSIZE = [24 24];
+DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; IMSIZE = [24 24];
 %DATASETS.filelist = 'contours24.txt';       DATASETS.scale_limits = [1];    IMSIZE = [24 24]; 
 %DATASETS.filelist = 'opencontours24.txt';   DATASETS.scale_limits = [1];    IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  IMSIZE = [64 24];
-DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
+%DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  IMSIZE = [128 48];
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;       % detector step size
@@ -71,24 +71,24 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = [11:15];
-
+% 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spdiff';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).stride           = 2;    % normally 2, 3 for persons.
-% LEARNERS(length(LEARNERS)).edge_methods     = 36;% mix = [11 13 15 23 25 27 28];  canny=[11:15];  sobel=[23:28];
-
+% LEARNERS(length(LEARNERS)).edge_methods     = 11:15;% mix = [11 13 15 23 25 27 28];  canny=[11:15];  sobel=[23:28];
+% 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spangle';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
-% LEARNERS(length(LEARNERS)).edge_methods     = [58 59];
-
+% LEARNERS(length(LEARNERS)).edge_methods     = 11:15;
+% 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spnorm';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).angles           = 0:30:360-30;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
-% LEARNERS(length(LEARNERS)).edge_methods     = [58 59];
+% LEARNERS(length(LEARNERS)).edge_methods     = 11:15;
 
 LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
