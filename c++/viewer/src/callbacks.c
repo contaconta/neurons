@@ -138,6 +138,12 @@ on_drawing3D_realize                   (GtkWidget       *widget,
   }
   gdk_gl_drawable_gl_end (gldrawable);
   /*** OpenGL END*/
+
+ flag_draw_3D = true;
+ flag_draw_XY = false;
+ flag_draw_XZ = false;
+ flag_draw_YZ = false;
+
 }
 
 

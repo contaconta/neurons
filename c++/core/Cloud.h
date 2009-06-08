@@ -49,9 +49,11 @@ template <class T>
       step = 1;
     else
       printf("Cloud::draw there is a subsampling of the points\n");
+    // float step = 1;
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-    for(float i = 0; i < points.size(); i+=step){
+    // for(float i = 0; i < points.size(); i+=step){
+    for(float i = 0; i < points.size(); i++){
       points[(int)i]->draw(v_radius);
     }
     glEndList();
@@ -115,8 +117,39 @@ void Cloud<T>::save(ostream &out){
 
 template <class T>
 vector<double> Cloud<T>::spread(){
-  string pointType = CloudFactory::inferPointType(this);
+  vector<double> toReturn;
+  // string pointType = CloudFactory::inferPointType(this);
+  string pointType = "Point3D";
+  int nDim = 3;
+  // if(pointType.substr("2D") == string::npos){
+    // nDim = 2;
+  // } else {nDim = 3;}
 
+  double xMax = FLT_MIN;
+  double xMin = FLT_MAX;
+  double yMax = FLT_MIN;
+  double yMin = FLT_MAX;
+  double zMax = FLT_MIN;
+  double zMin = FLT_MAX;
+
+  for(int i = 0; i < points.size(); i++){
+    if(points[i]->coords[0] > xMax) xMax = points[i]->coords[0];
+    if(points[i]->coords[0] < xMin) xMin = points[i]->coords[0];
+    if(points[i]->coords[1] > yMax) yMax = points[i]->coords[1];
+    if(points[i]->coords[1] < yMin) yMin = points[i]->coords[1];
+    // if(nDim == 3){
+    if(points[i]->coords[2] > zMax) zMax = points[i]->coords[2];
+    if(points[i]->coords[2] < zMin) zMin = points[i]->coords[2];
+    // }
+  }
+  // if(nDim == 2){
+    // zMax = 0.1;
+    // zMin = -0.1;
+  // }
+  toReturn.push_back(xMin);   toReturn.push_back(xMax);
+  toReturn.push_back(yMin);   toReturn.push_back(yMax);
+  toReturn.push_back(zMin);   toReturn.push_back(zMax);
+  return toReturn;
 }
 
 

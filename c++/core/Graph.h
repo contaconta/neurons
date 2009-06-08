@@ -14,7 +14,7 @@ public:
   EdgeSet<P, E> eset;
   // Cloud<P>   cloud;
 
-  Graph() : Graph_P(){}
+  Graph();
 
   Graph(string filename);
 
@@ -50,6 +50,13 @@ public:
 typedef Graph<Point3D, Edge<Point3D> > g1;
 
 template< class P, class E>
+Graph<P,E>::Graph() : Graph_P(){
+  v_saveVisibleAttributes = true;
+  cloud = new Cloud<P>();
+}
+
+
+template< class P, class E>
 Graph<P,E>::Graph(string filename) : Graph_P(){
   v_saveVisibleAttributes = true;
   cloud = new Cloud<P>();
@@ -83,7 +90,8 @@ bool Graph<P,E>::load(istream &in){
   in >> s;
   assert(s == (e->className()+">"));
   assert(VisibleE::load(in));
-  assert(cloud->load(in));
+  cloud->load(in);
+  // assert(cloud->load(in));
   assert(eset.load(in));
   eset.setPointVector(&cloud->points);
   delete p;
