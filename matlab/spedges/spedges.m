@@ -15,7 +15,7 @@ function A = spedges(I, angles, stride, edge_methods)
 %   -------------------------
 %   I = imread('cameraman.tif');
 %   angles = 0:30:330;
-%   SPEDGE = spedges(I,angles,2);
+%   SPEDGE = spedges(I,angles,2, [29:35]);
 %   imagesc(SPEDGE(3,:,:));  axis image;
 %
 %   Copyright © 2008 Kevin Smith
