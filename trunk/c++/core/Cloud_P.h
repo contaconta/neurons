@@ -17,6 +17,7 @@
 #include "Object.h"
 #include "VisibleE.h"
 #include <math.h>
+// #include "CloudFactory.h"
 
 class Cloud_P : public VisibleE
 {
@@ -29,6 +30,8 @@ class Cloud_P : public VisibleE
   virtual string className(){
     return "Cloud_P";
   }
+
+  virtual vector<double> spread() = 0;
 
 };
 

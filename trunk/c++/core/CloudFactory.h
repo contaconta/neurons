@@ -4,6 +4,7 @@
 #ifndef CLOUD_FACTORY_H_
 #define CLOUD_FACTORY_H_
 
+#include "Cloud_P.h"
 #include "Cloud.h"
 
 class CloudFactory
