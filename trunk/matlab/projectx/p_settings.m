@@ -1,12 +1,12 @@
 
-NAME = ['Test' '_'];                % descriptive prefix string to identify experiment files 
+FILES.NAME = ['Test' '_'];          % descriptive prefix string to identify experiment files 
 
 %-------------------------------------------------------------------------
 % TRAINING PARAMETERS
 %-------------------------------------------------------------------------
 
-Ftarget                 = 1e-5;     % target false positive rate for the entire cascade
-Dtarget                 = .90;      % target detection rate for the entire cascade
+targetF                 = 1e-5;     % target false positive rate for the entire cascade
+targetD                 = .90;      % target detection rate for the entire cascade
 Nstages                 = 15;       % number of cascade stages
 DATASETS.TRAIN_POS      = 500;      % number of positive examples in the training set
 DATASETS.TRAIN_NEG      = 500;      % number of negative examples in the training set
@@ -22,8 +22,8 @@ rand('twister', 100);      % seed the random variable
 
 FILES.datestr         = datestr(now, 'mmmddyyyy-HHMMSS');  %datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
 FILES.computername    = 'calcifer';                         % computer experiment was run on
-FILES.cascade_filenm  = [NAME FILES.datestr FILES.computername '.mat'];   % filename to store the cascaded classifier
-FILES.log_filenm      = ['./logs/' NAME FILES.datestr FILES.computername '.log'];   % filename to store the log file    
+FILES.cascade_filenm  = [FILES.NAME FILES.datestr FILES.computername '.mat'];   % filename to store the cascaded classifier
+FILES.log_filenm      = ['./logs/' FILES.NAME FILES.datestr FILES.computername '.log'];   % filename to store the log file    
 path(path, [pwd '/../spedges/']);                           % append the path to the ray's toolbox 
 path(path, [pwd '/../toolboxes/kevin/']);                   % append the path to kevin's toolbox
 path(path, [pwd '/bin/']);                                  % append the path to sub-functions
