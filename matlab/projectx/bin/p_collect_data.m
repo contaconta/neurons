@@ -13,23 +13,20 @@ function SET = p_collect_data(DATASETS, set_type)
 %
 %   Copyright 2008 Kevin Smith
 %
-%   See also P_RECOLLECT_DATA
+%   See also P_RECOLLECT_DATA, P_TRAININGFILES
  
 
-
-%% collect settings from DATASETS 
-%   NORM = normalize images?, 
-%   IMSIZE = training image size, 
-%   POS_LIM = # positive examples, 
-%   NEG_LIM = # of negative examples.
+%% collect parameters from DATASETS 
+% NORM = normalize images?, IMSIZE = training image size, POS_LIM = # positive examples, NEG_LIM = # of negative examples.
 
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
 
 %% collect POSITIVE (c = 1) and NEGATIVE (c = 2) example images into SET
 
-SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);
-for c = 1:2  % the 2 classes
+SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);	% initialize with empty images
+
+for c = 1:2  % c = the postive and negative classes
     
     % collect the training image files into d, and initialize the data struct
     if c == 1

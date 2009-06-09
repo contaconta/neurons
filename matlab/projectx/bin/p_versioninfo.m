@@ -6,9 +6,7 @@ INFO.institution = 'École Polytechnique Fédérale de Lausanne (CVLab)';
 INFO.version     = '0.1';
 INFO.author      = 'Kevin Smith and Aurelien Lucchi';
 INFO.email       = 'kevin.smith@epfl.ch, aurelien.lucchi@epfl.ch';
-INFO.copyright   = n1{1};
-
-
+INFO.copyright   = n1{1};  clear n n1;
 
 disp( '-------------------------------------------------------------------'); 
 disp(['  ' INFO.appname ', version ' INFO.version ]);
@@ -21,4 +19,3 @@ disp(['  DATA SET:   ' DATASETS.filelist]);
 disp (' ');
 disp(['  ' INFO.copyright ]);
 disp( '-------------------------------------------------------------------'); 
-disp( ' ');
