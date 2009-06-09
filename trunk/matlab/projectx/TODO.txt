@@ -1,0 +1,11 @@
+Aur: finish haar interface
+Kev: finish skeleton
+
+
+1st goal: get viola-jones working.
+
+2nd goal: add rays
+
+3rd goal: add more types of boosting
+
+4th goal: add more features
