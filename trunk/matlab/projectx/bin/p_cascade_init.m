@@ -1,9 +1,9 @@
-function CASCADE =ada_cascade_init(DATASETS)
+function CASCADE =p_cascade_init(DATASETS)
 %% P_CASCADE_INIT initializes a cascade classifier structure 
 %
 %   CASCADE = p_cascade_init(DATASETS) creates a new structure to represent
 %   the boosted cascaded classifier.  Each stage of the cascade can be
-%   accessed by CASCADE.CLASSIFIER(i) where i is the index of the stage.
+%   accessed by CASCADE(i).CLASSIFIER where i is the index of the stage.
 %
 %   See also P_TRAIN
 
