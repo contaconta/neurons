@@ -11,7 +11,7 @@ function SET = p_collect_data(DATASETS, set_type)
 %   TRAIN       = ada_collect_data(DATASETS, 'train');
 %   VALIDATION  = ada_collect_data(DATASETS, 'validation')
 %
-%   Copyright 2008 Kevin Smith
+%   Copyright 2009 Kevin Smith
 %
 %   See also P_RECOLLECT_DATA, P_TRAININGFILES
  
@@ -64,6 +64,7 @@ for c = 1:2  % c = the postive and negative classes
 
         % store the image into SET
         SET.Images(:,:,count) = I;
+        SET.filename{count} = filenm;
         if c == 1; SET.class(count) = 1; end
         if c == 2; SET.class(count) = 0; end
 

@@ -1,5 +1,5 @@
 n = regexp(datestr(now), '\w+', 'match');
-n1 = strcat('Copyright © ', ' ', n(3));
+n1 = strcat('Copyright © ', ' ', n(3), ' All rights reserved.');
 
 INFO.appname     = 'ProjectX - Boosted Microscopy Detection';
 INFO.institution = 'École Polytechnique Fédérale de Lausanne (CVLab)';
@@ -8,14 +8,25 @@ INFO.author      = 'Kevin Smith and Aurelien Lucchi';
 INFO.email       = 'kevin.smith@epfl.ch, aurelien.lucchi@epfl.ch';
 INFO.copyright   = n1{1};  clear n n1;
 
-disp( '-------------------------------------------------------------------'); 
+disp(' ');
+disp( '-------------------------------------------------------------------------'); 
 disp(['  ' INFO.appname ', version ' INFO.version ]);
 disp(['    by ' INFO.author ]);
 disp(['    ' INFO.email]);
 disp(['    ' INFO.institution ]);
 disp (' ');
-disp(['  started on: ' datestr(now) ]);
-disp(['  DATA SET:   ' DATASETS.filelist]);
+disp(['  started on:  ' datestr(now) ]);
+disp(['  DATA SET:    ' DATASETS.filelist]);
+disp(['  LEARNERS:    ' strcat(LEARNERS.types{:}) ]);
 disp (' ');
 disp(['  ' INFO.copyright ]);
-disp( '-------------------------------------------------------------------'); 
+disp(' ');
+disp('  This program is free software; you can redistribute it and/or modify it');
+disp('  under the terms of the GNU General Public License version 2 (or higher)'); 
+disp('  as published by the Free Software Foundation.');
+disp(' ');                                                                     
+disp('  This program is distributed WITHOUT ANY WARRANTY; without even the ');
+disp('  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR ');
+disp('  PURPOSE.  See the GNU General Public License for more details.');
+disp( '-------------------------------------------------------------------------'); 
+disp(' ');

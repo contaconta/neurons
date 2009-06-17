@@ -1,6 +1,12 @@
 Aur: finish haar interface
 Kev: finish skeleton
 
+Functions that need to be updated & checked:
+p_cascade_select_threshold.m - needs to be updated with function to classify images.
+
+Functions needed to be written:
+* a function to classify examples: pass the images to the function and it will classify them
+
 
 1st goal: get viola-jones working.
 
