@@ -73,7 +73,9 @@ public:
 
   Cube();
   //The string nameFile should be given with the directory, if not the one where the program is being done, and without extension
-  Cube(int width, int height, int depth, string nameFile, float voxelWidth = 1, float voxelHeight = 1, float voxelDepth = 1);
+  Cube(int width, int height, int depth,
+       string nameFile,
+       float voxelWidth = 1, float voxelHeight = 1, float voxelDepth = 1);
   Cube(string filenameParams, bool load_volume_file = true);
   Cube(string filenameParams, string _filenameVoxelData);
   Cube(string filenameParams, string _filenameVoxelData, string filenameIntegralData);

@@ -34,15 +34,10 @@ extern "C"
   static void *thread_func(void *vptr_args)
   {
     vector<int > iInit(3); //indexes initial point
-    vector<int > iEnd(3);  //indexes end point
     localCube->micrometersToIndexes(initPoint->coords, iInit);
-    localCube->micrometersToIndexes(endPoint->coords, iEnd);
-    printf("  computing the shortest path between %i %i %i and %i %i %i\n",
-           iInit[0], iInit[1], iInit[2],
-           iEnd[0],  iEnd[1],  iEnd[2]);
-    shortestPath = cubeDijkstra->findShortestPath(iInit[0], iInit[1], iInit[2],
-                                                  iEnd[0],  iEnd[1],  iEnd[2],
-                                                  *boundary, mutexBoundary);
+    printf("  computing the shortest path from %i %i %i and %i %i %i\n",
+           iInit[0], iInit[1], iInit[2]);
+    cubeDijkstra->initializeCubePrevious(iInit[0], iInit[1], iInit[2]);
   }
 
   G_MODULE_EXPORT const bool plugin_init()

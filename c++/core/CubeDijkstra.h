@@ -4,6 +4,7 @@
 #include "Cube_P.h"
 #include "Cube.h"
 #include "Cloud.h"
+#include "CubeFactory.h"
 #include <pthread.h>
 
 // Mock-up class. Need to have it done with an abstract class and derivates
@@ -160,6 +161,9 @@ public:
       constructor*/
   int nbrToIdx[27][3];
 
+  Cube<int, long>* previous_idx;
+  int x0,y0,z0;
+
   bool pathFound;
 
   /* From x,y,z to idx.*/
@@ -181,6 +185,27 @@ public:
     this->distance = distance;
     pathFound = false;
     // This hack sucks, but it is the simplest manner I can find
+    initializenbrToIdxLocal();
+  }
+
+  CubeDijkstra(Cube_P* cube, DistanceDijkstra* distance, string cubePrevious)
+  {
+    this->cube = cube;
+    this->distance = distance;
+    pathFound = false;
+    // This hack sucks, but it is the simplest manner I can find
+    initializenbrToIdxLocal();
+    if(fileExists(cubePrevious)){
+      previous_idx = (Cube<int, long>*)CubeFactory::load(cubePrevious);
+    }else {
+      previous_idx = new Cube<int, long>(cube->cubeWidth, cube->cubeHeight, cube->cubeDepth,
+                                         getNameFromPathWithoutExtension(cubePrevious),
+                                         cube->voxelWidth, cube->voxelHeight,
+                                         cube->voxelDepth);
+    }
+  }
+
+  void initializenbrToIdxLocal(){
     int nbrToIdxLocal[27][3] = {
       { 0, 0, 0}, //0
       {-1,-1,-1}, //Layer 1
@@ -214,8 +239,6 @@ public:
       for(int j = 0; j < 3; j++){
         nbrToIdx[i][j] = nbrToIdxLocal[i][j];
       }
-
-
   }
 
 
@@ -223,6 +246,10 @@ public:
                                    int x1, int y1, int z1,
                                    Cloud<Point3D>& boundary,
                                    pthread_mutex_t& mutex);
+
+  void initializeCubePrevious(int x0, int y0, int z0);
+
+  Cloud<Point3D>* traceBack(int x1, int y1, int z1);
 
 };
 

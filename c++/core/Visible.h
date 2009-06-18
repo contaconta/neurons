@@ -10,7 +10,7 @@
 #ifndef VISIBLE_H_
 #define VISIBLE_H_
 
-#include "neseg.h"
+// #include "neseg.h"
 
 #include "Object.h"
 #include <sstream>
