@@ -338,6 +338,15 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       setUpVolumeMatrices();
       if(drawCube_flag){
         /* cube->draw(rot3DX,rot3DY,200,3*flag_minMax,0); */
+        Cube<uchar,ulong>* cp = dynamic_cast<Cube<uchar, ulong>* >(cube);
+        /* cp->draw_whole(rot3DX,rot3DY,200,3*flag_minMax,0); */
+        /* static int loadtxt = 0; */
+        /* if (loadtxt == 0){ */
+          /* cp->load_whole_texture(); */
+          /* loadtxt++; */
+        /* } */
+        /* cp->draw_whole(rot3DX,rot3DY,200,3*flag_minMax); */
+        glDisable(GL_BLEND);
         for(int i = 0; i < toDraw.size(); i++){
           toDraw[i]->draw();
           setUpVolumeMatrices();
@@ -347,10 +356,12 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
-        glEnable(GL_DEPTH_TEST);
+      glEnable(GL_DEPTH_TEST);
 
       if(flag_draw_neuron && neuronita)
         neuronita->draw();
+
+      /* draw_objects(); */
 
       draw_last_point();
       draw_selection();
@@ -366,9 +377,8 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      glEnable(GL_BLEND);
-      glBlendEquation(GL_MAX);
-
+      /* glEnable(GL_BLEND); */
+      /* glBlendEquation(GL_MAX); */
       /* if(drawCube_flag) */
         /* for(int i = 0; i < toDraw.size(); i++){ */
           /* if(getExtension(objectNames[i]) == "nfo"){ */
@@ -610,7 +620,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
             aPoint3d.x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
           }
 
-    printf("p_expose %d %d %d\n",aPoint3d.x,aPoint3d.y,aPoint3d.z);
+    /* printf("p_expose %d %d %d\n",aPoint3d.x,aPoint3d.y,aPoint3d.z); */
     p_expose(widget, event, &aPoint3d);
   }
 

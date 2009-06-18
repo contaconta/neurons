@@ -284,6 +284,7 @@ void Cube<T,U>::convolve_horizontally(vector< float >& mask, Cube< float,double 
   #ifdef WITH_OPENMP
   #pragma omp parallel for
   #endif
+  int printLimit = max(1,(int)(cubeDepth/20));
   for(int z = 0; z < cubeDepth; z++){
     int x,q;
     float result;
@@ -322,7 +323,7 @@ void Cube<T,U>::convolve_horizontally(vector< float >& mask, Cube< float,double 
           output->put(x,y,z,result);
         }
       }
-    if(z%(cubeDepth/20)==0)
+    if(z%printLimit==0)
       printf("#");fflush(stdout);
   }
   printf("]\n");
@@ -339,6 +340,7 @@ void Cube<T,U>::convolve_vertically(vector< float >& mask, Cube<float,double>* o
   #ifdef WITH_OPENMP
   #pragma omp parallel for
   #endif
+  int printLimit = max(1,(int)(cubeDepth/20));
   for(int z = 0; z < cubeDepth; z++){
     float result = 0;
     int q = 0;
@@ -379,7 +381,7 @@ void Cube<T,U>::convolve_vertically(vector< float >& mask, Cube<float,double>* o
           output->put(x,y,z,result);
         }
       }
-    if(z%(cubeDepth/20)==0)
+    if(z%printLimit==0)
       printf("#");fflush(stdout);
   }
   printf("]\n");
@@ -396,6 +398,7 @@ void Cube<T,U>::convolve_depth(vector< float >& mask, Cube<float,double>* output
   #ifdef WITH_OPENMP
   #pragma omp parallel for
   #endif
+  int printLimit = max(1,(int)(cubeHeight/20));
   for(int y = 0; y < cubeHeight; y++){
     float result = 0;
     int q = 0;
@@ -435,8 +438,8 @@ void Cube<T,U>::convolve_depth(vector< float >& mask, Cube<float,double>* output
         output->put(x,y,z,result);
       }
     }
-    if(y%(cubeHeight/20)==0)
-      printf("#");fflush(stdout);
+    if((y%printLimit)==0){
+      printf("#");fflush(stdout);}
   }
   printf("]\n");
 }

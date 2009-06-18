@@ -5,6 +5,7 @@
 #ifndef VISIBLEE_H_
 #define VISIBLEE_H_
 
+#include "neseg.h"
 #include "Visible.h"
 
 class VisibleE : public Visible
