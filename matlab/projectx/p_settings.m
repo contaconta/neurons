@@ -51,7 +51,7 @@ DATASETS.VALIDATION_NEG = 500;          % number of negative examples in the val
 EXPERIMENT.NAME             = ['Test' '_'];     % descriptive prefix string to identify experiment files
 EXPERIMENT.datestr          = datestr(now, 'mmmddyyyy-HHMMSS');  %datestr(now, 'dd-mmm-yyyy-HH.MM.SS');
 EXPERIMENT.computername     = 'calcifer';                         % computer experiment was run on
-EXPERIMENT.cascade_filenm   = [EXPERIMENT.NAME EXPERIMENT.datestr EXPERIMENT.computername '.mat'];   % filename to store the cascaded classifier
+EXPERIMENT.cascade_filenm   = ['./results/' EXPERIMENT.NAME EXPERIMENT.datestr EXPERIMENT.computername '.mat'];   % filename to store the cascaded classifier
 EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPERIMENT.computername '.log'];   % filename to store the log file    
 
 %-------------------------------------------------------------------------
