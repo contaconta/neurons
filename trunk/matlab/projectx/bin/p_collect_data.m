@@ -30,9 +30,9 @@ for c = 1:2  % c = the postive and negative classes
     
     % collect the training image files into d, and initialize the data struct
     if c == 1
-        d = ada_trainingfiles(DATASETS.filelist, set_type, '+', POS_LIM);
+        d = p_trainingfiles(DATASETS.filelist, set_type, '+', POS_LIM);
     else
-        d = ada_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
+        d = p_trainingfiles(DATASETS.filelist, set_type, '-', NEG_LIM);
     end
 
     % add each image file to SET, format it, normalize it, and compute features
