@@ -68,7 +68,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
       mxGetString(tmp,learner_type,strLength);
 
       mexPrintf("%s\n",learner_type);
-      enumerate_learners(learner_type,24,24);
+      char** weak_learners;
+      int nb_weak_learners = enumerate_learners(learner_type,24,24,weak_learners);
+
+      plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
+      for(int line = 0; line < nb_weak_learners; line++)
+        mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
+
+      delete[] weak_learners;
 
       /* create output cell array */
       /*

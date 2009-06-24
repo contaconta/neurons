@@ -32,7 +32,7 @@ struct sHA_params
 //map<const char*, char*> m_weak_learners;
 vector<string> list_weak_learners;
 
-void enumerate_learners(char *learner_type, int max_width, int max_height)
+int enumerate_learners(char *learner_type, int max_width, int max_height,char**& weak_learners)
 {
   char temp[20];
   char* left_token = learner_type;
@@ -100,10 +100,15 @@ void enumerate_learners(char *learner_type, int max_width, int max_height)
         }
     }
 
-#ifdef DEBUG
+  weak_learners = new char*[list_weak_learners.size()];
+  int idx = 0;
   for( vector<string>::iterator iter = list_weak_learners.begin();
        iter != list_weak_learners.end(); ++iter ) {
+    weak_learners[idx] = new char[iter->length()];
+    strcpy(weak_learners[idx], iter->c_str());
+    idx++;
     cout << *iter  << endl;
   }
-#endif
+
+  return list_weak_learners.size();
 }
