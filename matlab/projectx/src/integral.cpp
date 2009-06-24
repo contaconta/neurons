@@ -79,3 +79,38 @@ unsigned int RectangleFeature(unsigned int *data, int width, int height, int row
     }
   return val;
 }
+
+/*
+unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
+{
+  // The subtraction by one for row/col is because row/col is inclusive.
+  int r1 = std::min(row1,   height) - 1;
+  int c1 = std::min(col1,   width)  - 1;
+  int r2 = std::min(row2,   height) - 1;
+  int c2 = std::min(col2,   width)  - 1;
+
+  float A(0.0f), B(0.0f), C(0.0f), D(0.0f);
+  if (r1 >= 0 && c1 >= 0) A = data[r1 * width + c1];
+  if (r1 >= 0 && c2 >= 0) B = data[r1 * width + c2];
+  if (r2 >= 0 && c1 >= 0) C = data[r2 * width + c1];
+  if (r2 >= 0 && c2 >= 0) D = data[r2 * width + c2];
+
+  return std::max(0.f, A - B - C + D);
+}
+
+unsigned int RectangleFeature(unsigned int *data, int width, int height, char* weak_learner_param)
+{
+  int row1, col1, row2, col2;
+  unsigned int val = 0;
+  switch(featureType)
+    {
+    case TOP_BLACK:
+      val = BoxIntegral(data, width, height, row, col+cols/2, rows, cols/2) - BoxIntegral(data, width, height, row, col, rows, cols/2);
+      break;
+    case BOTTOM_BLACK:
+      val =  BoxIntegral(data, width, height, row, col, rows, cols/2) - BoxIntegral(data, width, height, row, col+cols/2, rows, cols/2);
+      break;
+    }
+  return val;
+}
+*/
