@@ -39,6 +39,8 @@ function [varargout] = rocstats(test, gt, varargin)
 % convert any matices or tensors to vectors
 test = test(:); gt = gt(:);
 
+gt(gt==-1) = 0;
+test(test==-1) = 0;
 
 for k = 1:nargin-2
    

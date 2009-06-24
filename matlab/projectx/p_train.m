@@ -75,12 +75,12 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         % ------- adjust cascade threshold for stage i to meet dmin -------
         %  adjust the threshold for the current stage until we find one
         %  which gives a satifactory detection rate (this changes the false alarm rate)
-        [CASCADE, Fi, Di]  = ada_cascade_select_threshold(CASCADE, i, VALIDATION, BOOST.goals(i).dmin);
+        [CASCADE, Fi, Di]  = p_cascade_select_threshold(CASCADE, i, VALIDATION, BOOST.goals(i).dmin);
 
         
         % ......................  TEMPORARY ...............................
         % to make sure we're actually improving on the training data
-        gt = [TRAIN(:).class]';  C = ada_classify_set(CASCADE, TRAIN); [tpr fpr FPs TNs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist', 'TNlist'); disp(['Di=' num2str(tpr) ', Fi=' num2str(fpr) ', #FP = ' num2str(length(FPs)) '.  CASCADE applied to TRAIN set.'  ]);               
+        gt = [TRAIN(:).class]';  C = dummy_classify_set(CASCADE, TRAIN); [tpr fpr FPs TNs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist', 'TNlist'); disp(['Di=' num2str(tpr) ', Fi=' num2str(fpr) ', #FP = ' num2str(length(FPs)) '.  CASCADE applied to TRAIN set.'  ]);               
         % .................................................................
         
         
@@ -91,8 +91,7 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         % .................................................................
 
         % write training results to the log file
-        for l = 1:length(LEARNERS); if strcmp(CASCADE(i).CLASSIFIER.weak_learners{ti}.type, LEARNERS(l).feature_type); L_ind = l; end; end;
-        logfile(EXPERIMENT.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr length(FPs) L_ind]);
+        %logfile(EXPERIMENT.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr length(FPs) CASCADE(i).CLASSIFIER.]);
         
         % save the cascade to a file in case something bad happens and we need to restart
         save(EXPERIMENT.cascade_filenm, 'CASCADE', 'EXPERIMENT', 'DATASETS', 'LEARNERS'); disp(['       ...saved a temporary copy of CASCADE to ' EXPERIMENT.cascade_filenm]);
@@ -105,6 +104,8 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         break;
     end
 
+    keyboard;
+    
     if ~restart_flag
         %% prepare training & validation data for the next stage of the cascade  
         %  recollect negative examples for the training and validation set which 
