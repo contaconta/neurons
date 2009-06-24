@@ -66,7 +66,7 @@ for c = 1:2  % c = the postive and negative classes
         SET.Images(:,:,count) = I;
         SET.filename{count} = filenm;
         if c == 1; SET.class(count) = 1; end
-        if c == 2; SET.class(count) = 0; end
+        if c == 2; SET.class(count) = -1; end
 
         count = count + 1;       
     end

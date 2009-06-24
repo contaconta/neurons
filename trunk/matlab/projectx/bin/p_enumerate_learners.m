@@ -1,4 +1,4 @@
-function LEARNERS = p_enumerate_learners(LEARNERS)
+function LEARNERS = p_enumerate_learners(LEARNERS, DATASETS)
 %% P_ENUMERATE_LEARNERS is a temporary function until c++ implementation
 %
 %   LEARNERS = p_enumerate_learners(LEARNERS) reads the learner types from 
