@@ -26,8 +26,8 @@ INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
 
 #INCLUDE_DIRECTORIES(/usr/local/extern/include/)
 
-ADD_EXECUTABLE(IntegralImages integral.cpp loadImage.cpp main.cpp utils.cpp)
-#ADD_EXECUTABLE(IntegralImages integral.cpp loadImage.cpp utils.cpp)
+ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp)
+#ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp utils.cpp)
 TARGET_LINK_LIBRARIES(IntegralImages ${OPENCV_LIBRARIES})
 
 #IF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")

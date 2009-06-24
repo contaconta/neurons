@@ -98,6 +98,18 @@ IntegralImages/fast:
 	$(MAKE) -f CMakeFiles/IntegralImages.dir/build.make CMakeFiles/IntegralImages.dir/build
 
 # target to build an object file
+enumerateLearners.o:
+	$(MAKE) -f CMakeFiles/IntegralImages.dir/build.make CMakeFiles/IntegralImages.dir/enumerateLearners.o
+
+# target to preprocess a source file
+enumerateLearners.i:
+	$(MAKE) -f CMakeFiles/IntegralImages.dir/build.make CMakeFiles/IntegralImages.dir/enumerateLearners.i
+
+# target to generate assembly for a file
+enumerateLearners.s:
+	$(MAKE) -f CMakeFiles/IntegralImages.dir/build.make CMakeFiles/IntegralImages.dir/enumerateLearners.s
+
+# target to build an object file
 integral.o:
 	$(MAKE) -f CMakeFiles/IntegralImages.dir/build.make CMakeFiles/IntegralImages.dir/integral.o
 
@@ -154,6 +166,9 @@ help::
 	@echo "... IntegralImages"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... enumerateLearners.o"
+	@echo "... enumerateLearners.i"
+	@echo "... enumerateLearners.s"
 	@echo "... integral.o"
 	@echo "... integral.i"
 	@echo "... integral.s"
