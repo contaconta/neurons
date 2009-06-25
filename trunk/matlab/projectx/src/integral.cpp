@@ -80,7 +80,6 @@ unsigned int RectangleFeature(unsigned int *data, int width, int height, int row
   return val;
 }
 
-/*
 unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
 {
   // The subtraction by one for row/col is because row/col is inclusive.
@@ -100,6 +99,15 @@ unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, in
 
 unsigned int RectangleFeature(unsigned int *data, int width, int height, char* weak_learner_param)
 {
+  string params(weak_learner_param);
+  size_type start_idx = params.find_first_of("_")+1;
+  size_type end_idx = params.find_first_of("_",start_idx);
+ 
+  while( end_idx != string::npos ) {
+    params[end_idx] = '*';
+    end_idx = params.find_first_of("_",end_idx+1);
+  }
+
   int row1, col1, row2, col2;
   unsigned int val = 0;
   switch(featureType)
@@ -113,4 +121,3 @@ unsigned int RectangleFeature(unsigned int *data, int width, int height, char* w
     }
   return val;
 }
-*/
