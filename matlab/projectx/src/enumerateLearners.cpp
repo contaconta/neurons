@@ -24,7 +24,6 @@
 
 struct sHA_params
 {
-  int id;
   int step_x;
   int step_y;
 };
@@ -56,22 +55,16 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
 
           switch(*(left_token+1))
             {
-            case 'i':
-              strncpy(temp,left_token+2,size);
-              temp[size] = 0;
-              printf("i %s\n",temp);
-              params.id = atoi(temp);
-              break;
             case 'x':
               strncpy(temp,left_token+2,size);
               temp[size] = 0;
-              printf("s %s\n",temp);
+              printf("x %s\n",temp);
               params.step_x = atoi(temp);
               break;
             case 'y':
               strncpy(temp,left_token+2,size);
               temp[size] = 0;
-              printf("s %s\n",temp);
+              printf("y %s\n",temp);
               params.step_y = atoi(temp);
               break;
             }
@@ -86,20 +79,22 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
           //for(int sy=1;sy<=max_width/params.step_y;sy++)
             for(int sy=2;sy<max_height;sy+=params.step_y)
             {
-              //string learner_id;
-              stringstream learner_id;
-              learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
-
-              //sprintf("W_ax0ay0bx%dby%d_B_ax0ay%dbx%dby%d",sx,sy/2,sy/2,sx,sy);
-              //sWeak_learner_params weak_learner_params;
-              //weak_learner_params.x_size = sx;
-              //weak_learner_params.y_size = sy;
-              //m_weak_learners[learner_id] = weak_learner_params;
-              list_weak_learners.push_back(learner_id.str());
+              cout << "s" << sx << " " << sy << endl;
+              for(int ix=1;ix+sx<=max_width;ix+=sx)
+                for(int iy=1;iy+sy<=max_height;iy+=sy)
+                  {
+                    stringstream learner_id;
+                    //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
+                    learner_id << learner_type[0] << learner_type[1]
+                               << "_W_ax" << ix << "ay" << iy << "bx" << (ix + sx/2) << "by" << (iy + sy/2)
+                               << "_B_ax" << ix << "ay" << (iy + sy/2) << "bx" << (ix + sx) << "by" << (iy + sy);
+                    list_weak_learners.push_back(learner_id.str());
+                  }
             }
         }
     }
 
+  cout << "Exporting list\n";
   weak_learners = new char*[list_weak_learners.size()];
   int idx = 0;
   for( vector<string>::iterator iter = list_weak_learners.begin();
