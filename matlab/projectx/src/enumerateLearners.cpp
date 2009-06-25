@@ -79,6 +79,7 @@ int enumerate_learners(char *learner_type, int max_width, int max_height,char**&
           left_token = right_token;
         }
 
+      // TODO : enumerate all possible positions starting at (1,1)
       // Generate all the weak learner for this type
       for(int sx=1;sx<max_width;sx+=params.step_x)
         //for(int sx=1;sx<=max_width/params.step_x;sx++)
@@ -88,7 +89,7 @@ int enumerate_learners(char *learner_type, int max_width, int max_height,char**&
             {
               //string learner_id;
               stringstream learner_id;
-              learner_id << "W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
+              learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
 
               //sprintf("W_ax0ay0bx%dby%d_B_ax0ay%dbx%dby%d",sx,sy/2,sy/2,sx,sy);
               //sWeak_learner_params weak_learner_params;
@@ -107,7 +108,7 @@ int enumerate_learners(char *learner_type, int max_width, int max_height,char**&
     weak_learners[idx] = new char[iter->length()];
     strcpy(weak_learners[idx], iter->c_str());
     idx++;
-    cout << *iter  << endl;
+    //cout << *iter  << endl;
   }
 
   return list_weak_learners.size();
