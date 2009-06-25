@@ -65,5 +65,5 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     const mwSize dims[]={dim_array[0],dim_array[1]};
     plhs[0] = mxCreateNumericArray(2,dims,mxUINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
-    copyIntegralImage(pImage,dim_array[1],dim_array[0],pIndices,pResult);
+    copyIntegralImage(pImage,dim_array[1],dim_array[0],pResult);
 }

@@ -27,4 +27,7 @@ void getBoxIntegral(unsigned char *pImage, int size_x, int size_y, double *pIndi
 // @param size_x and size_y are the width and the height of the image
 // @param pIndices : array whose first 2 elements are the (x,y) coordinates of the top-left corner.
 // 	The next 2 elements (pIndices[2] and pIndices[3]) are the number of columns and rows.
+// TODO : remove function
+/*
 void getRectangleFeature(unsigned char *pImage, int size_x, int size_y, double *pIndices, unsigned int type, unsigned int *pResult);
+*/

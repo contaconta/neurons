@@ -29,10 +29,9 @@ struct sHA_params
   int step_y;
 };
 
-//map<const char*, char*> m_weak_learners;
 vector<string> list_weak_learners;
 
-int enumerate_learners(char *learner_type, int max_width, int max_height,char**& weak_learners)
+int enumerate_learners(char *learner_type, int max_width, int max_height, char**& weak_learners)
 {
   char temp[20];
   char* left_token = learner_type;

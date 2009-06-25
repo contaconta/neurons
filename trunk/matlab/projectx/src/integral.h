@@ -28,9 +28,21 @@ unsigned int *Integral (unsigned char *img, int width, int height);
 
 // Computes the sum of pixels within the rectangle specified by the top-left start
 // co-ordinate and size
-unsigned int BoxIntegral(unsigned int *img, int width, int height, int row, int col, int rows, int cols);
+// @param row1, col1 : coordinates of the top left corner of the box
+// @param row2, col2 : coordinates of the bottom right corner of the box
+unsigned int BoxIntegral(unsigned int *data, int width, int height,
+                         int row1, int col1, int row2, int col2);
 
 // Compute rectangle feature
-unsigned int RectangleFeature(unsigned int *data, int width, int height, int row, int col, int rows, int cols, eFeatureType featureType);
+// @param width and height are the width and the height of the image passed in parameter
+// @param weak_learner_param : string of the form "[WB]_ax%day%dbx%dby%d_B_ax%day%dbx%dby%d"
+// a_________     -> x
+// |         |    |
+// |         |    y
+// |         |
+// |         |
+// |_________b
+int getRectangleFeature(unsigned char *pImage, int width, int height,
+                        int max_width, int max_height, char* weak_learner_param);
 
 #endif //INTEGRAL_H
