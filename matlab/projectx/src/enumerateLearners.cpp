@@ -88,6 +88,7 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
                     learner_id << learner_type[0] << learner_type[1]
                                << "_W_ax" << ix << "ay" << iy << "bx" << (ix + sx/2) << "by" << (iy + sy/2)
                                << "_B_ax" << ix << "ay" << (iy + sy/2) << "bx" << (ix + sx) << "by" << (iy + sy);
+                    cout << learner_id.str() << endl;
                     list_weak_learners.push_back(learner_id.str());
                   }
             }
@@ -99,7 +100,7 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
   int idx = 0;
   for( vector<string>::iterator iter = list_weak_learners.begin();
        iter != list_weak_learners.end(); ++iter ) {
-    weak_learners[idx] = new char[iter->length()];
+    weak_learners[idx] = new char[iter->length()+1];
     strcpy(weak_learners[idx], iter->c_str());
     idx++;
     //cout << *iter  << endl;
