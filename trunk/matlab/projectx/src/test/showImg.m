@@ -19,4 +19,12 @@ imshow(masked_img);
 %row, col, rows, cols
 r=mexBoxIntegral(img,position)
 
-r=mexRectangleFeature(img,position,0)
+r1 = num2str(position(1))
+c1 = num2str(position(1)+position(3))
+r2 = num2str(position(2))
+c2 = num2str(position(2)+position(4))
+weak_learner_param = ['HA_Wax' r1 'ay' c1 'bx' r2 'by' c2]
+r=mexRectangleFeature(img,weak_learner_param)
+
+weak_learner_param = ['HA_Bax' r1 'ay' c1 'bx' r2 'by' c2]
+r=mexRectangleFeature(img,weak_learner_param)
