@@ -48,11 +48,3 @@ void getBoxIntegral(unsigned char *pImage, int size_x, int size_y, double *pIndi
   *pResult = BoxIntegral(imgi, size_x, size_y, pIndices[0], pIndices[1], pIndices[2], pIndices[3]);
   delete[] imgi;
 }
-
-void getRectangleFeature(unsigned char *pImage, int size_x, int size_y, double *pIndices, unsigned int type, unsigned int *pResult)
-{
-  unsigned int* imgi = Integral(pImage,size_x,size_y);  
-
-  *pResult = RectangleFeature(imgi, size_x, size_y, pIndices[0], pIndices[1], pIndices[2], pIndices[3], (eFeatureType)type);
-  delete[] imgi;
-}

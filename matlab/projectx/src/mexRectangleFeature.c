@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////
 
 #include "mex.h"
-#include "loadImage.h"
+#include "integral.h"
 #include <stdio.h>
 
 void mexFunction(int nlhs,       mxArray *plhs[],
@@ -22,15 +22,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 {
     mwSize nElements,j;
     mwSize number_of_dims;
-    double *pIndices;
-    unsigned int* pType;
     unsigned char *pImage;
-    unsigned int *pResult;
+    int *pResult;
     const mwSize *dim_array;
+    char* pParam; // weak learner parameters
     
     /* Check for proper number of input and output arguments */    
-    if (nrhs != 3) {
-	mexErrMsgTxt("3 input arguments required.");
+    if (nrhs != 2) {
+	mexErrMsgTxt("2 input arguments required.");
     } 
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
@@ -40,8 +39,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (!(mxIsUint8(prhs[0]))) {
       mexErrMsgTxt("Input array must be of type uint8.");
     }
-    if (!(mxIsDouble(prhs[1]))) {
-      mexErrMsgTxt("Input array must be of type double.");
+    if (!(mxIsChar(prhs[1]))) {
+      mexErrMsgTxt("Input array must be of type char.");
     }
     
     /* Get the number of elements in the input argument */
@@ -49,16 +48,15 @@ void mexFunction(int nlhs,       mxArray *plhs[],
    
     /* Get the real data */
     pImage=(unsigned char *)mxGetPr(prhs[0]);
-    pIndices=(double *)mxGetPr(prhs[1]);
-    pType=(unsigned int*)mxGetPr(prhs[2]);
+    pParam = mxArrayToString(prhs[1]);
     
     /* Invert dimensions :
        Matlab : height, width
        OpenCV : width, hieght
     */
     const mwSize dims[]={1};
-    plhs[0] = mxCreateNumericArray(1,dims,mxUINT32_CLASS,mxREAL);
-    pResult = (unsigned int*)mxGetData(plhs[0]);
+    plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
+    pResult = (int*)mxGetData(plhs[0]);
     dim_array=mxGetDimensions(prhs[0]);
-    getRectangleFeature(pImage,dim_array[1],dim_array[0],pIndices,*pType,pResult);
+    *pResult = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
 }
