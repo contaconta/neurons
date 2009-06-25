@@ -19,7 +19,7 @@ function visualize_haar_feature(feature_string, IMSIZE)
 
 
 %pat = '[W]_\w*_';
-patterns = {'[W]_[^_]*', '[B]_[^_]*'};
+patterns = {'[W][^_]*', '[B][^_]*'};
 
 A = .5 * ones(IMSIZE);
 
@@ -32,10 +32,10 @@ for i = 1:length(patterns)
     
         ax_str = regexp(m_str, 'ax\w*ay', 'match');
         ax_str2 = regexp(ax_str{1}, '\d*', 'match');
-        ax = str2double(ax_str2{1})+1;
+        ax = str2double(ax_str2{1});
         ay_str = regexp(m_str, 'ay\w*bx', 'match');
         ay_str2 = regexp(ay_str{1}, '\d*', 'match');
-        ay = str2double(ay_str2{1})+1;
+        ay = str2double(ay_str2{1});
         bx_str = regexp(m_str, 'bx\w*by', 'match');
         bx_str2 = regexp(bx_str{1}, '\d*', 'match');
         bx = str2double(bx_str2{1});

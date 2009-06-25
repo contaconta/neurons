@@ -86,8 +86,8 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
                     stringstream learner_id;
                     //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
                     learner_id << learner_type[0] << learner_type[1]
-                               << "_W_ax" << ix << "ay" << iy << "bx" << (ix + sx/2) << "by" << (iy + sy/2)
-                               << "_B_ax" << ix << "ay" << (iy + sy/2) << "bx" << (ix + sx) << "by" << (iy + sy);
+                               << "_Wax" << ix << "ay" << iy << "bx" << (ix + sx) << "by" << (iy + sy/2)
+                               << "_Bax" << ix << "ay" << (iy + sy/2) << "bx" << (ix + sx) << "by" << (iy + sy);
                     cout << learner_id.str() << endl;
                     list_weak_learners.push_back(learner_id.str());
                   }
