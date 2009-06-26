@@ -1,7 +1,7 @@
 close all
 a=ones(630,457);
 
-img = imread('Images/img1.jpg');
+img = imread('image.png');
 img = img(:,:,1);
 
 int_img=mexIntegralImage(img,a);
