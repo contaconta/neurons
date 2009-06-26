@@ -17,15 +17,21 @@
 #include "integral.h"
 #include <stdio.h>
 
+// Caution : this number has to be chosen carefully to avoid any buffer
+// overflow
+#define MAX_WEAK_LEARNER_PARAM_LENGTH 500
+
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    mwSize nElements,j;
     mwSize number_of_dims;
     unsigned char *pImage;
     int *pResult;
     const mwSize *dim_array;
-    char* pParam; // weak learner parameters
+    mxArray *pCell;
+    mwSize nCells;
+    char pParam[MAX_WEAK_LEARNER_PARAM_LENGTH]; // weak learner parameters
+    int strLength;
     
     /* Check for proper number of input and output arguments */    
     if (nrhs != 2) {
@@ -39,24 +45,31 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (!(mxIsUint8(prhs[0]))) {
       mexErrMsgTxt("Input array must be of type uint8.");
     }
-    if (!(mxIsChar(prhs[1]))) {
-      mexErrMsgTxt("Input array must be of type char.");
+    if (!(mxIsCell(prhs[1]))) {
+      mexErrMsgTxt("Input array must be of type cell.");
     }
     
-    /* Get the number of elements in the input argument */
-    nElements=mxGetNumberOfElements(prhs[0]);
-   
     /* Get the real data */
     pImage=(unsigned char *)mxGetPr(prhs[0]);
-    pParam = mxArrayToString(prhs[1]);
-    
+    nCells = mxGetNumberOfElements(prhs[1]);
+
     /* Invert dimensions :
        Matlab : height, width
        OpenCV : width, hieght
     */
-    const mwSize dims[]={1};
+    const mwSize dims[]={nCells};
     plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
     dim_array=mxGetDimensions(prhs[0]);
-    *pResult = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
+
+    for(int iCell = 0;iCell<nCells;iCell++)
+      {
+        // retrieve cell content and transform it to a string
+        pCell = mxGetCell(prhs[1],iCell);
+        strLength = mxGetN(pCell)+1;
+        //pParam = (char*)mxCalloc(strLength, sizeof(char));
+        mxGetString(pCell,pParam,strLength);
+
+        pResult[iCell] = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
+      }
 }

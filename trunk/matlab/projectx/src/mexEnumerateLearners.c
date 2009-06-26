@@ -42,7 +42,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         if(!mxIsCell(prhs[0]))
           mexErrMsgTxt("First input must be a cell.");
         if(!mxIsUint32(prhs[1]) && !mxIsDouble(prhs[1]))
-          mexErrMsgTxt("Second input must be a uint8/double.");
+          mexErrMsgTxt("Second input must be a uint32/double.");
       }
     /* get input arguments */
     int width_detector = (int)mxGetPr(prhs[1])[0];

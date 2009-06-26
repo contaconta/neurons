@@ -73,14 +73,12 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
   // TODO : check returned type
   unsigned int* intImg = Integral(pImage,width,height);
 
-  //*pResult = RectangleFeature(imgi, size_x, size_y, pIndices[0], pIndices[1], pIndices[2], pIndices[3], (eFeatureType)type);
-
   string params(weak_learner_param);
   int start_idx = params.find_first_of("_")+1;
   int end_idx = params.find_first_of("_",start_idx);
  
-  cout << "start_idx: " << start_idx << endl;
-  cout << "end_idx: " << end_idx << endl;
+  //cout << "start_idx: " << start_idx << endl;
+  //cout << "end_idx: " << end_idx << endl;
 
   bool parseString = true;
   while(parseString)
@@ -93,11 +91,10 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
         }
 
       string sub_params = params.substr(start_idx,end_idx-start_idx);
-      //cout << "sub_params: " << sub_params << endl;
-      cout << "sub_params: " << &sub_params.c_str()[1] << endl;
+      //cout << "sub_params: " << &sub_params.c_str()[1] << endl;
 
       // Extract row and column numbers
-      sscanf(&sub_params.c_str()[1],"ax%day%dbx%dby%d",&row1,&col1,&row2,&col2);
+      sscanf(&sub_params.c_str()[1],"ax%day%dbx%dby%d",&col1,&row1,&col2,&row2);
 
       cout << "row1: " << row1 << " col1:" << col1 << endl;
       cout << "row2: " << row2 << " col2:" << col2 << endl;
