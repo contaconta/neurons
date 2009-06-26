@@ -9,5 +9,5 @@ position = [136.0000  135.0000  125.0000  105.0000];
 masked_img=img(position(2):position(2)+position(4), position(1):position(1)+position(3));
 %imshow(masked_img);
 
-display 'HA_Wax0ay0bx10by10_Bax0ay10bx10by20'
-r=mexRectangleFeature(img,'HA_Wax0ay0bx10by10_Bax0ay10bx10by20')
+learner_param{1} = 'HA_Wax1ay1bx10by10_Bax1ay10bx10by20'
+r=mexRectangleFeature(img,learner_param)
