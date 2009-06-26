@@ -24,8 +24,8 @@
 
 struct sHA_params
 {
-  int step_x;
-  int step_y;
+  int step_size_x;
+  int step_size_y;
 };
 
 vector<string> list_weak_learners;
@@ -62,25 +62,28 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
               strncpy(temp,left_token+2,size);
               temp[size] = 0;
               //printf("x %s\n",temp);
-              params.step_x = atoi(temp);
+              params.step_size_x = atoi(temp);
               break;
             case 'y':
               strncpy(temp,left_token+2,size);
               temp[size] = 0;
               //printf("y %s\n",temp);
-              params.step_y = atoi(temp);
+              params.step_size_y = atoi(temp);
               break;
             }
           left_token = right_token;
         }
 
+      int step_x = 1;
+      int step_y = 1;
       // Generate all the weak learner for this type
-      for(int sx=1;sx<max_width;sx+=params.step_x)
+      for(int sx=1;sx<max_width;sx+=params.step_size_x)
         {
-            for(int sy=2;sy<max_height;sy+=params.step_y)
+          // minimum height for HA is 2
+          for(int sy=2;sy<max_height;sy+=params.step_size_y)
             {
-              for(int ix=1;ix+sx<=max_width;ix++) //=sx)
-                for(int iy=1;iy+sy<=max_height;iy++) //=sy)
+              for(int ix=1;ix+step_x<=max_width;ix+=step_x)
+                for(int iy=1;iy+step_y<=max_height;iy+=step_y)
                   {
                     stringstream learner_id;
                     //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
