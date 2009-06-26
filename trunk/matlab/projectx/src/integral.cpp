@@ -51,17 +51,22 @@ unsigned int *Integral(unsigned char *img, int width, int height)
 
 unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
 {
-  // The subtraction by one for row/col is because row/col is inclusive.
-  int r1 = std::min(row1,   height) - 1;
-  int c1 = std::min(col1,   width)  - 1;
-  int r2 = std::min(row2,   height) - 1;
-  int c2 = std::min(col2,   width)  - 1;
+  // The subtraction by one for row1/col1 is because row1/col1 is inclusive.
+  int r1 = std::min(row1,   height) - 2;
+  int c1 = std::min(col1,   width)  - 2;
+  // The subtraction by one for row2/col2 is because row2/col2 is exclusive.
+  int r2 = std::min(row2,   height) - 2;
+  int c2 = std::min(col2,   width)  - 2;
 
   float A(0.0f), B(0.0f), C(0.0f), D(0.0f);
   if (r1 >= 0 && c1 >= 0) A = data[r1 * width + c1];
   if (r1 >= 0 && c2 >= 0) B = data[r1 * width + c2];
   if (r2 >= 0 && c1 >= 0) C = data[r2 * width + c1];
   if (r2 >= 0 && c2 >= 0) D = data[r2 * width + c2];
+
+  cout << "r1: " << r1 << " c1:" << c1 << endl;
+  cout << "r2: " << r2 << " c2:" << c2 << endl;
+  cout << "data: " << A << " " << B << " " << C << " " << D << endl;
 
   return std::max(0.f, A - B - C + D);
 }
@@ -77,6 +82,7 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
   int start_idx = params.find_first_of("_")+1;
   int end_idx = params.find_first_of("_",start_idx);
  
+  cout << "width: " << width << " height:" << height << endl;
   //cout << "start_idx: " << start_idx << endl;
   //cout << "end_idx: " << end_idx << endl;
 
