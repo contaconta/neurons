@@ -1,8 +1,19 @@
+Setup your workstation:
+* Install gcc and g++ (tested with 4.3)
+* Install CMake
+* Install OpenCV. There is a linux package for most distributions.
+sudo apt-get install gcc g++ cmake libcv-dev
+* Copy the file FindOpenCV.cmake in the misc directory to the Modules directory of your CMake installation (where also FindOpenGL.cmake can be found). This will enable CMake to find OpenCV on your machine. Make sure that you are the owner of the file or you will have to use sudo ccmake .
+
+-------------------------------------------------------------------------------
+
 Compile the code
-1) First of all, you have to generate the Makefile with cmake. Go to the src directory and type :
+* First of all, you have to generate the Makefile with cmake. Go to the src directory and type :
 ccmake .
 Then follow the instruction to generate the Makefile (press c to configure then g to generate)
-2) To compile the code, you can use the build script available in the scr directory
+* To compile the code, you can use the build script available in the scr directory
+
+-------------------------------------------------------------------------------
 
 Testing
 A few matlab scripts are available in src/test :
