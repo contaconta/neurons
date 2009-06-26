@@ -36,6 +36,8 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
   char* left_token = learner_type;
   char* right_token = 0;
   int size;
+  int step_x = 1;
+  int step_y = 1;
 
   // Matlab passes width and height, not coordinates
   max_width++;
@@ -70,20 +72,28 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
               //printf("y %s\n",temp);
               params.step_size_y = atoi(temp);
               break;
+            case 'u':
+              strncpy(temp,left_token+2,size);
+              temp[size] = 0;
+              step_x = atoi(temp);
+              break;
+            case 'v':
+              strncpy(temp,left_token+2,size);
+              temp[size] = 0;
+              step_y = atoi(temp);
+              break;
             }
           left_token = right_token;
         }
 
-      int step_x = 1;
-      int step_y = 1;
       // Generate all the weak learner for this type
       for(int sx=1;sx<max_width;sx+=params.step_size_x)
         {
           // minimum height for HA is 2
           for(int sy=2;sy<max_height;sy+=params.step_size_y)
             {
-              for(int ix=1;ix+step_x<=max_width;ix+=step_x)
-                for(int iy=1;iy+step_y<=max_height;iy+=step_y)
+              for(int ix=1;ix<=max_width;ix+=step_x)
+                for(int iy=1;iy<=max_height;iy+=step_y)
                   {
                     stringstream learner_id;
                     //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
