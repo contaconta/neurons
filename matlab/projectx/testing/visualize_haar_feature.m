@@ -1,6 +1,10 @@
-function visualize_haar_feature(feature_string, IMSIZE)
+function visualize_haar_feature(feature_string, IMSIZE, varargin)
+%VISUALIZE_HAAR_FEATURE
 %
-%   TODO: write documentation
+%   visualize_haar_feature(feature_string, IMSIZE, IM) plots a haar feature
+%   described by feature_string on a standard detector window of size
+%   IMSIZE. Optional argument IM passes an image to plot the feature over
+%   instead of a blank detector window.
 
 %   Copyright © 2009 Computer Vision Lab, 
 %   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
@@ -18,10 +22,17 @@ function visualize_haar_feature(feature_string, IMSIZE)
 %   PURPOSE.  See the GNU General Public License for more details.
 
 
-%pat = '[W]_\w*_';
+%% plot on either a blank image, or over an image passed as optional 3rd argument
+if nargin == 3
+    A = varargin{1};
+    IMSIZE = size(A);
+else
+    A = .5 * ones(IMSIZE);
+end
+
+
 patterns = {'[W][^_]*', '[B][^_]*'};
 
-A = .5 * ones(IMSIZE);
 
 for i = 1:length(patterns)
     
@@ -38,10 +49,10 @@ for i = 1:length(patterns)
         ay = str2double(ay_str2{1});
         bx_str = regexp(m_str, 'bx\w*by', 'match');
         bx_str2 = regexp(bx_str{1}, '\d*', 'match');
-        bx = str2double(bx_str2{1});
+        bx = str2double(bx_str2{1}) -1;
         by_str = regexp(m_str, 'by\d*', 'match');
         by_str2 = regexp(by_str{1}, '\d*', 'match');
-        by = str2double(by_str2{1});
+        by = str2double(by_str2{1}) -1;
         %disp([ ax ay bx by]);
         
         if i == 1
@@ -52,9 +63,8 @@ for i = 1:length(patterns)
     end
 end
 
+%pause(0.01);
 figure(1);
-imshow(A);
 set(gca, 'Position', [0 0 1 1]);
+imshow(A);
 
-pause(0.01);
-refresh;

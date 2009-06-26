@@ -38,7 +38,8 @@ logfile(EXPERIMENT.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di
 % define the weak learners
 tic; disp('...defining the weak learners.');
 % HERE WE WILL CALL A C++ FILE AND PASS IT PARAMETERS (DUMMY FUNCTION INSERTED FOR THE MOMENT)
-LEARNERS = p_enumerate_learners(LEARNERS);  disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+%LEARNERS = p_enumerate_learners(LEARNERS, DATASETS.IMSIZE);  disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);  disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 
 % collect the training data set
 tic; disp(['...collecting the ' num2str(DATASETS.TRAIN_POS + DATASETS.TRAIN_NEG) ' examples in the TRAIN set.']);
