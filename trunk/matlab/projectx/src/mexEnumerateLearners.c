@@ -28,38 +28,40 @@ void mexFunction( int nlhs, mxArray *plhs[],
     mxArray    *tmp, *fout;
     char       *pdata=NULL;
     int        ifield, nfields;
-    /*mxClassID  *classIDflags;*/
-    mwIndex    jstruct;
-    mwSize     NStructElems;
+    mwIndex    idxCell;
+    mwSize     nCells;
     mwSize     ndim;
 
     /* check proper input and output */
-    if(nrhs!=1)
-      mexErrMsgTxt("One input required.");
+    if(nrhs!=2)
+      mexErrMsgTxt("2 inputs required.");
     else if(nlhs > 1)
       mexErrMsgTxt("Too many output arguments.");
-    else if(!mxIsStruct(prhs[0]))
-      mexErrMsgTxt("Input must be a structure.");
+    else
+      {
+        if(!mxIsCell(prhs[0]))
+          mexErrMsgTxt("First input must be a cell.");
+        if(!mxIsUint32(prhs[1]) && !mxIsDouble(prhs[1]))
+          mexErrMsgTxt("Second input must be a uint8/double.");
+      }
     /* get input arguments */
-    nfields = mxGetNumberOfFields(prhs[0]);
-    if(nfields!=1)
-      mexErrMsgTxt("Input structure should contain only one field");
-
-    NStructElems = mxGetNumberOfElements(prhs[0]);
+    int width_detector = (int)mxGetPr(prhs[1])[0];
+    int height_detector = (int)mxGetPr(prhs[1])[1];
+    nCells = mxGetNumberOfElements(prhs[0]);
 
     int strLength;
     char *learner_type;
     /* copy data from input structure array */
-    for (jstruct=0; jstruct<NStructElems; jstruct++) {
-      tmp = mxGetFieldByNumber(prhs[0],jstruct,0);
+    for (idxCell=0; idxCell<nCells; idxCell++) {
+      tmp = mxGetCell(prhs[0],idxCell);
 
       strLength = mxGetN(tmp)+1;
       learner_type = (char*)mxCalloc(strLength, sizeof(char));
       mxGetString(tmp,learner_type,strLength);
 
-      mexPrintf("%s\n",learner_type);
+      //mexPrintf("%s\n",learner_type);
       char** weak_learners;
-      int nb_weak_learners = enumerate_learners(learner_type,24,24,weak_learners);
+      int nb_weak_learners = enumerate_learners(learner_type,width_detector,height_detector,weak_learners);
 
       plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
       for(int line = 0; line < nb_weak_learners; line++)
