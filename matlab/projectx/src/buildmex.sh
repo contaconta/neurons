@@ -1,7 +1,19 @@
+#!/bin/sh
+
+# Set the include path for mex
+if [ -d /usr/local/extern/include/ ]
+then
+    MEXPATH='/usr/local/extern/include/'
+elif [ -d /usr/local/matlab/extern/include/ ]
+then
+    MEXPATH='/usr/local/matlab/extern/include/'
+else
+    echo 'Error : please set the MEXPATH variable manually'
+    exit -1
+fi
+
 make
 GCC=/usr/bin/c++
-MEXPATH=/usr/local/matlab/extern/include/
-#MEXPATH=/usr/local/extern/include/
 MEX_ARG=-cxx
 
 $GCC -fPIC -c -I$MEXPATH mexBoxIntegral.c

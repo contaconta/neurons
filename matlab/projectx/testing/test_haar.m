@@ -33,7 +33,7 @@ if size(I,3) > 1
 end
 
 % specify the types of learners
-LEARNERS.types = {'HA_x1_y1_u4_v4'};
+LEARNERS.types = {'HA_x4_y4_u16_v16'};
 
 % define individual learners
 DATASETS.IMSIZE = size(I);
@@ -41,5 +41,6 @@ LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 
 for i = 1:length(LEARNERS.list)
     visualize_haar_feature(LEARNERS.list{i}, DATASETS.IMSIZE, I);
-    pause;
+    LEARNERS.list{i}
+    %pause;
 end
