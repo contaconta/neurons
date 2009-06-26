@@ -1,9 +1,0 @@
-make
-g++ -fPIC -c -I/usr/local/extern/include/ mexBoxIntegral.c
-g++ -fPIC -c -I/usr/local/extern/include/ mexIntegralImage.c
-g++ -fPIC -c -I/usr/local/extern/include/ mexRectangleFeature.c
-g++ -fPIC -c -I/usr/local/extern/include/ mexEnumerateLearners.c
-mex mexBoxIntegral.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv`
-mex mexIntegralImage.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv`
-mex mexRectangleFeature.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv`
-mex mexEnumerateLearners.o CMakeFiles/IntegralImages.dir/enumerateLearners.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv`
