@@ -70,6 +70,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
           delete[] weak_learners[line];
         }
 
+      mxFree(learner_type);
       delete[] weak_learners;
     }
     return;
