@@ -17,6 +17,7 @@ for n = 1:NSAMPLES
     Bby = ceil(Bay+(IMSIZE(1)+1-Bay)*rand([1 1]));
 
     learner = ['HA_' 'Wax' num2str(Wax) 'ay' num2str(Way) 'bx' num2str(Wbx) 'by' num2str(Wby) '_Bax' num2str(Bax) 'ay' num2str(Bay) 'bx' num2str(Bbx) 'by' num2str(Bby)];
+    disp('-----------------------------------');
     disp(learner);
     visualize_haar_feature({learner}, [24 24], mat2gray(img))
     
@@ -25,7 +26,7 @@ for n = 1:NSAMPLES
     rmex = mexRectangleFeature(img, {learner});
     
     rmat = sum(sum(img(Way:Wby-1,Wax:Wbx-1))) - sum(sum(img(Bay:Bby-1,Bax:Bbx-1)));
-    disp('-----------------------------------');
+    
     disp(['rmex: ' num2str(rmex) ' , rmat: ' num2str(rmat) ]);
     
     if rmat ~= rmex
