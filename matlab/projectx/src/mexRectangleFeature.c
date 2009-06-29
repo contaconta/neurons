@@ -42,13 +42,16 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     }
     
     /* Check data type of input argument */
-    if (!(mxIsUint8(prhs[0]))) {
-      mexErrMsgTxt("Input array must be of type uint8.");
+    if ((!mxIsUint8(prhs[0])) && (!mxIsCell(prhs[0]))) {
+      mexErrMsgTxt("Input array must be of type uint8 or cell.");
     }
-    if (!(mxIsCell(prhs[1]))) {
+    if (!mxIsCell(prhs[1])) {
       mexErrMsgTxt("Input array must be of type cell.");
     }
     
+
+    //mxIsCell(prhs[0])
+
     /* Get the real data */
     pImage=(unsigned char *)mxGetPr(prhs[0]);
     nCells = mxGetNumberOfElements(prhs[1]);

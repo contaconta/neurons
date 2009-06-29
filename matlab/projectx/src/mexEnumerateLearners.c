@@ -65,7 +65,10 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
       plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
       for(int line = 0; line < nb_weak_learners; line++)
-        mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
+        {
+          mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
+          delete[] weak_learners[line];
+        }
 
       delete[] weak_learners;
     }
