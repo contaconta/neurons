@@ -19,6 +19,7 @@
 %   PURPOSE.  See the GNU General Public License for more details.
 
 
+clear LEARNERS;
 
 % load an image to display over
 I = imread('image.png');
@@ -33,7 +34,7 @@ if size(I,3) > 1
 end
 
 % specify the types of learners
-LEARNERS.types = {'HA_x4_y4_u16_v16'};
+LEARNERS.types = {'HA_x4_y4_u8_v8'};
 
 % define individual learners
 DATASETS.IMSIZE = size(I);
@@ -42,5 +43,6 @@ LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 for i = 1:length(LEARNERS.list)
     visualize_haar_feature(LEARNERS.list{i}, DATASETS.IMSIZE, I);
     LEARNERS.list{i}
-    %pause;
+    
+    pause;
 end
