@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+if [ $1 == "clean" ]
+then
+    echo 'Cleaning project'
+    make clean
+    rm *.o
+fi
 
 # Set the include path for mex
 if [ -d /usr/local/extern/include/ ]
