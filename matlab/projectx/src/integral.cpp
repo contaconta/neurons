@@ -64,9 +64,9 @@ unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, in
   if (r2 >= 0 && c1 >= 0) C = data[r2 * width + c1];
   if (r2 >= 0 && c2 >= 0) D = data[r2 * width + c2];
 
-  cout << "r1: " << r1 << " c1:" << c1 << endl;
-  cout << "r2: " << r2 << " c2:" << c2 << endl;
-  cout << "data: " << A << " " << B << " " << C << " " << D << endl;
+  //cout << "r1: " << r1 << " c1:" << c1 << endl;
+  //cout << "r2: " << r2 << " c2:" << c2 << endl;
+  //cout << "data: " << A << " " << B << " " << C << " " << D << endl;
 
   return std::max(0.f, A - B - C + D);
 }
@@ -82,7 +82,7 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
   int start_idx = params.find_first_of("_")+1;
   int end_idx = params.find_first_of("_",start_idx);
  
-  cout << "width: " << width << " height:" << height << endl;
+  //cout << "width: " << width << " height:" << height << endl;
   //cout << "start_idx: " << start_idx << endl;
   //cout << "end_idx: " << end_idx << endl;
 
@@ -102,8 +102,8 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
       // Extract row and column numbers
       sscanf(&sub_params.c_str()[1],"ax%day%dbx%dby%d",&col1,&row1,&col2,&row2);
 
-      cout << "row1: " << row1 << " col1:" << col1 << endl;
-      cout << "row2: " << row2 << " col2:" << col2 << endl;
+      //cout << "row1: " << row1 << " col1:" << col1 << endl;
+      //cout << "row2: " << row2 << " col2:" << col2 << endl;
 
       if(sub_params[0] == 'W')
         {
@@ -114,7 +114,7 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
           val -= BoxIntegral(intImg, width, height, row1, col1, row2, col2);
         }
 
-      cout << "value: " << val << endl;
+      //cout << "value: " << val << endl;
 
       if(parseString)
         {
