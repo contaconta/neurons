@@ -1,3 +1,4 @@
+
 /////////////////////////////////////////////////////////////////////////
 // This program is free software; you can redistribute it and/or       //
 // modify it under the terms of the GNU General Public License         //
@@ -54,6 +55,11 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
             right_token = learner_type+strlen(learner_type);
 
           size = right_token - left_token - 2;
+          if(size > 20)
+            {
+              cout << "Error in enumerate_learner while parsing the string : incorrect format\n";
+              return -1;
+            }
 
           //printf("left_token %s\n",left_token);
           //printf("right_token %s\n",right_token);

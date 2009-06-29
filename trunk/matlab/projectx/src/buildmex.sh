@@ -1,10 +1,13 @@
 #!/bin/bash
 
-if [ $1 == "clean" ]
+if [ $# -gt 0 ]
 then
-    echo 'Cleaning project'
-    make clean
-    rm *.o
+    if [ $1 == "clean" ]
+    then
+        echo 'Cleaning project'
+        make clean
+        rm *.o
+    fi
 fi
 
 # Set the include path for mex
