@@ -20,4 +20,4 @@ using namespace std;
 // create a list of all the possible combination of weak learners for the specified learner type
 // @param max_width : maximum width of the weak learners
 // @param max_height : maximum height of the weak learners
-int enumerate_learners(char *learner_type, int max_width, int max_height,char**& weak_learners);
+int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, int max_height,char**& weak_learners);

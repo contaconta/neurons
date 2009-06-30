@@ -1,17 +1,17 @@
-/* ==========================================================================
- * phonebook.c 
- * example for illustrating how to manipulate structure and cell array
- *
- * takes a (MxN) structure matrix and returns a new structure (1x1)
- * containing corresponding fields: for string input, it will be (MxN)
- * cell array; and for numeric (noncomplex, scalar) input, it will be (MxN)
- * vector of numbers with the same classID as input, such as int, double
- * etc..
- *
- * This is a MEX-file for MATLAB.
- * Copyright 1984-2006 The MathWorks, Inc.
- *==========================================================================*/
-/* $Revision: 1.6.6.2 $ */
+/////////////////////////////////////////////////////////////////////////
+// This program is free software; you can redistribute it and/or       //
+// modify it under the terms of the GNU General Public License         //
+// version 2 as published by the Free Software Foundation.             //
+//                                                                     //
+// This program is distributed in the hope that it will be useful, but //
+// WITHOUT ANY WARRANTY; without even the implied warranty of          //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU   //
+// General Public License for more details.                            //
+//                                                                     //
+// Written and (C) by Aurelien Lucchi and Kevin Smith                  //
+// Contact aurelien.lucchi (at) gmail.com or kevin.smith (at) epfl.ch  // 
+// for comments & bug reports                                          //
+/////////////////////////////////////////////////////////////////////////
 
 #include "mex.h"
 #include "string.h"
@@ -27,7 +27,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     char       *pdata=NULL;
     int        ifield, nfields;
     mwIndex    idxCell;
-    mwSize     nCells;
+    mwSize     nLearnerTypes;
     mwSize     ndim;
 
     /* check proper input and output */
@@ -45,31 +45,36 @@ void mexFunction( int nlhs, mxArray *plhs[],
     /* get input arguments */
     int width_detector = (int)mxGetPr(prhs[1])[0];
     int height_detector = (int)mxGetPr(prhs[1])[1];
-    nCells = mxGetNumberOfElements(prhs[0]);
+    nLearnerTypes = mxGetNumberOfElements(prhs[0]);
 
     int strLength;
-    char *learner_type;
+    char **learner_type = (char**) mxCalloc(nLearnerTypes, sizeof(char*));
+    
     /* copy data from input structure array */
-    for (idxCell=0; idxCell<nCells; idxCell++) {
+    for (idxCell=0; idxCell<nLearnerTypes; idxCell++) {
       tmp = mxGetCell(prhs[0],idxCell);
 
       strLength = mxGetN(tmp)+1;
-      learner_type = (char*)mxCalloc(strLength, sizeof(char));
-      mxGetString(tmp,learner_type,strLength);
-
-      //mexPrintf("%s\n",learner_type);
-      char** weak_learners;
-      int nb_weak_learners = enumerate_learners(learner_type,width_detector,height_detector,weak_learners);
-
-      plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
-      for(int line = 0; line < nb_weak_learners; line++)
-        {
-          mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
-          delete[] weak_learners[line];
-        }
-
-      mxFree(learner_type);
-      delete[] weak_learners;
+      learner_type[idxCell] = (char*)mxCalloc(strLength, sizeof(char));
+      mxGetString(tmp,learner_type[idxCell],strLength);
     }
+
+    char** weak_learners;
+    int nb_weak_learners = enumerate_learners(learner_type,nLearnerTypes,
+                                              width_detector,height_detector,weak_learners);
+
+    plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
+    for(int line = 0; line < nb_weak_learners; line++)
+      {
+        mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
+        delete[] weak_learners[line];
+      }
+
+    for (idxCell=0; idxCell<nLearnerTypes; idxCell++) {
+      mxFree(learner_type[idxCell]);
+    }
+
+    mxFree(learner_type);
+    delete[] weak_learners;
 }
     
