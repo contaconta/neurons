@@ -17,8 +17,6 @@
 #include "string.h"
 #include "enumerateLearners.h"
 
-#define MAXCHARS 80   /* max length of string contained in each field */
-
 /*  the gateway routine.  */
 void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[] )
@@ -73,6 +71,5 @@ void mexFunction( int nlhs, mxArray *plhs[],
       mxFree(learner_type);
       delete[] weak_learners;
     }
-    return;
 }
     

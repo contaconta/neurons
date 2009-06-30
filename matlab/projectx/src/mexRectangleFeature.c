@@ -24,12 +24,12 @@
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    mwSize number_of_dims;
     unsigned char *pImage;
     int *pResult;
     const mwSize *dim_array;
-    mxArray *pCell;
-    mwSize nCells;
+    mxArray *pCellParam;
+    mxArray *pCellImage;
+    mwSize nImages, nParams;
     char pParam[MAX_WEAK_LEARNER_PARAM_LENGTH]; // weak learner parameters
     int strLength;
     
@@ -49,30 +49,37 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       mexErrMsgTxt("Input array must be of type cell.");
     }
     
-
-    //mxIsCell(prhs[0])
-
     /* Get the real data */
-    pImage=(unsigned char *)mxGetPr(prhs[0]);
-    nCells = mxGetNumberOfElements(prhs[1]);
+    /*pImage=(unsigned char *)mxGetPr(prhs[0]);*/
+    nImages = mxGetNumberOfElements(prhs[0]);
+    nParams = mxGetNumberOfElements(prhs[1]);
 
     /* Invert dimensions :
        Matlab : height, width
        OpenCV : width, hieght
     */
-    const mwSize dims[]={nCells};
-    plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
+    mwSize number_of_dims = 2;
+    const mwSize dims[]={nImages, nParams};
+    plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
-    dim_array=mxGetDimensions(prhs[0]);
 
-    for(int iCell = 0;iCell<nCells;iCell++)
+    int iResult = 0;
+    for(int iImage = 0;iImage<nImages;iImage++)
       {
-        // retrieve cell content and transform it to a string
-        pCell = mxGetCell(prhs[1],iCell);
-        strLength = mxGetN(pCell)+1;
-        //pParam = (char*)mxCalloc(strLength, sizeof(char));
-        mxGetString(pCell,pParam,strLength);
+        /* retrieve the image */
+        pCellImage = mxGetCell(prhs[0],iImage);
+        pImage = (unsigned char*)mxGetData(pCellImage);
+        dim_array = mxGetDimensions(pCellImage);
 
-        pResult[iCell] = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
+        for(int iParam = 0;iParam<nParams;iParam++)
+          {
+            // retrieve cell content and transform it to a string
+            pCellParam = mxGetCell(prhs[1],iParam);
+            strLength = mxGetN(pCellParam)+1;
+            mxGetString(pCellParam,pParam,strLength);
+
+            pResult[iResult] = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
+            iResult++;
+          }
       }
 }
