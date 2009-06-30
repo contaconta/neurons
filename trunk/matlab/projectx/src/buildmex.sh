@@ -7,6 +7,7 @@ then
         echo 'Cleaning project'
         make clean
         rm *.o
+	rm ../bin/*.mexglx
     fi
 fi
 
@@ -25,12 +26,14 @@ fi
 make
 GCC=/usr/bin/c++
 MEX_ARG=-cxx
+MEX_EXE=/usr/local/matlab/bin/mex
 
 $GCC -fPIC -c -I$MEXPATH mexBoxIntegral.c
 $GCC -fPIC -c -I$MEXPATH mexIntegralImage.c
 $GCC -fPIC -c -I$MEXPATH mexRectangleFeature.c
 $GCC -fPIC -c -I$MEXPATH mexEnumerateLearners.c
-mex mexBoxIntegral.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv` -outdir ../bin/ $MEX_ARG
-mex mexIntegralImage.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv` -outdir ../bin/  $MEX_ARG
-mex mexRectangleFeature.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv` -outdir ../bin/  $MEX_ARG
-mex mexEnumerateLearners.o CMakeFiles/IntegralImages.dir/enumerateLearners.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o CMakeFiles/IntegralImages.dir/utils.o -lgcc `pkg-config --libs opencv` -outdir ../bin/  $MEX_ARG
+$MEX_EXE mexBoxIntegral.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/ $MEX_ARG
+$MEX_EXE mexIntegralImage.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
+$MEX_EXE mexRectangleFeature.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
+$MEX_EXE mexEnumerateLearners.o CMakeFiles/IntegralImages.dir/enumerateLearners.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
+
