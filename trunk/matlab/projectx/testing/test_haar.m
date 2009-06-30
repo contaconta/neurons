@@ -42,5 +42,9 @@ LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 
 for i = 1:length(LEARNERS.list)
     visualize_haar_feature(LEARNERS.list{i}, DATASETS.IMSIZE, I);
-    %LEARNERS.list{i}
+    LEARNERS.list{i}
+    
+    % you can interrupt by pressing Ctrl-C
+    % Careful : this will make the script run slower
+    % dbloop
 end

@@ -33,13 +33,12 @@ end
 
 patterns = {'[W][^_]*', '[B][^_]*'};
 
-
 for i = 1:length(patterns)
     
     m = regexp(feature_string, patterns(i), 'match');
     
-    for j = 1:length(m)
-        m_str = m{j};
+    for j = 1:size(m{1},2)
+        m_str = m{1}{j};
     
         ax_str = regexp(m_str, 'ax\w*ay', 'match');
         ax_str2 = regexp(ax_str{1}, '\d*', 'match');
