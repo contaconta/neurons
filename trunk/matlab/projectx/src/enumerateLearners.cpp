@@ -21,8 +21,6 @@
 #include <sstream>
 #include "enumerateLearners.h"
 
-#define DEBUG
-
 struct sHA_params
 {
   int step_size_x;
@@ -96,8 +94,13 @@ int enumerate_learners(char *learner_type, int max_width, int max_height, char**
       for(int sx=1;sx<=max_width;sx+=params.step_size_x)
         {
           // minimum height for HA is 2
-          for(int sy=2;sy<=max_height;sy+=params.step_size_y)
+          for(int sy=1;sy<=max_height;sy+=params.step_size_y)
             {
+
+              // Don't want to have weak learner of size 1
+              if(sx == 1 && sy ==1)
+                continue;
+
               for(int ix=1;(ix+sx)<=max_width;ix+=step_x)
                 for(int iy=1;(iy+sy)<=max_height;iy+=step_y)
                   {
