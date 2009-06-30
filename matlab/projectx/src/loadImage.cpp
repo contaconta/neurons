@@ -16,10 +16,7 @@
 #include <algorithm>
 #include <ctime>
 #include <iostream>
-#include "cv.h"
-#include "highgui.h"
 #include "integral.h"
-#include "utils.h"
 
 using namespace std;
 

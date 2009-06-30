@@ -60,11 +60,11 @@ LEARNERS(length(LEARNERS)).IMSIZE        	= IMSIZE;
 LEARNERS(length(LEARNERS)+1).feature_type 	= 'intvar';
 LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 
-% LEARNERS(length(LEARNERS)+1).feature_type 	= 'haar';
-% LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-% LEARNERS(length(LEARNERS)).shapes           = {'vert2', 'horz2', 'vert3', 'checker'};
-% LEARNERS(length(LEARNERS)).SCAN_Y_STEP      = 1;  % [6 persons, 1 all others]
-% LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 1;  % [2 persons, 1 all others]
+LEARNERS(length(LEARNERS)+1).feature_type 	= 'haar';
+LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+LEARNERS(length(LEARNERS)).shapes           = {'vert2', 'horz2', 'vert3', 'checker'};
+LEARNERS(length(LEARNERS)).SCAN_Y_STEP      = 1;  % [6 persons, 1 all others]
+LEARNERS(length(LEARNERS)).SCAN_X_STEP      = 1;  % [2 persons, 1 all others]
 
 % LEARNERS(length(LEARNERS)+1).feature_type   = 'spedge';
 % LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
@@ -90,9 +90,9 @@ LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
 % LEARNERS(length(LEARNERS)).stride           = 2; 
 % LEARNERS(length(LEARNERS)).edge_methods     = 11:15;
 
-LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
-LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
-LEARNERS(length(LEARNERS)).bins             = 9;
-LEARNERS(length(LEARNERS)).cellsize         = [4 4];   % [8 8] for persons
-LEARNERS(length(LEARNERS)).blocksize        = [2 2];
+%LEARNERS(length(LEARNERS)+1).feature_type   = 'hog';
+%LEARNERS(length(LEARNERS)).IMSIZE           = IMSIZE;
+%LEARNERS(length(LEARNERS)).bins             = 9;
+%LEARNERS(length(LEARNERS)).cellsize         = [4 4];   % [8 8] for persons
+%LEARNERS(length(LEARNERS)).blocksize        = [2 2];
 

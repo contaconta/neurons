@@ -1,4 +1,4 @@
-function LEARNERS = p_EnumerateLearners(LEARNERS, IMSIZE)
+function  p_EnumerateLearners(LEARNERS, IMSIZE)
 %P_ENUMERATELEARNERS
 %
 %   LEARNERS = p_EnumerateLearners(LEARNERS, IMSIZE) parses the list of
@@ -29,4 +29,4 @@ function LEARNERS = p_EnumerateLearners(LEARNERS, IMSIZE)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-LEARNERS.list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
+mexEnumerateLearners(LEARNERS.types, IMSIZE);

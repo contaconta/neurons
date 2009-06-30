@@ -17,7 +17,6 @@
 #include <iostream>
 #include <string>
 #include "integral.h"
-#include "utils.h"
 
 using namespace std;
 
