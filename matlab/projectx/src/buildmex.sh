@@ -26,7 +26,8 @@ fi
 make
 GCC=/usr/bin/c++
 MEX_ARG=-cxx
-MEX_EXE=/usr/local/matlab/bin/mex
+#MEX_EXE=/usr/local/matlab/bin/mex
+MEX_EXE=/usr/local/bin/mex
 
 $GCC -fPIC -c -I$MEXPATH mexBoxIntegral.c
 $GCC -fPIC -c -I$MEXPATH mexIntegralImage.c
