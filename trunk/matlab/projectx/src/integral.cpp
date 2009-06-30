@@ -75,7 +75,6 @@ int getRectangleFeature(unsigned char *pImage, int width, int height, int max_wi
 {
   int val = 0;
   int row1, col1, row2, col2;
-  // TODO : check returned type
   unsigned int* intImg = Integral(pImage,width,height);
 
   string params(weak_learner_param);
