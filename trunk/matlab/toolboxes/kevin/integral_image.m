@@ -15,4 +15,10 @@ function II = integral_image(I)
 %
 %   See also IMREAD, VJ_TRAIN
 
-II = cumsum(cumsum(I),2);
+if strcmp(class(I), 'uint8')
+    I = double(I);
+    II = cumsum(cumsum(I),2);
+    II = uint32(II);
+else
+    II = cumsum(cumsum(I),2);
+end

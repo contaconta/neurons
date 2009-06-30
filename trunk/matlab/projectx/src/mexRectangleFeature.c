@@ -24,7 +24,7 @@
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    unsigned char *pImage;
+    unsigned int *pIntegralImage;
     int *pResult;
     const mwSize *dim_array;
     mxArray *pCellParam;
@@ -42,7 +42,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     }
     
     /* Check data type of input argument */
-    if ((!mxIsUint8(prhs[0])) && (!mxIsCell(prhs[0]))) {
+    if (!mxIsCell(prhs[0])) {
       mexErrMsgTxt("Input array must be of type uint8 or cell.");
     }
     if (!mxIsCell(prhs[1])) {
@@ -68,7 +68,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       {
         /* retrieve the image */
         pCellImage = mxGetCell(prhs[0],iImage);
-        pImage = (unsigned char*)mxGetData(pCellImage);
+        pIntegralImage = (unsigned int*)mxGetData(pCellImage);
         dim_array = mxGetDimensions(pCellImage);
 
         for(int iParam = 0;iParam<nParams;iParam++)
@@ -78,7 +78,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
             strLength = mxGetN(pCellParam)+1;
             mxGetString(pCellParam,pParam,strLength);
 
-            pResult[iResult] = getRectangleFeature(pImage,dim_array[1],dim_array[0],24,24,pParam);
+            pResult[iResult] = getRectangleFeature(pIntegralImage,dim_array[1],dim_array[0],24,24,pParam);
             iResult++;
           }
       }

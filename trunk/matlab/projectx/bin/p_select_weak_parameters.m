@@ -2,7 +2,8 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w)
 
 
 %responses = get_feature_responses(learner, SET);
-responses = p_dummy_feature_values(learner, SET);
+%responses = p_dummy_feature_values(learner, SET);
+responses = p_RectangleFeature(SET.IntImages, {learner});
 
 err = zeros(size(responses)); 
 polarity = zeros(size(err)); 
