@@ -40,10 +40,10 @@ BOOST.function_handle   = @p_adaboost;  % function handle to the boosting script
 BOOST.targetF           = 1e-5;         % target false positive rate for the entire cascade
 BOOST.targetD           = .90;          % target detection rate for the entire cascade
 BOOST.Nstages           = 15;           % number of cascade stages
-DATASETS.TRAIN_POS      = 5000;          % number of positive examples in the training set
-DATASETS.TRAIN_NEG      = 5000;          % number of negative examples in the training set
-DATASETS.VALIDATION_POS = 5000;          % number of positive examples in the validation set
-DATASETS.VALIDATION_NEG = 5000;          % number of negative examples in the validation set
+DATASETS.TRAIN_POS      = 500;          % number of positive examples in the training set
+DATASETS.TRAIN_NEG      = 500;          % number of negative examples in the training set
+DATASETS.VALIDATION_POS = 500;          % number of positive examples in the validation set
+DATASETS.VALIDATION_NEG = 500;          % number of negative examples in the validation set
 
 %-------------------------------------------------------------------------
 % EXPERIMENT & STORAGE INFORMATION
