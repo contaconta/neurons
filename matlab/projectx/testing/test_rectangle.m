@@ -6,10 +6,10 @@ NSAMPLES = 1000;
 IMSIZE = [23 23];
 
 for n = 1:NSAMPLES
-    Wax = ceil(IMSIZE(2)*rand([1 1]));
-    Way = ceil(IMSIZE(1)*rand([1 1]));
-    Wbx = ceil(Wax+(IMSIZE(2)+1-Wax)*rand([1 1]));
-    Wby = ceil(Way+(IMSIZE(1)+1-Way)*rand([1 1]));
+    Wax = ceil(IMSIZE(2)*rand([1 1]))
+    Way = ceil(IMSIZE(1)*rand([1 1]))
+    Wbx = ceil(Wax+(IMSIZE(2)+1-Wax)*rand([1 1]))
+    Wby = ceil(Way+(IMSIZE(1)+1-Way)*rand([1 1]))
 
     Bax = ceil(IMSIZE(2)*rand([1 1]));
     Bay = ceil(IMSIZE(1)*rand([1 1]));
@@ -22,8 +22,9 @@ for n = 1:NSAMPLES
     visualize_haar_feature({learner}, [24 24], mat2gray(img))
     
     
-    
-    rmex = mexRectangleFeature(img, {learner});
+    II = integral_image(img)';
+    rmex = mexRectangleFeature({II}, {learner});
+    %rmex = mexRectangleFeature({img}, {learner});
     
     rmat = sum(sum(img(Way:Wby-1,Wax:Wbx-1))) - sum(sum(img(Bay:Bby-1,Bax:Bbx-1)));
     

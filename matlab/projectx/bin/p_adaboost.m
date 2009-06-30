@@ -45,7 +45,7 @@ w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
 w(TRAIN.class == -1) = .5 * (w(TRAIN.class==-1) /sum(w(TRAIN.class==-1)));
 
 %% 2. select weak learner parameters for optimal class separation
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 10000);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 1000);
 for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       optimized feature ');
     [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w);    

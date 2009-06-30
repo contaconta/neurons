@@ -48,14 +48,13 @@ unsigned int *Integral(unsigned char *img, int width, int height)
   return int_img;
 }
 
-unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
+inline unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
 {
-  // The subtraction by one for row1/col1 is because row1/col1 is inclusive.
-  int r1 = std::min(row1,   height) - 2;
-  int c1 = std::min(col1,   width)  - 2;
-  // The subtraction by one for row2/col2 is because row2/col2 is exclusive.
-  int r2 = std::min(row2,   height) - 2;
-  int c2 = std::min(col2,   width)  - 2;
+  // -1 to adjust rows/cols reflecting origin change from (1,1) to (0,0), and -1 to shift from coordinates to indexes.
+  int r1 = row1 - 2;
+  int c1 = col1 - 2;
+  int r2 = row2 - 2;
+  int c2 = col2 - 2;
 
   float A(0.0f), B(0.0f), C(0.0f), D(0.0f);
   if (r1 >= 0 && c1 >= 0) A = data[r1 * width + c1];
@@ -67,10 +66,64 @@ unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, in
   //cout << "r2: " << r2 << " c2:" << c2 << endl;
   //cout << "data: " << A << " " << B << " " << C << " " << D << endl;
 
-  return std::max(0.f, A - B - C + D);
+  return A - B - C + D;
 }
 
-int getRectangleFeature(unsigned char *pImage, int width, int height, int max_width, int max_height, char* weak_learner_param)
+int getRectangleFeature(unsigned int *intImg, int width, int height, int max_width, int max_height, char* weak_learner_param)
+{
+  int val = 0;
+  int row1, col1, row2, col2;
+
+  string params(weak_learner_param);
+  int start_idx = params.find_first_of("_")+1;
+  int end_idx = params.find_first_of("_",start_idx);
+ 
+  //cout << "width: " << width << " height:" << height << endl;
+  //cout << "start_idx: " << start_idx << endl;
+  //cout << "end_idx: " << end_idx << endl;
+
+  bool parseString = true;
+  while(parseString)
+    {
+      if(end_idx == string::npos)
+        {
+          // Process end of the string
+          end_idx = params.length();
+          parseString = false;
+        }
+
+      string sub_params = params.substr(start_idx,end_idx-start_idx);
+      //cout << "sub_params: " << &sub_params.c_str()[1] << endl;
+
+      // Extract row and column numbers
+      sscanf(&sub_params.c_str()[1],"ax%day%dbx%dby%d",&col1,&row1,&col2,&row2);
+
+      //cout << "row1: " << row1 << " col1:" << col1 << endl;
+      //cout << "row2: " << row2 << " col2:" << col2 << endl;
+
+      if(sub_params[0] == 'W')
+        {
+          val += BoxIntegral(intImg, width, height, row1, col1, row2, col2);
+        }
+      else
+        {
+          val -= BoxIntegral(intImg, width, height, row1, col1, row2, col2);
+        }
+
+      //cout << "value: " << val << endl;
+
+      if(parseString)
+        {
+          start_idx = end_idx+1;
+          //params[end_idx] = '*';
+          end_idx = params.find_first_of("_",end_idx+1);
+        }
+    }
+
+  return val;
+}
+
+int getRectangleFeatureFromRawImage(unsigned char *pImage, int width, int height, int max_width, int max_height, char* weak_learner_param)
 {
   int val = 0;
   int row1, col1, row2, col2;
