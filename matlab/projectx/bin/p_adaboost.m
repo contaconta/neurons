@@ -45,7 +45,7 @@ w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
 w(TRAIN.class == -1) = .5 * (w(TRAIN.class==-1) /sum(w(TRAIN.class==-1)));
 
 %% 2. select weak learner parameters for optimal class separation
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 1000);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 10000);
 for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       optimized feature ');
     [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w);    
@@ -77,8 +77,16 @@ CLASSIFIER.alpha(ti)            = alpha;
 %CLASSIFIER.weak_learners{ti}.index = BESTlearner;
 
 
+
 %.................. DISPLAY .....................
-s = ['       ✓ SELECTED ' LEARNERS.list{BESTlearner} ' error: ' num2str(MINerr) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti))]; disp(s);
+learner_string = LEARNERS.list{BESTlearner};
+switch learner_string(1:2)
+    case 'HA'
+        feature_type = 'Haar-like';
+    case 'RA' 
+        feature_type = 'Rays';
+end
+s = ['       ✓ SELECTED ' feature_type ' learner, error: ' num2str(MINerr) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti)) ', learner: ' learner_string]; disp(s);
 %................................................
 
 
