@@ -24,8 +24,6 @@
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-  for(int bb=0;bb<89000;bb++)
-    {
     unsigned int *pIntegralImage;
     int *pResult;
     const mwSize *dim_array;
@@ -84,5 +82,4 @@ void mexFunction(int nlhs,       mxArray *plhs[],
             iResult++;
           }
       }
-    }
 }
