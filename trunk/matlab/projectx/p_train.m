@@ -21,7 +21,7 @@
 %   PURPOSE.  See the GNU General Public License for more details.
 
 %% ============================== load parameters and path information ============================================
-
+clear all;
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
@@ -50,7 +50,7 @@ VALIDATION = p_collect_data(DATASETS, 'validation'); disp(['   Elapsed time ' nu
 
 %% ============================== train the cascade ==============================================================
 
-CASCADE = ada_cascade_init(DATASETS);       % initialize the CASCADE struct
+CASCADE = p_cascade_init(DATASETS);       % initialize the CASCADE struct
 i = 1;                                      % cascade stage index
 Fi = 1; Di = 1;                             % cascade's current false positive / detection rates     
 
