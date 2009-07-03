@@ -97,7 +97,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
             left_token = right_token;
           }
 
-        /*
         // Vertical learners
         for(int sx=1;sx<=max_width;sx+=params.step_size_x)
           {
@@ -163,7 +162,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
                     }
               }
           }
-        */
 
         // 2*2 elements
         int sy;
