@@ -45,7 +45,7 @@ w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
 w(TRAIN.class == -1) = .5 * (w(TRAIN.class==-1) /sum(w(TRAIN.class==-1)));
 
 %% 2. select weak learner parameters for optimal class separation
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 10000);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
 for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       optimized feature ');
     [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w);    
@@ -64,7 +64,7 @@ end
 alpha                           = log( (1 - MINerr) / MINerr );
 beta                            = MINerr/ (1 - MINerr);      % beta is between [0, 1]
 
-CLASSIFIER.feature{ti}          = LEARNERS.list{BESTlearner};
+CLASSIFIER.learner{ti}          = LEARNERS.list{BESTlearner};
 CLASSIFIER.polarity(ti)         = LEARNERS.polarity(BESTlearner);
 CLASSIFIER.threshold(ti)        = LEARNERS.threshold(BESTlearner);
 CLASSIFIER.alpha(ti)            = alpha;
@@ -94,7 +94,9 @@ s = ['       ✓ SELECTED ' feature_type ' learner, error: ' num2str(MINerr) ', 
 %% 4. Update the training weight vector according to misclassifications
 % get selected weak learner's classification results for the TRAIN set
 %h = ada_classify_weak_learner(BESTlearner, weak_classifier, TRAIN)';
-h = dummy_classify_set(CLASSIFIER.feature{ti}, TRAIN);
+%h = dummy_classify_set(CLASSIFIER.feature{ti}, TRAIN);
+h = p_classify_weak_learner(CLASSIFIER.learner{ti}, CLASSIFIER.polarity(ti), CLASSIFIER.threshold(ti), TRAIN)';
+
 
 % reweight misclassified examples to be more important (& store)
 e = h ~= TRAIN.class;           %abs( h - TRAIN(:).class);

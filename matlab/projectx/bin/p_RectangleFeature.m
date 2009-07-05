@@ -1,5 +1,5 @@
 function  responses = p_RectangleFeature(imgs, feats)
-%P_ENUMERATELEARNERS
+%P_RECTANGLEFEATURE
 %
 %   TODO: documentation
 %

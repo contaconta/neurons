@@ -24,8 +24,6 @@ count = 1;
 
 %% collect POSITIVE (c = 1) and NEGATIVE (c = 2) example images into SET
 
-%SET.Images = zeros([IMSIZE POS_LIM+NEG_LIM]);	% initialize with empty images
-
 for c = 1:2  % c = the postive and negative classes
     
     % collect the training image files into d, and initialize the data struct
@@ -41,29 +39,9 @@ for c = 1:2  % c = the postive and negative classes
         filenm = d{i};
         I = imread(filenm);
 
-%         % convert to proper class (pixel intensity represented by [0,1])
-%         if ~isa(I, 'double')
-%             cls = class(I);
-%             I = mat2gray(I, [0 double(intmax(cls))]); 
-%         end
-% 
-%         % convert to grasyscale if necessary
-%         if size(I,3) > 1
-%             I = rgb2gray(I);
-%         end
-% 
-%         % resize to standard size
-%         if ~isequal(size(I), IMSIZE)
-%             I = imresize(I, IMSIZE);
-%         end
-% 
-%         % normalize the image intensity if necessary
-%         if NORM
-%             I = imnormalize('image', I);
-%         end
+        %I = processImage(I, IMSIZE, NORM);
 
         % store the image into SET
-        %SET.Images(:,:,count) = I;
         SET.Images{count} = I;
         SET.IntImages{count} = integral_image(I)';
         SET.filename{count} = filenm;
@@ -81,7 +59,28 @@ end
 
 
 
+function I = processImage(I, IMSIZE, NORM)
 
+% convert to proper class (pixel intensity represented by [0,1])
+if ~isa(I, 'double')
+    cls = class(I);
+    I = mat2gray(I, [0 double(intmax(cls))]); 
+end
+
+% convert to grasyscale if necessary
+if size(I,3) > 1
+    I = rgb2gray(I);
+end
+
+% resize to standard size
+if ~isequal(size(I), IMSIZE)
+    I = imresize(I, IMSIZE);
+end
+
+% normalize the image intensity if necessary
+if NORM
+    I = imnormalize('image', I);
+end
 
 
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)
