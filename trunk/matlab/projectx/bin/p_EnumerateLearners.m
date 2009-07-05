@@ -29,4 +29,14 @@ function  LEARNERS = p_EnumerateLearners(LEARNERS, IMSIZE)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+
+tic; %disp('...defining the weak learners.');
+
 LEARNERS.list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
+
+for i = 1:length(LEARNERS.types)
+    type = LEARNERS.types{i};
+    disp(['   defined ' type(1:2) ' learners.']);    
+end
+
+disp(['   Defined ' num2str(length(LEARNERS.list)) ' learners. Elapsed time ' num2str(toc) ' seconds.']);

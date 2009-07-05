@@ -1,5 +1,20 @@
 function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w)
+%% TODO: write documenation
 
+%   Copyright © 2009 Computer Vision Lab, 
+%   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
+%   All rights reserved.
+%
+%   Authors:    Kevin Smith         http://cvlab.epfl.ch/~ksmith/
+%               Aurelien Lucchi     http://cvlab.epfl.ch/~lucchi/
+%
+%   This program is free software; you can redistribute it and/or modify it 
+%   under the terms of the GNU General Public License version 2 (or higher) 
+%   as published by the Free Software Foundation.
+%                                                                     
+% 	This program is distributed WITHOUT ANY WARRANTY; without even the 
+%   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+%   PURPOSE.  See the GNU General Public License for more details.
 
 %responses = get_feature_responses(learner, SET);
 %responses = p_dummy_feature_values(learner, SET);
@@ -65,6 +80,6 @@ end
 
 %% find 'q' that gives the minimum error and correspoinding polarity
 [error, q_ind]  = min(err);
-threshold       = fsorted(q_ind);
+threshold       = double(fsorted(q_ind));
 pol             = polarity(q_ind);
 
