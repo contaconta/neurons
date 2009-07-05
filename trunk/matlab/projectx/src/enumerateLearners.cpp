@@ -32,7 +32,7 @@ struct sHA_params
 
 vector<string> list_weak_learners;
 
-int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, int max_height, char**& weak_learners)
+int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, int max_height, char**& weak_learners, int* weak_learner_type_indices)
 {
   char temp[20];
   char* left_token = 0;
@@ -40,6 +40,7 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
   int size;
   int step_x = 1;
   int step_y = 1;
+  int nb_learners = 0; // number of stored weak learners
 
   // Matlab passes width and height, not coordinates
   max_width++;
@@ -184,6 +185,9 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
               }
           }
       }
+
+    weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;
+    nb_learners += list_weak_learners.size();
   }
 
   // Exporting the list

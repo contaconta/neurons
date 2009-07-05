@@ -59,11 +59,18 @@ void mexFunction( int nlhs, mxArray *plhs[],
       mxGetString(tmp,learner_type[idxCell],strLength);
     }
 
+    /* create output matrices */
+    plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
+    mwSize number_of_dims = 1;
+    const mwSize dims[]={nLearnerTypes};
+    plhs[1] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
+    int* weak_learner_type_indices = (int*)mxGetData(plhs[1]);
+
     char** weak_learners;
     int nb_weak_learners = enumerate_learners(learner_type,nLearnerTypes,
-                                              width_detector,height_detector,weak_learners);
+                                              width_detector,height_detector,
+                                              weak_learners,weak_learner_type_indices);
 
-    plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
     for(int line = 0; line < nb_weak_learners; line++)
       {
         mxSetCell(plhs[0], line, mxCreateString(weak_learners[line]));
