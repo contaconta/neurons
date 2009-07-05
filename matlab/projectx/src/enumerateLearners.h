@@ -17,7 +17,15 @@
 
 using namespace std;
 
-// create a list of all the possible combination of weak learners for the specified learner type
+// Create a list of all the possible combination of weak learners for the specified learner type
 // @param max_width : maximum width of the weak learners
 // @param max_height : maximum height of the weak learners
-int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, int max_height,char**& weak_learners);
+// @param weak_learners is an double array containing the list of weak learners
+//        The memory for this array has to be allocated inside the function as
+//        we don't know the size needed before running the function.
+// @param weak_learner_type_indices has to be an array of size nb_learner_type
+//        This functions will populate this array with the first indices of
+//        each learner type in the array weak_learner
+int enumerate_learners(char **learner_type, int nb_learner_type,
+                       int max_width, int max_height,
+                       char**& weak_learners, int* weak_learner_type_indices);
