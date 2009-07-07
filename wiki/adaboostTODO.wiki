@@ -1,13 +1,7 @@
-#summary A list of things to do for the adaboost project
+=Boosting=
 
-= Generalization =
-  * ada_train_weak_learners is not generalized properly (*ada_*_learn) are not interchangable yet
-  * *make a LEARNER_DEFINITIONS structure* to contain all essential info about the weak learners and replace all the cells everywhere.  this should be defined in ada_train_settings
-
-= Tidying Up =
-  * rename ada_train_settings to ada_settings
-  * ada_define_weak_classifiers needs to be cleaned a bit
-
-= New Features = 
-  * make logfile plot which type of feature was selected at each stage
-  
+  #Scheme to set cascade goals
+  #Investigate passing weights from one stage to the next
+  #RealBoost
+  #Domain Partitioning
+  #Totally Corrective Boosting
