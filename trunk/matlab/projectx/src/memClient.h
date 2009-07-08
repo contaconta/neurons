@@ -13,21 +13,15 @@
 // for comments & bug reports                                          //
 /////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include "utils.h"
+/*
+ * shm-client - client program to demonstrate shared memory.
+ */
 
-using namespace std;
+enum eDataType{TYPE_ROW, TYPE_COLUMN};
 
-void store_weak_learners(char* learner_type, int index,
-                         const char* data, int data_size)
-{
-    stringstream out;
-    out << learner_type << "_" << index;
-    cout << "Store" << out.str() << endl;
-    ofstream outputFile(out.str().c_str(),ios::out);
-    outputFile.write(data,data_size);
-    outputFile.close();
-}
+// @param : either "row" or "column"
+// TODO : overload function to have more types for dataDst
+int storeWeakLearnerResponses(int index_x, int index_y, unsigned int* dataSrc, eDataType dataType, int dataSize);
 
+// @return a pointer on the data required
+int getWeakLearnerResponses(int index_x, int index_y, unsigned int* dataDst, eDataType dataType);

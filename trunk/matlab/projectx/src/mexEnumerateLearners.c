@@ -22,7 +22,6 @@ void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[] )
 {
     const char **fnames;       /* pointers to field names */
-    mwSize dims;
     mxArray    *tmp, *fout;
     char       *pdata=NULL;
     int        ifield, nfields;
@@ -60,7 +59,6 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
 
     /* create output matrices */
-    plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
     mwSize number_of_dims = 1;
     const mwSize dims[]={nLearnerTypes};
     plhs[1] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
@@ -70,6 +68,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
     int nb_weak_learners = enumerate_learners(learner_type,nLearnerTypes,
                                               width_detector,height_detector,
                                               weak_learners,weak_learner_type_indices);
+
+    plhs[0] = mxCreateCellMatrix(nb_weak_learners, 1);
 
     for(int line = 0; line < nb_weak_learners; line++)
       {

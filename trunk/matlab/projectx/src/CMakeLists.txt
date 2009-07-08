@@ -24,9 +24,11 @@ SET(CMAKE_BUILD_TYPE Release)
 # add include directories
 #INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
 
-#INCLUDE_DIRECTORIES(/usr/local/extern/include/)
+INCLUDE_DIRECTORIES(/usr/local/extern/include/)
 
-ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp)
+ADD_EXECUTABLE(memDaemon memDaemon.cpp common.cpp)
+
+ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp)
 #ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp utils.cpp)
 TARGET_LINK_LIBRARIES(IntegralImages ${OPENCV_LIBRARIES})
 

@@ -16,12 +16,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "cv.h"
-
-// Convert image to single channel 32F
-IplImage *getGray(IplImage *img);
-
-// Convert image to single channel 8 bits
-IplImage *getGray8(IplImage *img);
+void store_weak_learners(char* learner_type, int index,
+                         const char* data, int data_size);
 
 #endif //UTILS_H
