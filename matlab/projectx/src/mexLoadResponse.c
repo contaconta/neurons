@@ -16,15 +16,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "mex.h"
-//#include "utils.h"
+#include "common.h"
 #include "memClient.h"
 
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     /* Check for proper number of input and output arguments */    
-    if (nrhs != 3) {
-	mexErrMsgTxt("3 input arguments required.");
+    if (nrhs != 2) {
+	mexErrMsgTxt("2 input arguments required.");
     } 
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
@@ -58,17 +58,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         mexErrMsgTxt("Second argument should be 'row' or 'col'");
       }
 
-    mexPrintf("Data\n");
+    // TODO : this should be stored in matlab and passed as a parameter
+    const int data_size = 10;
 
-    /* Get the real data */
-    unsigned int* pData=(unsigned int*)mxGetPr(prhs[2]);
-    int nElements = mxGetNumberOfElements(prhs[2]);
-    
-    /* Store data in a file */
-    mexPrintf("nEl %d\n", nElements);
+    const mwSize dims[]={data_size};
+    plhs[0] = mxCreateNumericArray(1,dims,mxUINT32_CLASS,mxREAL);
+    unsigned int* pData = (unsigned int*)mxGetData(plhs[0]);
 
-    // TODO : pass row/col
-    storeWeakLearnerResponses(index_x, index_y, pData, eType, nElements);
+    getWeakLearnerResponses(index_x, index_y, pData, eType);
 
     mxFree(stype);
 }
