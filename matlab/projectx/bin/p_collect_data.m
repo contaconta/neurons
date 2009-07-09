@@ -38,7 +38,11 @@ for c = 1:2  % c = the postive and negative classes
         % read the file
         filenm = d{i};
         I = imread(filenm);
-
+        
+        I  = convertToGray(I, DATASETS.IMSIZE, DATASETS.NORM);
+        
+        
+        % if necessary, process the image
         %I = processImage(I, IMSIZE, NORM);
 
         % store the image into SET
@@ -57,16 +61,7 @@ end
 %SET.Images = SET.Images(:,:,1:count-1);
 
 
-
-
-function I = processImage(I, IMSIZE, NORM)
-
-% convert to proper class (pixel intensity represented by [0,1])
-if ~isa(I, 'double')
-    cls = class(I);
-    I = mat2gray(I, [0 double(intmax(cls))]); 
-end
-
+function I  = convertToGray(I, IMSIZE, NORM)
 % convert to grasyscale if necessary
 if size(I,3) > 1
     I = rgb2gray(I);
@@ -81,6 +76,16 @@ end
 if NORM
     I = imnormalize('image', I);
 end
+
+function I = processImage(I, IMSIZE, NORM)
+
+% convert to proper class (pixel intensity represented by [0,1])
+if ~isa(I, 'double')
+    cls = class(I);
+    I = mat2gray(I, [0 double(intmax(cls))]); 
+end
+
+
 
 
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)

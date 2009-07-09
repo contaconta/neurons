@@ -1,4 +1,4 @@
-function [CLASSIFIER, restart_flag] = p_adaboost(varargin)
+function CLASSIFIER = p_adaboost(varargin)
 %% ADA_ADABOOST trains a strong classifier from weak classifiers & training data.
 %
 %   CLASSIFIER = p_adaboost(TRAIN, WEAK, ti, LEARNERS) trains a strong
@@ -38,6 +38,11 @@ else
    w = CLASSIFIER.w;
 end
 
+% ---- when a new stage is reached, reset the example weights! ----
+if ti == 1
+    disp('   NORMALIZED THE WEIGHTS!');
+    w = ones(1,length(TRAIN.class)) ./ length(TRAIN.class); 
+end
 
 %% 1. Normalize the weights
 % normalize so each class has weight = 0.5
@@ -45,7 +50,7 @@ w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
 w(TRAIN.class == -1) = .5 * (w(TRAIN.class==-1) /sum(w(TRAIN.class==-1)));
 
 %% 2. select weak learner parameters for optimal class separation
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 10000);
 for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       optimized feature ');
     [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w);    
@@ -86,8 +91,10 @@ switch learner_string(1:2)
     case 'RA' 
         feature_type = 'Rays';
 end
-s = ['       ✓ SELECTED ' feature_type ' learner, error: ' num2str(MINerr) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti)) ', learner: ' learner_string]; disp(s);
+s = ['       ✓ SELECTED ' feature_type ' learner, error: ' num2str(MINerr) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti))  ]; disp(s);
+s = ['                  id: ' learner_string ]; disp(s);
 %................................................
+
 
 
 
@@ -110,82 +117,3 @@ CLASSIFIER.w = w;
 
 
 
-
-
-
-
-
-% 
-% 
-% %% train the strong classifier as a series of ti weak classifiers
-% for ti = start_t:ti
-%     %% 1. Normalize the weights
-%     % normalize so each class has weight = 0.5
-%     w(TRAIN.class == 1) = .5 * (w(TRAIN.class==1) /sum(w(TRAIN.class==1)));
-%     w(TRAIN.class == 0) = .5 * (w(TRAIN.class==0) /sum(w(TRAIN.class==0)));
-%     
-%     %% 2. train weak learners for optimal class separation
-%     WEAK = ada_train_weak_learners(WEAK, TRAIN, w);
-%     
-%     %% 3. Use the best WEAK learner as the ti-th CLASSIFIER hypothesis 
-%     [MINerr, BESTlearner] = min(WEAK.error);
-%     
-%     %======== HACK to avoid repeatedly selecting same feture (2 back) ==============
-%     if (ti > 2) && (BESTlearner == CLASSIFIER.feature_index(ti-2)) && (BESTlearner == CLASSIFIER.feature_index(ti-1))
-% 
-%         disp(' !!!! REPEATED CLASSIFIER!!!! ');
-%         % if we have a repeated classifier, set the weight of the leading
-%         % classifier to 0.
-%         maxinds = find(w == max(w));w(w == max(w)) = 0; filenm = 'BADEXAMPLES.txt'; %#ok<NASGU>
-%         disp(['set leading weights for examples [' num2str(maxinds) '] to 0.  wrote to ' filenm]);
-%         fid = fopen(filenm, 'a', 'n');
-%         cstring = [TRAIN.database ' bad example: ' num2str(maxinds) sprintf('\n')];
-%         fwrite(fid, cstring);fclose(fid);  
-%     end
-%     if (ti > 5) && (BESTlearner == CLASSIFIER.feature_index(ti-5)) && (BESTlearner == CLASSIFIER.feature_index(ti-1))
-%         disp('recollecting FPs and restarting this stage!');
-%         restart_flag = 1; 
-%         break;
-%     end
-%     %======================================================================
-%     
-%     
-%     % populate the selected classifier with needed information
-%     CLASSIFIER.feature_index(ti) = BESTlearner; 
-%     alpha                       = log( (1 - MINerr) / MINerr );
-%     beta                        = MINerr/ (1 - MINerr);      % beta is between [0, 1]
-%     weak_classifier             = WEAK.learners{BESTlearner};
-%     CLASSIFIER.polarity(ti)      = weak_classifier.polarity;
-%     CLASSIFIER.threshold(ti)         = weak_classifier.threshold;
-%     CLASSIFIER.alpha(ti)         = alpha;
-%    
-%     
-%     % append the weak learner to the classifier's list of weak learners
-%     CLASSIFIER.weak_learners{ti} = weak_classifier;
-%     CLASSIFIER.weak_learners{ti}.alpha = alpha;
-%     CLASSIFIER.weak_learners{ti}.index = BESTlearner;
-%         
-% 
-%     %%%%%%%%%%%%%%%%%%% DISPLAY %%%%%%%%%%%%%%%%%%%
-%     for i = 1:length(LEARNERS)
-%         type = LEARNERS(i).feature_type;  [m1, v1] = min(WEAK.error( WEAK.lists.(type) )); ind = WEAK.lists.(type)(v1);
-%         if m1 == min(WEAK.error); prestr = '     ✓ '; else prestr = '       '; end
-%         s = [prestr 'best ' type ' error: ' num2str(m1) ', feature index: ' num2str(ind)]; disp(s);
-%     end
-%     s = ['       SELECTED ' WEAK.learners{BESTlearner}.type ' error: ' num2str(MINerr) ', feature index: ' num2str(BESTlearner) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti))]; disp(s);
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%    
-% 
-%     
-%     %% 4. Update the training weight vector according to misclassifications
-%     % get selected weak learner's classification results for the TRAIN set
-%     h = ada_classify_weak_learner(BESTlearner, weak_classifier, TRAIN)';
-%     
-%     % reweight misclassified examples to be more important (& store)
-%     e = abs( h - TRAIN(:).class);
-%     w = w .* (beta * ones(size(w))).^(1 - e);
-%     CLASSIFIER.w = w;   
-%     
-%     % clean up
-%     clear IIs beta e f h    
-% end

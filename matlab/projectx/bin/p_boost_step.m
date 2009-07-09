@@ -1,4 +1,4 @@
-function [CLASSIFIER, restart_flag] = p_boost_step(TRAIN, LEARNERS, BOOST, ti, CASCADE)
+function CLASSIFIER = p_boost_step(TRAIN, LEARNERS, BOOST, ti, CASCADE, i)
 %% P_BOOST_STEP adds a new weak learner using appropriate boosting method 
 %
 %   TODO: write documentation.
@@ -24,12 +24,12 @@ function [CLASSIFIER, restart_flag] = p_boost_step(TRAIN, LEARNERS, BOOST, ti, C
 if ti == 1
     % add the first weak learner to the classifier
     boost_step = BOOST.function_handle;
-    [CLASSIFIER, restart_flag] = boost_step(TRAIN, LEARNERS, ti);
+    CLASSIFIER = boost_step(TRAIN, LEARNERS, ti);
 else
     % add subsequent weak learners to the classifier
-    CLASSIFIER = CASCADE.CLASSIFIER;
+    CLASSIFIER = CASCADE(i).CLASSIFIER;
     boost_step = BOOST.function_handle;
-    [CLASSIFIER, restart_flag] = boost_step(TRAIN, LEARNERS, ti, CLASSIFIER);
+    CLASSIFIER = boost_step(TRAIN, LEARNERS, ti, CLASSIFIER);
 end
 
 

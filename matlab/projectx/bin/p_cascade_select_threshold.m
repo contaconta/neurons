@@ -97,14 +97,16 @@ end
 
 
 
-S1 = sprintf('     Di=%5.4g (%d/%d)\tFi=%5.4g (%d/%d)\tCASCADE -> VALIDATION SET', Di, length(tps), length(find(gt_all == 1)), Fi, length(fps), length(find(gt_all == -1)) );
-S2 = sprintf('     di=%5.4g (%d/%d)\tfi=%5.4g (%d/%d)\tSTAGE %d -> VALIDATION SET', CASCADE(i).di, length(tps), length(find(gt == 1)), CASCADE(i).fi, length(fps), length(find(gt == -1)), i);
+S1 = sprintf('       Di=%5.4g (%d/%d)\tFi=%5.4g (%d/%d)\tCASCADE -> VALIDATION SET', Di, length(tps), length(find(gt_all == 1)), Fi, length(fps), length(find(gt_all == -1)) );
+S2 = sprintf('       di=%5.4g (%d/%d)\tfi=%5.4g (%d/%d)\tSTAGE %d -> VALIDATION SET', CASCADE(i).di, length(tps), length(find(gt == 1)), CASCADE(i).fi, length(fps), length(find(gt == -1)), i);
 
-S3 = ['                      selected CASCADE.threshold = ' sprintf('%0.6g', CASCADE(i).threshold) ];
+%S3 = ['                      selected CASCADE.threshold = ' sprintf('%0.6g', CASCADE(i).threshold) ];
+S4 = [' C.thresh=' sprintf('%0.6g', CASCADE(i).threshold) ];
+
 
 %disp(['  Detection             False Positive         selected CASCADE.threshold = ' sprintf('%0.6g', CASCADE(i).threshold)])   
-disp(S3);
-disp(S2);
+%disp(S3);
+disp([S2 S4]);
 disp(S1);
 
    

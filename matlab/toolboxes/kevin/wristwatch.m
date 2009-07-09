@@ -57,8 +57,8 @@ for i=1:nargin
     end
 end
 
-
-if (UPDATE == 1) && (mod(W.n, W.step) == 0)
+ 
+if (UPDATE == 1) && ((mod(W.n, W.step) == 0) || (W.n == W.N))
     W.time_elapsed = toc;
     W.time_per_iter = W.time_elapsed/W.n;
     W.remain  = (W.N - W.n)*W.time_per_iter;   

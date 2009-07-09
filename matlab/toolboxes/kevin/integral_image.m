@@ -15,7 +15,7 @@ function II = integral_image(I)
 %
 %   See also IMREAD, VJ_TRAIN
 
-if strcmp(class(I), 'uint8')
+if (strncmp(class(I), 'uint', 4)) 
     I = double(I);
     II = cumsum(cumsum(I),2);
     II = uint32(II);
