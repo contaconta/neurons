@@ -74,8 +74,8 @@ for k = 1:nargin-2
         case 'FPR'
             % false  positive rate (false alarm rate, fall-out)
             if ~exist('FP', 'var'); FP = sum(test & ~gt); end
-            FNR = FP/ sum(~gt);
-            varargout{k} = FNR;
+            FPR = FP/ sum(~gt);
+            varargout{k} = FPR;
         case 'ACC'
             % accuracy
             if ~exist('TP','var'); TP = sum(test & gt); end

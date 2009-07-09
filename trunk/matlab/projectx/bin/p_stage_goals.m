@@ -32,6 +32,9 @@ NStages = BOOST.Nstages;
 targetF = BOOST.targetF;
 targetD = BOOST.targetD;
 
+% BOOST.goals(1).dmin = .99;
+% BOOST.goals(1).fmax = 1e-5;
+
 BOOST.goals(1).dmin = .99;
 BOOST.goals(1).fmax = .5;
 %---------------------------------------------------

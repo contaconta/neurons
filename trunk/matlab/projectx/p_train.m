@@ -64,20 +64,15 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
     % BOOSTING: add weak learners to stage i until dmin & fmax goals are met 
     while (CASCADE(i).fi > BOOST.goals(i).fmax) || (CASCADE(i).di < BOOST.goals(i).dmin)
         
-        disp('   ----------------------------------------------------------------------');
-        disp(['...CASCADE stage i=' num2str(i) ' selecting weak learner ti=' num2str(ti) '.']);
+        disp('   ----------------------------------------------------------------------------------------');
+        disp(['   Training CASCADE Stage (i=' num2str(i) '): selecting weak learner (ti=' num2str(ti) ').']);
         
         % --------- train the next weak classifier ti for stage i --------- 
-        [CASCADE(i).CLASSIFIER, restart_flag] = p_boost_step(TRAIN, LEARNERS, BOOST, ti, CASCADE);
-        
-       %disp(['  Detection             False Positive']);
-        %disp('     ....................................................................');
-        disp(' ');
-        disp('     Class +1 Detection         Class -1 False Positives');     
-        S1 = sprintf('     d*=%6.4g (minimum)\tf*=%6.4g (maximum)\t**STAGE %d GOALS**',BOOST.goals(i).dmin, BOOST.goals(i).fmax, i); disp(S1);
-        
-        %disp(['  Stage ' num2str(i) ' goals: min detection rate (di) > ' num2str(BOOST.goals(i).dmin) ', max false positive rate (fi) < ' num2str(BOOST.goals(i).fmax) '.']);
-        
+        CASCADE(i).CLASSIFIER = p_boost_step(TRAIN, LEARNERS, BOOST, ti, CASCADE, i);
+
+        disp(' '); disp('       Class +1 Detection       Class -1 False Positives');     
+        S1 = sprintf('       d*=%6.4g (minimum)\tf*=%6.4g (maximum)\t**STAGE %d GOALS**',BOOST.goals(i).dmin, BOOST.goals(i).fmax, i); disp(S1);
+             
         % ------- adjust cascade threshold for stage i to meet dmin -------
         %  adjust the threshold for the current stage until we find one
         %  which gives a satifactory detection rate (this changes the false alarm rate)
@@ -87,21 +82,27 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         % ...................... SANITY CHECK .............................
         % to make sure we're actually improving on the training data
         gt = [TRAIN(:).class]';  C = p_classify_cascade(CASCADE, TRAIN); [tpr fpr FPs TNs TPs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist', 'TNlist', 'TPlist'); %disp(['Di=' num2str(tpr) ', Fi=' num2str(fpr) ', #FP = ' num2str(length(FPs)) '.  CASCADE applied to TRAIN set.'  ]);               
-        S2 = sprintf('     Di=%5.4g (%d/%d)\tFi=%5.4g (%d/%d)\tCASCADE -> TRAIN SET', tpr, length(TPs), length(find(gt == 1)), fpr, length(FPs), length(find(gt == -1)) ); disp(S2);
+        S2 = sprintf('       Di=%5.4g (%d/%d)\tFi=%5.4g (%d/%d)\tCASCADE -> TRAIN SET', tpr, length(TPs), length(find(gt == 1)), fpr, length(FPs), length(find(gt == -1)) ); disp(S2);
         % .................................................................
         
         
-        % ...... HACK TO RESTART THE STAGE IF REPEATING CLASSIFIER ........
-        if restart_flag
-            i = i - 1;   if i > 0; CASCADE = CASCADE(1:i); end; break;
+%         % ...... HACK TO RESTART THE STAGE IF REPEATING CLASSIFIER ........
+%         if restart_flag
+%             i = i - 1;   if i > 0; CASCADE = CASCADE(1:i); end; break;
+%         end
+%         % .................................................................
+
+        %...... HACK TO STOP IF REPEATING CLASSIFIER ........
+        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1})
+            disp(' REPEATED CLADDIFIER, ABORT!');
+            beep; keyboard;
         end
-        % .................................................................
 
         % write training results to the log file
         %logfile(EXPERIMENT.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr length(FPs) CASCADE(i).CLASSIFIER.]);
         
         % save the cascade to a file in case something bad happens and we need to restart
-        save(EXPERIMENT.cascade_filenm, 'CASCADE', 'EXPERIMENT', 'DATASETS', 'LEARNERS'); disp(['       ...saved a temporary copy of CASCADE to ' EXPERIMENT.cascade_filenm]);
+        save(EXPERIMENT.cascade_filenm, 'CASCADE', 'EXPERIMENT', 'DATASETS', 'LEARNERS'); disp(' '); disp(['       ...saved a temporary copy of CASCADE to ' EXPERIMENT.cascade_filenm]);
     
         ti = ti + 1;        % proceed to the next weak learner
     end
