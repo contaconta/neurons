@@ -1,4 +1,16 @@
 Aur: finish haar interface
+enumerateLearners should return indices
+Matlab : storeWeakLearners should pass indices starting at 0
+mexLoadResponse
+    // TODO : this should be stored in matlab and passed as a parameter
+    const int data_size = 10;
+
+Deamon : run one instance only
+
+Define learner type in a matlab file ?
+
+--------------------------
+
 Kev: finish skeleton
 
 Functions that need to be updated & checked:

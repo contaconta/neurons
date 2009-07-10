@@ -27,8 +27,9 @@ make
 #GCC=/usr/bin/c++
 GCC=g++
 MEX_ARG=-cxx
-MEX_EXE=/usr/local/matlab/bin/mex
+#MEX_EXE=/usr/local/matlab/bin/mex
 #MEX_EXE=/usr/local/bin/mex
+MEX_EXE=`which mex`
 CFLAGS="-w -c -O3" #$(OPENMP)
 
 $GCC -fPIC $CFLAGS -I$MEXPATH mexBoxIntegral.c
@@ -41,5 +42,5 @@ $MEX_EXE mexBoxIntegral.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/In
 $MEX_EXE mexIntegralImage.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
 $MEX_EXE mexRectangleFeature.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
 $MEX_EXE mexEnumerateLearners.o CMakeFiles/IntegralImages.dir/enumerateLearners.o CMakeFiles/IntegralImages.dir/integral.o CMakeFiles/IntegralImages.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
-$MEX_EXE mexStoreResponse.o CMakeFiles/IntegralImages.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
-$MEX_EXE mexLoadResponse.o CMakeFiles/IntegralImages.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexStoreResponse.o CMakeFiles/IntegralImages.dir/common.o CMakeFiles/IntegralImages.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexLoadResponse.o CMakeFiles/IntegralImages.dir/common.o CMakeFiles/IntegralImages.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG

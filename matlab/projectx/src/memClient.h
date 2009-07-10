@@ -14,14 +14,19 @@
 /////////////////////////////////////////////////////////////////////////
 
 /*
- * shm-client - client program to demonstrate shared memory.
+ * shm-client - client program to manage shared memory.
  */
 
-enum eDataType{TYPE_ROW, TYPE_COLUMN};
+#include "common.h"
+
+enum eDataFormat{FORMAT_ROW, FORMAT_COLUMN};
+
+// get memory size
+int getMemSize(int &width, int &height);
 
 // @param : either "row" or "column"
 // TODO : overload function to have more types for dataDst
-int storeWeakLearnerResponses(int index_x, int index_y, unsigned int* dataSrc, eDataType dataType, int dataSize);
+int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat, eDataType dataType, int index, int dataSize);
 
 // @return a pointer on the data required
-int getWeakLearnerResponses(int index_x, int index_y, unsigned int* dataDst, eDataType dataType);
+int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat, eDataType dataType, int index);

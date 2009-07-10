@@ -19,6 +19,8 @@ INCLUDE_REGULAR_EXPRESSION("^.*$")
 SET(CMAKE_BUILD_TYPE Release)
 #SET(CMAKE_C_COMPILER mex)
 #SET(CMAKE_CXX_COMPILER mex)
+SET(EXECUTABLE_OUTPUT_PATH ../bin/
+    CACHE PATH "Single output directory for building all executables.")
 
 #FIND_PACKAGE(OpenCV REQUIRED)
 # add include directories
@@ -28,7 +30,7 @@ INCLUDE_DIRECTORIES(/usr/local/extern/include/)
 
 ADD_EXECUTABLE(memDaemon memDaemon.cpp common.cpp)
 
-ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp)
+ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp common.cpp)
 #ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp utils.cpp)
 TARGET_LINK_LIBRARIES(IntegralImages ${OPENCV_LIBRARIES})
 
