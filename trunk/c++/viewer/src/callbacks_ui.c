@@ -542,3 +542,29 @@ on_select_shaders_changed              (GtkComboBox     *combobox,
     GLint filterId = glGetUniformLocation(shader_p,"filterId");
     glUniform1i(filterId,active);
 }
+
+void
+on_min_alpha_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  min_alpha = gtk_spin_button_get_value(GTK_SPIN_BUTTON(editable));
+  cube->min_alpha = min_alpha;
+}
+
+
+void
+on_max_alpha_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  max_alpha = gtk_spin_button_get_value(GTK_SPIN_BUTTON(editable));
+  cube->max_alpha = max_alpha;
+}
+
+
+void
+on_cbBlendFunction_changed             (GtkComboBox     *combobox,
+                                        gpointer         user_data)
+{
+  blendFunction = (eBlendFunction)gtk_combo_box_get_active(combobox);
+  cube->blendFunction = (Cube_P::eBlendFunction)blendFunction;
+}

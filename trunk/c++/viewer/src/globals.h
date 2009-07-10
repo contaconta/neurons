@@ -30,6 +30,7 @@ double rot3DY = 0;
 GtkWidget *ascEditor;
 GtkWidget* drawing3D;
 GtkWidget* selectionEditor;
+GtkWidget* alphaEditor;
 double widgetWidth = 0;
 double widgetHeight = 0;
 
@@ -97,9 +98,10 @@ MOD_VIEWER ---- the mode per default.
 MOD_ASCEDITOR - to edit asc files
 MOD_SELECT_EDITOR - select tool
 */
-enum MayorMode { MOD_VIEWER,
-                 MOD_ASCEDITOR,
-                 MOD_SELECT_EDITOR};
+enum MayorMode { MOD_VIEWER = 0x0,
+                 MOD_ASCEDITOR = 0x10,
+                 MOD_SELECT_EDITOR = 0x100,
+                 MOD_ALPHA_EDITOR = 0x1000};
 
 int majorMode = MOD_VIEWER;
 
@@ -146,6 +148,10 @@ vector< DoubleSet<float>* > lSelections;
 int argcp;
 char ** argvp;
 
+// OpenGL variables
+GLubyte min_alpha;
+GLubyte max_alpha;
+
 // Shaders
 GLuint shader_v = 0; // vertex shader id
 GLuint shader_f = 0; // fragment shader id
@@ -184,8 +190,15 @@ enum SelectToolObjectType{
 
 SelectToolMode selectToolMode = SELTOOL_MODE_SELECT;
 
+bool display_selection = false;
+
 DoubleSet<float>* currentSelectionSet = 0;
 
-//GraphCut<Point3D>* currentGraphCut = 0;
+// blend function
+enum eBlendFunction{
+    MIN_MAX,
+    ALPHA_TEST
+};
+eBlendFunction blendFunction = MIN_MAX;
 
 #endif

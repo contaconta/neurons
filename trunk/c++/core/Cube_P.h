@@ -55,7 +55,18 @@ public:
 
   bool dummy;
 
- Cube_P() : VisibleE(),dummy(false){}
+  // OpenGL variables
+  GLubyte*** alphas; // alpha values used to manage transparency
+  GLubyte min_alpha;
+  GLubyte max_alpha;
+
+  // blend function
+  typedef enum {
+    MIN_MAX, ALPHA_TEST
+  } eBlendFunction;
+  eBlendFunction blendFunction;
+
+  Cube_P() : VisibleE(),dummy(false){}
 
   virtual void print_size()=0;
 
@@ -108,6 +119,10 @@ public:
   /** Produces a vector of the NMS in the layer indicated.*/
   virtual vector< vector< int > > decimate_layer
   (int nLayer, float threshold, int window_xy, string filename)=0;
+
+  virtual void allocate_alphas(int ni, int nj, int nk)=0;
+
+  virtual void delete_alphas(int ni, int nj, int nk)=0;
 
   ~Cube_P(){}
 

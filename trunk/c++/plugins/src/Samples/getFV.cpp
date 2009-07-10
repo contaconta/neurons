@@ -18,7 +18,7 @@ extern "C"
   void printFV(int x,int y)
   {
     //string fileName = "/localhome/aurelien/Sources/EM/svm_test/Testingglcm/FIBSLICE0002_u10_all_feature_vectors";
-    string fileName = "/localhome/aurelien/Sources/neurons/c++/GT001a_all_feature_vectors";
+    string fileName = "/localhome/aurelien/Sources/neurons/c++/feature_vectors";
     const int patchSize = 10;
 
     if(x<patchSize || y<patchSize || x>localImage->width-patchSize || y>localImage->height-patchSize)

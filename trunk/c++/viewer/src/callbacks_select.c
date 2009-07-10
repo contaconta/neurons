@@ -519,3 +519,14 @@ on_mode_rect_toggled                   (GtkToggleToolButton *toggletoolbutton,
   on_mode_toggled(toggletoolbutton,2);
   selectToolMode = SELTOOL_MODE_RECTANGLE;
 }
+
+void
+on_display_drawings_toggled            (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data)
+{
+  gboolean active=gtk_toggle_tool_button_get_active(toggletoolbutton);
+  if(active)
+    display_selection = true;
+  else
+    display_selection = false;
+}

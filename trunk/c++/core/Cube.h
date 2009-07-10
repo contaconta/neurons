@@ -33,7 +33,6 @@ Y s                    |/            |/
 #include <typeinfo>
 
 #ifdef WITH_OPENMP
-
 #include <omp.h>
 #endif
 
@@ -70,6 +69,9 @@ public:
   string fileParams;
 
   int fildes;
+
+  // Function to initialize members to their default values
+  inline void init();
 
   Cube();
   //The string nameFile should be given with the directory, if not the one where the program is being done, and without extension
@@ -333,7 +335,11 @@ public:
   /** Draws the cube in micrometers.*/
   void draw();
 
+  /** Allocate memory for the alpha values */
+  void allocate_alphas(int ni, int nj, int nk);
 
+  /** Free memory for the alpha values */
+  void delete_alphas(int ni, int nj, int nk);
 
   /**********************************************************************
    **           AUXILIARY MATHEMATICAL FUNCTIONS                       **
@@ -512,14 +518,22 @@ public:
 
 //######### CUBE MAIN #####################
 
+template <class T, class U>
+void Cube<T,U>::init()
+{
+  fildes = -1;
+  filenameVoxelData = "";
+  alphas = 0;
+  tf = 0;
+  blendFunction = MIN_MAX;
+}
 
 template <class T, class U>
 Cube<T,U>::Cube()
 {
-  fildes = -1;
-  filenameVoxelData = "";
-  tf = 0;
+  init();
 }
+
 template <class T, class U>
 Cube<T,U>::~Cube()
 {
@@ -534,6 +548,7 @@ Cube<T,U>::Cube
 (int width, int height, int depth, string nameFile,
  float voxelWidth, float voxelHeight, float voxelDepth)
 {
+  init();
   this->cubeWidth   = width;
   this->cubeHeight  = height;
   this->cubeDepth   = depth;
@@ -561,16 +576,13 @@ Cube<T,U>::Cube
   this->create_volume_file(nameFile + ".vl");
   this->load_volume_data(nameFile + ".vl");
   this->save_parameters(nameFile + ".nfo");
-
-  tf = 0;
 }
 
 
 template <class T, class U>
 Cube<T,U>::Cube(string filenameParams, string _filenameVoxelData)
 {
-  fildes = -1;
-  filenameVoxelData = "";
+  init();
 
   if (filenameParams!= "")
     load_parameters(filenameParams);
@@ -582,14 +594,12 @@ Cube<T,U>::Cube(string filenameParams, string _filenameVoxelData)
   nRowToDraw = -1;
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
-
-  tf = 0;
 }
 
 template <class T, class U>
 Cube<T,U>::Cube(string filenameParams, string filenameVoxelData, string filenameIntegralData)
 {
-  fildes = -1;
+  init();
   if (filenameParams!= "")
     load_parameters(filenameParams);
 
@@ -603,8 +613,6 @@ Cube<T,U>::Cube(string filenameParams, string filenameVoxelData, string filename
   nRowToDraw = -1;
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
-
-  tf = 0;
 }
 
 template <class T, class U>
@@ -628,7 +636,7 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
 //   glGenTextures(1, &wholeTexture);
 //   glGenTextures(1, &wholeTextureTrue);
 
-  fildes = -1;
+  init();
   load_parameters(filenameParams);
 
   if(load_volume_file){
@@ -642,8 +650,6 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
   nRowToDraw = -1;
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
-
-  tf = 0;
 }
 
 template <class T, class U>

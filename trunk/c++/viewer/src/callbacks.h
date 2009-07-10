@@ -289,3 +289,19 @@ void
 on_menu_plugins_submenu_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 */
+
+void
+on_min_alpha_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_max_alpha_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_display_drawings_toggled            (GtkToggleToolButton *toggletoolbutton,
+                                        gpointer         user_data);
+
+void
+on_cbBlendFunction_changed             (GtkComboBox     *combobox,
+                                        gpointer         user_data);

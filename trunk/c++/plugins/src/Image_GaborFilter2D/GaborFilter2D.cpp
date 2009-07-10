@@ -123,6 +123,7 @@ void GaborFilter2D::compute_filter(const double angle,const double sigma,const d
  
 	gb = exp(-0.5*(((x_angle*x_angle)/(sigma_x*sigma_x))+((y_angle*y_angle)/(sigma_y*sigma_y))));
 	gb *= cos((2*M_PI*x_angle/wavelength)+psi);
+        gb = -gb;
 
 	gsl_matrix_set(m_gbFilter, i, j, gb);
       }

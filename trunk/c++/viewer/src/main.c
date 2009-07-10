@@ -50,6 +50,7 @@ static struct argp_option options[] = {
    "Toogles to maximum projection" },
   {"ascEditor",   'e', 0, 0, "Turns the ascEditor mode on"},
   {"selectEditor",   's', 0, 0, "Turns the selectEditor mode on"},
+  {"alphaEditor",   'a', 0, 0, "Turns the alphaEditor mode on"},
   { 0 }
 };
 
@@ -70,10 +71,13 @@ parse_opt (int key, char *arg, struct argp_state *state)
       flag_minMax = 1;
       break;
     case 'e':
-      majorMode = MOD_ASCEDITOR;
+      majorMode |= MOD_ASCEDITOR;
       break;
     case 's':
-      majorMode = MOD_SELECT_EDITOR;
+      majorMode |= MOD_SELECT_EDITOR;
+      break;
+    case 'a':
+      majorMode |= MOD_ALPHA_EDITOR;
       break;
 
     case ARGP_KEY_ARG:
@@ -97,7 +101,7 @@ void init_GUI()
   GtkComboBox* view_entry=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(ascEditor),"view_entry"));
   gtk_combo_box_set_active(view_entry,1);
 
-  if(majorMode == MOD_SELECT_EDITOR)
+  if(majorMode & MOD_SELECT_EDITOR)
     {
       GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(selectionEditor),"selection_type"));
       gtk_combo_box_set_active(selection_type,0);
@@ -340,13 +344,17 @@ main (int argc, char *argv[])
 
   gtk_widget_show (ascEditor);
 
-  if(majorMode == MOD_ASCEDITOR){
+  if(majorMode & MOD_ASCEDITOR){
     GtkWidget* controlsAsc = create_ascEditControls();
     gtk_widget_show (controlsAsc);
   }
-  else if(majorMode == MOD_SELECT_EDITOR){
+  if(majorMode & MOD_SELECT_EDITOR){
     selectionEditor = create_ascEditControlsSelect();
     gtk_widget_show (selectionEditor);
+  }
+  if(majorMode & MOD_ALPHA_EDITOR){
+    alphaEditor = create_Alpha();
+    gtk_widget_show (alphaEditor);
   }
 
   init_GUI();

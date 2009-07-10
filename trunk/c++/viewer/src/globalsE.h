@@ -46,6 +46,7 @@ extern bool flag_save_cube_coordinate;
 extern GtkWidget* ascEditor;
 extern GtkWidget* drawing3D;
 extern GtkWidget* selectionEditor;
+extern GtkWidget* alphaEditor;
 extern double widgetWidth;
 extern double widgetHeight;
 
@@ -102,10 +103,12 @@ extern bool ascEditor2D;
 Modes:
 MOD_VIEWER ---- the mode per default.
 MOD_SELECT_EDITOR - select tool
+MOD_ALPHA_EDITOR - alpha editor
 */
-enum MayorMode { MOD_VIEWER,
-                 MOD_ASCEDITOR,
-                 MOD_SELECT_EDITOR};
+enum MayorMode { MOD_VIEWER = 0x0,
+                 MOD_ASCEDITOR = 0x10,
+                 MOD_SELECT_EDITOR = 0x100,
+                 MOD_ALPHA_EDITOR = 0x1000};
 
 extern int majorMode;
 
@@ -129,6 +132,10 @@ extern vector< DoubleSet<float>* > lSelections;
 // Parameters
 extern int argcp;
 extern char **argvp;
+
+// OpenGL variables
+extern float min_alpha;
+extern float max_alpha;
 
 // Shaders
 extern GLuint shader_v; // vertex shader id
@@ -171,8 +178,15 @@ enum SelectToolObjectType{
 
 extern SelectToolMode selectToolMode;
 
+extern bool display_selection;
+
 extern DoubleSet<float>* currentSelectionSet;
 
-//extern GraphCut<Point3D>* currentGraphCut;
+// blend function
+enum eBlendFunction{
+    MIN_MAX,
+    ALPHA_TEST
+};
+extern eBlendFunction blendFunction;
 
 #endif
