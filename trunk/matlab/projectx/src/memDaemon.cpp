@@ -162,6 +162,7 @@ int init(int width, int height, char* data_type)
   key_t shmkey;
   
   signal(SIGINT, exit_program);
+  signal(SIGTERM, exit_program);
 
   int data_unit_size = 0;
   if(strcmp(data_type,"char")==0)
@@ -178,9 +179,9 @@ int init(int width, int height, char* data_type)
 
   int memory_size = sizeof(struct header_mem_responses) + data_unit_size*width*height;
   struct header_mem_responses hmr;
+  memset(&hmr,0,sizeof(hmr));
   hmr.width = width;
   hmr.height = height;
-  hmr.nbAccess = 0;
 
   printf("Server is initialising\n");
   printf("Memory required : %d\n", memory_size);
