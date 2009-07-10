@@ -367,9 +367,6 @@ on_screenshot_activate                 (GtkMenuItem     *menuitem,
   gtk_widget_destroy (dialog);
 }
 
-//-------------------------------------------------
-
-
 void
 on_menu_plugins_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -377,3 +374,4 @@ on_menu_plugins_activate               (GtkMenuItem     *menuitem,
 
 }
 
+//-------------------------------------------------

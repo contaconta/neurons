@@ -51,11 +51,10 @@ void setUpVolumeMatrices()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(fovy3D, aspect3D, zNear3D, zFar3D);
-  glScalef(1.0,1.0,1.0);
+  //glScalef(1.0,1.0,1.0);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glScalef(1, 1, 1);
   glTranslatef(disp3DX,disp3DY,-disp3DZ);
   glRotatef(rot3DX,1,0,0);
   glRotatef(rot3DY,0,1,0);
@@ -236,7 +235,7 @@ void setUpMatricesXZ(int layerSpan)
 // TODO : Create a call list to speed display
 void draw_selection()
 {
-  if(majorMode == MOD_SELECT_EDITOR)
+  if(majorMode & MOD_SELECT_EDITOR)
     {
       float radius = 0.1f;
       GtkSpinButton* brush_size=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(selectionEditor),"brush_size"));
@@ -307,7 +306,10 @@ void draw_objects()
         (*itObj)->draw();
     }
   draw_last_point();
-  draw_selection();
+  if(display_selection)
+    {
+      draw_selection();
+    }
 }
 
 gboolean
@@ -364,7 +366,10 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       /* draw_objects(); */
 
       draw_last_point();
-      draw_selection();
+      if(display_selection)
+        {
+          draw_selection();
+        }
     }
 
   //Draws the XY view
@@ -431,7 +436,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
         // The last one is the list is the dummy cube created at initilization
         setUpVolumeMatrices();
         glViewport ((GLsizei)0,(GLsizei)0,
-                    (GLsizei)(widgetWidth/2)-1, (GLsizei)widgetHeight);
+                    (GLsizei)(widgetWidth/2), (GLsizei)widgetHeight);
 
         if(toDraw[0]->className()=="Image")
           {
@@ -445,7 +450,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
           toDraw[0]->draw();
 
         glViewport ((GLsizei)widgetWidth/2,(GLsizei)0,
-                    (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+                    (GLsizei)(widgetWidth/2), (GLsizei)widgetHeight);
 
         if(toDraw[1]->className()=="Image")
           {
@@ -593,7 +598,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
   }
 
 
-  if(majorMode == MOD_ASCEDITOR){
+  if(majorMode & MOD_ASCEDITOR){
     exposeAsc(widget, event, user_data);
   }
 

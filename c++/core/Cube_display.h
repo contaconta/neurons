@@ -42,13 +42,10 @@ void Cube<T,U>::load_whole_texture()
             {
               temp_x_i = (int)temp_x;
               T voxel = voxels[temp_z_i][temp_y_i][temp_x_i];
-//               if(voxel < 128)
-              if(tf!=0)
-                texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = tf[(int)voxel];
-              else
-                texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = voxel;
-//               else
-//                 texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = 255;
+              //if(tf!=0)
+              //  texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = tf[(int)voxel];
+              //else
+              texels[z*max_texture_size*max_texture_size + y*max_texture_size + x ] = voxel;
               temp_x = temp_x + scale_x;
             }
           temp_y = temp_y + scale_y;
@@ -185,7 +182,7 @@ template <class T, class U>
     {
       GLubyte voxel;
       
-      //GLubyte* texels =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
+      //GLubyte* texel =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
       //for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
       //      texels[t] = 0;
 
@@ -221,11 +218,22 @@ template <class T, class U>
 
 #ifdef USE_ALPHA
                   texels[depth_z + depth_y + x*2] = voxel;
-                  texels[depth_z + depth_y + x*2+1] = voxel;
-#else
-                  if(tf!=0)
-                    texels[depth_z + depth_y + x] = tf[voxel];
+
+                  if(alphas)
+                    {
+                      if(alphas[x][y][z]!=0)
+                        printf("Alpha=%d\n", alphas[x][y][z]);
+                      texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
+                    }
                   else
+                    {
+                      //printf("Null alpha\n");
+                      texels[depth_z + depth_y + x*2+1] = 0;
+                    }
+#else
+                  //if(tf!=0)
+                  //  texels[depth_z + depth_y + x] = tf[voxel];
+                  //else
                     texels[depth_z + depth_y + x] = voxel;
 #endif
                 }
@@ -248,8 +256,19 @@ template <class T, class U>
       free(texels);
     }
 
+
   if(sizeof(T) == 4)
     {
+      float voxel;
+      int texture_size;
+#ifdef USE_ALPHA
+      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
+#else
+      texture_size = texture_size_x*texture_size_y*texture_size_z;
+#endif
+      float* texels =(float*)(calloc(texture_size*sizeof(float),0));
+      /*
+      for(int t = 0; t < texture_size; t++)
       float voxel;
       int texture_size;
 #ifdef USE_ALPHA
@@ -308,13 +327,23 @@ template <class T, class U>
 
 #ifdef USE_ALPHA
                   texels[depth_z + depth_y + x*2] = voxel;
-                  texels[depth_z + depth_y + x*2+1] = voxel;
+                  if(alphas)
+                    {
+                      if(alphas[x][y][z]!=0)
+                        printf("Alphaf=%d\n", alphas[x][y][z]);
+                      texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
+                    }
+                  else
+                    {
+                      //printf("Null alpha\n");
+                      texels[depth_z + depth_y + x*2+1] = 0;
+                    }
 #else
                   if(tf != 0)
                     texels[depth_z + depth_y + x] = tf[(int)voxel];
                   else
-                      texels[depth_z + depth_y + x] = voxel;
-#endif
+                      texels[depth_z + depth_y + x] = voxel;                      
+#endif                  
 //                   }
                 }
             }
@@ -323,11 +352,12 @@ template <class T, class U>
         }
       printf("]\n");
 #ifdef USE_ALPHA
-      printf("Cube::load_whole_texture() USE_ALPHA float\n");
+      //printf("Cube::load_whole_texture() USE_ALPHA float\n");
       glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE_ALPHA,
                    texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
                    GL_FLOAT, texels);
 #else
+      //printf("Cube::load_whole_texture() NO_ALPHA float\n");
       glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE,
                    texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE,
                    GL_FLOAT, texels);
@@ -337,7 +367,6 @@ template <class T, class U>
   #if debug
   printf("Cube::load_whole_texture() created the texture buffer\n");
   #endif
-
 
 //   glBindTexture(GL_TEXTURE_3D, wholeTexture);
 }
@@ -1163,19 +1192,22 @@ void Cube<T,U>::draw
 //       if(min_max==4)
 //         glColor3f(1.0,1.0,1.0);
 
-
-      glEnable(GL_BLEND);
-      if(min_max == 0)
-        glBlendEquation(GL_MIN);
+      if(blendFunction == MIN_MAX)
+        {
+          glEnable(GL_BLEND);
+          if(min_max == 0)
+            glBlendEquation(GL_MIN);
+          else
+            glBlendEquation(GL_MAX);
+        }
       else
-        glBlendEquation(GL_MAX);
-
-      // Alpha function : Test AL
-      // glDisable(GL_BLEND);
-      // glEnable(GL_ALPHA_TEST);
-      // glAlphaFunc(GL_GREATER, 0.8f);
-      //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-      //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        {
+          glEnable(GL_ALPHA_TEST);
+          //glAlphaFunc(GL_GEQUAL, min_alpha);
+          glAlphaFunc(GL_GREATER, min_alpha);
+          //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+          //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
 
       //glEnable(GL_STENCIL_TEST);
       //glStencilFunc(GL_GREATER,1.0f,~0);
@@ -2108,4 +2140,47 @@ void Cube<T,U>::render_string(const char* format, ...)
  for (const char *c=buffer; *c != '\0'; c++) {
    glutBitmapCharacter(font, *c);
  }
+}
+
+template <class T, class U>
+void Cube<T,U>::allocate_alphas(int ni, int nj, int nk)
+{
+  if(alphas==0)
+    {
+      printf("Allocating alphas\n");
+      alphas = new GLubyte** [ni];
+      for(int i = 0;i<ni;i++)
+        {
+          alphas[i] = new GLubyte*[nj];
+          for(int j = 0;j<nj;j++)
+            {
+              alphas[i][j] = new GLubyte[nk];
+
+              /*
+                for(int k = 0;k<nk;k++)
+                {
+                alphas[i][j][k] = new GLubyte;
+                }
+              */
+            }
+        }
+    }
+}
+
+template <class T, class U>
+void Cube<T,U>::delete_alphas(int ni, int nj, int nk)
+{
+  if(alphas!=0)
+    {
+      for(int i = 0;i<ni;i++)
+	{
+	  for(int j = 0;j<nj;j++)
+	    {
+	      delete alphas[i][j];
+	    }
+	  delete alphas[i];
+	}
+      delete[] alphas;
+    }
+  alphas=0;
 }

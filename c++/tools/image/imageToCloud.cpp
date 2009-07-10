@@ -48,6 +48,7 @@ static struct argp_option options[] = {
   {"symmetrize",    'z', 0,                    0, "if true generates also positive points rotated Pi degrees"},
   {"numberPositive", 'N', "positive_points",-  0, "if defined, the number of positive points to get"},
   {"numberNegative", 'M', "negative_points",-  0, "if defined, the number of negative points to get"},
+  {"save_index",     'i',  0,                   0, "if true output pixel coordinates instead of micrometers"},
   { 0 }
 };
 
@@ -64,6 +65,7 @@ struct arguments
   bool   flag_symmetrize;
   int    number_points;
   int    number_negative_points;
+  bool   save_index;
 };
 
 
@@ -104,6 +106,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'M':
       argments->number_negative_points = atoi(arg);
       argments->save_negative = true;
+      break;
+    case 'i':
+      argments->save_index = true;
       break;
 
     case ARGP_KEY_ARG:
@@ -237,12 +242,22 @@ void sampleWidthNormalization(arguments &args)
           indexes[0] = x;
           indexes[1] = y;
           img->indexesToMicrometers(indexes, micrometers);
-          cloud->points.push_back(
+          if(args.save_index)
+            cloud->points.push_back(
+                                  new Point2Dot(indexes[0],indexes[1],
+                                                ors->at(x,y), 1));
+          else
+            cloud->points.push_back(
                                   new Point2Dot(micrometers[0],micrometers[1],
                                                 ors->at(x,y), 1));
           nPositivePoints++;
           if(args.flag_symmetrize){
-            cloud->points.push_back(
+            if(args.save_index)
+              cloud->points.push_back(
+                                    new Point2Dot(indexes[0],indexes[1]
+                                                  , ors->at(x,y)+M_PI, 1 ));
+            else
+              cloud->points.push_back(
                                     new Point2Dot(micrometers[0],micrometers[1]
                                                   , ors->at(x,y)+M_PI, 1 ));
             nPositivePoints ++;
@@ -285,7 +300,13 @@ void sampleWidthNormalization(arguments &args)
               indexes[0] = x;
               indexes[1] = y;
               img->indexesToMicrometers(indexes, micrometers);
-              cloud->points.push_back(
+              if(args.save_index)
+                cloud->points.push_back(
+                                      new Point2Dot(indexes[0],indexes[1]
+                                                    , (gsl_rng_uniform(r)-0.5)*2*M_PI,
+                                                    -1));
+              else
+                cloud->points.push_back(
                                       new Point2Dot(micrometers[0],micrometers[1]
                                                     , (gsl_rng_uniform(r)-0.5)*2*M_PI,
                                                     -1));
@@ -319,6 +340,7 @@ int main(int argc, char **argv) {
   args.flag_symmetrize = false;
   args.number_points   = 0;
   args.number_negative_points = 0;
+  args.save_index = false;
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
 
@@ -360,7 +382,10 @@ int main(int argc, char **argv) {
             indexes[0] = x;
             indexes[1] = y;
             img->indexesToMicrometers(indexes, micrometers);
-            cloud->points.push_back(new Point2D(micrometers[0],micrometers[1]));
+            if(args.save_index)
+              cloud->points.push_back(new Point2D(indexes[0],indexes[1]));
+            else
+              cloud->points.push_back(new Point2D(micrometers[0],micrometers[1]));
           }
         }
       }
@@ -381,13 +406,23 @@ int main(int argc, char **argv) {
             indexes[0] = x;
             indexes[1] = y;
             img->indexesToMicrometers(indexes, micrometers);
-            cloud->points.push_back(
+            if(args.save_index)
+              cloud->points.push_back(
+                        new Point2Do(indexes[0],indexes[1]
+                                     , ors->at(x,y)));
+            else
+              cloud->points.push_back(
                         new Point2Do(micrometers[0],micrometers[1]
                                      , ors->at(x,y)));
             if(args.flag_symmetrize){
-              cloud->points.push_back(
-                                      new Point2Do(micrometers[0],micrometers[1]
-                                     , ors->at(x,y)+M_PI ));
+              if(args.save_index)
+                cloud->points.push_back(
+                                        new Point2Do(indexes[0],indexes[1]
+                                                     , ors->at(x,y)+M_PI ));
+              else
+                cloud->points.push_back(
+                                        new Point2Do(micrometers[0],micrometers[1]
+                                                     , ors->at(x,y)+M_PI ));
             }
           }
         }
@@ -428,11 +463,21 @@ int main(int argc, char **argv) {
 		orientation=ors->at(x,y);
 	      else
 		orientation=0;
-              cloud->points.push_back(
+              if(args.save_index)
+                cloud->points.push_back(
+                                      new Point2Dot(indexes[0],indexes[1]
+                                                    , orientation, +1));
+              else
+                cloud->points.push_back(
                                       new Point2Dot(micrometers[0],micrometers[1]
                                                     , orientation, +1));
               if(args.flag_symmetrize){
-                cloud->points.push_back(
+                if(args.save_index)
+                  cloud->points.push_back(
+                                        new Point2Dot(indexes[0],indexes[1]
+                                                      , orientation+M_PI, 1 ));
+                else
+                  cloud->points.push_back(
                                         new Point2Dot(micrometers[0],micrometers[1]
                                                       , orientation+M_PI, 1 ));
               }
@@ -458,12 +503,22 @@ int main(int argc, char **argv) {
 		orientation=ors->at(x,y);
 	      else
 		orientation=0;
-              cloud->points.push_back(
+              if(args.save_index)
+                cloud->points.push_back(
+                                      new Point2Dot(indexes[0],indexes[1],
+                                                    orientation, 1));
+              else
+                cloud->points.push_back(
                                       new Point2Dot(micrometers[0],micrometers[1],
                                                     orientation, 1));
               nPositivePoints++;
               if(args.flag_symmetrize){
-                cloud->points.push_back(
+                if(args.save_index)
+                  cloud->points.push_back(
+                                       new Point2Dot(indexes[0],indexes[1],
+                                                      orientation+M_PI, 1 ));
+                else
+                  cloud->points.push_back(
                                         new Point2Dot(micrometers[0],micrometers[1],
                                                       orientation+M_PI, 1 ));
                 nPositivePoints ++;
@@ -521,7 +576,13 @@ int main(int argc, char **argv) {
                   orientation=(gsl_rng_uniform(r)-0.5)*2*M_PI;
                 else
                   orientation=0;
-                cloud->points.push_back(
+                if(args.save_index)
+                  cloud->points.push_back(
+                                        new Point2Dot(indexes[0],indexes[1],
+                                                      orientation,
+                                                      -1));
+                else
+                  cloud->points.push_back(
                                         new Point2Dot(micrometers[0],micrometers[1],
                                                       orientation,
                                                       -1));

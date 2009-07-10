@@ -15,7 +15,7 @@ CPP = g++-4.2
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
-USE_BBP=1
+USE_BBP=0
 
 ## Compilation flags
 ifeq ($(USE_OPENMP),1)
@@ -66,12 +66,12 @@ INCLUDEFLAGS = $(D_OPENMP) $(D_GLEW) $(D_BBP) $(CFLAGSOPENCV) $(CFLAGSGL) -Icore
 LINKFLAGS    = $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) -L$(LIB_DIR) $(OPENMPL) $(LDFLAGSBBP) -L/home/ggonzale/workspace/neseg/lib/debug
 
 ifeq ($(RELEASE), 1)
-# 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
-	CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+ 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+#	CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -O3 $(LINKFLAGS)
 else
-# 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
-	CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+ 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+#	CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -g -pg $(LINKFLAGS)
 endif
 

@@ -10,7 +10,7 @@ SHELL=/bin/bash
 #    viewer: gtk, gtkglext, glew
 #    tools:  the same as neseg
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.3
+CPP = g++-4.2
 RELEASE=0
 USE_OPENMP=1
 USE_GLEW=1
@@ -64,12 +64,12 @@ INCLUDEFLAGS = -I../../../core $(D_OPENMP) $(D_GLEW) $(D_BBP) $(CFLAGSOPENCV) $(
 LINKFLAGS    = -L../../../lib $(LDFLAGSOPENCV)  $(LDFLAGSOPENGL) $(OPENMPL) $(LDFLAGSBBP)
 
 ifeq ($(RELEASE), 1)
-# 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
-	CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+ 	CFLAGS = -fPIC -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
+#	CFLAGS = -w -c -O3  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -O3 $(LINKFLAGS)
 else
-# 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
-	CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+ 	CFLAGS = -fPIC -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
+#	CFLAGS = -w -c -g -pg  $(OPENMP)  $(INCLUDEFLAGS)
 	LDFLAGS =  -g -pg $(LINKFLAGS)
 endif
 

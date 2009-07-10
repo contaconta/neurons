@@ -16,16 +16,8 @@
 
 using namespace std;
 
-/*
-class Point3Di
-{
- public:
-  vector<float> w_coords; // world coordinates
-  vector<int> coords;
-
-  friend ostream& operator <<(ostream &os,const Point3Di &point);
-};
-*/
+// TODO : Move definition to a global file
+//#define USE_ALPHA
 
 typedef maxflow::Graph<float,float,float> GraphType;
 
@@ -39,7 +31,6 @@ class GraphCut : public VisibleE
 
  Cube_P* m_cube;
 
- GraphType *m_graph;
  GraphType::node_id*** m_node_ids;
  int ni,nj,nk;
 
@@ -55,6 +46,8 @@ class GraphCut : public VisibleE
  float fx,fy,fz;
 
  public:
+ GraphType *m_graph;
+
  string graphcut_name;
 
  //vector< Point3Di* >* sink_points;
@@ -138,6 +131,10 @@ GraphCut<P>::~GraphCut() {
     }
   if(m_graph!=0)
     delete m_graph;
+
+#ifdef USE_ALPHA
+  m_cube->delete_alphas(ni,nj,nk);
+#endif
 
   /*
   for(vector< Point3Di* >::iterator itPoints = source_points->begin();
@@ -263,6 +260,9 @@ void GraphCut<P>::draw_in_DL(int x, int y, int z){
 	  //if(m_graph->what_segment(m_node_ids[i-si][j-sj][k-sk]) == GraphType::SOURCE)
 	  if(m_graph->what_segment(m_node_ids[i][j][k]) == GraphType::SOURCE)
 	    {
+#ifdef USE_ALPHA
+              m_cube->alphas[i][j][k] = 1;
+#endif
 	      m_cube->indexesToMicrometers3(i,j,k,fx,fy,fz);
 	      //cout << "vFloats: " << vFloats[0] << " " << vFloats[1] << " " << vFloats[2] << endl;
 	      glVertex3f(fx, fy, fz);
@@ -271,6 +271,10 @@ void GraphCut<P>::draw_in_DL(int x, int y, int z){
 	      //glutSolidSphere(0.5, 10, 10);
 	      //glPopMatrix();
 	    }
+#ifdef USE_ALPHA
+          else
+            m_cube->alphas[i][j][k] = 0;
+#endif
 	}
   glEnd();
 }
@@ -461,6 +465,13 @@ template<class T, class U>
 	}
     }
 
+#ifdef USE_ALPHA
+  printf("GraphCut : Allocate alpha values\n");
+  if(m_cube->alphas)
+    m_cube->delete_alphas(ni, nj, nk);
+  m_cube->allocate_alphas(ni, nj, nk);
+#endif
+
   printf("GraphCut : Nodes added\n");
 
   // Debug
@@ -504,6 +515,7 @@ template<class T, class U>
 		  weightToSource = K;
 		}
 	    }
+
 	  for(itPoint=set_points->set2.begin();
               itPoint != set_points->set2.end();itPoint++)
 	    {
@@ -656,13 +668,19 @@ template<class T, class U>
 	    ptrImage = &((uchar*)(img->imageData + img->widthStep*j))[i];
 	    if(m_graph->what_segment(m_node_ids[i][j][k]) == GraphType::SOURCE)
 	      {
-		//printf("Image : SOURCE\n");
+#ifdef USE_ALPHA
+                m_cube->alphas[i][j][k] = 255;
+		printf("Image : SOURCE %d\n", m_cube->alphas[i][j][k]);
+#endif
 		*ptrImage = 255;
 	      }
 	    else
 	      {
 		//printf("Image : SINK\n");
 		*ptrImage = 0;
+#ifdef USE_ALPHA
+                m_cube->alphas[i][j][k] = 0;
+#endif
 	      }
 	  }
 
@@ -674,6 +692,12 @@ template<class T, class U>
       cvSaveImage(s.c_str(), img);
       cvReleaseImage(&img);
     }
+
+#ifdef USE_ALPHA
+  printf("GraphCut : Reloading cube texture\n");
+  // reload cube texture
+  m_cube->load_texture_brick(m_cube->nRowToDraw, m_cube->nColToDraw);
+#endif
 
   printf("GraphCut : Max flow algorithm has ended\n");
 }
