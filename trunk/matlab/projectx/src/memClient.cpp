@@ -87,6 +87,16 @@ int getMemSize(int &width, int &height)
   width = hmr->width;
   height = hmr->height;
 
+  if(shm != 0)
+    {
+      // Detach from shared memory segment
+      rc = shmdt((const void *) shm);
+      if (rc != 0) {
+        printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
+        return -1;
+      }
+    }
+
   return 0;
 }
 
@@ -227,8 +237,18 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
   int data_index = index_y * hmr->width + index_x;
   for(int i=0;i<hmrSize;i+=iStep)
     {
-      printf("Data %d %d\n", data_index + i, dataSrc[i]);
+      //printf("Data %d %d\n", data_index + i, dataSrc[i]);
       dataHmr[data_index + i] = dataSrc[i];
+    }
+
+  if(shm != 0)
+    {
+      // Detach from shared memory segment
+      rc = shmdt((const void *) shm);
+      if (rc != 0) {
+        printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
+        return -1;
+      }
     }
 
   return 0;
@@ -351,8 +371,18 @@ int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
   int data_index = index_y * hmr->width + index_x;
   for(int i=0;i<hmrSize;i+=iStep)
     {
-      printf("Data %d %d\n", data_index + i, dataHmr[data_index + i]);
+      //printf("Data %d %d\n", data_index + i, dataHmr[data_index + i]);
       dataDst[i] = dataHmr[data_index + i];
+    }
+
+  if(shm != 0)
+    {
+      // Detach from shared memory segment
+      rc = shmdt((const void *) shm);
+      if (rc != 0) {
+        printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
+        return -1;
+      }
     }
 
   return 0;
