@@ -1,6 +1,12 @@
-function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin)
-%% TODO: write documenation
-% returns a row vector, h
+function SET = p_copy_data_set(SET, inds)
+%P_GET_FEATURE_RESPONSES
+%
+%   TODO: documentation
+%
+%   Examples:
+%   ----------------------
+%
+%   See also P_TRAIN, P_SETTINGS
 
 %   Copyright © 2009 Computer Vision Lab, 
 %   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
@@ -17,18 +23,12 @@ function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-% get the feature responses to the (integral) images
-%f = double(p_RectangleFeature(SET.IntImages, {learner}));
-f = p_get_feature_responses(SET, {learner});
+flist = fields(SET);
 
-% perform the weak classification to binary {0, 1}
-h = ( polarity*f) < (polarity * threshold);
+N = length(SET.class);
 
-if (nargin == 5) && strcmp(varargin{1}, 'boolean')
-    return;
-else
-    % convert classes to {-1, 1}
-    h = double(h);
-    h(h == 0) = -1;
+for i=1:length(flist)
+    if length(SET.(flist{i})) == N
+        SET.(flist{i}) = SET.(flist{i})(inds);
+    end
 end
-

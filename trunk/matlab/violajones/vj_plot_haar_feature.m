@@ -68,6 +68,9 @@ switch FEATURE(1)
         MASK(W1y1:W1y2,W1x1:W1x2) = MASK(W1y1:W1y2,W1x1:W1x2) + ones(size(MASK(W1y1:W1y2,W1x1:W1x2)))*polarity;
         MASK(B1y1:B1y2,B1x1:B1x2) = MASK(B1y1:B1y2,B1x1:B1x2) - ones(size(MASK(W1y1:W1y2,W1x1:W1x2)))*polarity;
         
+        
+        
+        
         %MASK(W1x1:W1x2, W1y1:W1y2) = polarity*1;
         %MASK(B1x1:B1x2, B1y1:B1y2) = polarity*-1;
     case 2
@@ -180,12 +183,22 @@ end
 
 if D
     % Plot the haar-like feature
-    figure(12210); colormap(gray);
+    %figure(12210); colormap(gray);
+    figure;  colormap(gray);
     if ~exist('I', 'var');
         imagesc(MASK); 
     else
         imshow(imadd(MASK,I));
     end
+    line( [W1x1-.5 W1x2+.5], [W1y1-.5 W1y1-.5], 'Color', [0 0 0]);
+    line( [W1x1-.5 W1x2+.5], [W1y2+.5 W1y2+.5], 'Color', [0 0 0]);
+    line( [W1x1-.5 W1x1-.5], [W1y1-.5 W1y2+.5], 'Color', [0 0 0]);
+    line( [W1x2+.5 W1x2+.5], [W1y1-.5 W1y2+.5], 'Color', [0 0 0]);
+    
+    line( [B1x1-.5 B1x2+.5], [B1y1-.5 B1y1-.5], 'Color', [0 0 0]);
+    line( [B1x1-.5 B1x2+.5], [B1y2+.5 B1y2+.5], 'Color', [0 0 0]);
+    line( [B1x1-.5 B1x1-.5], [B1y1-.5 B1y2+.5], 'Color', [0 0 0]);
+    line( [B1x2+.5 B1x2+.5], [B1y1-.5 B1y2+.5], 'Color', [0 0 0]);
     axis square;
     refresh;
 end

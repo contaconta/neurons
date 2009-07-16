@@ -60,18 +60,18 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 %-------------------------------------------------------------------------
 
 %DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2]; DATASETS.IMSIZE = [24 24];      
-DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; DATASETS.IMSIZE = [24 24];
+%DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];   
-DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
-%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; DATASETS.IMSIZE = [24 24];
+%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
+DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [64 24];
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [128 48];
 
 % parameters for updating the negative examples
 DATASETS.delta          = 10;       % re-collection scan step size
-DATASETS.NORM           = 1;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
+DATASETS.NORM           = 0;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
 
 %-------------------------------------------------------------------------
 % WEAK LEARNERS

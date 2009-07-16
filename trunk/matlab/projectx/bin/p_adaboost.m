@@ -40,7 +40,7 @@ end
 
 % ---- when a new stage is reached, reset the example weights! ----
 if ti == 1
-    disp('   NORMALIZED THE WEIGHTS!');
+    %disp('   NORMALIZED THE WEIGHTS!');
     w = ones(1,length(TRAIN.class)) ./ length(TRAIN.class); 
 end
 

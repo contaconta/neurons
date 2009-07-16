@@ -22,9 +22,9 @@ function SET = p_collect_data(DATASETS, set_type)
 [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type);
 count = 1;
 
-%% collect POSITIVE (c = 1) and NEGATIVE (c = 2) example images into SET
+%% collect POSITIVE (c = 1) and NEGATIVE (c = -1) example images into SET
 
-for c = 1:2  % c = the postive and negative classes
+for c = [-1 1]  % c = the postive and negative classes
     
     % collect the training image files into d, and initialize the data struct
     if c == 1
@@ -50,17 +50,19 @@ for c = 1:2  % c = the postive and negative classes
         SET.IntImages{count} = integral_image(I)';
         SET.filename{count} = filenm;
         if c == 1; SET.class(count) = 1; end
-        if c == 2; SET.class(count) = -1; end
+        if c == -1; SET.class(count) = -1; end
 
         count = count + 1;       
     end
     SET.database = DATASETS.filelist;
+    
+    % set a flag instructing if we should precompute feature responses
+    SET.precomputed = DATASETS.precomputed;
 end
 
-% in case there were fewer examples then specified, remove blank examples
-%SET.Images = SET.Images(:,:,1:count-1);
 
 
+%==========================================================================
 function I  = convertToGray(I, IMSIZE, NORM)
 % convert to grasyscale if necessary
 if size(I,3) > 1
@@ -77,6 +79,9 @@ if NORM
     I = imnormalize('image', I);
 end
 
+
+
+%==========================================================================
 function I = processImage(I, IMSIZE, NORM)
 
 % convert to proper class (pixel intensity represented by [0,1])
@@ -86,15 +91,14 @@ if ~isa(I, 'double')
 end
 
 
-
-
+%==========================================================================
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)
 
-%% define default parameters
+% define default parameters
 NORM = 1; IMSIZE = [24 24];
 POS_LIM = Inf;NEG_LIM = Inf;
 
-%% collect predefined arguments
+% collect predefined arguments
 if isfield(DATASETS, 'IMSIZE')
     if ~isempty(DATASETS.IMSIZE)
         IMSIZE = DATASETS.IMSIZE;

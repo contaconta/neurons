@@ -1,6 +1,12 @@
-function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin)
-%% TODO: write documenation
-% returns a row vector, h
+function responses = p_get_feature_responses(SET, learners)
+%P_GET_FEATURE_RESPONSES
+%
+%   TODO: documentation
+%
+%   Examples:
+%   ----------------------
+%
+%   See also P_TRAIN, P_SETTINGS
 
 %   Copyright © 2009 Computer Vision Lab, 
 %   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
@@ -17,18 +23,20 @@ function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-% get the feature responses to the (integral) images
-%f = double(p_RectangleFeature(SET.IntImages, {learner}));
-f = p_get_feature_responses(SET, {learner});
 
-% perform the weak classification to binary {0, 1}
-h = ( polarity*f) < (polarity * threshold);
+% if we have precomputed the feature values, recall them from memdaemon
+if SET.precomputed
 
-if (nargin == 5) && strcmp(varargin{1}, 'boolean')
-    return;
+    disp(' here we should be loading precomputed feature responses');
+    
+% if not, calculate them on the fly
 else
-    % convert classes to {-1, 1}
-    h = double(h);
-    h(h == 0) = -1;
-end
+    switch learners{1}(1:2)
 
+        case 'HA'
+            responses = mexRectangleFeature(SET.IntImages, learners);
+
+        case 'SV'
+            responses = rand([length(SET.Images) length(learners)]);
+    end
+end

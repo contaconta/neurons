@@ -18,7 +18,8 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w)
 
 %responses = get_feature_responses(learner, SET);
 %responses = p_dummy_feature_values(learner, SET);
-responses = p_RectangleFeature(SET.IntImages, {learner});
+%responses = p_RectangleFeature(SET.IntImages, {learner});
+responses = p_get_feature_responses(SET, {learner});
 
 % TODO: load responses from a precomputed file
 %responses = loadfunction(leaner_index, learner_type);

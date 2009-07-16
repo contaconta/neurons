@@ -39,4 +39,10 @@ for i = 1:length(LEARNERS.types)
     disp(['   defined ' type(1:2) ' learners.']);    
 end
 
+% LEARNERS.class = char(zeros([length(LEARNERS.list),2]));
+% for i = 1:length(LEARNERS.list)
+%     learner_string = LEARNERS.list{i};
+%     LEARNERS.class(i,:) = learner_string(1:2);
+% end
+
 disp(['   Defined ' num2str(length(LEARNERS.list)) ' learners. Elapsed time ' num2str(toc) ' seconds.']);

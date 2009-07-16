@@ -105,7 +105,7 @@ end
 handles.I = mat2gray(handles.I);
 
 % compute the spedges
-handles.sp = spedges(handles.I, handles.angles, handles.sigma);
+handles.sp = spedges(handles.I, handles.angles, handles.sigma, 11);
 handles.EDGE = handles.sp.edge;
 
 if get(handles.showedges, 'Value')  
