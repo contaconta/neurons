@@ -1,4 +1,4 @@
-function p_precompute_features(DATA_SET, LEARNERS)
+function p_precompute_features(SET, LEARNERS)
 %
 %   TODO: WRITE DOC
 
@@ -17,6 +17,11 @@ function p_precompute_features(DATA_SET, LEARNERS)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+tic;
+disp('Precomputing Haar Feautres on the TRAIN SET)';
+
+system('killall memDaemon');
+system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
 
 for l = 1:length(LEARNERS.list)
     
@@ -24,8 +29,14 @@ for l = 1:length(LEARNERS.list)
    
     % precompute the feature responses for each example for learner l
     %learner = LEARNERS.list{l};
-    responses = p_RectangleFeature(SET.IntImages, LEARNERS.list(l));
+    %responses = p_RectangleFeature(SET.IntImages, LEARNERS.list(l));
+    
+    responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
+    
+    %keyboard;
     
     % store the responses as a row vector
-    memClient.store(responses, 'row', l, 'HA');
+    mexStoreResponse(responses,'row',l,'HA');
+    %memClient.store(responses, 'row', l, 'HA');
 end
+toc;

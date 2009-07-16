@@ -12,9 +12,9 @@
 #define NUMSEMS 1               // Num of sems in created sem set
 
 #define SHMSZ 2147483648 // Size of the shared mem segment
-// Change value of 'shmmax' 
-// cat 432306583 > /proc/sys/kernel/shmmax
-// sudo sysctl -w kernel.shmmax=432306583
+// Change value of 'shmmax' to 1gb
+// cat 1073741824 > /proc/sys/kernel/shmmax
+// sudo sysctl -w kernel.shmmax=1073741824
 // sudo emacs /etc/sysctl.conf
 
 #define MAX_NUM_WEAK_LEANER_TYPE 40 // Haar, HOG, ray...

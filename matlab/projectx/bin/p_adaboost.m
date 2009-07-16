@@ -26,7 +26,7 @@ function CLASSIFIER = p_adaboost(varargin)
 
 
 %% set parameters and handle input arguments
-TRAIN = varargin{1}; LEARNERS = varargin{2}; ti = varargin{3}; restart_flag = 0;
+TRAIN = varargin{1}; LEARNERS = varargin{2}; ti = varargin{3};
 
 % either start or resume training, CLASSIFIER, w need to be passed or
 % initialized. start_t is the index of the first weak learner.
@@ -53,7 +53,7 @@ w(TRAIN.class == -1) = .5 * (w(TRAIN.class==-1) /sum(w(TRAIN.class==-1)));
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 10000);
 for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       optimized feature ');
-    [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w);    
+    [LEARNERS.error(l), LEARNERS.threshold(l), LEARNERS.polarity(l)] = p_select_weak_parameters(LEARNERS.list{l}, TRAIN, w, l);    
 end
 
 

@@ -1,4 +1,4 @@
-function responses = p_get_feature_responses(SET, learners)
+function responses = p_get_feature_responses(SET, learners, varargin)
 %P_GET_FEATURE_RESPONSES
 %
 %   TODO: documentation
@@ -25,9 +25,10 @@ function responses = p_get_feature_responses(SET, learners)
 
 
 % if we have precomputed the feature values, recall them from memdaemon
-if SET.precomputed
-
-    disp(' here we should be loading precomputed feature responses');
+if SET.precomputed && (nargin > 2)
+    
+    row = varargin{1};
+    responses = mexLoadResponse('row',row,'HA')';
     
 % if not, calculate them on the fly
 else

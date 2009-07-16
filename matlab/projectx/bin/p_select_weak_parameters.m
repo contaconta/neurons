@@ -1,4 +1,4 @@
-function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w)
+function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w, l)
 %% TODO: write documenation
 
 %   Copyright © 2009 Computer Vision Lab, 
@@ -19,7 +19,7 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w)
 %responses = get_feature_responses(learner, SET);
 %responses = p_dummy_feature_values(learner, SET);
 %responses = p_RectangleFeature(SET.IntImages, {learner});
-responses = p_get_feature_responses(SET, {learner});
+responses = p_get_feature_responses(SET, {learner}, l);
 
 % TODO: load responses from a precomputed file
 %responses = loadfunction(leaner_index, learner_type);
