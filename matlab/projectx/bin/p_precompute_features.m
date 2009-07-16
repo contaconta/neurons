@@ -18,15 +18,20 @@ function p_precompute_features(SET, LEARNERS)
 %   PURPOSE.  See the GNU General Public License for more details.
 
 tic;
-disp('Precomputing Haar Feautres on the TRAIN SET)';
+disp('Precomputing Haar Feautres on the TRAIN SET');
 
 system('killall memDaemon');
 system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
+disp('started memDaemon');
+
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
+    
 
 for l = 1:length(LEARNERS.list)
     
     % switch LEARNERS.list(l)(1:2)
-   
+    W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
+    
     % precompute the feature responses for each example for learner l
     %learner = LEARNERS.list{l};
     %responses = p_RectangleFeature(SET.IntImages, LEARNERS.list(l));

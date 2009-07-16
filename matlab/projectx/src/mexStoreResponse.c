@@ -91,6 +91,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         mexErrMsgTxt("Fourth argument should be a learner type");
       }
     mxFree(sType);
-
-    storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);    
+	
+    if(storeWeakLearnerResponses(pData, eFormat, eType, index, nElements)==-1)
+	mexErrMsgTxt("mexStoreResponse: error while storing data.");
 }
