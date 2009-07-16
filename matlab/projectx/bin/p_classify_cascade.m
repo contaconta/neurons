@@ -36,13 +36,13 @@ for s = 1:length(CASCADE)
     % handle the case where there are no positive examples left
     if isempty(positive_list); C = zeros(size(C)); disp('   no positives left!'); break; end
 
-    SETCOPY.IntImages = SET.IntImages(positive_list);
+    % make a copy of the data set with only examples that passed to stage s
+    STAGE_S = p_copy_data_set(SET, positive_list);
     h = zeros(length(positive_list), length(CASCADE(s).CLASSIFIER.learner));
     
+    % weak hypotheses for stage s
     for ti = 1:length(CASCADE(s).CLASSIFIER.learner)
-        
-        h(:,ti) = p_classify_weak_learner(CASCADE(s).CLASSIFIER.learner{ti}, CASCADE(s).CLASSIFIER.polarity(ti), CASCADE(s).CLASSIFIER.threshold(ti), SETCOPY, 'boolean');
-        
+        h(:,ti) = p_classify_weak_learner(CASCADE(s).CLASSIFIER.learner{ti}, CASCADE(s).CLASSIFIER.polarity(ti), CASCADE(s).CLASSIFIER.threshold(ti), STAGE_S, 'boolean');
     end
     
    % keyboard;

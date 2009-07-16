@@ -35,6 +35,10 @@ BOOST = p_stage_goals(BOOST);
 logfile(EXPERIMENT.log_filenm, 'erase');logfile(EXPERIMENT.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(DATASETS.TRAIN_POS) ' positive examples, ' num2str(DATASETS.TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' strcat(LEARNERS.types{:})],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(EXPERIMENT.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'FPs', 'LEARNER'});
 
+% ask the user if they'd like to precompute feature responses 
+if strcmp(input('\nPrecompute feature responses to speed up training time (y/n)? ', 's'), 'y'); DATASETS.precomputed = 1; else; DATASETS.precomputed = 0; end;
+
+
 % define the weak learners
 LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 
@@ -93,7 +97,7 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
 %         % .................................................................
 
         %...... HACK TO STOP IF REPEATING CLASSIFIER ........
-        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1})
+        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1}) && strcmp(CASCADE(i).CLASSIFIER.threshold(ti), CASCADE(i).CLASSIFIER.threshold(ti-1))
             disp(' REPEATED CLADDIFIER, ABORT!');
             beep; keyboard;
         end
