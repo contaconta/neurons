@@ -60,7 +60,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     */
     mwSize number_of_dims = 2;
     const mwSize dims[]={nImages, nParams};
-    plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
+    plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxUINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
 
     int iResult = 0;

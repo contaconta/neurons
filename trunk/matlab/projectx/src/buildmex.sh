@@ -32,7 +32,7 @@ if [ $MEX_EXE='' ]
 then
 	MEX_EXE=/usr/local/matlab/bin/mex
 fi
-MEX_EXE=/usr/local/bin/mex
+#MEX_EXE=/usr/local/bin/mex
 CFLAGS="-w -c -O3" #$(OPENMP)
 
 $GCC -fPIC $CFLAGS -I$MEXPATH mexBoxIntegral.c
