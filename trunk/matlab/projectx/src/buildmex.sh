@@ -48,4 +48,4 @@ $MEX_EXE mexRectangleFeature.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/
 $MEX_EXE mexEnumerateLearners.o CMakeFiles/libProjectX.dir/enumerateLearners.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/libProjectX.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
 $MEX_EXE mexStoreResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
 $MEX_EXE mexLoadResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
-$MEX_EXE mexIntensityFeature.o CMakeFiles/libProjectX.dir/intensityFeature.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexIntensityFeature.o CMakeFiles/libProjectX.dir/intensityFeature.o CMakeFiles/libProjectX.dir/utils.o -lgcc -outdir ../bin $MEX_ARG

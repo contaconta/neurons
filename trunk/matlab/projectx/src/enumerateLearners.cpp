@@ -24,10 +24,20 @@
 #define MIN_HEIGHT_VERT_HAAR 2
 #define MIN_WIDTH_HORI_HAAR 2
 
+// Haar-like feature parameters
 struct sHA_params
 {
   int step_size_x;
   int step_size_y;
+};
+
+enum eIT_KernelType { KERNEL_LINEAR, KERNEL_GAUSSIAN };
+
+// Intensity Patch feature parameters
+struct sIT_params
+{
+  int kernel_size;
+  eIT_KernelType kernel_type; // Linear kernel, Gaussian kernel
 };
 
 vector<string> list_weak_learners;
@@ -45,6 +55,8 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
   // Matlab passes width and height, not coordinates
   max_width++;
   max_height++;
+
+  printf("enumerate_learners %d\n", nb_learner_type);
 
   for(int iLearnerType = 0; iLearnerType<nb_learner_type;iLearnerType++) {
 
@@ -184,6 +196,58 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
                     }
               }
           }
+      }
+
+    if(learner_type[iLearnerType][0] == 'I' && learner_type[iLearnerType][1] == 'T')
+      {
+        printf("enum IT\n");
+        for(int i=0;i<6000;i++)
+          {
+            std::string s;
+            std::stringstream out;
+            out << "IT_" << i;
+            s = out.str();
+
+            list_weak_learners.push_back(s);
+          }
+        /*
+        sIT_params params;
+        while(left_token=strchr(left_token,'_'))
+          {
+            right_token=strchr(left_token+1,'_');
+            // if null, point at the end of the string
+            if(right_token == 0)
+              right_token = learner_type[iLearnerType]+strlen(learner_type[iLearnerType]);
+
+            size = right_token - left_token - 2;
+            if(size > 20)
+              {
+                cout << "Error in enumerate_learner while parsing the string : incorrect format\n";
+                return -1;
+              }
+
+            //printf("left_token %s\n",left_token);
+            //printf("right_token %s\n",right_token);
+
+            switch(*(left_token+1))
+              {
+              case 's':
+                strncpy(temp,left_token+2,size);
+                temp[size] = 0;
+                //printf("x %s\n",temp);
+                params.kernel_size = atoi(temp);
+                break;
+              case 't':
+                strncpy(temp,left_token+2,size);
+                temp[size] = 0;
+                //printf("y %s\n",temp);
+                params.kernel_type = atoi(temp);
+                break;
+              }
+            left_token = right_token;
+          }
+        */
+
       }
 
     weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;

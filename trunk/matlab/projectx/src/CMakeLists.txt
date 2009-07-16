@@ -30,13 +30,13 @@ INCLUDE_DIRECTORIES(/usr/local/extern/include/)
 
 ADD_EXECUTABLE(memDaemon memDaemon.cpp common.cpp)
 
-ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp common.cpp)
+ADD_EXECUTABLE(libProjectX enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp common.cpp intensityFeature.cpp)
 #ADD_EXECUTABLE(IntegralImages enumerateLearners.cpp integral.cpp loadImage.cpp utils.cpp)
-TARGET_LINK_LIBRARIES(IntegralImages ${OPENCV_LIBRARIES})
+#TARGET_LINK_LIBRARIES(IntegralImages ${OPENCV_LIBRARIES})
 
 #IF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
 #ENDIF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 
-SET_TARGET_PROPERTIES(IntegralImages PROPERTIES COMPILE_FLAGS -fPIC)
+SET_TARGET_PROPERTIES(libProjectX PROPERTIES COMPILE_FLAGS -fPIC)

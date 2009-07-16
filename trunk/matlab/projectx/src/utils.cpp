@@ -17,6 +17,8 @@
 #include <sstream>
 #include <fstream>
 #include "utils.h"
+#include <dirent.h>
+#include <errno.h>
 
 using namespace std;
 
@@ -31,3 +33,28 @@ void store_weak_learners(char* learner_type, int index,
     outputFile.close();
 }
 
+string getExtension(string path){
+  return path.substr(path.find_last_of(".")+1);
+}
+
+int get_files_in_dir(string dir, vector<string> &files,string extension)
+{
+  DIR *dp;
+  struct dirent *dirp;
+  if((dp  = opendir(dir.c_str())) == NULL) {
+    cout << "Error(" << errno << ") opening " << dir << endl;
+    return errno;
+  }
+
+  while ((dirp = readdir(dp)) != NULL) {
+    if(extension != "")
+      {
+        if(getExtension(dirp->d_name)==extension)
+          files.push_back(string(dirp->d_name));
+      }
+    else
+      files.push_back(string(dirp->d_name));
+  }
+  closedir(dp);
+  return 0;
+}
