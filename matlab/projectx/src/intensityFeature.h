@@ -13,19 +13,18 @@
 // for comments & bug reports                                          //
 /////////////////////////////////////////////////////////////////////////
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef INTENSITY_FEATURE_H
+#define INTENSITY_FEATURE_H
 
-#include <string>
-#include <vector>
+// Compute intensity feature from an image
+// @param width and height are the width and the height of the image passed in parameter
+// @param weak_learner_param : string that contains the id of the feature
+// a_________     -> x
+// |         |    |
+// |         |    y
+// |         |
+// |         |
+// |_________b
+int getIntensityFeature(unsigned int *img, int width, int height, char* weak_learner_param);
 
-using namespace std;
-
-void store_weak_learners(char* learner_type, int index,
-                         const char* data, int data_size);
-
-string getExtension(string path);
-
-int get_files_in_dir(string dir, vector<string> &files,string extension="");
-
-#endif //UTILS_H
+#endif

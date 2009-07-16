@@ -241,6 +241,7 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
       dataHmr[data_index + i] = dataSrc[i];
     }
 
+  printf("Detaching from shared memory segment\n");
   if(shm != 0)
     {
       // Detach from shared memory segment
@@ -339,6 +340,19 @@ int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
       if(ifs.fail())
         {
           printf("Failed to load data from %s\n",filename.c_str());
+
+
+          printf("Detaching from shared memory segment\n");
+          if(shm != 0)
+            {
+              // Detach from shared memory segment
+              rc = shmdt((const void *) shm);
+              if (rc != 0) {
+                printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
+                return -1;
+              }
+            }
+
           return -1;
         }
       //ifs.read((char*)dataDst,dataSize*sizeof(int));
@@ -375,6 +389,7 @@ int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
       dataDst[i] = dataHmr[data_index + i];
     }
 
+  printf("Detaching from shared memory segment\n");
   if(shm != 0)
     {
       // Detach from shared memory segment
