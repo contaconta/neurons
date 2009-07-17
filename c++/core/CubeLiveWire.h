@@ -4,6 +4,7 @@
 #include "Cube_P.h"
 #include "Cube.h"
 #include "Cloud.h"
+#include "Graph.h"
 #include "CubeDijkstra.h"
 #include <pthread.h>
 #include "float.h"
@@ -87,6 +88,18 @@ public:
                                    int x1, int y1, int z1
                                    );
 
+  Graph<Point3D, EdgeW<Point3D> >* findShortestPathG(int x0, int y0, int z0,
+                                   int x1, int y1, int z1
+                                   );
+
+  Cube<float, double>* goThroughBorders(string cubeName);
+
+  vector<vector< int > > findShortestPathIdx
+  (int x0, int y0, int z0, int x1, int y1, int z1);
+
+  vector< Cloud< Point3D >*> goThroughBordersCloud(int nClouds);
+
+  float integralOverPath(vector< vector< int > >& path);
 
 };
 

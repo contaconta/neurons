@@ -47,6 +47,53 @@ public:
   }
 };
 
+class DistanceDijkstraColorTruncated : public DistanceDijkstra {
+public:
+  Cube_P* cube;
+  Cube<uchar, ulong>*  cubeUchar;
+  Cube<float, double>* cubeFloat;
+  int     cubeType; // 0 for uchar, 1 for float, 2 for int - lazy to typedef structs
+
+  DistanceDijkstraColorTruncated(Cube_P* cube){
+    printf("DistanceDijkstraColor created with the cube %s\n", cube->filenameParameters.c_str());
+    this->cube = cube;
+    if (cube->type == "uchar"){
+      this->cubeUchar = dynamic_cast<Cube< uchar, ulong>* >(cube);
+      cubeType = 0;
+    } else if (cube->type == "float"){
+      this->cubeFloat = dynamic_cast<Cube< float, double>* >(cube);
+      cubeType = 1;
+    }
+
+  }
+  float distance(int x0, int y0, int z0, int x1, int y1, int z1){
+    //Check if both points are on the border of the cube
+    if( ((x0==0)&&(x1==0)) ||
+        ((y0==0)&&(y1==0)) ||
+        ((z0==0)&&(z1==0)) ||
+        ((x0==cube->cubeWidth-1)&&(x1==cube->cubeWidth-1)) ||
+        ((y0==cube->cubeHeight-1)&&(y1==cube->cubeHeight-1)) ||
+        ((z0==cube->cubeDepth-1)&&(z1==cube->cubeDepth-1)) )
+      return 50.0;
+
+    float module = sqrt( (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+
+    switch(cubeType){
+    case 0:
+      // return fabs(cubeUchar->at(x0,y0,z0)-cubeUchar->at(x1,y1,z1));
+      return (float)cubeUchar->at(x0,y0,z0)*module;
+      break;
+    case 1:
+      return cubeFloat->at(x0,y0,z0)*module;
+      // return fabs(cubeFloat->at(x0,y0,z0)-cubeFloat->at(x1,y1,z1));
+      break;
+    };
+    return 0.0;
+  }
+};
+
+
+
 class DistanceDijkstraColorInverse : public DistanceDijkstra {
 public:
   Cube_P* cube;

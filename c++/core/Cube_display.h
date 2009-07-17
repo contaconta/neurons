@@ -266,7 +266,7 @@ template <class T, class U>
 #else
       texture_size = texture_size_x*texture_size_y*texture_size_z;
 #endif
-      float* texels =(float*)(calloc(texture_size*sizeof(float),0));
+      float* texels =(float*)(calloc(texture_size, sizeof(float)));
       /*
       for(int t = 0; t < texture_size; t++)
       float voxel;

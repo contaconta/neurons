@@ -11,6 +11,8 @@ CubeLiveWire::computeDistances
      (z0 >= cube->cubeDepth))
     return NULL;
 
+  xS = x0; yS = y0; zS = z0;
+
   computingDistances = true;
   printf("Computing the distances from [%i,%i,%i]\n", x0,y0,z0);
 
@@ -133,7 +135,222 @@ CubeLiveWire::findShortestPath
 }
 
 
+Graph<Point3D, EdgeW<Point3D> >* 
+CubeLiveWire::findShortestPathG
+(int x0, int y0, int z0,int x1, int y1, int z1)
+{
+  Graph<Point3D, EdgeW<Point3D> >* result = new Graph<Point3D, EdgeW<Point3D> >();
+
+  vector< int > indexes(3);
+  vector< float > micrometers(3);
+
+  if( (z1 >= 0) && (y1>=0) && (x1>=0) &&
+      (z1 < cube->cubeDepth) && (y1 < cube->cubeHeight) && (x1 < cube->cubeWidth) &&
+      (z0 >= 0) && (y0>=0) && (z0>=0) &&
+      (z0 < cube->cubeDepth) && (y0 < cube->cubeHeight) && (x0 < cube->cubeWidth)
+      && visited[z1][y1][x1]){
+    int xP = x1, yP = y1, zP = z1;
+    int xPP = x1; int yPP = y1; int zPP = z1;
+    while(!( (xP==x0) && (yP==y0)&& (zP==z0) )){
+      indexes[0] = xP;
+      indexes[1] = yP;
+      indexes[2] = zP;
+      cube->indexesToMicrometers(indexes, micrometers);
+      result->cloud->points.push_back
+        (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
+      result->eset.edges.push_back
+        (new EdgeW<Point3D>
+         (&result->cloud->points, result->cloud->points.size()-1,
+          max((int)result->cloud->points.size()-2,0),
+          // 1));
+          fabs(distance->distance(xP,yP,zP,xPP,yPP,zPP))/255) );
+      xPP = xP; yPP = yP; zPP = zP;
+      int previousInt = previous[zP][yP][xP];
+      toCubeIndex(previous[zP][yP][xP], xP, yP, zP, cube);
+      printf("%i %i %i -> %i\n", xP,yP,zP, previousInt);
+    }
+  }
+  return result;
+}
 
 
+vector<vector< int > > CubeLiveWire::findShortestPathIdx
+(int x0, int y0, int z0, int x1, int y1, int z1)
+{
+  vector<vector<int> > toReturn;
+  vector< int > indexes(3);
 
+  if( (z1 >= 0) && (y1>=0) && (x1>=0) &&
+      (z1 < cube->cubeDepth) && (y1 < cube->cubeHeight) && (x1 < cube->cubeWidth) &&
+      (z0 >= 0) && (y0>=0) && (z0>=0) &&
+      (z0 < cube->cubeDepth) && (y0 < cube->cubeHeight) && (x0 < cube->cubeWidth)
+      && visited[z1][y1][x1]){
+    int xP = x1, yP = y1, zP = z1;
+    while(!( (xP==x0) && (yP==y0)&& (zP==z0) )){
+      indexes[0] = xP;
+      indexes[1] = yP;
+      indexes[2] = zP;
+      toReturn.push_back(indexes);
+      int previousInt = previous[zP][yP][xP];
+      toCubeIndex(previous[zP][yP][xP], xP, yP, zP, cube);
+    }
+  }
+  return toReturn;
+}
+
+
+Cube<float, double>* CubeLiveWire::goThroughBorders(string cubeName)
+{
+  Cube<uchar, ulong>* cp = dynamic_cast<Cube<uchar, ulong>*>(cube);
+  Cube<float, double>* toReturn = cp->create_blank_cube(cubeName);
+
+  toReturn->put_all(0);
+  printf("CubeLiveWire::goThroughBorders top and bottom\n");
+  //Top and bottom
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,0,z);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,cp->cubeHeight-1,z);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+
+  printf("CubeLiveWire::goThroughBorders front and back\n");
+  // Front and back
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int y = 0; y < cp->cubeHeight; y++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,y,0);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int y = 0; y < cp->cubeHeight; y++){
+      vector<vector<int> > idx = findShortestPathIdx( xS,yS,zS,x,y,cp->cubeDepth-1);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+
+  printf("CubeLiveWire::goThroughBorders left and right\n");
+  // Left and right
+  for(int y = 0; y < cp->cubeHeight; y++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,0,y,z);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+  for(int y = 0; y < cp->cubeHeight; y++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx( xS,yS,zS,cp->cubeWidth -1,y,z);
+      for(int i = 0; i < idx.size(); i++){
+        toReturn->put(idx[i][0],idx[i][1],idx[i][2],
+                      toReturn->at(idx[i][0],idx[i][1],idx[i][2]) + 1);
+      }
+    }
+
+// printf("Computing the log\n");
+// //Computes the logarithm of the cube
+// for(int x = 0; x < toReturn->cubeWidth; x++)
+  // for(int y = 0; y < toReturn->cubeHeight; y++)
+    // for(int z = 0; z < toReturn->cubeDepth; z++)
+      // if(toReturn->at(x,y,z)!= 0)
+        // toReturn->put(x,y,z,log(toReturn->at(x,y,z)));
+
+
+  return toReturn;
+}
+
+
+float CubeLiveWire::integralOverPath(vector< vector< int > >& path){
+  float toRet = 0;
+  Cube<uchar, ulong>* cp = dynamic_cast<Cube<uchar, ulong>*>(cube);
+  for(int i = 0; i < path.size(); i++){
+    toRet += cp->at(path[i][0], path[i][1], path[i][2]);
+  }
+  return toRet;
+}
+
+vector< Cloud< Point3D >*> CubeLiveWire::goThroughBordersCloud(int nClouds)
+{
+  Cube<uchar, ulong>* cp = dynamic_cast<Cube<uchar, ulong>*>(cube);
+  multimap<float, int> boundary; //Ordered by the distances
+
+  printf("CubeLiveWire::goThroughBorders top and bottom\n");
+  //Top and bottom
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,0,z);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(x,0,z,cube)));
+    }
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,cp->cubeHeight-1,z);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(x,cp->cubeHeight-1,z,cube)));
+    }
+
+  printf("CubeLiveWire::goThroughBorders front and back\n");
+  // Front and back
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int y = 0; y < cp->cubeHeight; y++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,x,y,0);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(x,y,0, cube)));
+    }
+  for(int x = 0; x < cp->cubeWidth; x++)
+    for(int y = 0; y < cp->cubeHeight; y++){
+      vector<vector<int> > idx = findShortestPathIdx( xS,yS,zS,x,y,cp->cubeDepth-1);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(x,y,cp->cubeDepth-1,cube)));
+    }
+
+  printf("CubeLiveWire::goThroughBorders left and right\n");
+  // Left and right
+  for(int y = 0; y < cp->cubeHeight; y++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx(xS,yS,zS,0,y,z);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(0,y,z,cube)));
+    }
+  for(int y = 0; y < cp->cubeHeight; y++)
+    for(int z = 0; z < cp->cubeDepth; z++){
+      vector<vector<int> > idx = findShortestPathIdx( xS,yS,zS,cp->cubeWidth -1,y,z);
+      float value = integralOverPath(idx);
+      boundary.insert(pair<float, int>(value, toLinearIndex(cp->cubeWidth-1,y,z,cube)));
+    }
+
+
+  printf("And now finding the shortest clouds\n");
+  multimap< float, int >::iterator itb = boundary.begin();
+  for(int i = 0; i < nClouds; i++){
+  }
+
+
+// printf("Computing the log\n");
+// //Computes the logarithm of the cube
+// for(int x = 0; x < toReturn->cubeWidth; x++)
+  // for(int y = 0; y < toReturn->cubeHeight; y++)
+    // for(int z = 0; z < toReturn->cubeDepth; z++)
+      // if(toReturn->at(x,y,z)!= 0)
+        // toReturn->put(x,y,z,log(toReturn->at(x,y,z)));
+
+  vector< Cloud< Point3D >*> toReturn;
+
+  return toReturn;
+}
 
