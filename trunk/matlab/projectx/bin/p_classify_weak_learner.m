@@ -19,7 +19,9 @@ function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin
 
 % get the feature responses to the (integral) images
 %f = double(p_RectangleFeature(SET.IntImages, {learner}));
-f = p_get_feature_responses(SET, {learner});
+f = double(p_get_feature_responses(SET, {learner}));
+
+%keyboard;
 
 % perform the weak classification to binary {0, 1}
 h = ( polarity*f) < (polarity * threshold);

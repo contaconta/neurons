@@ -177,14 +177,14 @@ int init(int width, int height, char* data_type)
       return -1;
     }
 
-  int memory_size = sizeof(struct header_mem_responses) + data_unit_size*width*height;
+  unsigned int memory_size = sizeof(struct header_mem_responses) + data_unit_size*width*height;
   struct header_mem_responses hmr;
   memset(&hmr,0,sizeof(hmr));
   hmr.width = width;
   hmr.height = height;
 
   printf("Server is initialising\n");
-  printf("Memory required : %d\n", memory_size);
+  printf("Memory required : %u\n", memory_size);
 
   // TODO : Check if this is less than max size available
 
@@ -204,7 +204,7 @@ int init(int width, int height, char* data_type)
   /*
    * Create the shared memory segment.
    */
-  if ((shmid = shmget(shmkey, memory_size, IPC_CREAT | 0666)) < 0) {
+  if (shmid = shmget(shmkey, memory_size, IPC_CREAT | 0666) == -1) {
     printf("main: shmget() initialization failed\n");
     exit_program(-1);
     return -1;

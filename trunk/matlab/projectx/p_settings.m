@@ -81,6 +81,6 @@ DATASETS.NORM           = 0;        % normalize intensity? (1=FACES,NUCLEI,PERSO
 % AB_ followed by parameters specific to each learner type which are parsed
 % and interpreted by p_define_weak_learners.
 
-LEARNERS.types = {'HA_x1_y1_u1_v1'};
+%LEARNERS.types = {'HA_x1_y1_u1_v1'};
 %LEARNERS.types = {'HA_x3_y3_u4_v4'};
-%LEARNERS.types = {'HA_x2_y2_u2_v2'};
+LEARNERS.types = {'HA_x2_y2_u2_v2'};
