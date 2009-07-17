@@ -28,7 +28,7 @@ make
 GCC=g++
 MEX_ARG=-cxx
 MEX_EXE=`which mex`
-if [ $MEX_EXE='' ]
+if [ $MEX_EXE = '' ]
 then
 	MEX_EXE=/usr/local/matlab/bin/mex
 fi

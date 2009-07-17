@@ -156,7 +156,7 @@ int init_sem()
 }
 #endif
 
-int init(int width, int height, char* data_type)
+int init(int width, int height, char* data_type, int shm_key_id)
 {
   int rc;
   key_t shmkey;
@@ -192,7 +192,7 @@ int init(int width, int height, char* data_type)
    * Typically, an application specific path and
    * id would be used to generate the IPC key.
    */
-  shmkey = ftok(SHMKEYPATH,SHMKEYID);
+  shmkey = ftok(SHMKEYPATH,shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -281,5 +281,9 @@ int main(int argc, char* argv[])
   int height = atoi(argv[2]);
   char* data_type = argv[3];
 
-  return init(width, height, data_type);
+  int key = SHMKEYID;
+  if(argc>4)
+    key = atoi(argv[4]);
+
+  return init(width, height, data_type,key);
 }
