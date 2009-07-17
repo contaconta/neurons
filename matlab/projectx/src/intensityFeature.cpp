@@ -33,15 +33,12 @@ int getIntensityFeature(unsigned int *img, int width, int height, char* weak_lea
   int i;
   //sscanf(weak_learner_param,"ax%day%dbx%dby%d",&col1,&row1,&col2,&row2);
   int cloudId = -1;
-  int row1, col1;
-  int row2 = -1;
-  int col2 = -1;
-  if(sscanf(weak_learner_param,"i%dx%dy%d",&cloudId,&col2,&row2)==EOF)
+  if(sscanf(weak_learner_param,"IT_%d",&cloudId)==EOF)
     {
       printf("getIntensityFeature: Error while parsing the string\n");
       return -1;
     }
-  if(row2 < 0 || col2 < 0 || cloudId < 0)
+  if(cloudId < 0)
     {
       printf("getIntensityFeature: Error while parsing the string\n");
       return -1;
@@ -66,6 +63,8 @@ int getIntensityFeature(unsigned int *img, int width, int height, char* weak_lea
 
   // Extract patch 1
   i=0;
+  // FIX ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  int row1,col1,row2,col2;
   char patch1[patchSize];
   for(int x=col1-patchDist;x<=col1+patchDist;x++)
     for(int y=row1-patchDist;y<=row1+patchDist;y++)

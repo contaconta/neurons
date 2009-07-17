@@ -23,9 +23,9 @@
 
 using namespace std;
 
-#define DEBUG_M
+//#define DEBUG_M
 
-int getMemSize(int &width, int &height)
+int getMemSize(int &width, int &height, int shm_key_id)
 {
   int rc;  
   key_t shmkey;
@@ -34,7 +34,7 @@ int getMemSize(int &width, int &height)
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,SHMKEYID);
+  shmkey = ftok(SHMKEYPATH,shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -57,7 +57,9 @@ int getMemSize(int &width, int &height)
     return -1;
   }
 
+#if DEBUG_M
   printf("shm_key %d %x\n",shmkey, shmkey);
+#endif
 
   /*
     key_t semkey;
@@ -101,7 +103,7 @@ int getMemSize(int &width, int &height)
 }
 
 int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
-                              eDataType dataType, int index, int dataSize)
+                              eDataType dataType, int index, int dataSize, int shm_key_id)
 {
   int rc;  
   key_t shmkey;
@@ -111,7 +113,7 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,SHMKEYID);
+  shmkey = ftok(SHMKEYPATH,shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -134,7 +136,9 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
     return -1;
   }
 
+#if DEBUG_M
   printf("shm_key %d %x\n",shmkey, shmkey);
+#endif
 
   /*
     key_t semkey;
@@ -223,25 +227,26 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
       iStep = hmr->width;
     }
 
+#ifdef DEBUG_M
+  printf("Indices %d %d %d\n", iStep, index_x, index_y);
+#endif
+
   if(hmrSize > dataSize)
     {
       printf("The size of the source (=%d) is smaller than the size of the area in shared memory (=%d)\n",dataSize,hmrSize);
       return -1;
     }
-
-#ifdef DEBUG_M
-  printf("Indices %d %d %d\n", iStep, index_x, index_y);
-#endif
-
-  // Store data
-  int data_index = index_y * hmr->width + index_x;
-  for(int i=0;i<hmrSize;i+=iStep)
+  else
     {
-      //printf("Data %d %d\n", data_index + i, dataSrc[i]);
-      dataHmr[data_index + i] = dataSrc[i];
+      // Store data
+      int data_index = index_y * hmr->width + index_x;
+      for(int i=0;i<hmrSize;i+=iStep)
+        {
+          //printf("Data %d %d\n", data_index + i, dataSrc[i]);
+          dataHmr[data_index + i] = dataSrc[i];
+        }
     }
 
-  printf("Detaching from shared memory segment\n");
   if(shm != 0)
     {
       // Detach from shared memory segment
@@ -255,8 +260,8 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
   return 0;
 }
 
-int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
-                            eDataType dataType, int index)
+int getWeakLearnerResponses(double* dataDst, eDataFormat dataFormat,
+                            eDataType dataType, int index, int shm_key_id)
 {
   int rc;  
   key_t shmkey;
@@ -266,7 +271,7 @@ int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,SHMKEYID);
+  shmkey = ftok(SHMKEYPATH,shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -376,20 +381,18 @@ int getWeakLearnerResponses(unsigned int* dataDst, eDataFormat dataFormat,
       iStep = hmr->width;
     }
 
-  printf("Loading data\n");
 #ifdef DEBUG_M
   printf("Indices %d %d %d\n", iStep, index_x, index_y);
 #endif
 
-  // Copy data to the destination buffe
+  // Copy data to the destination buffer
   int data_index = index_y * hmr->width + index_x;
   for(int i=0;i<hmrSize;i+=iStep)
     {
       //printf("Data %d %d\n", data_index + i, dataHmr[data_index + i]);
-      dataDst[i] = dataHmr[data_index + i];
+      dataDst[i] = (double)dataHmr[data_index + i];
     }
 
-  printf("Detaching from shared memory segment\n");
   if(shm != 0)
     {
       // Detach from shared memory segment

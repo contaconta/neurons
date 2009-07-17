@@ -94,8 +94,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mxFree(sType);
 
     const mwSize dims[]={data_size};
-    plhs[0] = mxCreateNumericArray(1,dims,mxUINT32_CLASS,mxREAL);
-    unsigned int* pData = (unsigned int*)mxGetData(plhs[0]);
+    plhs[0] = mxCreateNumericArray(1,dims,mxDOUBLE_CLASS,mxREAL);
+    double* pData = (double*)mxGetData(plhs[0]);
 
     getWeakLearnerResponses(pData, eFormat, eType, index);
 }
