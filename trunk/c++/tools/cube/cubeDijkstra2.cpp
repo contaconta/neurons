@@ -32,13 +32,21 @@ int main(int argc, char **argv) {
     ("/media/neurons/cut2/aguet_4.00_2.00_phi.nfo");
   Cube<uchar, ulong>* cube = new Cube<uchar, ulong>("/media/neurons/cut2/cut2.nfo");
 
-  DistanceDijkstraColorInverse* djkc = new DistanceDijkstraColorInverse
+  // DistanceDijkstraColorTruncated* djkc = new DistanceDijkstraColorTruncated
+    // (cube);
+
+  DistanceDijkstraColor* djkc = new DistanceDijkstraColor
     (cube);
 
   CubeLiveWire* cubeLiveWire = new CubeLiveWire(cube, djkc);
 
-  cubeLiveWire->computeDistances(87,39,11);
-  Cloud<Point3D>* cd = cubeLiveWire->findShortestPath(87,39,11, 118,81,9);
-  cd->saveToFile("cloud.cl");
+  cubeLiveWire->computeDistances(122,87,9);
+
+  cubeLiveWire->goThroughBorders("borders");
+
+  // Cloud<Point3D>* cd = cubeLiveWire->findShortestPath(87,39,11, 118,81,9);
+  // cd->saveToFile("cloud.cl");
+
+  
 
 }

@@ -9,6 +9,7 @@
 #define OBJECT_H_
 
 #include <fstream>
+
 #include <string>
 #include <assert.h>
 
