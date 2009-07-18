@@ -23,7 +23,7 @@
 
 using namespace std;
 
-#define DEBUG_M
+//#define DEBUG_M
 
 int getMemSize(int &width, int &height, int shm_key_id)
 {
