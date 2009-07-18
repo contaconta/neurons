@@ -19,7 +19,7 @@
 #include "common.h"
 #include "memClient.h"
 
-#define DEBUG_M
+//#define DEBUG_M
 
 /*
   Arguments : format={'row','col'}, learner_index, type={'HA', 'RAY'}
