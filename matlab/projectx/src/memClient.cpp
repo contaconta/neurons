@@ -23,7 +23,7 @@
 
 using namespace std;
 
-//#define DEBUG_M
+#define DEBUG_M
 
 int getMemSize(int &width, int &height, int shm_key_id)
 {
@@ -34,7 +34,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,shm_key_id);
+  shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -57,8 +57,8 @@ int getMemSize(int &width, int &height, int shm_key_id)
     return -1;
   }
 
-#if DEBUG_M
-  printf("shm_key %d %x\n",shmkey, shmkey);
+#ifdef DEBUG_M
+  printf("shm_key %d %x shm_id %d\n",shmkey, shmkey, shmid);
 #endif
 
   /*
@@ -113,7 +113,7 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,shm_key_id);
+  shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
@@ -136,7 +136,7 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
     return -1;
   }
 
-#if DEBUG_M
+#ifdef DEBUG_M
   printf("shm_key %d %x\n",shmkey, shmkey);
 #endif
 
@@ -234,7 +234,6 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
   if(hmrSize > dataSize)
     {
       printf("The size of the source (=%d) is smaller than the size of the area in shared memory (=%d)\n",dataSize,hmrSize);
-      return -1;
     }
   else
     {
@@ -271,7 +270,7 @@ int getWeakLearnerResponses(double* dataDst, eDataFormat dataFormat,
 
   // Generate IPC keys
   // Those keys are the same as the ones used by the Deamon
-  shmkey = ftok(SHMKEYPATH,shm_key_id);
+  shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");

@@ -19,6 +19,8 @@
 #include "common.h"
 #include "memClient.h"
 
+#define DEBUG_M
+
 /*
   Arguments : format={'row','col'}, learner_index, type={'HA', 'RAY'}
  */
@@ -59,6 +61,9 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     int width;
     int height;
     getMemSize(width, height);
+#ifdef DEBUG_M
+    mexPrintf("width %d height %d\n",width,height);
+#endif
     if(strcmp(sFormat,"row")==0)
       {
         eFormat = FORMAT_ROW;

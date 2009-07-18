@@ -192,19 +192,17 @@ int init(int width, int height, char* data_type, int shm_key_id)
    * Typically, an application specific path and
    * id would be used to generate the IPC key.
    */
-  shmkey = ftok(SHMKEYPATH,shm_key_id);
+  shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
       printf("main: ftok() for shm failed\n");
       return -1;
     }
 
-  printf("shm_key %d %x\n",shmkey, shmkey);
-
   /*
    * Create the shared memory segment.
    */
-  if (shmid = shmget(shmkey, memory_size, IPC_CREAT | 0666) == -1) {
+  if ((shmid = shmget(shmkey, memory_size, IPC_CREAT | 0666)) == -1) {
     printf("main: shmget() initialization failed\n");
     exit_program(-1);
     return -1;
@@ -221,7 +219,11 @@ int init(int width, int height, char* data_type, int shm_key_id)
 
   *((struct header_mem_responses *)shm) = hmr;
 
+  printf("shm_key %d %x shm_id %d\n",shmkey, shmkey, shmid);
   printf("shm %x\n",shm);
+
+  struct header_mem_responses* p_hmr = (struct header_mem_responses*) shm;
+  printf("w %d h %d\n", p_hmr->width, p_hmr->height);
 
   /*
   // Wait for the semaphore to be available
@@ -284,6 +286,8 @@ int main(int argc, char* argv[])
   int key = SHMKEYID;
   if(argc>4)
     key = atoi(argv[4]);
+
+  printf("Key %d %d\n",key,SHMKEYID);
 
   return init(width, height, data_type,key);
 }
