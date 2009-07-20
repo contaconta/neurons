@@ -27,11 +27,11 @@ make
 #GCC=/usr/bin/c++
 GCC=g++
 MEX_ARG=-cxx
-MEX_EXE=`which mex`
-if [ $MEX_EXE = '' ]
-then
+#MEX_EXE=`which mex`
+#if [ $MEX_EXE = '' ]
+#then
 	MEX_EXE=/usr/local/matlab/bin/mex
-fi
+#fi
 #MEX_EXE=/usr/local/bin/mex
 CFLAGS="-w -c -O3" #$(OPENMP)
 

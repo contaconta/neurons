@@ -41,7 +41,6 @@ for c = [-1 1]  % c = the postive and negative classes
         
         I  = convertToGray(I, DATASETS.IMSIZE, DATASETS.NORM);
         
-        
         % if necessary, process the image
         %I = processImage(I, IMSIZE, NORM);
 

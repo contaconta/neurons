@@ -30,6 +30,7 @@ if SET.precomputed && (nargin > 2)
     
     row = varargin{1};
     responses = mexLoadResponse('row',row,'HA')';
+    %disp('precomputed');
     
 % if not, calculate them on the fly
 else
@@ -37,6 +38,7 @@ else
 
         case 'HA'
             responses = mexRectangleFeature(SET.IntImages, learners);
+            %disp('online computation');
 
         case 'SV'
             responses = rand([length(SET.Images) length(learners)]);

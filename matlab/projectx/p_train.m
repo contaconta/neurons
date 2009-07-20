@@ -90,16 +90,10 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         gt = [TRAIN(:).class]';  C = p_classify_cascade(CASCADE, TRAIN); [tpr fpr FPs TNs TPs] = rocstats(C, gt, 'TPR', 'FPR', 'FPlist', 'TNlist', 'TPlist'); %disp(['Di=' num2str(tpr) ', Fi=' num2str(fpr) ', #FP = ' num2str(length(FPs)) '.  CASCADE applied to TRAIN set.'  ]);               
         S2 = sprintf('       Di=%5.4g (%d/%d)\tFi=%5.4g (%d/%d)\tCASCADE -> TRAIN SET', tpr, length(TPs), length(find(gt == 1)), fpr, length(FPs), length(find(gt == -1)) ); disp(S2);
         % .................................................................
-        
-        
-%         % ...... HACK TO RESTART THE STAGE IF REPEATING CLASSIFIER ........
-%         if restart_flag
-%             i = i - 1;   if i > 0; CASCADE = CASCADE(1:i); end; break;
-%         end
-%         % .................................................................
 
+        
         %...... HACK TO STOP IF REPEATING CLASSIFIER ........
-        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1}) && strcmp(CASCADE(i).CLASSIFIER.threshold(ti), CASCADE(i).CLASSIFIER.threshold(ti-1))
+        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1}) && (CASCADE(i).CLASSIFIER.threshold(ti) == CASCADE(i).CLASSIFIER.threshold(ti-1))
             disp(' REPEATED CLADDIFIER, ABORT!');
             beep; keyboard;
         end
