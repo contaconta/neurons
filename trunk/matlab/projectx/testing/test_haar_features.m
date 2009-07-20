@@ -20,7 +20,6 @@ for l = 1:length(LEARNERS.list)
     % matlab direct calculartion
     f_mat(l) = compute_haar_feature(I, LEARNERS.list{l});
     
-    
     if f_mex(l) ~= f_mat(l)
         disp([' feature responses do not agree for feature ' num2str(l) '!']);
         disp([' f_mex: ' num2str(f_mex(l)) '   f_mat: ' num2str(f_mat(l)) ]);

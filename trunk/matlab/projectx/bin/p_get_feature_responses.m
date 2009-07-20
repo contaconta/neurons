@@ -45,7 +45,6 @@ else
             
         otherwise
             error('could not find appropriate function for learner');
-            keyboard;
     end
 end
 
