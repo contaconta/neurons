@@ -56,8 +56,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
   max_width++;
   max_height++;
 
-  printf("enumerate_learners %d\n", nb_learner_type);
-
   for(int iLearnerType = 0; iLearnerType<nb_learner_type;iLearnerType++) {
 
     left_token = learner_type[iLearnerType];
@@ -124,11 +122,9 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
                   for(int iy=1;(iy+sy)<=max_height;iy+=step_y)
                     {
                       stringstream learner_id;
-                      //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
                       learner_id << learner_type[iLearnerType][0] << learner_type[iLearnerType][1]
                                  << "_Wax" << ix << "ay" << iy << "bx" << (ix + sx) << "by" << (iy + sy/2)
                                  << "_Bax" << ix << "ay" << (iy + sy/2) << "bx" << (ix + sx) << "by" << (iy + sy);
-                      //cout << learner_id.str() << endl;
                       list_weak_learners.push_back(learner_id.str());
                     }
               }
@@ -148,11 +144,9 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
                   for(int iy=1;(iy+sy)<=max_height;iy+=step_y)
                     {
                       stringstream learner_id;
-                      //learner_id << learner_type[0] << learner_type[1] << "_W_ax0ay0bx" << sx << "by" << sy/2 << "_B_ax0ay" << sy/2 << "bx" << sx << "by" << sy;
                       learner_id << learner_type[iLearnerType][0] << learner_type[iLearnerType][1]
                                  << "_Wax" << ix << "ay" << iy << "bx" << (ix + sx/2) << "by" << (iy + sy)
                                  << "_Bax" << (ix + sx/2) << "ay" << iy << "bx" << (ix + sx) << "by" << (iy + sy);
-                      //cout << learner_id.str() << endl;
                       list_weak_learners.push_back(learner_id.str());
                     }
               }
@@ -262,7 +256,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
     weak_learners[idx] = new char[iter->length()+1];
     strcpy(weak_learners[idx], iter->c_str());
     idx++;
-    //cout << *iter  << endl;
   }
 
   return list_weak_learners.size();

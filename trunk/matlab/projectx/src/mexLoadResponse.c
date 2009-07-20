@@ -23,6 +23,7 @@
 
 /*
   Arguments : format={'row','col'}, learner_index, type={'HA', 'RAY'}
+  Returns a matrix containing 32-bit integers
  */
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
@@ -99,7 +100,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mxFree(sType);
 
     const mwSize dims[]={data_size};
-    plhs[0] = mxCreateNumericArray(1,dims,mxDOUBLE_CLASS,mxREAL);
+    plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
     double* pData = (double*)mxGetData(plhs[0]);
 
     getWeakLearnerResponses(pData, eFormat, eType, index);
