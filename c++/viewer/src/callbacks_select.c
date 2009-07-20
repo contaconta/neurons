@@ -298,7 +298,7 @@ on_remove_selection_clicked              (GtkButton       *button,
     }
 }
 
-void plugin_activate(char* label)
+void plugin_activate(const char* label)
 {
   string dir("plugins/bin/");
 
@@ -390,7 +390,8 @@ on_run_graph_cuts_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
   printf("run_graph_cut %s\n", cube->type.c_str());
-  plugin_activate("GraphCuts");
+  const char* nm1 = "GraphCuts";
+  plugin_activate(nm1);
 
   /*
   if(currentGraphCut)

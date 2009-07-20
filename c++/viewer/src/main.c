@@ -273,8 +273,10 @@ void load_plugins()
 
                 }
 
-              if (!g_module_close (module))
-                g_warning ("%s: %s", *itFile, g_module_error ());
+              /* if (!g_module_close (module)){ */
+                /* char* nm = g_module_error (); */
+                /* g_warning ("%i: %s", *itFile, nm ); */
+              /* } */
             }
         }
     }
