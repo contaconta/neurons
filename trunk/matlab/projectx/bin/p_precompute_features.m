@@ -33,9 +33,6 @@ for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
     
     % precompute the feature responses for each example for learner l
-    %learner = LEARNERS.list{l};
-    %responses = p_RectangleFeature(SET.IntImages, LEARNERS.list(l));
-    
     %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
     responses = p_get_feature_responses(SET, LEARNERS.list(l));
     
