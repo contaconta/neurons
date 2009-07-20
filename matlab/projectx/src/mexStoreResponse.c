@@ -38,7 +38,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (!mxIsUint8(prhs[0]) && (!mxIsDouble(prhs[0]))
         && !mxIsUint16(prhs[0]) && !mxIsUint32(prhs[0])){
     */
-    if(mxIsInt32(prhs[0])) {
+    if(!mxIsInt32(prhs[0])) {
       mexErrMsgTxt("First argument must be of type int32");
     }
     if (!(mxIsChar(prhs[1]))) {

@@ -37,7 +37,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("main: ftok() for shm failed\n");
+      printf("getMemSize: ftok() for shm failed\n");
       return -1;
     }
 
@@ -45,7 +45,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
    * Retrieve the shared memory segment.
    */
   if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
-    printf("main: shmget() initialization failed\n");
+    printf("getMemSize: shmget() initialization failed\n");
     return -1;
   }
 
@@ -53,7 +53,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("main: shmat() initialization failed\n");
+    printf("getMemSize: shmat() initialization failed\n");
     return -1;
   }
 
@@ -116,7 +116,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("main: ftok() for shm failed\n");
+      printf("storeWeakLearnerResponses: ftok() for shm failed\n");
       return -1;
     }
 
@@ -124,7 +124,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
    * Retrieve the shared memory segment.
    */
   if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
-    printf("main: shmget() initialization failed\n");
+    printf("storeWeakLearnerResponses: shmget(%d) initialization failed\n", shmkey);
     return -1;
   }
 
@@ -132,7 +132,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("main: shmat() initialization failed\n");
+    printf("storeWeakLearnerResponses: shmat(%d) initialization failed\n", shmid);
     return -1;
   }
 
@@ -273,7 +273,7 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("main: ftok() for shm failed\n");
+      printf("getWeakLearnerResponses: ftok() for shm failed\n");
       return -1;
     }
 
@@ -281,7 +281,7 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
    * Retrieve the shared memory segment.
    */
   if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
-    printf("main: shmget() initialization failed\n");
+    printf("getWeakLearnerResponses: shmget() initialization failed\n");
     return -1;
   }
 
@@ -289,7 +289,7 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("main: shmat() initialization failed\n");
+    printf("getWeakLearnerResponses: shmat() initialization failed\n");
     return -1;
   }
 
