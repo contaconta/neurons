@@ -101,7 +101,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 
     const mwSize dims[]={data_size};
     plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
-    double* pData = (double*)mxGetData(plhs[0]);
+    int* pData = (int*)mxGetData(plhs[0]);
 
     getWeakLearnerResponses(pData, eFormat, eType, index);
 }
