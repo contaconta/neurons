@@ -16,13 +16,11 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w, l)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%responses = get_feature_responses(learner, SET);
 %responses = p_dummy_feature_values(learner, SET);
-%responses = p_RectangleFeature(SET.IntImages, {learner});
 %responses = double(p_get_feature_responses(SET, {learner}, l));
 responses = p_get_feature_responses(SET, {learner}, l);
 
-keyboard;
+%keyboard;
 
 err = zeros(size(responses)); 
 polarity = zeros(size(err)); 
@@ -84,3 +82,4 @@ end
 threshold       = double(fsorted(q_ind));
 pol             = polarity(q_ind);
 
+%keyboard;

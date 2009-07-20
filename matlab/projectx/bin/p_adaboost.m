@@ -87,7 +87,7 @@ s = ['                  id: ' learner_string ]; disp(s);
 %................................................
 
 
-keyboard;
+%keyboard;
 
 %% 4. Update the training weight vector according to misclassifications
 % get selected weak learner's classification results for the TRAIN set
