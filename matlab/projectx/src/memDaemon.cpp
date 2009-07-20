@@ -195,7 +195,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("main: ftok() for shm failed\n");
+      printf("memDaemon: ftok() for shm failed\n");
       return -1;
     }
 
@@ -203,7 +203,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
    * Create the shared memory segment.
    */
   if ((shmid = shmget(shmkey, memory_size, IPC_CREAT | 0666)) == -1) {
-    printf("main: shmget() initialization failed\n");
+    printf("memDaemon: shmget() initialization failed\n");
     exit_program(-1);
     return -1;
   }
@@ -212,7 +212,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("main: shmat() initialization failed\n");
+    printf("memDaemon: shmat() initialization failed\n");
     exit_program(-1);
     return -1;
   }
@@ -234,7 +234,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
   rc = semop(semid, operations, 1);
   if (rc == -1)
     {
-      printf("main: semop(-1) failed\n");
+      printf("memDaemon: semop(-1) failed\n");
       exit_program(-1);
       return -1;
     }
@@ -249,7 +249,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
   rc = semop( semid, operations, 1 );
   if (rc == -1)
     {
-      printf("main: semop(1) failed\n");
+      printf("memDaemon: semop(1) failed\n");
       exit_program(-1);
       return -1;
     }
