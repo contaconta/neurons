@@ -1,4 +1,4 @@
-function visualize_haar_feature(feature_string, IMSIZE, varargin)
+function response = compute_haar_feature(I, feature_string)
 %VISUALIZE_HAAR_FEATURE
 %
 %   visualize_haar_feature(feature_string, IMSIZE, IM) plots a haar feature
@@ -21,15 +21,8 @@ function visualize_haar_feature(feature_string, IMSIZE, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-
-%% plot on either a blank image, or over an image passed as optional 3rd argument
-if nargin == 3
-    A = varargin{1};
-    IMSIZE = size(A);
-else
-    A = .5 * ones(IMSIZE);
-end
-
+POS = 0;
+NEG = 0;
 
 patterns = {'[W][^_]*', '[B][^_]*'};
 
@@ -54,20 +47,23 @@ for i = 1:length(patterns)
         by = str2double(by_str2{1}) -1;
         %disp([ ax ay bx by]);
         
+        % white region
         if i == 1
-            if strcmp(class(A), 'double')
-                A(ay:by,ax:bx) = 1;   
-            else
-                A(ay:by,ax:bx) = intmax(class(A));
-            end
+            POS = POS + sum(sum(I(ay:by,ax:bx)));
+            I(ay:by,ax:bx) = 1;   
+        % black region
         else
-            A(ay:by,ax:bx) = 0;
+            NEG = NEG + sum(sum(I(ay:by,ax:bx)));
+            I(ay:by,ax:bx) = 0;
         end
     end
 end
 
-%pause(0.01);
-figure(1);
-set(gca, 'Position', [0 0 1 1]);
-imshow(A);
+response = POS - NEG;
+
+%
+% %pause(0.01);
+% figure(1);
+% set(gca, 'Position', [0 0 1 1]);
+% imshow(A);
 

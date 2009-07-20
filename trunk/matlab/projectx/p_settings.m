@@ -29,6 +29,7 @@ path(path, [pwd '/../spedges/']);        	% append the path to the ray's toolbox
 path(path, [pwd '/../toolboxes/kevin/']); 	% append the path to kevin's toolbox
 path(path, [pwd '/bin/']);                  % append the path to sub-functions
 path(path, [pwd '/testing/']);              % append path to quality testing functions
+path(path, [pwd '/images/']);               % append path to test images subdirectory
 rand('twister', 100);                     	% seed the random variable
 
 %-------------------------------------------------------------------------

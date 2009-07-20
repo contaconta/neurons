@@ -40,7 +40,6 @@ end
 
 % ---- when a new stage is reached, reset the example weights! ----
 if ti == 1
-    %disp('   NORMALIZED THE WEIGHTS!');
     w = ones(1,length(TRAIN.class)) ./ length(TRAIN.class); 
 end
 
@@ -75,14 +74,6 @@ CLASSIFIER.threshold(ti)        = LEARNERS.threshold(BESTlearner);
 CLASSIFIER.alpha(ti)            = alpha;
 
 
-% append the weak learner to the classifier's list of weak learners
-%weak_classifier                 = LEARNERS.list{BESTlearner};
-%CLASSIFIER.weak_learners{ti} = weak_classifier;
-%CLASSIFIER.weak_learners{ti}.alpha = alpha;
-%CLASSIFIER.weak_learners{ti}.index = BESTlearner;
-
-
-
 %.................. DISPLAY .....................
 learner_string = LEARNERS.list{BESTlearner};
 switch learner_string(1:2)
@@ -96,7 +87,7 @@ s = ['                  id: ' learner_string ]; disp(s);
 %................................................
 
 
-
+keyboard;
 
 %% 4. Update the training weight vector according to misclassifications
 % get selected weak learner's classification results for the TRAIN set
