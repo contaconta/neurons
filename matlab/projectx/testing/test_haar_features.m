@@ -1,7 +1,7 @@
 p_settings;
 
 I = imread('test_mito.png');
-II = integral_image(I);
+II = integral_image(I)';
 
 
 % define the weak learners
