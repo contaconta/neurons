@@ -30,7 +30,7 @@ unsigned int *Integral (unsigned char *img, int width, int height);
 // co-ordinate and size
 // @param row1, col1 : coordinates of the top left corner of the box
 // @param row2, col2 : coordinates of the bottom right corner of the box
-unsigned int BoxIntegral(unsigned int *data, int width, int height,
+int BoxIntegral(unsigned int *data, int width, int height,
                          int row1, int col1, int row2, int col2);
 
 // Compute rectangle feature from the integral image

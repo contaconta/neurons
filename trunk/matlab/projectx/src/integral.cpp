@@ -48,7 +48,7 @@ unsigned int *Integral(unsigned char *img, int width, int height)
   return int_img;
 }
 
-inline unsigned int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
+inline int BoxIntegral(unsigned int *data, int width, int height, int row1, int col1, int row2, int col2) 
 {
   // -1 to adjust rows/cols reflecting origin change from (1,1) to (0,0), and -1 to shift from coordinates to indexes.
   int r1 = row1 - 2;
