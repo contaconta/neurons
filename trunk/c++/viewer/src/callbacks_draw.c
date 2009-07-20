@@ -24,12 +24,12 @@
 #include <fstream>
 
 // TODO : where should we put this declaration ?
-struct
+struct aPoint3ds
 {
   int x;
   int y;
   int z;
-} aPoint3d;
+}  aPoint3d;
 
 void draw_last_point()
 {

@@ -569,8 +569,9 @@ Cube<T,U>::Cube
   else if (typeid(T) == typeid(bool))
     this->type = "bool";
   else{
-    printf("Find me in Cube.h and fix me, I am a bug. The type id of T is %i and the typeids of int=%i, float=%i and uchar = %i and bool = %i\n",
-           typeid(T), typeid(int), typeid(float), typeid(uchar));
+    // // printf("Find me in Cube.h and fix me, I am a bug. The type id of T is %i and the typeids of int=%i, float=%i and uchar = %i and bool = %i\n",
+           // typeid(T), typeid(int), typeid(float), typeid(uchar));
+    printf("Find me in Cube.h and fix me, I am a bug.");
     exit(0);
   }
   this->create_volume_file(nameFile + ".vl");

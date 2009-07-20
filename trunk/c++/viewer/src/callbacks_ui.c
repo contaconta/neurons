@@ -463,7 +463,7 @@ on_shaders_clicked                     (GtkButton       *button,
   gtk_widget_show (ascSelectShaders);
 }
 
-char *shaders_textFileRead(char *fn)
+char *shaders_textFileRead(const char *fn)
 {
   FILE *fp;
   char *content = NULL;
@@ -499,8 +499,10 @@ void shaders_activation(gint active)
         shader_v = glCreateShader(GL_VERTEX_SHADER);
         shader_f = glCreateShader(GL_FRAGMENT_SHADER);
 
-        vs = shaders_textFileRead("../shaders/edge.vert");
-        fs = shaders_textFileRead("../shaders/edge.frag");
+        const char* nm1 = "../shaders/edge.vert";
+        vs = shaders_textFileRead(nm1);
+        const char* nm2 = "../shaders/edge.frag";
+        fs = shaders_textFileRead(nm2);
 
         const char * ff = fs;
         const char * vv = vs;

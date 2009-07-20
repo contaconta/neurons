@@ -1786,9 +1786,9 @@ vector< vector< int > > Cube<T,U>::decimate_layer
     }
 
   if(sizeof(T) == 1)
-    printf("Layer %i with max_value = %u and min_value = %u\n", nLayer, max_value, min_value);
+    printf("Layer %f with max_value = %f and min_value = %f\n", (float)nLayer, (float)max_value, (float)min_value);
   else
-    printf("Layer %i with max_value = %f and min_value = %f\n", nLayer, max_value, min_value);
+    printf("Layer %f with max_value = %f and min_value = %f\n", (float)nLayer, (float)max_value, (float)min_value);
 
   int position = 0;
   for(int y = window_xy*2; y < cubeHeight-window_xy*2; y++){
@@ -1807,9 +1807,9 @@ vector< vector< int > > Cube<T,U>::decimate_layer
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
     T min_value_it = (*iter).first;
     if(sizeof(T)==1)
-      printf("\nCube<T,U>:: threshold: %u min_value = %u[", threshold, min_value_it);
+      printf("\nCube<T,U>:: threshold: %f min_value = %f[", (float)threshold, (float)min_value_it);
     else
-      printf("\nCube<T,U>:: threshold: %f min_value = %f[", threshold, min_value_it);
+      printf("\nCube<T,U>:: threshold: %f min_value = %f[", (float)threshold, (float)min_value_it);
     fflush(stdout);
 
     typename multimap< T, int >::reverse_iterator riter = valueToCoords.rbegin();
@@ -1891,7 +1891,7 @@ vector< vector< int > > Cube<T,U>::decimate
   min_max(&min_value, &max_value);
 
   if(sizeof(T) == 1)
-    printf("Cube with max_value = %u and min_value = %u\n", max_value, min_value);
+    printf("Cube with max_value = %f and min_value = %f\n", (float)max_value, (float)min_value);
   else
     printf("Cube with max_value = %f and min_value = %f\n", max_value, min_value);
 
@@ -2026,9 +2026,9 @@ vector< vector< int > > Cube<T,U>::decimate_log(float threshold, int window_xy, 
       }
 
   if(sizeof(T) == 1)
-    printf("Cube with max_value = %u and min_value = %u\n", max_value, min_value);
+    printf("Cube with max_value = %f and min_value = %f\n", (float)max_value, (float)min_value);
   else
-    printf("Cube with max_value = %f and min_value = %f\n", max_value, min_value);
+    printf("Cube with max_value = %f and min_value = %f\n", (float)max_value, (float)min_value);
 
   double step_size = 0.1;
   double current_threshold = max_value/2;
@@ -2057,9 +2057,9 @@ vector< vector< int > > Cube<T,U>::decimate_log(float threshold, int window_xy, 
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
     T min_value_it = (*iter).first;
     if(sizeof(T)==1)
-      printf("\nCube<T,U>:: threshold: %u min_value = %u[", current_threshold, min_value_it);
+      printf("\nCube<T,U>:: threshold: %f min_value = %f[", (float)current_threshold, (float)min_value_it);
     else
-      printf("\nCube<T,U>:: threshold: %f min_value = %f[", current_threshold, min_value_it);
+      printf("\nCube<T,U>:: threshold: %f min_value = %f[", (float)current_threshold, (float)min_value_it);
     fflush(stdout);
 
     typename multimap< T, int >::reverse_iterator riter = valueToCoords.rbegin();

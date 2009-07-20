@@ -261,7 +261,7 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   while(pt->load(in)){
 
     // DEBUG
-    printf("p.z : %f\n",  pt->indexes[pt->indexes.size()-1]);
+    printf("p.z : %f\n",  (float)pt->indexes[pt->indexes.size()-1]);
 
     if(cube)
       {        
@@ -298,7 +298,7 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   while(pt->load(in)){
 
     // DEBUG
-    printf("p.z : %f\n",  pt->indexes[pt->indexes.size()-1]);
+    printf("p.z : %f\n",  (float)pt->indexes[pt->indexes.size()-1]);
 
     if(cube)
       {        

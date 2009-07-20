@@ -1755,12 +1755,12 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
 
   if(nLayerToDraw < 0)
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = 0;
     }
   if(nLayerToDraw > cubeDepth -1)
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = cubeDepth-1;
     }
 
@@ -1851,12 +1851,12 @@ void Cube<T,U>::draw_layer_tile_XZ(float nLayerToDraw, int color)
 
   if(nLayerToDraw < 0)
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = 0;
     }
   if( (nLayerToDraw > min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture) ) )
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture);
     }
 
@@ -1940,12 +1940,12 @@ void Cube<T,U>::draw_layer_tile_YZ(float nLayerToDraw,int color)
 
   if(nLayerToDraw < 0)
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = 0;
     }
   if( (nLayerToDraw > min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture) ) )
     {
-      printf("Cube::draw_layer: invalid nLayerToDraw %i\n", nLayerToDraw);
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
       nLayerToDraw = min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture);
     }
 
