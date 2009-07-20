@@ -23,8 +23,6 @@ function responses = p_get_feature_responses(SET, learners, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%keyboard;
-
 % if we have precomputed the feature values, recall them from memdaemon
 if SET.precomputed && (nargin > 2)
     
@@ -47,5 +45,3 @@ else
             error('could not find appropriate function for learner');
     end
 end
-
-%keyboard;

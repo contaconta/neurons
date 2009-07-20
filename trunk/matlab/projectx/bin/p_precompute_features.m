@@ -36,12 +36,12 @@ for l = 1:length(LEARNERS.list)
     %learner = LEARNERS.list{l};
     %responses = p_RectangleFeature(SET.IntImages, LEARNERS.list(l));
     
-    responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
+    %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
+    responses = p_get_feature_responses(SET, LEARNERS.list(l));
     
     %keyboard;
     
     % store the responses as a row vector
     mexStoreResponse(responses,'row',l,'HA');
-    %memClient.store(responses, 'row', l, 'HA');
 end
 toc;

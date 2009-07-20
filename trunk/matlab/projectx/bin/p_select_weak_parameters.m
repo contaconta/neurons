@@ -19,12 +19,10 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w, l)
 %responses = get_feature_responses(learner, SET);
 %responses = p_dummy_feature_values(learner, SET);
 %responses = p_RectangleFeature(SET.IntImages, {learner});
-responses = double(p_get_feature_responses(SET, {learner}, l));
+%responses = double(p_get_feature_responses(SET, {learner}, l));
+responses = p_get_feature_responses(SET, {learner}, l);
 
-%keyboard;
-
-% TODO: load responses from a precomputed file
-%responses = loadfunction(leaner_index, learner_type);
+keyboard;
 
 err = zeros(size(responses)); 
 polarity = zeros(size(err)); 
