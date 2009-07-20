@@ -20,7 +20,7 @@
 
 
 /*
-  Arguments : data, format={'row','col'}, learner_index, type={'HA', 'RAY'}
+  Arguments : data (int32), format={'row','col'}, learner_index, type={'HA', 'RAY'}
  */
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
@@ -34,9 +34,12 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     }
     
     /* Check data type of input argument */
+    /*
     if (!mxIsUint8(prhs[0]) && (!mxIsDouble(prhs[0]))
         && !mxIsUint16(prhs[0]) && !mxIsUint32(prhs[0])){
-      mexErrMsgTxt("First argument must be of type uint/double.");
+    */
+    if(mxIsInt32(prhs[0])) {
+      mexErrMsgTxt("First argument must be of type int32");
     }
     if (!(mxIsChar(prhs[1]))) {
       mexErrMsgTxt("Second argument must be of type string.");
@@ -53,7 +56,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     
 
     /* Get the real data */
-    unsigned int* pData=(unsigned int*)mxGetPr(prhs[0]);
+    int* pData=(int*)mxGetPr(prhs[0]);
     int nElements = mxGetNumberOfElements(prhs[0]);
 
     /* Get weak learner index (-1 because C arrays start at 0) */

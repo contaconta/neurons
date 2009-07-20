@@ -25,10 +25,10 @@ enum eDataFormat{FORMAT_ROW, FORMAT_COLUMN};
 int getMemSize(int &width, int &height, int shm_key_id = SHMKEYID);
 
 // Store the weak learner responses in the shared memory
-// The responses are stored as doubles
+// The responses are stored as 32 bit integers
 // @param : either "row" or "column"
 // TODO : overload function to have more types for dataDst
-int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat, eDataType dataType, int index, int dataSize, int shm_key_id = SHMKEYID);
+int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat, eDataType dataType, int index, int dataSize, int shm_key_id = SHMKEYID);
 
 // @return a pointer on the data required
-int getWeakLearnerResponses(double* dataDst, eDataFormat dataFormat, eDataType dataType, int index, int shm_key_id = SHMKEYID);
+int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat, eDataType dataType, int index, int shm_key_id = SHMKEYID);

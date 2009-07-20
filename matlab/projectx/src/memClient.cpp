@@ -102,7 +102,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
   return 0;
 }
 
-int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
+int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
                               eDataType dataType, int index, int dataSize, int shm_key_id)
 {
   int rc;  
@@ -259,7 +259,7 @@ int storeWeakLearnerResponses(unsigned int* dataSrc, eDataFormat dataFormat,
   return 0;
 }
 
-int getWeakLearnerResponses(double* dataDst, eDataFormat dataFormat,
+int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
                             eDataType dataType, int index, int shm_key_id)
 {
   int rc;  
@@ -389,7 +389,7 @@ int getWeakLearnerResponses(double* dataDst, eDataFormat dataFormat,
   for(int i=0;i<hmrSize;i+=iStep)
     {
       //printf("Data %d %d\n", data_index + i, dataHmr[data_index + i]);
-      dataDst[i] = (double)dataHmr[data_index + i];
+      dataDst[i] = dataHmr[data_index + i];
     }
 
   if(shm != 0)
