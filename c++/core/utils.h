@@ -86,7 +86,7 @@ public:
 
   static void runMatlabSlave() {
     // This is an awful hack to see if matlabSlave is running
-    system("ps -ef | grep matlabSlave | wc > /tmp/matlabRunning");
+    int err = system("ps -ef | grep matlabSlave | wc > /tmp/matlabRunning");
     std::ifstream in("/tmp/matlabRunning");
     int isMatRun = 0;
     in >> isMatRun;
@@ -95,7 +95,7 @@ public:
     if(isMatRun < 2){
       remove("/tmp/matlab");
       mkfifo("/tmp/matlab",0666);
-      system("gnome-terminal -e matlabSlave");
+      int error = system("gnome-terminal -e matlabSlave");
       usleep(1000000);
     }
   }
