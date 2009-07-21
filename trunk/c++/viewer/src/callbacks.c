@@ -315,7 +315,7 @@ void
 on_get_matrix_button_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
-  system("matlab -nosplash -nojvm -r getMatrix");
+  int error = system("matlab -nosplash -nojvm -r getMatrix");
   delete neuronita;
   neuronita = new Neuron(neuron_name);
   glDeleteLists(1,1);

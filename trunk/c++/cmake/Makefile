@@ -42,7 +42,7 @@ CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 CMAKE_SOURCE_DIR = /home/ggonzale/workspace/neseg/cmake
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ggonzale/workspace/neseg/cmake
+CMAKE_BINARY_DIR = /home/ggonzale/workspace/viva/cmake
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,9 +69,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ggonzale/workspace/neseg/cmake/CMakeFiles /home/ggonzale/workspace/neseg/cmake/CMakeFiles/progress.make
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ggonzale/workspace/viva/cmake/CMakeFiles /home/ggonzale/workspace/viva/cmake/CMakeFiles/progress.make
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ggonzale/workspace/neseg/cmake/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ggonzale/workspace/viva/cmake/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -97,6 +97,32 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+#=============================================================================
+# Target rules for targets named cubeAt
+
+# Build rule for target.
+cubeAt: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeAt
+.PHONY : cubeAt
+
+# fast build rule for target.
+cubeAt/fast:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/build
+.PHONY : cubeAt/fast
+
+#=============================================================================
+# Target rules for targets named cubeDijkstra2
+
+# Build rule for target.
+cubeDijkstra2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeDijkstra2
+.PHONY : cubeDijkstra2
+
+# fast build rule for target.
+cubeDijkstra2/fast:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/build
+.PHONY : cubeDijkstra2/fast
 
 #=============================================================================
 # Target rules for targets named viva
@@ -455,6 +481,36 @@ home/ggonzale/workspace/neseg/core/utils.s:
 .PHONY : home/ggonzale/workspace/neseg/core/utils.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeAt.o:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeAt.i:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeAt.s:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/viewer/src/callbacks.o:
 	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks.o
 .PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks.o
@@ -595,6 +651,8 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... cubeAt"
+	@echo "... cubeDijkstra2"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... viva"
@@ -665,6 +723,12 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/core/utils.o"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.i"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.o"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.i"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.s"
