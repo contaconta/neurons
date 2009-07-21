@@ -30,7 +30,11 @@ path(path, [pwd '/../toolboxes/kevin/']); 	% append the path to kevin's toolbox
 path(path, [pwd '/bin/']);                  % append the path to sub-functions
 path(path, [pwd '/testing/']);              % append path to quality testing functions
 path(path, [pwd '/images/']);               % append path to test images subdirectory
-rand('twister', 100);                     	% seed the random variable
+
+% seed the random number generator
+rand('twister', 100);                     	% seed the random variable for older Matlab versions
+s = RandStream.create('mt19937ar','seed',5489); % seed for Matlab 7.8 (?)
+RandStream.setDefaultStream(s);
 
 %-------------------------------------------------------------------------
 % TRAINING PARAMETERS
@@ -63,10 +67,8 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 %DATASETS.filelist = 'nuclei-rotated.txt';   DATASETS.scale_limits = [.6 2]; DATASETS.IMSIZE = [24 24];      
 %DATASETS.filelist = 'faces.txt';            DATASETS.scale_limits = [.6 5]; DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'mitochondria48.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];   
-%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
-%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; DATASETS.IMSIZE = [24 24];
-%DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
-DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [1 3.3]; DATASETS.IMSIZE = [24 24];
+DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATASETS.IMSIZE = [24 24];
+%DATASETS.filelist = 'nuclei24.txt';         DATASETS.scale_limits = [13.3]; DATASETS.IMSIZE = [24 24];
 %DATASETS.filelist = 'persons24x64.txt';     DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [64 24];
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [128 48];
 
