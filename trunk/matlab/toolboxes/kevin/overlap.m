@@ -2,10 +2,11 @@ function intersection = overlap(rectA, rectB)
 %
 % [x1 y1 x2 y2]
 %
-%
-%
-%
-%
+% x1 = upper left pixel x location
+% y1 = upper left pixel y location
+% 
+% x2 = first pixel in x direction NOT in box
+% y2 = first pixel in y direction NOT in box
 
 Ax1 = rectA(1);
 Ay1 = rectA(2);
