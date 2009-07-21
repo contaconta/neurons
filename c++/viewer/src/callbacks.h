@@ -305,3 +305,27 @@ on_display_drawings_toggled            (GtkToggleToolButton *toggletoolbutton,
 void
 on_cbBlendFunction_changed             (GtkComboBox     *combobox,
                                         gpointer         user_data);
+
+void
+on_3dmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_xymenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_xzmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_yzmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_combomenu_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_combomenu_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

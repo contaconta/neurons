@@ -50,6 +50,11 @@ create_ascEditor (void)
   GtkWidget *delete1;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
+  GtkWidget *_3dmenu;
+  GtkWidget *xymenu;
+  GtkWidget *xzmenu;
+  GtkWidget *yzmenu;
+  GtkWidget *combomenu;
   GtkWidget *editAsc;
   GtkWidget *menu_plugins;
   GtkWidget *menuitem7;
@@ -170,6 +175,26 @@ create_ascEditor (void)
 
   menuitem6_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem6), menuitem6_menu);
+
+  _3dmenu = gtk_menu_item_new_with_mnemonic (_("3_D"));
+  gtk_widget_show (_3dmenu);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), _3dmenu);
+
+  xymenu = gtk_menu_item_new_with_mnemonic (_("X_Y"));
+  gtk_widget_show (xymenu);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), xymenu);
+
+  xzmenu = gtk_menu_item_new_with_mnemonic (_("X_Z"));
+  gtk_widget_show (xzmenu);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), xzmenu);
+
+  yzmenu = gtk_menu_item_new_with_mnemonic (_("_YZ"));
+  gtk_widget_show (yzmenu);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), yzmenu);
+
+  combomenu = gtk_menu_item_new_with_mnemonic (_("_combo"));
+  gtk_widget_show (combomenu);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), combomenu);
 
   editAsc = gtk_menu_item_new_with_mnemonic (_("editAsc"));
   gtk_widget_show (editAsc);
@@ -370,6 +395,21 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) delete1, "activate",
                     G_CALLBACK (on_delete1_activate),
                     NULL);
+  g_signal_connect ((gpointer) _3dmenu, "activate",
+                    G_CALLBACK (on_3dmenu_activate),
+                    NULL);
+  g_signal_connect ((gpointer) xymenu, "activate",
+                    G_CALLBACK (on_xymenu_activate),
+                    NULL);
+  g_signal_connect ((gpointer) xzmenu, "activate",
+                    G_CALLBACK (on_xzmenu_activate),
+                    NULL);
+  g_signal_connect ((gpointer) yzmenu, "activate",
+                    G_CALLBACK (on_yzmenu_activate),
+                    NULL);
+  g_signal_connect ((gpointer) combomenu, "activate",
+                    G_CALLBACK (on_combomenu_activate),
+                    NULL);
   g_signal_connect ((gpointer) editAsc, "activate",
                     G_CALLBACK (on_editAsc_activate),
                     NULL);
@@ -462,6 +502,11 @@ create_ascEditor (void)
   GLADE_HOOKUP_OBJECT (ascEditor, delete1, "delete1");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem6_menu, "menuitem6_menu");
+  GLADE_HOOKUP_OBJECT (ascEditor, _3dmenu, "_3dmenu");
+  GLADE_HOOKUP_OBJECT (ascEditor, xymenu, "xymenu");
+  GLADE_HOOKUP_OBJECT (ascEditor, xzmenu, "xzmenu");
+  GLADE_HOOKUP_OBJECT (ascEditor, yzmenu, "yzmenu");
+  GLADE_HOOKUP_OBJECT (ascEditor, combomenu, "combomenu");
   GLADE_HOOKUP_OBJECT (ascEditor, editAsc, "editAsc");
   GLADE_HOOKUP_OBJECT (ascEditor, menu_plugins, "menu_plugins");
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem7, "menuitem7");

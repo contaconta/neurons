@@ -76,7 +76,7 @@ void setUpMatricesXY(int layerSpan)
           if((*itObj)->className()=="Image")
             {
               Image<float>* img = (Image<float>*)*itObj;
-              
+
               //Gets the cube coordinates
               GLfloat widthStep = float(img->width/2);
               GLfloat heightStep = float(img->height/2);
@@ -88,7 +88,6 @@ void setUpMatricesXY(int layerSpan)
               glLoadIdentity();
 
               glOrtho (-widthStep, widthStep, -heightStep, heightStep, depthStep, 100.0f);
-
               //glScalef(1.0,1.0,-1.0);
               glMatrixMode(GL_MODELVIEW);
               glLoadIdentity();
@@ -129,7 +128,7 @@ void setUpMatricesXY(int layerSpan)
               -widthStep + (cubeColToDraw+step_x)*max_texture_size*cube->voxelWidth,
               heightStep - (cubeRowToDraw+step_y)*max_texture_size*cube->voxelHeight,
               heightStep - cubeRowToDraw*max_texture_size*cube->voxelHeight,
-              -1.0f, //(layerToDrawXY-layerSpan)*cube->voxelDepth,
+              (layerToDrawXY-layerSpan)*cube->voxelDepth,
               (layerToDrawXY+layerSpan)*cube->voxelDepth);
 
       glScalef(1.0,1.0,-1.0);
@@ -331,39 +330,18 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glClearColor(0.0,0.0,0.0,0.0);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // Test AL
-  //glClearStencil(0);
-  //glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
   if(flag_draw_3D)
     {
       setUpVolumeMatrices();
-      if(drawCube_flag){
-        /* cube->draw(rot3DX,rot3DY,200,3*flag_minMax,0); */
-        Cube<uchar,ulong>* cp = dynamic_cast<Cube<uchar, ulong>* >(cube);
-        /* cp->draw_whole(rot3DX,rot3DY,200,3*flag_minMax,0); */
-        /* static int loadtxt = 0; */
-        /* if (loadtxt == 0){ */
-          /* cp->load_whole_texture(); */
-          /* loadtxt++; */
-        /* } */
-        /* cp->draw_whole(rot3DX,rot3DY,200,3*flag_minMax); */
-        glDisable(GL_BLEND);
-        for(int i = 0; i < toDraw.size(); i++){
-          toDraw[i]->draw();
-          setUpVolumeMatrices();
-        }
-      }
+      draw_objects();
+
       setUpVolumeMatrices();
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
       glEnable(GL_DEPTH_TEST);
-
       if(flag_draw_neuron && neuronita)
         neuronita->draw();
-
-      /* draw_objects(); */
 
       draw_last_point();
       if(display_selection)
@@ -377,23 +355,11 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesXY(layerSpanViewZ);
-      glColor3f(1.0,1.0,1.0);
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-      /* glEnable(GL_BLEND); */
-      /* glBlendEquation(GL_MAX); */
-      /* if(drawCube_flag) */
-        /* for(int i = 0; i < toDraw.size(); i++){ */
-          /* if(getExtension(objectNames[i]) == "nfo"){ */
-            /* Cube_P* cp = dynamic_cast< Cube_P* >(toDraw[i]); */
-            /* cp->draw_layer_tile_XY(layerToDrawXY); */
-          /* } */
-        /* } */
-
       draw_objects();
-
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -401,15 +367,11 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesXZ(layerSpanViewZ);
-      if(drawCube_flag)
-        cube->draw_layer_tile_XZ(layerToDrawXZ);
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-
       draw_objects();
-
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -417,15 +379,11 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesYZ(layerSpanViewZ);
-      if(drawCube_flag)
-        cube->draw_layer_tile_YZ(layerToDrawYZ);
       if(flag_cube_transparency)
         glDisable(GL_DEPTH_TEST);
       else
         glEnable(GL_DEPTH_TEST);
-
       draw_objects();
-
       glDisable(GL_DEPTH_TEST);
     }
 
@@ -469,22 +427,17 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     setUpVolumeMatrices();
     glViewport ((GLsizei)0,(GLsizei)0,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-
     if(drawCube_flag){
-      for(int i = 0; i < toDraw.size(); i++){
-        setUpVolumeMatrices();
-        glViewport ((GLsizei)0,(GLsizei)0,
-                    (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-        toDraw[i]->draw();
-      }
-/*       cube->draw(rot3DX,rot3DY,200,flag_minMax,0); */
-      setUpVolumeMatrices();
-      glViewport ((GLsizei)0,(GLsizei)0,
-                  (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
+      //to make the method draw_objects draw the cube
+      flag_draw_3D = true;
+      draw_objects();
+      flag_draw_3D = false;
       glEnable(GL_BLEND);
       setUpVolumeMatrices();
       cube->draw_layer_tile_XY(layerToDrawXY,1);
+      setUpVolumeMatrices();
       cube->draw_layer_tile_XZ(layerToDrawXZ,1);
+      setUpVolumeMatrices();
       cube->draw_layer_tile_YZ(layerToDrawYZ,1);
       glPushMatrix();
       glTranslatef(wx,wy,wz);
@@ -493,107 +446,54 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glPopMatrix();
       glDisable(GL_BLEND);
     }
-    if(flag_cube_transparency)
-      glDisable(GL_DEPTH_TEST);
-    else
-      glEnable(GL_DEPTH_TEST);
-    if(flag_draw_neuron && neuronita)
-      neuronita->draw();
-    //glCallList(1);
     draw_last_point();
 
+    //XZ part
     glEnable(GL_DEPTH_TEST);
     setUpMatricesXZ(100000);
     glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-    if(drawCube_flag){
-      cube->draw_layer_tile_XY(layerToDrawXY,1);
-      cube->draw_layer_tile_XZ(layerToDrawXZ,0);
-      cube->draw_layer_tile_YZ(layerToDrawYZ,1);
-      glEnable(GL_BLEND);
-      glDisable(GL_DEPTH_TEST);
-      glPushMatrix();
-      glTranslatef(wx,wy,wz);
-      glColor3f(0.0,1.0,1.0);
-      glutSolidSphere(1, 10,10);
-      glPopMatrix();
-      glDisable(GL_BLEND);
-    }
-    if(flag_cube_transparency)
-      glDisable(GL_DEPTH_TEST);
-    else
-      glEnable(GL_DEPTH_TEST);
-    if(flag_draw_neuron){
-      setUpMatricesXZ(layerSpanViewZ);
-      glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
-                  (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-      if(flag_draw_neuron && neuronita)
-	neuronita->draw();
-      //glCallList(1);
-      draw_last_point();
-    }
+    cube->draw_layer_tile_XY(layerToDrawXY,1);
+    cube->draw_layer_tile_XZ(layerToDrawXZ,0);
+    cube->draw_layer_tile_YZ(layerToDrawYZ,1);
+    setUpMatricesXZ(layerSpanViewZ);
+    flag_draw_XZ = true;
+    draw_objects();
+    flag_draw_XZ = false;
+    glDisable(GL_DEPTH_TEST);
+    draw_last_point();
+    glDisable(GL_DEPTH_TEST);
 
+    // YZ part
     glEnable(GL_DEPTH_TEST);
-    setUpMatricesYZ(1000000);
     glViewport ((GLsizei)widgetWidth/2, (GLsizei)0,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-    if(drawCube_flag){
-      cube->draw_layer_tile_XY(layerToDrawXY,1);
-      cube->draw_layer_tile_XZ(layerToDrawXZ,1);
-      cube->draw_layer_tile_YZ(layerToDrawYZ,0);
-      glEnable(GL_BLEND);
-      glDisable(GL_DEPTH_TEST);
-      glPushMatrix();
-      glTranslatef(wx,wy,wz);
-      glColor3f(0.0,1.0,1.0);
-      glutSolidSphere(1, 10,10);
-      glPopMatrix();
-      glDisable(GL_BLEND);
-    }
-    if(flag_cube_transparency)
-      glDisable(GL_DEPTH_TEST);
-    else
-      glEnable(GL_DEPTH_TEST);
-    if(flag_draw_neuron){
-      setUpMatricesYZ(layerSpanViewZ);
-      glViewport ((GLsizei)widgetWidth/2, (GLsizei)0,
-                  (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-      if(flag_draw_neuron && neuronita)
-	neuronita->draw();
-      //glCallList(1);
-      draw_last_point();
-    }
+    setUpMatricesYZ(1000000);
+    cube->draw_layer_tile_XY(layerToDrawXY,1);
+    cube->draw_layer_tile_XZ(layerToDrawXZ,1);
+    cube->draw_layer_tile_YZ(layerToDrawYZ,0);
+    setUpMatricesYZ(layerSpanViewZ);
+    flag_draw_YZ = true;
+    draw_objects();
+    flag_draw_YZ = false;
+    glDisable(GL_DEPTH_TEST);
+    draw_last_point();
+    glDisable(GL_DEPTH_TEST);
 
+    //XY part
     glEnable(GL_DEPTH_TEST);
-    setUpMatricesXY(1000000);
     glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-    if(drawCube_flag){
-      cube->draw_layer_tile_XY(layerToDrawXY,0);
-      cube->draw_layer_tile_XZ(layerToDrawXZ,1);
-      cube->draw_layer_tile_YZ(layerToDrawYZ,1);
-      glEnable(GL_BLEND);
-      glDisable(GL_DEPTH_TEST);
-      glPushMatrix();
-      glTranslatef(wx,wy,wz);
-      glColor3f(0.0,1.0,1.0);
-      glutSolidSphere(1, 10,10);
-      glPopMatrix();
-      glDisable(GL_BLEND);
-    }
-      if(flag_cube_transparency)
-        glDisable(GL_DEPTH_TEST);
-      else
-        glEnable(GL_DEPTH_TEST);
-      if(flag_draw_neuron){
-        setUpMatricesXY(layerSpanViewZ);
-        glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
-                    (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
-	if(flag_draw_neuron && neuronita)
-	  neuronita->draw();
-	//glCallList(1);
-        draw_last_point();
-      }
+    setUpMatricesXY(100000000);
+    cube->draw_layer_tile_XY(layerToDrawXY,0);
+    cube->draw_layer_tile_XZ(layerToDrawXZ,1);
+    cube->draw_layer_tile_YZ(layerToDrawYZ,1);
+    setUpMatricesXY(layerSpanViewZ);
+    flag_draw_XY = true;
+    draw_objects();
+    flag_draw_XY = false;
+    glDisable(GL_DEPTH_TEST);
+    draw_last_point();
     glDisable(GL_DEPTH_TEST);
   }
 

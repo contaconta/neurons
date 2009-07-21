@@ -384,35 +384,49 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
 {
   if(event->keyval == 'a')
     {
-      layerToDrawXY++;
+      if(flag_draw_3D)
+        disp3DZ -= 10;
+      else if(flag_draw_XY)
+        layerToDrawXY++;
+      else if(flag_draw_XZ)
+        layerToDrawXZ++;
+      else if(flag_draw_YZ)
+        layerToDrawYZ++;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
   if(event->keyval == 's')
     {
-      layerToDrawXY--;
+      if(flag_draw_3D)
+        disp3DZ += 10;
+      else if(flag_draw_XY)
+        layerToDrawXY--;
+      else if(flag_draw_XZ)
+        layerToDrawXZ--;
+      else if(flag_draw_YZ)
+        layerToDrawYZ--;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
+  if(event->keyval == 'j'){
+    if(flag_draw_3D)
+      rot3DY -= 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'l'){
+    if(flag_draw_3D)
+      rot3DY += 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'i'){
+    if(flag_draw_3D)
+      rot3DX -= 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'k'){
+    if(flag_draw_3D)
+      rot3DX += 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
 
-  if(event->keyval == 'u')
-    {
-      layerToDrawXZ++;
-      on_drawing3D_expose_event(drawing3D,NULL, NULL);
-    }
-  if(event->keyval == 'j')
-    {
-      layerToDrawXZ--;
-      on_drawing3D_expose_event(drawing3D,NULL, NULL);
-    }
-  if(event->keyval == 'o')
-    {
-      layerToDrawYZ++;
-      on_drawing3D_expose_event(drawing3D,NULL, NULL);
-    }
-  if(event->keyval == 'l')
-    {
-      layerToDrawYZ--;
-      on_drawing3D_expose_event(drawing3D,NULL, NULL);
-    }
 
   if(event->keyval == 'e')
     {
@@ -570,3 +584,68 @@ on_cbBlendFunction_changed             (GtkComboBox     *combobox,
   blendFunction = (eBlendFunction)gtk_combo_box_get_active(combobox);
   cube->blendFunction = (Cube_P::eBlendFunction)blendFunction;
 }
+
+
+void
+on_3dmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+ flag_draw_3D = true;
+ flag_draw_XY = false;
+ flag_draw_XZ = false;
+ flag_draw_YZ = false;
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+}
+
+
+void
+on_xymenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+ flag_draw_3D = false;
+ flag_draw_XY = true;
+ flag_draw_XZ = false;
+ flag_draw_YZ = false;
+ flag_draw_combo = false;
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+}
+
+
+void
+on_xzmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+ flag_draw_3D = false;
+ flag_draw_XY = false;
+ flag_draw_XZ = true;
+ flag_draw_YZ = false;
+ flag_draw_combo = false;
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+}
+
+
+void
+on_yzmenu_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+ flag_draw_3D = false;
+ flag_draw_XY = false;
+ flag_draw_XZ = false;
+ flag_draw_YZ = true;
+ flag_draw_combo = false;
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+}
+
+
+void
+on_combomenu_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+ flag_draw_3D = false;
+ flag_draw_XY = false;
+ flag_draw_XZ = false;
+ flag_draw_YZ = false;
+ flag_draw_combo = true;
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+}
+
