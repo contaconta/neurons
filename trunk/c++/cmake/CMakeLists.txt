@@ -66,7 +66,7 @@ add_library (viva SHARED
 )
 
 ################################################################################
-## Compilation of the viewer
+## Compilation of the viewero
 ################################################################################
 
 find_package(GTK2 REQUIRED)
