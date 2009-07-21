@@ -121,7 +121,7 @@ on_drawing3D_realize                   (GtkWidget       *widget,
       exit(0);
     }
   }
-  
+
   /* Axis* axis = new Axis(); */
   /* toDraw.push_back(axis); */
   /* objectNames.push_back("Axis"); */
@@ -375,3 +375,6 @@ on_menu_plugins_activate               (GtkMenuItem     *menuitem,
 }
 
 //-------------------------------------------------
+
+
+

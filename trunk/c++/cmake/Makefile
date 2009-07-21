@@ -112,6 +112,19 @@ cubeAt/fast:
 .PHONY : cubeAt/fast
 
 #=============================================================================
+# Target rules for targets named cubeDecimate
+
+# Build rule for target.
+cubeDecimate: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeDecimate
+.PHONY : cubeDecimate
+
+# fast build rule for target.
+cubeDecimate/fast:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/build
+.PHONY : cubeDecimate/fast
+
+#=============================================================================
 # Target rules for targets named cubeDijkstra2
 
 # Build rule for target.
@@ -123,6 +136,19 @@ cubeDijkstra2: cmake_check_build_system
 cubeDijkstra2/fast:
 	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/build
 .PHONY : cubeDijkstra2/fast
+
+#=============================================================================
+# Target rules for targets named graphPrim
+
+# Build rule for target.
+graphPrim: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 graphPrim
+.PHONY : graphPrim
+
+# fast build rule for target.
+graphPrim/fast:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/build
+.PHONY : graphPrim/fast
 
 #=============================================================================
 # Target rules for targets named viva
@@ -496,6 +522,21 @@ home/ggonzale/workspace/neseg/tools/cube/cubeAt.s:
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o:
 	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
@@ -509,6 +550,21 @@ home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i:
 home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s:
 	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/graph/graphPrim.o:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/graph/graphPrim.i:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.i
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/graph/graphPrim.s:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
 
 # target to build an object file
 home/ggonzale/workspace/neseg/viewer/src/callbacks.o:
@@ -652,8 +708,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... cubeAt"
+	@echo "... cubeDecimate"
 	@echo "... cubeDijkstra2"
 	@echo "... edit_cache"
+	@echo "... graphPrim"
 	@echo "... rebuild_cache"
 	@echo "... viva"
 	@echo "... vivaView"
@@ -726,9 +784,15 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.s"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.o"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.i"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.s"

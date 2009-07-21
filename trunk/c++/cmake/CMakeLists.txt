@@ -20,9 +20,6 @@ set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 set(CMAKE_SHARED_LINKER_FLAGS "-lpthread -lgomp")
 
-# message(${CMAKE_CXX_FLAGS_DEBUG})
-
-
 find_package( OpenCV REQUIRED )
 INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
@@ -65,10 +62,13 @@ add_library (viva SHARED
 ../core/Contour.cpp
 ../core/DoubleSet.cpp
 ## Error while compiling them - Aurelien's help
-#../core/GraphCut.cpp
+#../Core/GraphCut.cpp
 )
 
+################################################################################
 ## Compilation of the viewer
+################################################################################
+
 find_package(GTK2 REQUIRED)
 INCLUDE_DIRECTORIES( ${GTK2_INCLUDE_DIRS} )
 find_package(GtkGLExt REQUIRED)
@@ -93,9 +93,21 @@ ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY} ${GTKGLEXT_LIB
 
 target_link_libraries(vivaView ${LINK_LIBRARIES_ALL})
 
+################################################################################
 ## Compilation of the tools
+################################################################################
+
+## cube tools
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
 target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
+target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
+
+
+## graph tools
+add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
+target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
