@@ -61,6 +61,10 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 % DATA SETS FOR TRAINING & VALIDATION 
 %-------------------------------------------------------------------------
 
+%DATASETS.class(1).val = 1;
+%DATASETS.class(1).query = 'car+side';
+%DATASETS.class(1).
+
 DATASETS.TRAIN_POS      = 1470;          % number of positive examples in the training set
 DATASETS.TRAIN_NEG      = 5000;          % number of negative examples in the training set
 DATASETS.VALIDATION_POS = 1470;          % number of positive examples in the validation set
