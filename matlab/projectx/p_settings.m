@@ -25,14 +25,15 @@
 clear all;
 
 % set paths we need for toolboxes
-path(path, [pwd '/../spedges/']);        	% append the path to the ray's toolbox 
-path(path, [pwd '/../toolboxes/kevin/']); 	% append the path to kevin's toolbox
-path(path, [pwd '/bin/']);                  % append the path to sub-functions
-path(path, [pwd '/testing/']);              % append path to quality testing functions
-path(path, [pwd '/images/']);               % append path to test images subdirectory
+addpath('/../spedges/');        	% append the path to the ray's toolbox 
+addpath('/../toolboxes/kevin/'); 	% append the path to kevin's toolbox
+addpath('/../toolboxes/LabelMeToolbox/') -begin;    %#ok<MNEFF> % append the path to kevin's toolbox
+addpath('/bin/');                  % append the path to sub-functions
+addpath('/testing/');              % append path to quality testing functions
+addpath('/images/');               % append path to test images subdirectory
 
 % seed the random number generator
-rand('twister', 100);                     	% seed the random variable for older Matlab versions
+%rand('twister', 100);                     	% seed the random variable for older Matlab versions
 s = RandStream.create('mt19937ar','seed',5489); % seed for Matlab 7.8 (?)
 RandStream.setDefaultStream(s);
 
