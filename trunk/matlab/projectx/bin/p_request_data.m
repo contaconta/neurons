@@ -11,6 +11,8 @@ function [data, D] = p_request_data(tag_string, N, varargin)
 %   -----------
 %   [data, D] = p_request_data('car', 1);  % request 1 car
 %   [data, D] = p_request_data('car', 3, D);  % request the next 3 cars
+%   [data, D] = p_request_data('non car', 100, D);  % request 3 non car examples
+%   [data, D] = p_request_data('non car', 100, D, 'SIZE', [49 49]);  % request 3 non car examples of size [49 49]
 %
 %   See also LMQUERY
 
@@ -32,60 +34,79 @@ function [data, D] = p_request_data(tag_string, N, varargin)
 HOMEIMAGES = '/osshare/Work/Data/LabelMe/Images';
 HOMEANNOTATIONS = '/osshare/Work/Data/LabelMe/Annotations';
 
-SAMP = 0;   % SAMP = 1 when we randomly sample from within an annotation, otherwise take the whole annotation
+SHRINK_BORDER = 10;
+IMSIZE = [24 24];   % the default example image size 
 
 for k = 1:nargin-2
     switch class(varargin{k})
         case 'struct'
             D = varargin{k};
-
         case 'char'
-            % TODO: HANDLE RANDOM SAMPLING HERE
-            if strcmp(varargin{k}, 'sample')
-                SAMP = 1;
+            if strcmp(varargin{k}, 'SIZE')
                 IMSIZE = varargin{k+1};
             end
     end
 end
 
+% set a flag if we are looking for a NON-class
+NON = regexp(tag_string, 'non', 'once');
+
 % create a new LabelMe index if it hasn't been passed as an argument
 if ~exist('D', 'var')
-    D = LMdatabase(HOMEANNOTATIONS);
+    %D = LMdatabase(HOMEANNOTATIONS);
+    D = LMquery(LMdatabase(HOMEANNOTATIONS), 'folder', 'fibslice');
 end
    
+data = cell(1,N);       % image example data will be stored in a cell
 
-[Qresult, j] = LMquery(D, 'object.name', tag_string);
-if isempty(Qresult); error(['p_request_data: LabelMe cannot find any more examples of type ' tag_string ]);end
+% select N negative samples
+if NON
+    Qresult = D;  j = 1:length(D);
+    %[Qresult, j] = LMquery(D, 'object.name', strtrim(regexprep(tag_string, 'non', '')) );
+    [data, D] = get_negative_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j, SHRINK_BORDER);   
+% select N positive samples
+else
+    [Qresult, j] = LMquery(D, 'object.name', tag_string);
+    if isempty(Qresult); error(['p_request_data: LabelMe cannot find any more examples of type ' tag_string ]);end
+    [data, D] = get_positive_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j);    
+end
 
-i = 1;              % count the number of query matches we've collected
-data = cell(1,N);     % image example data will be stored in a cell
 
 
+
+
+
+
+
+%% GET_POSITIVE_SAMPLES  
+function [data, D] = get_positive_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j)
 % pick out N examples from Qresult, and remove them from D so they are not
 % re-selected. extract a bounding patch and place it in a cell {data}
+
+i = 1;                  % count the number of query matches we've collected
+
+
+%NObjects = sum(LMcountobject(Qresult));
+
+%samples = sort(population, N, 1));
+
+
 for q = 1:length(Qresult)
     
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
     
     % TEMPORARY - MUST PROPERLY FORMAT THE DATA!
-    I = mat2gray(I);
-    
+    %I = mat2gray(rgb2gray(I));
+
     for obj = 1:length(Qresult(q).annotation.object)
-        
-        if SAMP
-            data{i} = sample_within_patch(Qresult, q, obj, I, IMSIZE);
-        else
-            data{i} = extract_patch(Qresult, q, obj, I);
-        end
+        data{i} = extract_patch(Qresult, q, obj, I, IMSIZE);
 
         % remove the annotation from D so we don't select it again!
-        if ~SAMP
-            id = Qresult(q).annotation.object(obj).id;
-            a = cell2mat({D(j(q)).annotation.object.id});
-            struct_loc = find(a == id,1);
-            D(j(q)).annotation.object = D(j(q)).annotation.object(setdiff(1:length(D(j(q)).annotation.object),struct_loc));
-        end
+        id = Qresult(q).annotation.object(obj).id;
+        a = cell2mat({D(j(q)).annotation.object.id});
+        struct_loc = find(a == id,1);
+        D(j(q)).annotation.object = D(j(q)).annotation.object(setdiff(1:length(D(j(q)).annotation.object),struct_loc));
         
         % check to see if we've collected enough examples
         if i >= N
@@ -97,14 +118,120 @@ end
 
 
 
+
+%% GET_NEGATIVE_SAMPLES  
+function [data, D] = get_negative_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j, SHRINK_BORDER)
+% sample N examples from non-queary locations in Qresult, extract a 
+% bounding patch and place it in a cell {data}
+
+i = 1;          % count the number of query matches we've collected
+OVERLAP = .10;  % how much (%) negative sample can contain positive class
+
+samples = sort(randsample(length(Qresult), N, 1));
+%samples = sort(randsample(1, N, 1));
+
+for q = unique(samples)'
+
+    filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
+    I = imread(filenm);
+    
+    % check to see if we already have constructed a non-query mask to
+    % restrict the locations we sample from.
+    if ~isfield(D(j(q)).annotation, 'nonmask')
+        filenm2 = [HOMEIMAGES '/' Qresult(q).annotation.folder '/non' Qresult(q).annotation.filename];
+        if exist(filenm2, 'file')
+            D(j(q)).annotation.nonmask = imread(filenm2);
+        else
+            disp(['    forming a negative mask for ' filenm]); 
+            D(j(q)).annotation.nonmask = makeNonMask(Qresult(q).annotation, I, SHRINK_BORDER);
+            imwrite(D(j(q)).annotation.nonmask, filenm2, 'PNG');
+        end
+    end
+    
+    for k = 1:length(find(samples == q))   
+        data{i} = sample_point(I, D(j(q)).annotation.nonmask, IMSIZE, OVERLAP);
+        i = i + 1;
+    end
+    
+end
+
+
+
+
 %% get just the image patch containing the annotation
-function data = extract_patch(Qresult, q, obj, I)
+function data = extract_patch(Qresult, q, obj, I, IMSIZE)
 
-x = cellfun(@str2num, {(Qresult(q).annotation.object(obj).polygon.pt.x)});
-y = cellfun(@str2num, {(Qresult(q).annotation.object(obj).polygon.pt.y)});    
-cmin = max(1,min(x));
-cmax = min(size(I,2),max(x));
-rmin = max(1,min(y));
-rmax = min(size(I,1),max(y));
-data = I(rmin:rmax, cmin:cmax);
+if length(Qresult(q).annotation.object(obj).polygon.pt) > 1
+    x = cellfun(@str2num, {(Qresult(q).annotation.object(obj).polygon.pt.x)});
+    y = cellfun(@str2num, {(Qresult(q).annotation.object(obj).polygon.pt.y)});    
+    cmin = max(1,min(x));
+    cmax = min(size(I,2),max(x));
+    rmin = max(1,min(y));
+    rmax = min(size(I,1),max(y));
+    data = I(rmin:rmax, cmin:cmax);
+else
+    % if the data is a point instead of a contour, extract IMSIZE patch
+    % around the point
+    h = floor(IMSIZE(2)/2);
+    w = floor(IMSIZE(1)/2);
+   
+    cmin = max(1, str2num(Qresult(q).annotation.object(obj).polygon.pt.x) -w);
+    rmin = max(1, str2num(Qresult(q).annotation.object(obj).polygon.pt.y) -h);
+    cmax = min(size(I,2),cmin + IMSIZE(2)-1);
+    rmax = min(size(I,1),rmin + IMSIZE(1)-1);
+    
 
+    data = I(rmin:rmax, cmin:cmax);
+end
+
+
+
+
+
+%% create a Mask of points containing NON-tag_string examples
+function BW = makeNonMask(annotation, I, border)
+
+% try to load a negative mask, if we cannot, then create it and save it
+
+BW = logical(ones(size(I))); %#ok<LOGL>
+
+for obj = 1:length(annotation.object)
+    
+    x = cellfun(@str2num, {(annotation.object(obj).polygon.pt.x)});
+    y = cellfun(@str2num, {(annotation.object(obj).polygon.pt.y)});     
+    BW = BW & ~bwmorph(poly2mask(x,y,size(I,1),size(I,2)), 'dilate', border);
+end
+
+
+
+
+
+%% sample a valid data point
+function data = sample_point(I, nonmask, IMSIZE, OVERLAP)
+
+nonvalid = 1;
+
+while nonvalid
+    h = floor(IMSIZE(2)/2);
+    w = floor(IMSIZE(1)/2);
+    
+    % sample a location 
+    r = h+ceil((size(I,1)-2*h)*rand);
+    c = w+ceil((size(I,2)-2*w)*rand);
+    
+    % get a patch around the location
+    cmin = max(1, c-w);
+    rmin = max(1, r-h);
+    cmax = min(size(I,2),cmin+IMSIZE(2)-1);
+    rmax = min(size(I,1),rmin+IMSIZE(1)-1);
+    
+    % check if it is valid
+    if sum(sum(nonmask(rmin:rmax,cmin:cmax)))/prod(IMSIZE) > OVERLAP
+        nonvalid = 0;
+        data = I(rmin:rmax,cmin:cmax);
+    end
+end
+
+% display for debugging what we sampled.
+% figure(1);  axis image; hold on;  % imshow(I); 
+% line([cmin cmax cmax cmin cmin], [rmin rmin rmax rmax rmin]);

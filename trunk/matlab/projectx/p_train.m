@@ -25,6 +25,7 @@ clear all;
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
+load DATASETS;   % TEMPORARY!!!!!!
 
 %% ============================== preparation =====================================================================
 
@@ -44,13 +45,15 @@ LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 
 % collect the training data set
 tic; disp(['...collecting the ' num2str(DATASETS.TRAIN_POS + DATASETS.TRAIN_NEG) ' examples in the TRAIN set.']);
-TRAIN = p_collect_data(DATASETS, 'train'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+%TRAIN = p_collect_data(DATASETS, 'train'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+[TRAIN, DATASETS] = p_collect_data2(DATASETS, 'train'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 % precompute TRAIN
 if TRAIN.precomputed; p_precompute_features(TRAIN, LEARNERS); end
 
 % collect the validation data set
 tic; disp(['...collecting the ' num2str(DATASETS.VALIDATION_POS + DATASETS.VALIDATION_NEG) ' examples in the VALIDATION set.']);
-VALIDATION = p_collect_data(DATASETS, 'validation'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+%VALIDATION = p_collect_data(DATASETS, 'validation'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
+[VALIDATION, DATASETS] = p_collect_data2(DATASETS, 'validation'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 % precompute VALIDATION
 VALIDATION.precomputed = 0;
 

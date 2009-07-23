@@ -4,7 +4,7 @@
 %I = imread('test_2photon_small.png');
 %II = integral_image(I);
 
-I = imread('test_FIBSEM.png');
+I = imread('testFIB.png');
 II = integral_image(I);
 
 W = [24 24];
