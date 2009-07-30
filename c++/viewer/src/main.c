@@ -112,7 +112,8 @@ void
 on_menu_plugins_submenu_activate                    (GtkMenuItem     *menuitem,
                                                      gpointer         user_data)
 {
-  string dir("plugins/bin/");
+  /* string dir("plugins/bin/"); */
+  string dir("lib/plugins/");
 
   char * pPath = getenv ("NESEG_PATH");
   if (pPath!=0)
@@ -214,7 +215,8 @@ void load_plugins()
 {
   printf("*** Loading plugins\n");
   vector<string> files;
-  string dir("plugins/bin");
+  /* string dir("plugins/bin"); */
+  string dir("lib/plugins");
 
   char * pPath = getenv ("NESEG_PATH");
   if (pPath!=0)

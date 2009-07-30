@@ -26,6 +26,8 @@ public:
 
   EdgeSet(string filename);
 
+  ~EdgeSet();
+
   void setPointVector(vector< Point* >* _points);
 
   void draw();
@@ -44,6 +46,14 @@ template< class P, class E>
 EdgeSet<P,E>::EdgeSet(string filename)
 {
   loadFromFile(filename);
+}
+
+template< class P, class E>
+EdgeSet<P,E>::~EdgeSet()
+{
+  for(int i = 0; i < edges.size(); i++)
+    delete (edges[i]);
+  delete (points);
 }
 
 template< class P, class E>

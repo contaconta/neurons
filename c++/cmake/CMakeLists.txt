@@ -10,6 +10,7 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 
 set(CMAKE_C_COMPILER "c++")
 set(CMAKE_BUILD_TYPE debug) #debug none release distribution
+#set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_CXX_FLAGS         "-openmp -D WITH_OPENMP -D WITH_GLEW")
 set(CMAKE_CXX_FLAGS_DEBUG   "-openmp -g -pg -D WITH_OPENMP -D WITH_GLEW")
@@ -18,16 +19,16 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -openmp -D WITH_OPENMP -D WITH_GLEW")
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-set(CMAKE_SHARED_LINKER_FLAGS "-lpthread -lgomp")
+set(CMAKE_SHARED_LINKER_FLAGS "-lpthread -lgomp ")
 
 find_package( OpenCV REQUIRED )
 INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+
 include_directories(${OPENGL_INCLUDE_DIR} )
 include_directories(${GLUT_INCLUDE_DIR} )
-
-INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR}/../core)
+include_directories(${CMAKE_SOURCE_DIR}/../core)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../lib/)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
@@ -66,7 +67,7 @@ add_library (viva SHARED
 )
 
 ################################################################################
-## Compilation of the viewero
+## Compilation of the viewer
 ################################################################################
 
 find_package(GTK2 REQUIRED)
@@ -88,18 +89,44 @@ ${CMAKE_SOURCE_DIR}/../viewer/src/interface.c
 ${CMAKE_SOURCE_DIR}/../viewer/src/main.c
 )
 
+find_package(GSL REQUIRED )
+include_directories(${GSL_INCLUDE_DIR})
 set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY} ${GTKGLEXT_LIBS} viva)
+${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
+${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
 
 target_link_libraries(vivaView ${LINK_LIBRARIES_ALL})
+
+################################################################################
+## Compilation of the plugins to the viewer
+################################################################################
+
+set(CMAKE_SHARED_MODULE_PREFIX "plugins/")
+set(CMAKE_CXX_MODULE_PATH ${CMAKE_SOURCE_DIR}/../lib/plugins)
+make_directory(${CMAKE_CXX_MODULE_PATH})
+
+find_package(Gmodule REQUIRED )
+
+add_library (example MODULE ../plugins/src/example/example.cpp)
+add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
+add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
+
+
 
 ################################################################################
 ## Compilation of the tools
 ################################################################################
 
 ## cube tools
+
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
+target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
+target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
 target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
@@ -107,7 +134,20 @@ target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
 add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
 target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
+target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
+target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
 ## graph tools
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
+
+
+## Test examples
+add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
+target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(MSTthroughShortestPath ${CMAKE_SOURCE_DIR}/../tests/MSTthroughShortestPath.cpp)
+target_link_libraries(MSTthroughShortestPath ${LINK_LIBRARIES_ALL})

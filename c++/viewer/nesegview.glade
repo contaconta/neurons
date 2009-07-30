@@ -133,6 +133,24 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkMenuItem" id="videolayers">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">VideoLayers</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_videolayers_activate" last_modification_time="Tue, 28 Jul 2009 11:51:22 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="videorotation">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">VIdeoRotation</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_videorotation_activate" last_modification_time="Tue, 28 Jul 2009 11:51:58 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkImageMenuItem" id="cut1">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-cut</property>

@@ -1005,12 +1005,12 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
   Cube<float,double>* aguet_phi = create_blank_cube(vol_name);
 
 
-  sprintf(vol_name, "aguet_%02.2f_%02.2f_vx", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_vx = create_blank_cube(vol_name);
-  sprintf(vol_name, "aguet_%02.2f_%02.2f_vy", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_vy = create_blank_cube(vol_name);
-  sprintf(vol_name, "aguet_%02.2f_%02.2f_vz", sigma_xy, sigma_z);
-  Cube<float,double>* aguet_vz = create_blank_cube(vol_name);
+  // sprintf(vol_name, "aguet_%02.2f_%02.2f_vx", sigma_xy, sigma_z);
+  // Cube<float,double>* aguet_vx = create_blank_cube(vol_name);
+  // sprintf(vol_name, "aguet_%02.2f_%02.2f_vy", sigma_xy, sigma_z);
+  // Cube<float,double>* aguet_vy = create_blank_cube(vol_name);
+  // sprintf(vol_name, "aguet_%02.2f_%02.2f_vz", sigma_xy, sigma_z);
+  // Cube<float,double>* aguet_vz = create_blank_cube(vol_name);
 
 
 
@@ -1124,11 +1124,9 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
 
         aguet_theta->put(x,y,z,theta);
         aguet_phi->put(x,y,z,phi);
-        aguet_vx->put(x,y,z,gsl_matrix_get(evec[tn],0,higher_eival));
-        aguet_vy->put(x,y,z,gsl_matrix_get(evec[tn],1,higher_eival));
-        aguet_vz->put(x,y,z,gsl_matrix_get(evec[tn],2,higher_eival));
-
-
+        // aguet_vx->put(x,y,z,gsl_matrix_get(evec[tn],0,higher_eival));
+        // aguet_vy->put(x,y,z,gsl_matrix_get(evec[tn],1,higher_eival));
+        // aguet_vz->put(x,y,z,gsl_matrix_get(evec[tn],2,higher_eival));
       }
     }
     printf("#");fflush(stdout);
@@ -2348,4 +2346,22 @@ float highValue, float lowValue)
 
   return (Cube_P*)result;
 
+}
+
+template <class T, class U>
+float Cube<T,U>::integralOverCloud(Cloud_P* cloud)
+{
+  vector< int > indexes(3);
+  vector< float > micrometers(3);
+  float toReturn = 0;
+
+  for(int i = 0; i < cloud->points.size(); i++){
+    micrometers[0] = cloud->points[i]->coords[0];
+    micrometers[1] = cloud->points[i]->coords[1];
+    micrometers[2] = cloud->points[i]->coords[2];
+    micrometersToIndexes(micrometers, indexes);
+    toReturn+= at(indexes[0], indexes[1], indexes[2]);
+  }
+
+  return toReturn;
 }

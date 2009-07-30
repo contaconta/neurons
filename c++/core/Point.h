@@ -18,7 +18,9 @@ public:
 
   vector< float > coords;
 
-  // Point(float x, float y, float z);
+  Point();
+
+  Point(float x, float y, float z);
 
   virtual double distanceTo(Point* p)=0;
 

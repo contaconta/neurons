@@ -329,3 +329,11 @@ on_combomenu_activate                  (GtkMenuItem     *menuitem,
 void
 on_combomenu_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_videolayers_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_videorotation_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

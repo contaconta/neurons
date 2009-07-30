@@ -55,8 +55,24 @@ public:
   bool computingDistances;
   pthread_t          thread;
 
+  //In the case we want to define a ROI where all is computed
+  int iROIx;
+  int iROIy;
+  int iROIz;
+  int ROIwidth;
+  int ROIheight;
+  int ROIdepth;
+
   CubeLiveWire(Cube_P* cube, DistanceDijkstra* distance) : CubeDijkstra(cube, distance)
   {
+    //All the cube is the ROI
+    iROIx = 0;
+    iROIy = 0;
+    iROIz = 0;
+    ROIwidth = cube->cubeWidth;
+    ROIheight = cube->cubeHeight;
+    ROIdepth = cube->cubeDepth;
+
     computingDistances = false;
     int cubeLength = cube->cubeDepth*cube->cubeHeight*cube->cubeWidth;
     previous_orig  = (int*)  malloc(cubeLength*sizeof(float));

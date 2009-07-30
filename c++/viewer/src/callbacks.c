@@ -29,6 +29,21 @@
 using namespace std;
 int tick = 0;
 
+void
+saveScreenShot (char* filename)
+{
+  IplImage* toSave = cvCreateImage(cvSize((int)widgetWidth,(int)widgetHeight),
+                                       IPL_DEPTH_32F, 3);
+  glReadPixels( 0, 0,
+                (int)widgetWidth,
+                (int)widgetHeight,
+                GL_BGR,
+                GL_FLOAT, toSave->imageData );
+  toSave->origin = 1;
+  cvSaveImage(filename, toSave);
+  cvReleaseImage(&toSave);
+}
+
 
 void
 on_drawing3D_realize                   (GtkWidget       *widget,
@@ -353,16 +368,7 @@ on_screenshot_activate                 (GtkMenuItem     *menuitem,
 
       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-      IplImage* toSave = cvCreateImage(cvSize((int)widgetWidth,(int)widgetHeight),
-                                       IPL_DEPTH_32F, 3);
-      glReadPixels( 0, 0,
-                    (int)widgetWidth,
-                    (int)widgetHeight,
-                    GL_BGR,
-                    GL_FLOAT, toSave->imageData );
-      toSave->origin = 1;
-      cvSaveImage(filename, toSave);
-      cvReleaseImage(&toSave);
+      saveScreenShot(filename);
     }
   gtk_widget_destroy (dialog);
 }
@@ -374,7 +380,54 @@ on_menu_plugins_activate               (GtkMenuItem     *menuitem,
 
 }
 
+void
+on_videolayers_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  if(cube!=NULL){
+     flag_draw_3D = false;
+     flag_draw_XY = true;
+     flag_draw_XZ = false;
+     flag_draw_YZ = false;
+     flag_draw_combo = false;
+     flag_draw_dual = false;
+     on_drawing3D_expose_event(drawing3D,NULL, user_data);
+     char imageName[1024];
+     for(int i = 0; i < cube->cubeDepth; i++){
+       layerToDrawXY = i;
+       on_drawing3D_expose_event(drawing3D,NULL, user_data);
+       sprintf(imageName,"/tmp/img%03i.jpg", i);
+       saveScreenShot(imageName);
+     }
+     int error = system("images2mpeg.sh /tmp output.avi 2");
+  }
+}
+
+
+void
+on_videorotation_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  if(cube!=NULL){
+     flag_draw_3D = true;
+     flag_draw_XY = false;
+     flag_draw_XZ = false;
+     flag_draw_YZ = false;
+     flag_draw_combo = false;
+     flag_draw_dual = false;
+     on_drawing3D_expose_event(drawing3D,NULL, user_data);
+     char imageName[1024];
+     for(int i = 0; i <= 360; i+=15){
+       rot3DY = i;
+       on_drawing3D_expose_event(drawing3D,NULL, user_data);
+       sprintf(imageName,"/tmp/img%03i.jpg", i);
+       saveScreenShot(imageName);
+     }
+     int error = system("images2mpeg.sh /tmp output.avi 6.25");
+  }
+
+}
+
+
 //-------------------------------------------------
-
-
 

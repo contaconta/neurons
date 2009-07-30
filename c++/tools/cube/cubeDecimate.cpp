@@ -180,6 +180,7 @@ int main(int argc, char **argv) {
 
       cd->points.push_back( pt );
     }
+    cd->v_radius = 0.2;
     cd->saveToFile(arguments.args[1]);
   }
 

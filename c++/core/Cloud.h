@@ -20,9 +20,13 @@ public:
 
   void save(ostream &out);
 
+  void addPoint(float x, float y, float z);
+
   virtual string className(){
     return "Cloud";
   }
+
+  ~Cloud();
 
   /** Returns the maximum and minimum coordinates of the cloud. The
       return vector would be in the form: [xmin, xmax, ymin, ymax, zmin, zmax]*/
@@ -37,6 +41,14 @@ template <class T>
   if (fileExists(filename))
     loadFromFile(filename);
 }
+
+template <class T>
+ Cloud<T>::~Cloud()
+{
+  for(int i = 0; i < points.size(); i++)
+    delete(points[i]);
+}
+
 
 template <class T>
  void Cloud<T>::draw(){
@@ -152,5 +164,10 @@ vector<double> Cloud<T>::spread(){
   return toReturn;
 }
 
+template <class T>
+void Cloud<T>::addPoint(float x, float y, float z)
+{
+  points.push_back(new T(x,y,z));
+}
 
 #endif

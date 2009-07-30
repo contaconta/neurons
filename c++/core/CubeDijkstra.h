@@ -33,13 +33,14 @@ public:
 
   }
   float distance(int x0, int y0, int z0, int x1, int y1, int z1){
+    float ds = sqrt( (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
     switch(cubeType){
     case 0:
       // return fabs(cubeUchar->at(x0,y0,z0)-cubeUchar->at(x1,y1,z1));
-      return (float)cubeUchar->at(x0,y0,z0);
+      return (float)cubeUchar->at(x0,y0,z0)*ds;
       break;
     case 1:
-      return cubeFloat->at(x0,y0,z0);
+      return cubeFloat->at(x0,y0,z0)*ds;
       // return fabs(cubeFloat->at(x0,y0,z0)-cubeFloat->at(x1,y1,z1));
       break;
     };
@@ -120,6 +121,36 @@ public:
     case 1:
       return 1.0/cubeFloat->at(x1,y1,z1);
       // return fabs(cubeFloat->at(x0,y0,z0)-cubeFloat->at(x1,y1,z1));
+      break;
+    };
+  }
+};
+
+
+class DistanceDijkstraColorNegated : public DistanceDijkstra {
+public:
+  Cube_P* cube;
+  Cube<uchar, ulong>*  cubeUchar;
+  Cube<float, double>* cubeFloat;
+  int     cubeType; // 0 for uchar, 1 for float, 2 for int - lazy to typedef structs
+
+  DistanceDijkstraColorNegated(Cube_P* cube){
+    if (cube->type == "uchar"){
+      this->cubeUchar = dynamic_cast<Cube< uchar, ulong>* >(cube);
+      cubeType = 0;
+    } else if (cube->type == "float"){
+      this->cubeFloat = dynamic_cast<Cube< float, double>* >(cube);
+      cubeType = 1;
+    }
+
+  }
+  float distance(int x0, int y0, int z0, int x1, int y1, int z1){
+    switch(cubeType){
+    case 0:
+      return 1.0-(float)(cubeUchar->at(x1,y1,z1))/255;
+      break;
+    case 1:
+      return 1.0-cubeFloat->at(x1,y1,z1);
       break;
     };
   }

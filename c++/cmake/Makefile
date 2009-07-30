@@ -99,6 +99,45 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named CubeDijkstra2
+
+# Build rule for target.
+CubeDijkstra2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 CubeDijkstra2
+.PHONY : CubeDijkstra2
+
+# fast build rule for target.
+CubeDijkstra2/fast:
+	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/build
+.PHONY : CubeDijkstra2/fast
+
+#=============================================================================
+# Target rules for targets named CubeLiveWire
+
+# Build rule for target.
+CubeLiveWire: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 CubeLiveWire
+.PHONY : CubeLiveWire
+
+# fast build rule for target.
+CubeLiveWire/fast:
+	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/build
+.PHONY : CubeLiveWire/fast
+
+#=============================================================================
+# Target rules for targets named MSTthroughShortestPath
+
+# Build rule for target.
+MSTthroughShortestPath: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MSTthroughShortestPath
+.PHONY : MSTthroughShortestPath
+
+# fast build rule for target.
+MSTthroughShortestPath/fast:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/build
+.PHONY : MSTthroughShortestPath/fast
+
+#=============================================================================
 # Target rules for targets named cubeAt
 
 # Build rule for target.
@@ -110,6 +149,32 @@ cubeAt: cmake_check_build_system
 cubeAt/fast:
 	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/build
 .PHONY : cubeAt/fast
+
+#=============================================================================
+# Target rules for targets named cubeCalculateAguet
+
+# Build rule for target.
+cubeCalculateAguet: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeCalculateAguet
+.PHONY : cubeCalculateAguet
+
+# fast build rule for target.
+cubeCalculateAguet/fast:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/build
+.PHONY : cubeCalculateAguet/fast
+
+#=============================================================================
+# Target rules for targets named cubeCut
+
+# Build rule for target.
+cubeCut: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeCut
+.PHONY : cubeCut
+
+# fast build rule for target.
+cubeCut/fast:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/build
+.PHONY : cubeCut/fast
 
 #=============================================================================
 # Target rules for targets named cubeDecimate
@@ -138,6 +203,45 @@ cubeDijkstra2/fast:
 .PHONY : cubeDijkstra2/fast
 
 #=============================================================================
+# Target rules for targets named cubeLogistic
+
+# Build rule for target.
+cubeLogistic: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeLogistic
+.PHONY : cubeLogistic
+
+# fast build rule for target.
+cubeLogistic/fast:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/build
+.PHONY : cubeLogistic/fast
+
+#=============================================================================
+# Target rules for targets named cubeStatistics
+
+# Build rule for target.
+cubeStatistics: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeStatistics
+.PHONY : cubeStatistics
+
+# fast build rule for target.
+cubeStatistics/fast:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/build
+.PHONY : cubeStatistics/fast
+
+#=============================================================================
+# Target rules for targets named example
+
+# Build rule for target.
+example: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 example
+.PHONY : example
+
+# fast build rule for target.
+example/fast:
+	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/build
+.PHONY : example/fast
+
+#=============================================================================
 # Target rules for targets named graphPrim
 
 # Build rule for target.
@@ -149,6 +253,19 @@ graphPrim: cmake_check_build_system
 graphPrim/fast:
 	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/build
 .PHONY : graphPrim/fast
+
+#=============================================================================
+# Target rules for targets named tryManyPathsCloud
+
+# Build rule for target.
+tryManyPathsCloud: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tryManyPathsCloud
+.PHONY : tryManyPathsCloud
+
+# fast build rule for target.
+tryManyPathsCloud/fast:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/build
+.PHONY : tryManyPathsCloud/fast
 
 #=============================================================================
 # Target rules for targets named viva
@@ -507,6 +624,81 @@ home/ggonzale/workspace/neseg/core/utils.s:
 .PHONY : home/ggonzale/workspace/neseg/core/utils.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o:
+	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i:
+	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s:
+	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o:
+	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i:
+	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s:
+	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/plugins/src/example/example.o:
+	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.o
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/plugins/src/example/example.i:
+	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.i
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/plugins/src/example/example.s:
+	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.s
+.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
+.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i
+.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s
+.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
+.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i
+.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s
+.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tools/cube/cubeAt.o:
 	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
@@ -520,6 +712,36 @@ home/ggonzale/workspace/neseg/tools/cube/cubeAt.i:
 home/ggonzale/workspace/neseg/tools/cube/cubeAt.s:
 	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeCut.o:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeCut.i:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeCut.s:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.s
 
 # target to build an object file
 home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o:
@@ -550,6 +772,36 @@ home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i:
 home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s:
 	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s
 
 # target to build an object file
 home/ggonzale/workspace/neseg/tools/graph/graphPrim.o:
@@ -707,12 +959,21 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... CubeDijkstra2"
+	@echo "... CubeLiveWire"
+	@echo "... MSTthroughShortestPath"
 	@echo "... cubeAt"
+	@echo "... cubeCalculateAguet"
+	@echo "... cubeCut"
 	@echo "... cubeDecimate"
 	@echo "... cubeDijkstra2"
+	@echo "... cubeLogistic"
+	@echo "... cubeStatistics"
 	@echo "... edit_cache"
+	@echo "... example"
 	@echo "... graphPrim"
 	@echo "... rebuild_cache"
+	@echo "... tryManyPathsCloud"
 	@echo "... viva"
 	@echo "... vivaView"
 	@echo "... home/ggonzale/workspace/neseg/core/Axis.o"
@@ -781,15 +1042,42 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/core/utils.o"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.i"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.s"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.o"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.i"
+	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.s"
+	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o"
+	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i"
+	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s"
+	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o"
+	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i"
+	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.s"

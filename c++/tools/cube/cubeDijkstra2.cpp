@@ -46,7 +46,4 @@ int main(int argc, char **argv) {
 
   // Cloud<Point3D>* cd = cubeLiveWire->findShortestPath(87,39,11, 118,81,9);
   // cd->saveToFile("cloud.cl");
-
-  
-
 }
