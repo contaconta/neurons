@@ -44,6 +44,8 @@ create_ascEditor (void)
   GtkWidget *menuitem5_menu;
   GtkWidget *screenshot;
   GtkWidget *image1;
+  GtkWidget *videolayers;
+  GtkWidget *videorotation;
   GtkWidget *cut1;
   GtkWidget *copy1;
   GtkWidget *paste1;
@@ -152,6 +154,14 @@ create_ascEditor (void)
   image1 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
   gtk_widget_show (image1);
   gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image1);
+
+  videolayers = gtk_menu_item_new_with_mnemonic (_("VideoLayers"));
+  gtk_widget_show (videolayers);
+  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videolayers);
+
+  videorotation = gtk_menu_item_new_with_mnemonic (_("VIdeoRotation"));
+  gtk_widget_show (videorotation);
+  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotation);
 
   cut1 = gtk_image_menu_item_new_from_stock ("gtk-cut", accel_group);
   gtk_widget_show (cut1);
@@ -383,6 +393,12 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) screenshot, "activate",
                     G_CALLBACK (on_screenshot_activate),
                     NULL);
+  g_signal_connect ((gpointer) videolayers, "activate",
+                    G_CALLBACK (on_videolayers_activate),
+                    NULL);
+  g_signal_connect ((gpointer) videorotation, "activate",
+                    G_CALLBACK (on_videorotation_activate),
+                    NULL);
   g_signal_connect ((gpointer) cut1, "activate",
                     G_CALLBACK (on_cut1_activate),
                     NULL);
@@ -496,6 +512,8 @@ create_ascEditor (void)
   GLADE_HOOKUP_OBJECT (ascEditor, menuitem5_menu, "menuitem5_menu");
   GLADE_HOOKUP_OBJECT (ascEditor, screenshot, "screenshot");
   GLADE_HOOKUP_OBJECT (ascEditor, image1, "image1");
+  GLADE_HOOKUP_OBJECT (ascEditor, videolayers, "videolayers");
+  GLADE_HOOKUP_OBJECT (ascEditor, videorotation, "videorotation");
   GLADE_HOOKUP_OBJECT (ascEditor, cut1, "cut1");
   GLADE_HOOKUP_OBJECT (ascEditor, copy1, "copy1");
   GLADE_HOOKUP_OBJECT (ascEditor, paste1, "paste1");

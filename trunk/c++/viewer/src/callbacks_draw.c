@@ -137,7 +137,7 @@ void setUpMatricesXY(int layerSpan)
       glTranslatef(0,0,depthStep);
 
       //float tileWidth = min(float(cube->cubeWidth - max_texture_size*cubeColToDraw), float(max_texture_size));
-      //float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowToDraw), float(max_texture_size));
+      //float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowTDraw), float(max_texture_size));
 
       if(!flag_draw_combo)
         glViewport ((GLsizei)0,(GLsizei)0,

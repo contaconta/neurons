@@ -1,12 +1,19 @@
 #include "Point.h"
 
-// Point::Point(float x, float y, float z) : Visible()
-// {
-  // coords.resize(3);
-  // coords[0] = x;
-  // coords[1] = y;
-  // coords[2] = z;
-// }
+Point::Point() : Visible(){
+  coords.resize(3);
+  coords[0] = 0;
+  coords[1] = 0;
+  coords[2] = 0;
+}
+
+Point::Point(float x, float y, float z) : Visible()
+{
+  coords.resize(3);
+  coords[0] = x;
+  coords[1] = y;
+  coords[2] = z;
+}
 
 void Point::draw(){
   glPushMatrix();

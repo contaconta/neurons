@@ -30,6 +30,7 @@ Y s                    |/            |/
 #include "utils.h"
 #include "VisibleE.h"
 #include "Cube_P.h"
+#include "Cloud_P.h"
 #include <typeinfo>
 
 #ifdef WITH_OPENMP
@@ -474,6 +475,9 @@ public:
   void calculate_aguet_flat(float sigma_xy, float sigma_z = 0);
   void calculate_aguet_f_(float sigma_xy, float sigma_z);
   void calculate_hessian(float sigma_xy, float sigma_z);
+
+  /** Gets the values of the cube in the points indicated by the cloud.*/
+  float integralOverCloud(Cloud_P* cloud);
 
   /** Creates three new volumes with the eigenvalues ordered.*/
   void order_eigen_values(float sigma_xy, float sigma_z);

@@ -20,6 +20,8 @@ public:
 
   Graph(Cloud_P* cl);
 
+  ~Graph();
+
   void changeCloud(Cloud_P* cl);
 
   bool load(istream &in);
@@ -27,6 +29,8 @@ public:
   void save(ostream &out);
 
   void draw();
+
+  Graph<P, E >* subGraphToPoint(int nPoint);
 
   double distanceEuclidean(Point* p1, Point* p2);
 
@@ -55,6 +59,12 @@ Graph<P,E>::Graph() : Graph_P(){
   cloud = new Cloud<P>();
 }
 
+template< class P, class E>
+Graph<P,E>::~Graph()
+{
+  delete (cloud);
+  delete (&eset);
+}
 
 template< class P, class E>
 Graph<P,E>::Graph(string filename) : Graph_P(){
@@ -279,6 +289,21 @@ vector< vector< double > > Graph<P,E>::sampleLatticeArroundEdges
   return toReturn;
 } //method
 
+template< class P, class E>
+Graph<P, E >* Graph<P,E>::subGraphToPoint(int nPoint)
+{
+  // assert(nPoint < cloud->points.size());
+  Graph<P,E>* toReturn = new Graph<P,E>();
+  for(int i = 0; i < nPoint; i++)
+    toReturn->cloud->points.push_back(cloud->points[i]);
+
+  for(int i = 0; i < eset.edges.size(); i++){
+        if( (eset.edges[i]->p0 < nPoint) &&
+            (eset.edges[i]->p1 < nPoint) )
+          toReturn->eset.addEdge(eset.edges[i]->p0, eset.edges[i]->p1);
+     }
+  return toReturn;
+}
 
 
 #endif

@@ -1,5 +1,8 @@
 #include <gmodule.h>
 #include <stdio.h>
+#include <vector>
+#include "Object.h"
+using namespace std;
 
 extern "C"
 {

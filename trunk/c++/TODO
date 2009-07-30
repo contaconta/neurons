@@ -1,10 +1,10 @@
 German :
 
-- Makefile: change the dependencies so that only one program is built at a time
-
 - Cube:: Check indexToMicrometers and micrometersToIndexes for the X,Y,Z offsets do it in a matrix form
 
 - Viewer:: do all the things that are in the TODO
+
+- Clone the objects (points, graphs, clouds, etc....)
 
 -------------------------------------------------------------------------------
 Aurelien :
