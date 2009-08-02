@@ -79,6 +79,8 @@ learner_string = LEARNERS.list{BESTlearner};
 switch learner_string(1:2)
     case 'HA'
         feature_type = 'Haar-like';
+    case 'IT'
+        feature_type = 'Intensity';
     case 'RA' 
         feature_type = 'Rays';
 end

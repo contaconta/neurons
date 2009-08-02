@@ -37,6 +37,12 @@ string getExtension(string path){
   return path.substr(path.find_last_of(".")+1);
 }
 
+string getNameFromPathWithoutExtension(string path){
+  string nameWith =  path.substr(path.find_last_of("/\\")+1);
+  string nameWithout = nameWith.substr(0,nameWith.find_last_of("."));
+  return nameWithout;
+}
+
 int get_files_in_dir(string dir, vector<string> &files,string extension)
 {
   DIR *dp;

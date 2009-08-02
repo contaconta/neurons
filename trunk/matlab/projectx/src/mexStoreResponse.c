@@ -96,5 +96,5 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mxFree(sType);
 	
     if(storeWeakLearnerResponses(pData, eFormat, eType, index, nElements)==-1)
-	mexErrMsgTxt("mexStoreResponse: error while storing data.");
+    	mexErrMsgTxt("mexStoreResponse: error while storing data.");
 }

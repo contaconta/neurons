@@ -23,4 +23,6 @@ function  responses = p_RectangleFeature(imgs, feats)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+disp('called p_RectangleFeature');
 responses = mexRectangleFeature(imgs, feats);
+%responses = mexIntensityFeature(imgs, feats);

@@ -26,6 +26,8 @@ void store_weak_learners(char* learner_type, int index,
 
 string getExtension(string path);
 
+string getNameFromPathWithoutExtension(string path);
+
 int get_files_in_dir(string dir, vector<string> &files,string extension="");
 
 #endif //UTILS_H

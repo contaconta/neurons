@@ -16,6 +16,13 @@
 #include "mex.h"
 #include "intensityFeature.h"
 #include <stdio.h>
+#include <vector>
+#include <iostream>
+#include "cv.h"
+#include "highgui.h"
+#include "utils.h"
+
+using namespace std;
 
 // Caution : this number has to be chosen carefully to avoid any buffer
 // overflow
@@ -26,7 +33,7 @@
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
-    unsigned int *pImage;
+    unsigned char *pImage;
     int *pResult;
     const mwSize *dim_array;
     mxArray *pCellParam;
@@ -45,7 +52,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     
     /* Check data type of input argument */
     if (!mxIsCell(prhs[0])) {
-      mexErrMsgTxt("Input array must be of type uint8 or cell.");
+      mexErrMsgTxt("Input array must be of type cell.");
     }
     if (!mxIsCell(prhs[1])) {
       mexErrMsgTxt("Input array must be of type cell.");
@@ -60,12 +67,47 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
 
+    // preload cloud and image classes
+    vector<IplImage*> list_images;
+    vector<Cloud*> list_clouds;
+    //string img_dir = "/localhome/aurelien/Documents/EM/raw_mitochondria2/originals/";
+    string img_dir = "/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/";
+    const int nbPointsPerCloud = 600;
+    string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/Model-8-6000-3-i/");
+    vector<string> cloud_files;
+    get_files_in_dir(cloud_dir,cloud_files,"cl");
+
+    mexPrintf("Loading files\n");
+    for(vector<string>::iterator itFiles = cloud_files.begin();
+        itFiles != cloud_files.end(); itFiles++)
+      {
+        mexPrintf("Loading file %s\n",itFiles->c_str());
+        string filename = cloud_dir + *itFiles;
+        // Cloud
+        Cloud* point_set = new Cloud(filename);
+        list_clouds.push_back(point_set);
+
+        // Image
+        string img_filename = img_dir + getNameFromPathWithoutExtension(*itFiles);
+        img_filename += ".png";
+        IplImage* img = cvLoadImage(img_filename.c_str(),1);
+
+        if(img == 0)
+          {
+            mexErrMsgTxt("getIntensityFeature: Error while pre-loading files\n"); //img_filename.c_str());
+          }
+        else
+          {
+            list_images.push_back(img);
+          }
+      }
+
     int iResult = 0;
     for(int iImage = 0;iImage<nImages;iImage++)
       {
         /* retrieve the image */
         pCellImage = mxGetCell(prhs[0],iImage);
-        pImage = (unsigned int*)mxGetData(pCellImage);
+        pImage = (unsigned char*)mxGetData(pCellImage);
         dim_array = mxGetDimensions(pCellImage);
 
         mexPrintf("Image %d\n",iImage);
@@ -77,8 +119,21 @@ void mexFunction(int nlhs,       mxArray *plhs[],
             strLength = mxGetN(pCellParam)+1;
             mxGetString(pCellParam,pParam,strLength);
 
-            pResult[iResult] = getIntensityFeature(pImage,dim_array[1],dim_array[0],pParam);
+            pResult[iResult] = getIntensityFeature(pImage,
+                                                   dim_array[1],dim_array[0],
+                                                   pParam,
+                                                   list_images,
+                                                   list_clouds,
+                                                   nbPointsPerCloud);
             iResult++;
           }
       }
+
+    for(vector<Cloud*>::iterator itCloud = list_clouds.begin();
+        itCloud != list_clouds.end(); itCloud++)
+      {
+        delete *itCloud;
+      }
+    
+    // TODO : release images
 }

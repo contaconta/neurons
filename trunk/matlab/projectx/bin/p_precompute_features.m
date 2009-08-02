@@ -22,23 +22,42 @@ disp('Precomputing Haar Feautres on the TRAIN SET');
 
 system('killall memDaemon');
 system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
-disp('started memDaemon');
+[s,r]=system('ps -ef | grep memDaemon | wc -l');
+if (r ~= 3)
+disp('memDaemon is not running');
+else
+disp(['started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
+end
 
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
-    
 
-for l = 1:length(LEARNERS.list)
+loopOverLearners = false;
+
+if loopOverLearners == true
+  for l = 1:length(LEARNERS.list)
     
     % switch LEARNERS.list(l)(1:2)
     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
     
     % precompute the feature responses for each example for learner l
     %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
+    disp('MATLAB p_get_feature_responses')
     responses = p_get_feature_responses(SET, LEARNERS.list(l));
     
     %keyboard;
     
     % store the responses as a row vector
+    disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
     mexStoreResponse(responses,'row',l,'HA');
+  end
+else
+  
+  disp('MATLAB p_get_feature_responses')
+  responses = p_get_feature_responses(SET, LEARNERS.list);
+
+  disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
+  for l = 1:length(responses)
+    mexStoreResponse(responses(l),'row',l,'HA');
+  end
 end
 toc;

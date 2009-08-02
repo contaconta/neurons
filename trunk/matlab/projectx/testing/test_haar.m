@@ -45,6 +45,7 @@ for i = 1:length(LEARNERS.list)
     LEARNERS.list{i}
     
     % you can interrupt by pressing Ctrl-C
+    % Use the "return" or "dbcont" command to resume execution of the loop.
     % Careful : this will make the script run slower
     % dbloop
 end

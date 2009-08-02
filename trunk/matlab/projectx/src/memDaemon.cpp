@@ -164,7 +164,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
   signal(SIGINT, exit_program);
   signal(SIGTERM, exit_program);
 
-  int data_unit_size = 0;
+  unsigned int data_unit_size = 0;
   if(strcmp(data_type,"char")==0)
     data_unit_size = sizeof(char);
   else if(strcmp(data_type,"int")==0)
@@ -177,14 +177,15 @@ int init(int width, int height, char* data_type, int shm_key_id)
       return -1;
     }
 
-  unsigned int memory_size = sizeof(struct header_mem_responses) + data_unit_size*width*height;
+  unsigned long memory_size = sizeof(struct header_mem_responses) + (data_unit_size*(unsigned long)width*(unsigned long)height);
   struct header_mem_responses hmr;
   memset(&hmr,0,sizeof(hmr));
   hmr.width = width;
   hmr.height = height;
 
   printf("Server is initialising\n");
-  printf("Memory required : %u\n", memory_size);
+
+  cout << "Memory required:" << memory_size << "b = " << memory_size / (1024.0*1024.0*1024.0) << "Gb" << endl;
 
   // TODO : Check if this is less than max size available
 

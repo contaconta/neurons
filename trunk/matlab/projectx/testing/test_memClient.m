@@ -35,7 +35,6 @@
 % end
 % 
 
-
 width = 10000;
 height = 1000;
 
@@ -53,7 +52,7 @@ for i=1:height
     k = k + 1;
   end
 end
-A=uint32(A);
+A=int32(A);
 
 for i=1:size(A,1)
   mexStoreResponse(A(i,:),'row',i,'HA');
