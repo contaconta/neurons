@@ -26,14 +26,15 @@ fi
 make
 #GCC=/usr/bin/c++
 GCC=g++
-MEX_ARG=-cxx
+MEX_ARG="-cxx `pkg-config --libs opencv`"
 MEX_EXE=`which mex`
 #if [ $MEX_EXE = '' ]
 #then
 	MEX_EXE=/usr/local/matlab/bin/mex
 #fi
-#MEX_EXE=/usr/local/bin/mex
-CFLAGS="-w -c -O3" #$(OPENMP)
+MEX_EXE=/usr/local/bin/mex
+CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
+#CFLAGS="-w -c -O3" #$(OPENMP)
 
 $GCC -fPIC $CFLAGS -I$MEXPATH mexBoxIntegral.c
 $GCC -fPIC $CFLAGS -I$MEXPATH mexIntegralImage.c
@@ -48,4 +49,4 @@ $MEX_EXE mexRectangleFeature.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/
 $MEX_EXE mexEnumerateLearners.o CMakeFiles/libProjectX.dir/enumerateLearners.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/libProjectX.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
 $MEX_EXE mexStoreResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
 $MEX_EXE mexLoadResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
-$MEX_EXE mexIntensityFeature.o CMakeFiles/libProjectX.dir/intensityFeature.o CMakeFiles/libProjectX.dir/utils.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexIntensityFeature.o CMakeFiles/libProjectX.dir/intensityFeature.o CMakeFiles/libProjectX.dir/utils.o CMakeFiles/libProjectX.dir/Cloud.o -lgcc -outdir ../bin $MEX_ARG

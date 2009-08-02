@@ -23,7 +23,7 @@
 
 using namespace std;
 
-//#define DEBUG_M
+#define DEBUG_M
 
 int getMemSize(int &width, int &height, int shm_key_id)
 {
@@ -228,7 +228,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
     }
 
 #ifdef DEBUG_M
-  printf("Indices %d %d %d\n", iStep, index_x, index_y);
+  printf("Indices %d %d %d %d %d %d\n", iStep, index_x, index_y, index_y * hmr->width + index_x, hmrSize, dataSize);
 #endif
 
   if(hmrSize > dataSize)
@@ -254,6 +254,10 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
         printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
         return -1;
       }
+#ifdef DEBUG_M
+      else
+        printf("storeWeakLearnerResponses: Memory detached\n");
+#endif
     }
 
   return 0;
@@ -381,7 +385,7 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
     }
 
 #ifdef DEBUG_M
-  printf("Indices %d %d %d\n", iStep, index_x, index_y);
+  printf("Indices %d %d %d %d %d\n", iStep, index_x, index_y, index_y * hmr->width + index_x, hmrSize);
 #endif
 
   // Copy data to the destination buffer
@@ -400,6 +404,10 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
         printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
         return -1;
       }
+#ifdef DEBUG_M
+      else
+        printf("storeWeakLearnerResponses: Memory detached\n");
+#endif
     }
 
   return 0;

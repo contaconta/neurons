@@ -190,6 +190,10 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
                     }
               }
           }
+
+        //weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;
+        weak_learner_type_indices[iLearnerType] = nb_learners;
+        nb_learners += list_weak_learners.size();
       }
 
     if(learner_type[iLearnerType][0] == 'I' && learner_type[iLearnerType][1] == 'T')
@@ -204,6 +208,11 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
 
             list_weak_learners.push_back(s);
           }
+
+        //weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;
+        weak_learner_type_indices[iLearnerType] = nb_learners;
+        nb_learners += list_weak_learners.size();
+
         /*
         sIT_params params;
         while(left_token=strchr(left_token,'_'))
@@ -243,9 +252,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
         */
 
       }
-
-    weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;
-    nb_learners += list_weak_learners.size();
   }
 
   // Exporting the list

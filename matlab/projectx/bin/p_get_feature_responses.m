@@ -34,14 +34,20 @@ if SET.precomputed && (nargin > 2)
 else
     switch learners{1}(1:2)
 
-        case 'HA'
-            responses = mexRectangleFeature(SET.IntImages, learners);
-            %disp('online computation');
+      case 'HA'
+        %display 'HA'
+        responses = mexRectangleFeature(SET.IntImages, learners);
+        %disp('online computation');
 
-        case 'SV'
-            responses = rand([length(SET.Images) length(learners)]);
+      case 'IT'
+        %display 'IT'
+%size(learners)
+        responses = mexIntensityFeature(SET.Images, learners);        
+        
+      case 'SV'
+        responses = rand([length(SET.Images) length(learners)]);
             
-        otherwise
-            error('could not find appropriate function for learner');
+      otherwise
+        error('could not find appropriate function for learner');
     end
 end

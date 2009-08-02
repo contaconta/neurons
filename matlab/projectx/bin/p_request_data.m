@@ -31,11 +31,11 @@ function [data, D] = p_request_data(tag_string, N, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-HOMEIMAGES = '/osshare/Work/Data/LabelMe/Images';
-HOMEANNOTATIONS = '/osshare/Work/Data/LabelMe/Annotations';
+HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
+HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
+IMSIZE = [24 24];   % the default example image size
 
 SHRINK_BORDER = 10;
-IMSIZE = [24 24];   % the default example image size 
 
 for k = 1:nargin-2
     switch class(varargin{k})
@@ -66,6 +66,7 @@ if NON
     [data, D] = get_negative_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j, SHRINK_BORDER);   
 % select N positive samples
 else
+tag_string
     [Qresult, j] = LMquery(D, 'object.name', tag_string);
     if isempty(Qresult); error(['p_request_data: LabelMe cannot find any more examples of type ' tag_string ]);end
     [data, D] = get_positive_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j);    
@@ -132,6 +133,7 @@ samples = sort(randsample(length(Qresult), N, 1));
 
 for q = unique(samples)'
 
+    q
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
     

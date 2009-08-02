@@ -16,6 +16,13 @@
 #ifndef INTENSITY_FEATURE_H
 #define INTENSITY_FEATURE_H
 
+#include <vector>
+#include "cv.h"
+#include "highgui.h"
+#include "Cloud.h"
+
+using namespace std;
+
 // Compute intensity feature from an image
 // @param width and height are the width and the height of the image passed in parameter
 // @param weak_learner_param : string that contains the id of the feature
@@ -25,6 +32,11 @@
 // |         |
 // |         |
 // |_________b
-int getIntensityFeature(unsigned int *img, int width, int height, char* weak_learner_param);
+int getIntensityFeature(unsigned char *test_img,
+                        int width, int height,
+                        char* weak_learner_param,
+                        vector<IplImage*>& list_images,
+                        vector<Cloud*>& list_clouds,
+                        int nbPointsPerCloud);
 
 #endif
