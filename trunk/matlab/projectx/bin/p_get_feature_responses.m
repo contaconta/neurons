@@ -1,4 +1,5 @@
-function responses = p_get_feature_responses(SET, learners, varargin)
+function responses = p_get_feature_responses(SET, learners, listImages, ...
+                                             varargin)
 %P_GET_FEATURE_RESPONSES
 %
 %   TODO: documentation
@@ -24,7 +25,7 @@ function responses = p_get_feature_responses(SET, learners, varargin)
 %   PURPOSE.  See the GNU General Public License for more details.
 
 % if we have precomputed the feature values, recall them from memdaemon
-if SET.precomputed && (nargin > 2)
+if SET.precomputed && (nargin > 3)
     
     row = varargin{1};
     responses = mexLoadResponse('row',row,'HA')';
@@ -41,8 +42,7 @@ else
 
       case 'IT'
         %display 'IT'
-%size(learners)
-        responses = mexIntensityFeature(SET.Images, learners);        
+        responses = mexIntensityFeature(SET.Images, learners, listImages);
         
       case 'SV'
         responses = rand([length(SET.Images) length(learners)]);
