@@ -28,11 +28,11 @@ make
 GCC=g++
 MEX_ARG="-cxx `pkg-config --libs opencv`"
 MEX_EXE=`which mex`
-#if [ $MEX_EXE = '' ]
-#then
+if [ a$MEX_EXE = 'a' ]
+then
+	# if we could not find the MEX path, we add it manually
 	MEX_EXE=/usr/local/matlab/bin/mex
-#fi
-MEX_EXE=/usr/local/bin/mex
+fi
 CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
 #CFLAGS="-w -c -O3" #$(OPENMP)
 
