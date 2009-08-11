@@ -18,8 +18,8 @@
 #include <stdio.h>
 #include <vector>
 #include <iostream>
-#include "cv.h"
-#include "highgui.h"
+//#include "cv.h"
+//#include "highgui.h"
 #include "utils.h"
 
 using namespace std;
@@ -29,7 +29,9 @@ using namespace std;
 #define MAX_WEAK_LEARNER_PARAM_LENGTH 500
 
 /* Arguments : Cell containing image files,
-   Cell containing parameters (ids for intensity features) */
+   Cell containing parameters (ids for intensity features),
+   Cell containing list of codebook images
+*/
 void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
@@ -38,13 +40,13 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     const mwSize *dim_array;
     mxArray *pCellParam;
     mxArray *pCellImage;
-    mwSize nImages, nParams;
+    mwSize nImages, nParams, nCodeBook;
     char pParam[MAX_WEAK_LEARNER_PARAM_LENGTH]; // weak learner parameters
     int strLength;
     
     /* Check for proper number of input and output arguments */    
-    if (nrhs != 2) {
-	mexErrMsgTxt("2 input arguments required.");
+    if (nrhs != 3) {
+	mexErrMsgTxt("3 input arguments required.");
     } 
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
@@ -57,10 +59,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (!mxIsCell(prhs[1])) {
       mexErrMsgTxt("Input array must be of type cell.");
     }
+    if (!mxIsCell(prhs[2])) {
+      mexErrMsgTxt("Input array must be of type cell.");
+    }
     
     /* Get the real data */
     nImages = mxGetNumberOfElements(prhs[0]);
     nParams = mxGetNumberOfElements(prhs[1]);
+    nCodeBook = mxGetNumberOfElements(prhs[2]);
 
     mwSize number_of_dims = 2;
     const mwSize dims[]={nImages, nParams};
@@ -68,18 +74,19 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     pResult = (int*)mxGetData(plhs[0]);
 
     /* Preload cloud and image classes */
-    vector<IplImage*> list_images;
+    vector<xImage*> codebook;
+    //vector<IplImage*> list_images;
     vector<Cloud*> list_clouds;
     //string img_dir = "/localhome/aurelien/Documents/EM/raw_mitochondria2/originals/";
     //string img_dir = "/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/";
-    string img_dir = "/osshare/Work/Data/LabelMe/Images/fibslice/";
     const int nbPointsPerCloud = 600;
-    //string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/intensity/Model-8-6000-3-i/");
-    string cloud_dir("//osshare/Work/neurons/matlab/projectx/temp/Model-8-6000-3-i/");
+    string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/intensity/Model-8-6000-3-i/");
+    //string cloud_dir("//osshare/Work/neurons/matlab/projectx/temp/Model-8-6000-3-i/");
     vector<string> cloud_files;
     get_files_in_dir(cloud_dir,cloud_files,"cl");
 
     //mexPrintf("Loading files\n");
+    int iImage = 0;
     for(vector<string>::iterator itFiles = cloud_files.begin();
         itFiles != cloud_files.end(); itFiles++)
       {
@@ -89,6 +96,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         Cloud* point_set = new Cloud(filename);
         list_clouds.push_back(point_set);
 
+        /*
         // Image
         string img_filename = img_dir + getNameFromPathWithoutExtension(*itFiles);
         img_filename += ".png";
@@ -102,10 +110,28 @@ void mexFunction(int nlhs,       mxArray *plhs[],
           {
             list_images.push_back(img);
           }
+        */
+        /*
+        xImage* img = new xImage;
+        pCellImage = mxGetCell(prhs[2],iImage);
+        img->data = (unsigned char*)mxGetData(pCellImage);
+        img->width = dim_array[1];
+        img->height = dim_array[0];
+        codebook.push_back(img);
+        iImage++;
+        */
       }
 
+    xImage* img = new xImage;
+    pCellImage = mxGetCell(prhs[2],0);
+    dim_array = mxGetDimensions(pCellImage);
+    img->data = (unsigned char*)mxGetData(pCellImage);
+    img->width = dim_array[1];
+    img->height = dim_array[0];
+    codebook.push_back(img);
+
     int iResult = 0;
-    for(int iImage = 0;iImage<nImages;iImage++)
+    for(iImage = 0;iImage<nImages;iImage++)
       {
         /* retrieve the image */
         pCellImage = mxGetCell(prhs[0],iImage);
@@ -124,7 +150,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
             pResult[iResult] = getIntensityFeature(pImage,
                                                    dim_array[1],dim_array[0],
                                                    pParam,
-                                                   list_images,
+                                                   codebook,
                                                    list_clouds,
                                                    nbPointsPerCloud);
             iResult++;
@@ -138,11 +164,13 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         delete *itCloud;
       }
     
+    
     // Release images
-    for(vector<IplImage*>::iterator itImage = list_images.begin();
-        itImage != list_images.end(); itImage++)
+    for(vector<xImage*>::iterator itImage = codebook.begin();
+        itImage != codebook.end(); itImage++)
       {
-        //delete *itImage;
-        cvReleaseImage(&(*itImage));
+        delete *itImage;
+        //cvReleaseImage(&(*itImage));
       }
+    
 }
