@@ -45,6 +45,7 @@ for c = [-1 1]  % c = the postive and negative classes
         end
     end
     
+    % TODO: Handle this so we only save when we build the original index
     save DATASETS.mat DATASETS;
 
     % add each image file to SET, format it, normalize it, and compute features

@@ -31,8 +31,18 @@ end
 
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
 
+% TEMP : Preload images for IT features
+dirIm='/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/';
+listImageNames = dir([dirIm 'FIB*']);
+listImages = {};
+for l=1:10 %length(listImageNames)
+  listImages{l} = imread([dirIm listImageNames(l).name]);
+end
+
 loopOverLearners = true;
 
+% FIXME : instead of storing response rows all at once, or one row at a time, it will be efficient to store chunks
+% sized to fit in memory
 if loopOverLearners == true
   for l = 1:length(LEARNERS.list)
     
@@ -41,21 +51,21 @@ if loopOverLearners == true
     
     % precompute the feature responses for each example for learner l
     %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
-    disp('MATLAB p_get_feature_responses')
-    responses = p_get_feature_responses(SET, LEARNERS.list(l));
+    %disp('MATLAB p_get_feature_responses')
+    learner_id = regexp(LEARNERS.list(l), '\d*', 'match');
+    LEARNERS.data{l} = listImages{ceil((str2num(learner_id{1}{1})+1)/600)};
+    responses = p_get_feature_responses(SET, LEARNERS.list(l),LEARNERS.data(l));
     
     %keyboard;
     
     % store the responses as a row vector
-    disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
+    %disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
     mexStoreResponse(responses,'row',l,'HA');
   end
 else
   
-  disp('MATLAB p_get_feature_responses')
-  responses = p_get_feature_responses(SET, LEARNERS.list);
-  keyboard
-  disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
+  responses = p_get_feature_responses(SET, LEARNERS.list,listImages);
+  %disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
   size(responses)
   for l = 1:size(responses,2)
     mexStoreResponse(responses(:,l),'row',l,'HA');
