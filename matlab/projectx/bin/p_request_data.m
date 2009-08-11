@@ -1,7 +1,7 @@
-function [data, D] = p_request_data(tag_string, N, varargin)
+function [data, D] = p_request_data(tag_string, N, DATASETS, varargin)
 %% P_REQUEST_DATA
 %
-%   [data, D] = p_request_data('query', N, ...) requests N examples from
+%   [data, D] = p_request_data('query', N, DATASETS, ...) requests N examples from
 %   a LabelMe database selected using the query string. It returns DATA, a 
 %   cell containing the N examples as well as D, the LabelMe index
 %   containing query results which have not yet been requested.  To request
@@ -9,10 +9,10 @@ function [data, D] = p_request_data(tag_string, N, varargin)
 %       
 %   Example:
 %   -----------
-%   [data, D] = p_request_data('car', 1);  % request 1 car
-%   [data, D] = p_request_data('car', 3, D);  % request the next 3 cars
-%   [data, D] = p_request_data('non car', 100, D);  % request 3 non car examples
-%   [data, D] = p_request_data('non car', 100, D, 'SIZE', [49 49]);  % request 3 non car examples of size [49 49]
+%   [data, D] = p_request_data('car', 1, DATASETS);  % request 1 car
+%   [data, D] = p_request_data('car', 3, DATASETS, D);  % request the next 3 cars
+%   [data, D] = p_request_data('non car', 100, DATASETS, D);  % request 3 non car examples
+%   [data, D] = p_request_data('non car', 100, D, DATASETS, 'SIZE', [49 49]);  % request 3 non car examples of size [49 49]
 %
 %   See also LMQUERY
 
@@ -31,19 +31,23 @@ function [data, D] = p_request_data(tag_string, N, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
-HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
-IMSIZE = [24 24];   % the default example image size
+%DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
+%DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
+%DATASETS.IMSIZE = [24 24];   % the default example image size
+
+%DATASETS.HOMEIMAGES = DATASETS.DATASETS.HOMEIMAGES;
+%DATASETS.HOMEANNOTATIONS = DATASETS.DATASETS.HOMEANNOTATIONS;
+%DATASETS.IMSIZE = DATASETS.DATASETS.IMSIZE;
 
 SHRINK_BORDER = 10;
 
-for k = 1:nargin-2
+for k = 1:nargin-3
     switch class(varargin{k})
         case 'struct'
             D = varargin{k};
         case 'char'
             if strcmp(varargin{k}, 'SIZE')
-                IMSIZE = varargin{k+1};
+                DATASETS.IMSIZE = varargin{k+1};
             end
     end
 end
@@ -53,8 +57,8 @@ NON = regexp(tag_string, 'non', 'once');
 
 % create a new LabelMe index if it hasn't been passed as an argument
 if ~exist('D', 'var')
-    %D = LMdatabase(HOMEANNOTATIONS);
-    D = LMquery(LMdatabase(HOMEANNOTATIONS), 'folder', 'fibslice');
+    %D = LMdatabase(DATASETS.HOMEANNOTATIONS);
+    D = LMquery(LMdatabase(DATASETS.HOMEANNOTATIONS), 'folder', 'fibslice');
 end
    
 data = cell(1,N);       % image example data will be stored in a cell
@@ -63,13 +67,13 @@ data = cell(1,N);       % image example data will be stored in a cell
 if NON
     Qresult = D;  j = 1:length(D);
     %[Qresult, j] = LMquery(D, 'object.name', strtrim(regexprep(tag_string, 'non', '')) );
-    [data, D] = get_negative_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j, SHRINK_BORDER);   
+    [data, D] = get_negative_samples(Qresult, N, DATASETS.HOMEIMAGES, DATASETS.IMSIZE, data, D, j, SHRINK_BORDER);   
 % select N positive samples
 else
-tag_string
+%tag_string
     [Qresult, j] = LMquery(D, 'object.name', tag_string);
     if isempty(Qresult); error(['p_request_data: LabelMe cannot find any more examples of type ' tag_string ]);end
-    [data, D] = get_positive_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j);    
+    [data, D] = get_positive_samples(Qresult, N, DATASETS.HOMEIMAGES, DATASETS.IMSIZE, data, D, j);    
 end
 
 
@@ -133,7 +137,7 @@ samples = sort(randsample(length(Qresult), N, 1));
 
 for q = unique(samples)'
 
-    q
+    %q
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
     
@@ -172,13 +176,13 @@ if length(Qresult(q).annotation.object(obj).polygon.pt) > 1
     rmax = min(size(I,1),max(y));
     data = I(rmin:rmax, cmin:cmax);
 else
-    % if the data is a point instead of a contour, extract IMSIZE patch
+    % if the data is a point instead of a contour, extract DATASETS.IMSIZE patch
     % around the point
     h = floor(IMSIZE(2)/2);
     w = floor(IMSIZE(1)/2);
    
-    cmin = max(1, str2num(Qresult(q).annotation.object(obj).polygon.pt.x) -w);
-    rmin = max(1, str2num(Qresult(q).annotation.object(obj).polygon.pt.y) -h);
+    cmin = max(1, str2double(Qresult(q).annotation.object(obj).polygon.pt.x) -w);
+    rmin = max(1, str2double(Qresult(q).annotation.object(obj).polygon.pt.y) -h);
     cmax = min(size(I,2),cmin + IMSIZE(2)-1);
     rmax = min(size(I,1),rmin + IMSIZE(1)-1);
     

@@ -28,19 +28,20 @@ for c = [-1 1]  % c = the postive and negative classes
     
     % collect the training image files into d, and initialize the data struct
     if c == 1
-        tag_string = 'mitochondria+interior';
+        query_string = DATASETS.labelme_pos_query;
         if ~isfield(DATASETS, 'LabelMeIndex')
-            [data, DATASETS.LabelMeIndex] = p_request_data(tag_string, POS_LIM, 'SIZE', IMSIZE);
+            [data, DATASETS.LabelMeIndex] = p_request_data(query_string, POS_LIM, DATASETS, 'SIZE', IMSIZE);
         else
-            [data, DATASETS.LabelMeIndex] = p_request_data(tag_string, POS_LIM, DATASETS.LabelMeIndex, 'SIZE', IMSIZE);
+            [data, DATASETS.LabelMeIndex] = p_request_data(query_string, POS_LIM, DATASETS, DATASETS.LabelMeIndex, 'SIZE', IMSIZE);
         end
         
     else
-        tag_string = 'non mitochondria';
+        query_string = DATASETS.labelme_neg_query;
+        %query_string = 'non mitochondria';
         if ~isfield(DATASETS, 'LabelMeIndex')
-            [data, DATASETS.LabelMeIndex] = p_request_data(tag_string, NEG_LIM, 'SIZE', IMSIZE);
+            [data, DATASETS.LabelMeIndex] = p_request_data(query_string, NEG_LIM, DATASETS, 'SIZE', IMSIZE);
         else
-            [data, DATASETS.LabelMeIndex] = p_request_data(tag_string, NEG_LIM, DATASETS.LabelMeIndex, 'SIZE', IMSIZE);
+            [data, DATASETS.LabelMeIndex] = p_request_data(query_string, NEG_LIM, DATASETS, DATASETS.LabelMeIndex, 'SIZE', IMSIZE);
         end
     end
     
