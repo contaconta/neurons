@@ -27,7 +27,7 @@ clear all;
 % set paths we need for toolboxes
 addpath([pwd, '/../spedges/']);             % append the path to the ray's toolbox 
 addpath([pwd, '/../toolboxes/kevin/']); 	% append the path to kevin's toolbox
-addpath([pwd, '/../toolboxes/LabelMeToolbox/'], '-begin');    %#ok<MNEFF> % append the path to kevin's toolbox
+addpath([pwd, '/../toolboxes/LabelMeToolbox/'], '-begin');   % append the path to kevin's toolbox
 addpath([pwd, '/bin/']);                    % append the path to sub-functions
 addpath([pwd, '/testing/']);                % append path to quality testing functions
 addpath([pwd, '/images/']);                 % append path to test images subdirectory
@@ -62,10 +62,6 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 % DATA SETS FOR TRAINING & VALIDATION 
 %-------------------------------------------------------------------------
 
-%DATASETS.class(1).val = 1;
-%DATASETS.class(1).query = 'car+side';
-%DATASETS.class(1).
-
 DATASETS.TRAIN_POS      = 1470;          % number of positive examples in the training set
 DATASETS.TRAIN_NEG      = 8000;          % number of negative examples in the training set
 DATASETS.VALIDATION_POS = 1470;          % number of positive examples in the validation set
@@ -81,13 +77,16 @@ DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATA
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [128 48];
 
 % parameters for updating the negative examples
-DATASETS.delta          = 10;       % re-collection scan step size
-DATASETS.NORM           = 0;        % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
+DATASETS.delta              = 10;           % re-collection scan step size
+DATASETS.NORM               = 0;            % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
+DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
+DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
+DATASETS.labelme_pos_query  = 'mitochondria+interior';
+DATASETS.labelme_neg_query  = 'non mitochondria';
+%DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
+%DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
 
-% LabelMe parameters
-HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
-HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
-IMSIZE = DATASETS.IMSIZE;   % the default example image size 
+%IMSIZE = DATASETS.IMSIZE;   % the default example image size 
 
 %-------------------------------------------------------------------------
 % WEAK LEARNERS

@@ -71,9 +71,11 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     vector<IplImage*> list_images;
     vector<Cloud*> list_clouds;
     //string img_dir = "/localhome/aurelien/Documents/EM/raw_mitochondria2/originals/";
-    string img_dir = "/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/";
+    //string img_dir = "/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/";
+    string img_dir = "/osshare/Work/Data/LabelMe/Images/fibslice/";
     const int nbPointsPerCloud = 600;
-    string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/intensity/Model-8-6000-3-i/");
+    //string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/intensity/Model-8-6000-3-i/");
+    string cloud_dir("//osshare/Work/neurons/matlab/projectx/temp/Model-8-6000-3-i/");
     vector<string> cloud_files;
     get_files_in_dir(cloud_dir,cloud_files,"cl");
 
