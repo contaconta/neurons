@@ -9,7 +9,7 @@
 int getIntensityFeature(unsigned char *test_img,
                         int width, int height,
                         char* weak_learner_param,
-                        vector<IplImage*>& list_images,
+                        vector<xImage*>& list_images,
                         vector<Cloud*>& list_clouds,
                         int nbPointsPerCloud)
 {
@@ -33,6 +33,7 @@ int getIntensityFeature(unsigned char *test_img,
       return -1;
     }
 
+  // Index starts at 0
   int fileId = (int) cloudId/nbPointsPerCloud;
 
   //printf("fileId %d\n",fileId);
@@ -72,7 +73,9 @@ int getIntensityFeature(unsigned char *test_img,
   //string img_filename = img_dir + getNameFromPathWithoutExtension(files[fileId]);
   //img_filename += ".png";
   //IplImage* img = cvLoadImage(img_filename.c_str(),1);
-  IplImage* img = list_images[fileId];
+  
+  //xImage* img = list_images[fileId];
+  xImage* img = list_images[0];
 
   if(img == 0)
     {
@@ -97,7 +100,7 @@ int getIntensityFeature(unsigned char *test_img,
       for(int x=indexes[0]-patchDist;x<=indexes[0]+patchDist;x++)
         for(int y=indexes[1]-patchDist;y<=indexes[1]+patchDist;y++)
           {
-            codebook_patch[i] = ((img->imageData + img->widthStep*y))[x*img->nChannels];            
+            codebook_patch[i] = ((img->data + img->width*y))[x];            
             i++;
           }
       //delete[] img;

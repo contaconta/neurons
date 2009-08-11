@@ -30,10 +30,10 @@ ADD_EXECUTABLE(libProjectX Cloud.cpp enumerateLearners.cpp integral.cpp loadImag
 #ADD_EXECUTABLE(libProjectX enumerateLearners.cpp integral.cpp loadImage.cpp main.cpp utils.cpp memClient.cpp common.cpp)
 
 # OpenCv
-FIND_PACKAGE(OpenCV REQUIRED)
+#FIND_PACKAGE(OpenCV REQUIRED)
 # add include directories
-INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
-TARGET_LINK_LIBRARIES(libProjectX ${OPENCV_LIBRARIES})
+#INCLUDE_DIRECTORIES(${OPENCV_INCLUDE_DIR})
+#TARGET_LINK_LIBRARIES(libProjectX ${OPENCV_LIBRARIES})
 
 #IF("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
