@@ -31,18 +31,63 @@ function  LEARNERS = p_EnumerateLearners(LEARNERS, IMSIZE)
 
 
 tic; %disp('...defining the weak learners.');
+LEARNERS.list = [];  LEARNERS.data = [];
 
-LEARNERS.list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
+for l=1:length(LEARNERS.types)
+    switch LEARNERS.types{l}(1:2)
+        
+    case 'IT'
+        [IT_LIST, IT_DATA] = enumerate_it(IMSIZE);
+        LEARNERS.list = [LEARNERS.list IT_LIST];
+        LEARNERS.data = [LEARNERS.data IT_DATA];
+
+
+    otherwise
+    LEARNERS.list = [LEARNERS.list mexEnumerateLearners(LEARNERS.types, IMSIZE)];
+    % TODO: if features handled by the MEX need to store data in LEARNERS,
+    % we need to adjust code to do this
+    
+    end
+end
+
+
+%LEARNERS.list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
 
 for i = 1:length(LEARNERS.types)
     type = LEARNERS.types{i};
     disp(['   defined ' type(1:2) ' learners.']);    
 end
 
-% LEARNERS.class = char(zeros([length(LEARNERS.list),2]));
-% for i = 1:length(LEARNERS.list)
-%     learner_string = LEARNERS.list{i};
-%     LEARNERS.class(i,:) = learner_string(1:2);
-% end
-
 disp(['   Defined ' num2str(length(LEARNERS.list)) ' learners. Elapsed time ' num2str(toc) ' seconds.']);
+
+
+
+
+
+%%-------------------------------------------------------------------------
+function [IT_LIST, IT_DATA] = enumerate_it(IMSIZE)
+
+d_cl = dir('./temp/Model-8-6000-3-i/FIB*.cl');
+d_im = dir('./temp/Model-8-6000-3-i/FIB*.png');
+
+counter = 1;
+IT_LIST = {};
+IT_DATA = {};
+
+for i=1:length(d_cl)
+    cloudpts = load(['./temp/Model-8-6000-3-i/' d_cl(i).name]);
+    I = imread(['./temp/Model-8-6000-3-i/' d_im(i).name]);
+    
+    for j = 1:length(cloudpts)
+        
+        x = floor(cloudpts(j,1));
+        y = floor(size(I,1) - cloudpts(j,2) - .001);
+        if (x <= size(I,2)-floor(IMSIZE(1)/2)) && (y <= size(I,1)-floor(IMSIZE(2)/2)) && (x > floor(IMSIZE(1)/2)) && (y > floor(IMSIZE(2)/2))      
+            IT_DATA{counter} = I(y-floor(IMSIZE(1)/2):y+floor(IMSIZE(1)/2), x-floor(IMSIZE(2)/2):x+floor(IMSIZE(2)/2)); %#ok<AGROW>
+            IT_LIST{counter} = ['IT_' num2str(counter)]; %#ok<AGROW>
+            counter = counter + 1;
+        end
+    end
+    
+end
+
