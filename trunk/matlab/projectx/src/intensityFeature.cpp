@@ -4,6 +4,8 @@
 #include "intensityFeature.h"
 #include "Cloud.h"
 
+#define RBF
+
 int getIntensityFeature(unsigned char *test_img,
                         int width, int height,
                         char* weak_learner_param,
@@ -110,7 +112,7 @@ int getIntensityFeature(unsigned char *test_img,
           //printf("%u %u\n", test_img[i], codebook_patch[i]);
           K += temp*temp;
         }
-      K *= K;
+      K = sqrt(K);
 #else
       // Linear kernel
 
@@ -123,6 +125,11 @@ int getIntensityFeature(unsigned char *test_img,
       K *= K;
 #endif
       //delete[] point_set;
+    }
+  else
+    {
+      printf("getIntensityFeature: Point(%f,%f)->(%d,%d) outside allowed image region(%d,%d)\n", pt->coords[0],pt->coords[1],indexes[0],indexes[1],img->width-patchDist,img->height-patchDist);
+      printf("FileId : %d, CloudId : %d\n", fileId, relCloudId);
     }
 
   //cvReleaseImage(&img);
