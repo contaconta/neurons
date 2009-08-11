@@ -18,7 +18,7 @@ function p_precompute_features(SET, LEARNERS)
 %   PURPOSE.  See the GNU General Public License for more details.
 
 tic;
-disp('Precomputing Haar Feautres on the TRAIN SET');
+disp('Precomputing features on the TRAIN SET');
 
 system('killall memDaemon');
 system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
@@ -31,7 +31,7 @@ end
 
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
 
-loopOverLearners = false;
+loopOverLearners = true;
 
 if loopOverLearners == true
   for l = 1:length(LEARNERS.list)
@@ -54,10 +54,11 @@ else
   
   disp('MATLAB p_get_feature_responses')
   responses = p_get_feature_responses(SET, LEARNERS.list);
-
+  keyboard
   disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
-  for l = 1:length(responses)
-    mexStoreResponse(responses(l),'row',l,'HA');
+  size(responses)
+  for l = 1:size(responses,2)
+    mexStoreResponse(responses(:,l),'row',l,'HA');
   end
 end
 toc;

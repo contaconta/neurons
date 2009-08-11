@@ -52,10 +52,15 @@ P = sum(ha,2);
 function h = classify_weak(learner, polarity, threshold, data, varargin)
 
 switch learner(1:2)
-    case 'HA'
+  case 'HA'
         f = mexRectangleFeature({data}, {learner});
-    otherwise
-        error('could not find appropriate function for learner');
+  case 'IT'
+	%display 'IT'
+	%size(data)
+	%learner
+        f = mexIntensityFeature({data}, {learner});    
+  otherwise
+    error('could not find appropriate function for learner');
 end
 
 % perform the weak classification to binary {0, 1}

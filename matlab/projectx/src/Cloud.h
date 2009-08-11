@@ -12,6 +12,7 @@ class Point
  public:
   vector<float> coords;
 
+  int theta;
   int type;
 
   string className(){
@@ -28,6 +29,12 @@ class Point
         in.seekg(start+1); //????????? Why that one
         return false;
       }
+    }
+    in >> theta;
+    if(in.fail()){
+      in.clear();
+      in.seekg(start+1); //????????? Why that one
+      return false;
     }
     in >> type;
     if(in.fail()){

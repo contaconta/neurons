@@ -67,21 +67,21 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
 
-    // preload cloud and image classes
+    /* Preload cloud and image classes */
     vector<IplImage*> list_images;
     vector<Cloud*> list_clouds;
     //string img_dir = "/localhome/aurelien/Documents/EM/raw_mitochondria2/originals/";
     string img_dir = "/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/";
     const int nbPointsPerCloud = 600;
-    string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/Model-8-6000-3-i/");
+    string cloud_dir("/localhome/aurelien/Sources/EM/svm_test/intensity/Model-8-6000-3-i/");
     vector<string> cloud_files;
     get_files_in_dir(cloud_dir,cloud_files,"cl");
 
-    mexPrintf("Loading files\n");
+    //mexPrintf("Loading files\n");
     for(vector<string>::iterator itFiles = cloud_files.begin();
         itFiles != cloud_files.end(); itFiles++)
       {
-        mexPrintf("Loading file %s\n",itFiles->c_str());
+        //mexPrintf("Loading file %s\n",itFiles->c_str());
         string filename = cloud_dir + *itFiles;
         // Cloud
         Cloud* point_set = new Cloud(filename);
@@ -110,7 +110,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         pImage = (unsigned char*)mxGetData(pCellImage);
         dim_array = mxGetDimensions(pCellImage);
 
-        mexPrintf("Image %d\n",iImage);
+        //mexPrintf("Image %d\n",iImage);
 
         for(int iParam = 0;iParam<nParams;iParam++)
           {
@@ -129,11 +129,18 @@ void mexFunction(int nlhs,       mxArray *plhs[],
           }
       }
 
+    // Release clouds
     for(vector<Cloud*>::iterator itCloud = list_clouds.begin();
         itCloud != list_clouds.end(); itCloud++)
       {
         delete *itCloud;
       }
     
-    // TODO : release images
+    // Release images
+    for(vector<IplImage*>::iterator itImage = list_images.begin();
+        itImage != list_images.end(); itImage++)
+      {
+        //delete *itImage;
+        cvReleaseImage(&(*itImage));
+      }
 }
