@@ -9,14 +9,13 @@
 int getIntensityFeature(unsigned char *test_img,
                         int width, int height,
                         char* weak_learner_param,
-                        vector<xImage*>& list_images,
-                        vector<Cloud*>& list_clouds,
-                        int nbPointsPerCloud)
+                        xImage* img)
 {
   const int patchDist = 8;
   int patchDiameter = 2*patchDist+1;
   int patchSize = patchDiameter * patchDiameter;
 
+/*
   //printf("weak_learner_param %s\n",weak_learner_param);
 
   int i;
@@ -89,27 +88,15 @@ int getIntensityFeature(unsigned char *test_img,
   indexes[1] = (int)(img->height -0.001 - pt->coords[1]);
 
   //printf("Pt %d %d, %d %d depth : %d\n", indexes[0], indexes[1], patchDiameter, img->nChannels,img->depth);
+*/
 
   int K = 0;
-  if(indexes[0] >= patchDist && indexes[1] >= patchDist
-     && indexes[0] < img->width-patchDist && indexes[1] < img->height-patchDist)
-    {
-      // Extract patch 1
-      i=0;
-      unsigned char codebook_patch[patchSize];
-      for(int x=indexes[0]-patchDist;x<=indexes[0]+patchDist;x++)
-        for(int y=indexes[1]-patchDist;y<=indexes[1]+patchDist;y++)
-          {
-            codebook_patch[i] = ((img->data + img->width*y))[x];            
-            i++;
-          }
-      //delete[] img;
-      //printf("\n");
+      unsigned char* codebook_patch = img->data;
 
       // Compute Kernel function      
 #ifdef RBF
       int temp;
-      for(i=0;i<patchSize;i++)
+      for(int i=0;i<patchSize;i++)
         {
           temp = test_img[i] - codebook_patch[i];
           //printf("%u %u\n", test_img[i], codebook_patch[i]);
@@ -128,12 +115,6 @@ int getIntensityFeature(unsigned char *test_img,
       K *= K;
 #endif
       //delete[] point_set;
-    }
-  else
-    {
-      printf("getIntensityFeature: Point(%f,%f)->(%d,%d) outside allowed image region(%d,%d)\n", pt->coords[0],pt->coords[1],indexes[0],indexes[1],img->width-patchDist,img->height-patchDist);
-      printf("FileId : %d, CloudId : %d\n", fileId, relCloudId);
-    }
 
   //cvReleaseImage(&img);
   return K;

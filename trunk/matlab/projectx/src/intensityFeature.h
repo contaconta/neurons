@@ -40,8 +40,6 @@ struct xImage
 int getIntensityFeature(unsigned char *test_img,
                         int width, int height,
                         char* weak_learner_param,
-                        vector<xImage*>& list_images,
-                        vector<Cloud*>& list_clouds,
-                        int nbPointsPerCloud);
+                        xImage* img);
 
 #endif

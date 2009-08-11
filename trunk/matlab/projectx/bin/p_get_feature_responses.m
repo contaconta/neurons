@@ -1,5 +1,4 @@
-function responses = p_get_feature_responses(SET, learners, listImages, ...
-                                             varargin)
+function responses = p_get_feature_responses(SET, learners, listImages, varargin)
 %P_GET_FEATURE_RESPONSES
 %
 %   TODO: documentation
