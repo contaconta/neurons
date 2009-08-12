@@ -26,15 +26,16 @@ fi
 make
 #GCC=/usr/bin/c++
 GCC=g++
-MEX_ARG="-cxx `pkg-config --libs opencv`"
+#MEX_ARG="-cxx `pkg-config --libs opencv`"
+MEX_ARG="-cxx"
 MEX_EXE=`which mex`
 if [ a$MEX_EXE = 'a' ]
 then
 	# if we could not find the MEX path, we add it manually
 	MEX_EXE=/usr/local/matlab/bin/mex
 fi
-CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
-#CFLAGS="-w -c -O3" #$(OPENMP)
+#CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
+CFLAGS="-w -c -O3" #$(OPENMP)
 
 $GCC -fPIC $CFLAGS -I$MEXPATH mexBoxIntegral.c
 $GCC -fPIC $CFLAGS -I$MEXPATH mexIntegralImage.c

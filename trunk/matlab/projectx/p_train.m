@@ -25,7 +25,7 @@ clear all;
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
-disp('...loading DATASETS because labelme is SLOW!'); pause(.01); load DATASETS;   % TEMPORARY!!!!!!
+%disp('...loading DATASETS because labelme is SLOW!'); pause(.01); load DATASETS;   % TEMPORARY!!!!!!
 
 %% ============================== preparation =====================================================================
 

@@ -48,7 +48,9 @@ if loopOverLearners == true
     %LEARNERS.data{l} = listImages{ceil((str2num(learner_id{1}{1})+1)/600)};
     responses = p_get_feature_responses(SET, LEARNERS.list(l),LEARNERS.data(l));
     
-    %keyboard;
+%     if l==5998
+%         keyboard;
+%     end
     
     % store the responses as a row vector
     %disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
