@@ -38,11 +38,11 @@ for s = 1:length(CASCADE)
 
     % make a copy of the data set with only examples that passed to stage s
     STAGE_S = p_copy_data_set(SET, positive_list);
-    h = zeros(length(positive_list), length(CASCADE(s).CLASSIFIER.learner));
+    h = zeros(length(positive_list), length(CASCADE(s).CLASSIFIER.learner_id));
     
     % weak hypotheses for stage s
-    for ti = 1:length(CASCADE(s).CLASSIFIER.learner)
-        h(:,ti) = p_classify_weak_learner(CASCADE(s).CLASSIFIER.learner{ti}, CASCADE(s).CLASSIFIER.polarity(ti), CASCADE(s).CLASSIFIER.threshold(ti), STAGE_S, 'boolean');
+    for ti = 1:length(CASCADE(s).CLASSIFIER.learner_id)
+        h(:,ti) = p_classify_weak_learner(CASCADE(s).CLASSIFIER.learner_id(ti), CASCADE(s).CLASSIFIER.learner_data(ti), CASCADE(s).CLASSIFIER.polarity(ti), CASCADE(s).CLASSIFIER.threshold(ti), STAGE_S, 'boolean');
     end
     
    % keyboard;
