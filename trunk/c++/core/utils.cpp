@@ -232,3 +232,17 @@ void saveFloatVector( vector< float >& vc, string filename){
     out << vc[i] << std::endl;
   out.close();
 }
+
+void renderString(const char* format, ...)
+{
+ va_list args;
+ char    buffer[512];
+ va_start(args,format);
+ vsnprintf(buffer,sizeof(buffer)-1,format,args);
+ va_end(args);
+ void *font = GLUT_BITMAP_8_BY_13;
+ glRasterPos2f(-1,-1);
+ for (const char *c=buffer; *c != '\0'; c++) {
+   glutBitmapCharacter(font, *c);
+ }
+}
