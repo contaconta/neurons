@@ -9,17 +9,19 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Modules")
 project("VIVA - Volumetric Image Visualization and Analysis")
 
 set(CMAKE_C_COMPILER "c++")
-set(CMAKE_BUILD_TYPE debug) #debug none release distribution
-#set(CMAKE_BUILD_TYPE release) #debug none release distribution
+#set(CMAKE_BUILD_TYPE debug) #debug none release distribution
+set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
-set(CMAKE_CXX_FLAGS         "-openmp -D WITH_OPENMP -D WITH_GLEW")
-set(CMAKE_CXX_FLAGS_DEBUG   "-openmp -g -pg -D WITH_OPENMP -D WITH_GLEW")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -openmp -D WITH_OPENMP -D WITH_GLEW")
+set(CMAKE_CXX_FLAGS         "-D WITH_OPENMP -fopenmp -D WITH_GLEW")
+set(CMAKE_CXX_FLAGS_DEBUG   "-D WITH_OPENMP -fopenmp -g -pg -D WITH_GLEW")
+set(CMAKE_CXX_FLAGS_RELEASE "-D WITH_OPENMP -fopenmp -O3 -D WITH_GLEW")
 
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-set(CMAKE_SHARED_LINKER_FLAGS "-lpthread -lgomp ")
+set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
+set(CMAKE_EXE_LINKER_FLAGS "-lgomp")
+set(CMAKE_MODULE_LINKER_FLAGS "-lgomp")
 
 find_package( OpenCV REQUIRED )
 INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIR})
@@ -144,6 +146,11 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
+add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
+target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
+
+add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
+target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
 ## Test examples
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
@@ -151,3 +158,9 @@ target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 
 add_executable(MSTthroughShortestPath ${CMAKE_SOURCE_DIR}/../tests/MSTthroughShortestPath.cpp)
 target_link_libraries(MSTthroughShortestPath ${LINK_LIBRARIES_ALL})
+
+add_executable(graphToDisplayList ${CMAKE_SOURCE_DIR}/../tests/graphToDisplayList.cpp)
+target_link_libraries(graphToDisplayList ${LINK_LIBRARIES_ALL})
+
+add_executable(gslMinimization ${CMAKE_SOURCE_DIR}/../tests/gslMinimization.cpp)
+target_link_libraries(gslMinimization ${LINK_LIBRARIES_ALL})

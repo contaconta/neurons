@@ -1,17 +1,17 @@
 #ifndef EDGEW2_H_
 #define EDGEW2_H_
 
-#include "Edge.h"
+#include "EdgeW.h"
 
 template < class P>
-class Edge2W : public Edge< P >
+class Edge2W : public EdgeW< P >
 {
 public:
 
   double w1;
   double w2;
 
-  Edge2W() : Edge< P >() {w1=-1; w2=-1;}
+  Edge2W() : EdgeW< P >() {w1=-1; w2=-1;}
 
   Edge2W(vector< Point* >* _points, int _p0, int _p1, double _w1=1, double _w2=0);
 
@@ -30,8 +30,9 @@ public:
 template< class P>
 Edge2W<P>::Edge2W
 (vector< Point* >* _points, int _p0, int _p1, double _w1, double _w2) :
-  Edge< P >(_points, _p0, _p1)
+  EdgeW< P >(_points, _p0, _p1)
 {
+  // w  = _w1;
   w1 = _w1;
   w2 = _w2;
 }

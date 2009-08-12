@@ -59,9 +59,9 @@ public:
   int iROIx;
   int iROIy;
   int iROIz;
-  int ROIwidth;
-  int ROIheight;
-  int ROIdepth;
+  int eROIx;
+  int eROIy;
+  int eROIz;
 
   CubeLiveWire(Cube_P* cube, DistanceDijkstra* distance) : CubeDijkstra(cube, distance)
   {
@@ -69,9 +69,9 @@ public:
     iROIx = 0;
     iROIy = 0;
     iROIz = 0;
-    ROIwidth = cube->cubeWidth;
-    ROIheight = cube->cubeHeight;
-    ROIdepth = cube->cubeDepth;
+    eROIx = cube->cubeWidth-1;
+    eROIy = cube->cubeHeight-1;
+    eROIz = cube->cubeDepth-1;
 
     computingDistances = false;
     int cubeLength = cube->cubeDepth*cube->cubeHeight*cube->cubeWidth;

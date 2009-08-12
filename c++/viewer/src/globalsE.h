@@ -128,6 +128,7 @@ extern string volume_name;
 extern vector< string >    objectNames;
 extern vector< VisibleE* > toDraw;
 extern vector< DoubleSet<float>* > lSelections;
+extern int nCubes; //Number of cubes present in the objects
 
 // Parameters
 extern int argcp;

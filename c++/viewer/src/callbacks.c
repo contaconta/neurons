@@ -44,6 +44,95 @@ saveScreenShot (char* filename)
   cvReleaseImage(&toSave);
 }
 
+void addObjectFromString(string name)
+{
+
+  string extension;
+  extension = getExtension(name);
+
+  if(extension == "nfo"){
+    cube = CubeFactory::load(name);
+    float* tf = new float[256];
+    for(int i=0;i<255;i++)
+      tf[i] = i;
+    tf[255] = 0;
+    //((Cube<float,double>*)cube)->set_tf(tf);
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    if(nCubes == 0){
+      cube->v_r = 1.0;
+      cube->v_g = 1.0;
+      cube->v_b = 1.0;
+      nCubes++;
+    } else if(nCubes == 1){
+      cube->v_r = 1.0;
+      cube->v_g = 0.0;
+      cube->v_b = 0.0;
+      nCubes++;
+    } else if(nCubes == 2){
+      cube->v_r = 0.0;
+      cube->v_g = 1.0;
+      cube->v_b = 0.0;
+      nCubes++;
+    } else if(nCubes == 3){
+      cube->v_r = 0.0;
+      cube->v_g = 0.0;
+      cube->v_b = 1.0;
+      nCubes++;
+    }
+    toDraw.push_back(cube);
+  }
+  else if( (extension == "asc") || (extension == "ASC") ){
+    neuron_name = name;
+    neuronita = new Neuron(name);
+    string classN = neuronita->className();
+    printf("There is a neuron and its class is: %s\n", classN.c_str());
+    toDraw.push_back(neuronita);
+  }
+  else if (extension == "gr") {
+    Graph_P* gr = GraphFactory::load(name);
+    toDraw.push_back(gr);
+  } else if (extension == "cl"){
+    Cloud_P* cd = CloudFactory::load(name);
+    toDraw.push_back(cd);
+  }
+  else if ((extension == "jpg") || (extension == "png"))  {
+    img = new Image<float>(name);
+    toDraw.push_back(img);
+  }
+
+#ifdef WITH_BBP
+  else if ((extension == "h5")){
+    BBP_Morphology* bbpmorph = new BBP_Morphology(name);
+    toDraw.push_back(bbpmorph);
+  }
+#endif
+  //Text file with a lot of objects to draw
+  else if( extension == "lst"){
+    std::ifstream in(name.c_str());
+    if(!in.good())
+      {
+        printf("vivaView::addObjectFromString does not recognize %s\n",name.c_str());
+        exit(0);
+      }
+    string s;
+    while(getline(in,s))
+    {
+      printf("%s\n", s.c_str());
+      fflush(stdout);
+      addObjectFromString(s);
+    }
+    printf("\n");
+  }
+  else{
+    printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
+           name.c_str());
+    exit(0);
+  }
+
+
+
+}
+
 
 void
 on_drawing3D_realize                   (GtkWidget       *widget,
@@ -65,76 +154,11 @@ on_drawing3D_realize                   (GtkWidget       *widget,
   }
 
   //Create the objects
-  string extension;
-  int    nCube = 0;
+  nCubes = 0;
   for(int i = 0; i < objectNames.size(); i++){
-
     if(objectNames[i] == "Axis")
       continue; //Nothing to be done
-
-    extension = getExtension(objectNames[i]);
-
-    if(extension == "nfo"){
-      cube = CubeFactory::load(objectNames[i]);
-      float* tf = new float[256];
-      for(int i=0;i<255;i++)
-        tf[i] = i;
-      tf[255] = 0;
-      //((Cube<float,double>*)cube)->set_tf(tf);
-      cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
-      if(nCube == 0){
-        cube->v_r = 1.0;
-        cube->v_g = 1.0;
-        cube->v_b = 1.0;
-        nCube++;
-      } else if(nCube == 1){
-        cube->v_r = 1.0;
-        cube->v_g = 0.0;
-        cube->v_b = 0.0;
-        nCube++;
-      } else if(nCube == 2){
-        cube->v_r = 0.0;
-        cube->v_g = 1.0;
-        cube->v_b = 0.0;
-        nCube++;
-      } else if(nCube == 3){
-        cube->v_r = 0.0;
-        cube->v_g = 0.0;
-        cube->v_b = 1.0;
-        nCube++;
-      }
-      toDraw.push_back(cube);
-    }
-    else if( (extension == "asc") || (extension == "ASC") ){
-      neuron_name = objectNames[i];
-      neuronita = new Neuron(objectNames[i]);
-      string classN = neuronita->className();
-      printf("There is a neuron and its class is: %s\n", classN.c_str());
-      toDraw.push_back(neuronita);
-    }
-    else if (extension == "gr") {
-      Graph_P* gr = GraphFactory::load(objectNames[i]);
-      toDraw.push_back(gr);
-    } else if (extension == "cl"){
-      Cloud_P* cd = CloudFactory::load(objectNames[i]);
-      toDraw.push_back(cd);
-    }
-    else if ((extension == "jpg") || (extension == "png"))  {
-        img = new Image<float>(objectNames[i]);
-        toDraw.push_back(img);
-      }
-
-#ifdef WITH_BBP
-    else if ((extension == "h5")){
-      BBP_Morphology* bbpmorph = new BBP_Morphology(objectNames[i]);
-      toDraw.push_back(bbpmorph);
-    }
-#endif
-    else{
-      printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
-             objectNames[i].c_str());
-      exit(0);
-    }
+    addObjectFromString(objectNames[i]);
   }
 
   /* Axis* axis = new Axis(); */

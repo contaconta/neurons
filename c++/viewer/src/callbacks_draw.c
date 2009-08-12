@@ -292,8 +292,10 @@ void draw_objects()
         }
       else if((*itObj)->className()=="Cube"){
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
-        if(flag_draw_3D)
+        if(flag_draw_3D){
           cubeDraw->draw();
+          setUpVolumeMatrices();
+        }
         else if (flag_draw_XY)
           cubeDraw->draw_layer_tile_XY(layerToDrawXY);
         else if (flag_draw_XZ)

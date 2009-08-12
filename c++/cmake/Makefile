@@ -242,6 +242,19 @@ example/fast:
 .PHONY : example/fast
 
 #=============================================================================
+# Target rules for targets named graphFindLeaves
+
+# Build rule for target.
+graphFindLeaves: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 graphFindLeaves
+.PHONY : graphFindLeaves
+
+# fast build rule for target.
+graphFindLeaves/fast:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/build
+.PHONY : graphFindLeaves/fast
+
+#=============================================================================
 # Target rules for targets named graphPrim
 
 # Build rule for target.
@@ -253,6 +266,45 @@ graphPrim: cmake_check_build_system
 graphPrim/fast:
 	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/build
 .PHONY : graphPrim/fast
+
+#=============================================================================
+# Target rules for targets named graphPrune
+
+# Build rule for target.
+graphPrune: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 graphPrune
+.PHONY : graphPrune
+
+# fast build rule for target.
+graphPrune/fast:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/build
+.PHONY : graphPrune/fast
+
+#=============================================================================
+# Target rules for targets named graphToDisplayList
+
+# Build rule for target.
+graphToDisplayList: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 graphToDisplayList
+.PHONY : graphToDisplayList
+
+# fast build rule for target.
+graphToDisplayList/fast:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/build
+.PHONY : graphToDisplayList/fast
+
+#=============================================================================
+# Target rules for targets named gslMinimization
+
+# Build rule for target.
+gslMinimization: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gslMinimization
+.PHONY : gslMinimization
+
+# fast build rule for target.
+gslMinimization/fast:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/build
+.PHONY : gslMinimization/fast
 
 #=============================================================================
 # Target rules for targets named tryManyPathsCloud
@@ -684,6 +736,36 @@ home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s:
 .PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tests/graphToDisplayList.o:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.o
+.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tests/graphToDisplayList.i:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.i
+.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tests/graphToDisplayList.s:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.s
+.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tests/gslMinimization.o:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.o
+.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tests/gslMinimization.i:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.i
+.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tests/gslMinimization.s:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.s
+.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o:
 	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
 .PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
@@ -804,6 +886,21 @@ home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s:
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tools/graph/graphPrim.o:
 	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
 .PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
@@ -817,6 +914,21 @@ home/ggonzale/workspace/neseg/tools/graph/graphPrim.i:
 home/ggonzale/workspace/neseg/tools/graph/graphPrim.s:
 	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
 .PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/graph/graphPrune.o:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.o
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/graph/graphPrune.i:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.i
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/graph/graphPrune.s:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.s
+.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.s
 
 # target to build an object file
 home/ggonzale/workspace/neseg/viewer/src/callbacks.o:
@@ -971,7 +1083,11 @@ help:
 	@echo "... cubeStatistics"
 	@echo "... edit_cache"
 	@echo "... example"
+	@echo "... graphFindLeaves"
 	@echo "... graphPrim"
+	@echo "... graphPrune"
+	@echo "... graphToDisplayList"
+	@echo "... gslMinimization"
 	@echo "... rebuild_cache"
 	@echo "... tryManyPathsCloud"
 	@echo "... viva"
@@ -1054,6 +1170,12 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o"
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i"
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s"
+	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.o"
+	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.i"
+	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.s"
+	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.o"
+	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.i"
+	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.s"
 	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o"
 	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i"
 	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s"
@@ -1078,9 +1200,15 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.s"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.o"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.i"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.s"

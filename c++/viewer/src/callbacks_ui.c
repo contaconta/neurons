@@ -426,6 +426,26 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
       rot3DX += 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
+  if(event->keyval == 'J'){
+    if(flag_draw_3D)
+      disp3DX -= 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'L'){
+    if(flag_draw_3D)
+      disp3DX += 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'I'){
+    if(flag_draw_3D)
+      disp3DY += 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
+  if(event->keyval == 'K'){
+    if(flag_draw_3D)
+      disp3DY -= 5;
+    on_drawing3D_expose_event(drawing3D,NULL, NULL);
+  }
 
 
   if(event->keyval == 'e')
