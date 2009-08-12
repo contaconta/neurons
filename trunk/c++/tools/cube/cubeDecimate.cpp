@@ -48,7 +48,10 @@ static struct argp_option options[] = {
   {"windowxy" ,  'w',  "int", 0,"width and height of the window"},
   {"windowz" ,   'z',  "int", 0,"depth of the window"},
   {"logscale",   'o',  0, 0, "Do the decimation in a log scale"},
-  {"not-cloud"   ,   'c',  0, 0, "save the points as a list of indexes instead of a cloud"},
+  {"not-cloud",  'c',  0, 0, "save the points as a list of indexes instead of a cloud"},
+  {"somaX"   ,   'X',  "float", 0, "X coordinate of the soma"},
+  {"somaX"   ,   'Y',  "float", 0, "Y coordinate of the soma"},
+  {"somaX"   ,   'Z',  "float", 0, "Z coordinate of the soma"},
   { 0 }
 };
 
@@ -56,8 +59,9 @@ struct arguments
 {
   char *args[2];                /* arg1 & arg2 */
   int flag_min, verbose, windowxy, windowz, flag_layer, flag_log;
-  float threshold;
+  float threshold, somaX, somaY, somaZ;
   bool saveAsCloud;
+  bool somaDefined;
 };
 
 
@@ -95,6 +99,18 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'c':
       argments->saveAsCloud = false;
       break;
+    case 'X':
+      argments->somaX = atof(arg);
+      argments->somaDefined = true;
+      break;
+    case 'Y':
+      argments->somaY = atof(arg);
+      argments->somaDefined = true;
+      break;
+    case 'Z':
+      argments->somaZ = atof(arg);
+      argments->somaDefined = true;
+      break;
 
     case ARGP_KEY_ARG:
       if (state->arg_num >= 2)
@@ -131,6 +147,7 @@ int main(int argc, char **argv) {
   arguments.flag_layer = 0;
   arguments.flag_log = 0;
   arguments.saveAsCloud = true;
+  arguments.somaDefined = false;
 
   argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
@@ -172,6 +189,11 @@ int main(int argc, char **argv) {
     vector< vector< double > > idxs = loadMatrix(arguments.args[1]);
     // vector< int > indexes(3);
     // vector< float > micrometers(3);
+    //The first point will be the soma
+    if(arguments.somaDefined){
+      cd->points.push_back
+        (new Point3D(arguments.somaX, arguments.somaY, arguments.somaZ));
+    }
     for(int i = 0; i < idxs.size(); i++){
 
       Point3D* pt = new Point3D( idxs[i][0],
@@ -180,7 +202,7 @@ int main(int argc, char **argv) {
 
       cd->points.push_back( pt );
     }
-    cd->v_radius = 0.2;
+    cd->v_radius = cube->voxelWidth;
     cd->saveToFile(arguments.args[1]);
   }
 

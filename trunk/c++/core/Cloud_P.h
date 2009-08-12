@@ -33,6 +33,8 @@ class Cloud_P : public VisibleE
 
   virtual vector<double> spread() = 0;
 
+  // virtual void addPoint(float x, float y, float z) = 0;
+
 };
 
 

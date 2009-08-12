@@ -167,7 +167,12 @@ vector<double> Cloud<T>::spread(){
 template <class T>
 void Cloud<T>::addPoint(float x, float y, float z)
 {
-  points.push_back(new T(x,y,z));
+  // if( (typeid(T) == typeid(Point2D))   ||
+      // (typeid(T) == typeid(Point2Do))  ||
+      // (typeid(T) == typeid(Point2Dot)) )
+    // points.push_back(new T(x,y));
+  // else
+    points.push_back(new T(x,y,z));
 }
 
 #endif

@@ -2,6 +2,7 @@
 #define GRAPH_FACTORY_H_
 
 #include "Graph.h"
+#include "CloudFactory.h"
 
 class GraphFactory
 {

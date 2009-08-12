@@ -38,20 +38,17 @@ CubeLiveWire::computeDistances
   int nIterations = 0;
   // int cubeSizeTotal = cube->cubeWidth*cube->cubeHeight*cube->cubeDepth;
   //Now it depends on the ROI
-  int cubeSizeTotal = ROIwidth*ROIheight*ROIdepth;
-    // min(ROIwidth,  (int)cube->cubeWidth-iROIx-1)*
-    // min(ROIheight, (int)cube->cubeHeight-iROIy-1)*
-    // min(ROIdepth,  (int)cube->cubeDepth - iROIz-1);
-  // printf("nIterations: %i, the cubeSize is %i\n", nIterations, cubeSizeTotal);
-  printf("  computing the distances from [%i,%i,%i]\n", x0,y0,z0);
+  // int cubeSizeTotal = ROIwidth*ROIheight*ROIdepth;
+  int cubeSizeTotal = (eROIx-iROIx+1)*(eROIy-iROIy+1)*(eROIz-iROIz+1);
+  // printf("  computing the distances from [%i,%i,%i]\n", x0,y0,z0);
 
   // Algorithm (finally)
   while(nPoints < cubeSizeTotal){
     // if(distances[zN][yN][xN] == FLT_MAX)
       // break;
-    if(nIterations%500000 == 0)
-      printf("nIterations: %i and point [%i,%i,%i], with distance: %f and the distance calculated of it is %f\n",
-             nIterations, xN, yN, zN, distances[zN][yN][xN], distance->distance(xN,yN,zN,xN,yN,zN));
+    // if(nIterations%1000000 == 0)
+      // printf("nIterations: %i and point [%i,%i,%i], with distance: %f and the distance calculated of it is %f\n",
+             // nIterations, xN, yN, zN, distances[zN][yN][xN], distance->distance(xN,yN,zN,xN,yN,zN));
     nIterations +=1;
     itb = boundary.begin();
     boundary.erase(itb);
@@ -63,11 +60,11 @@ CubeLiveWire::computeDistances
       //borders ...
       if ( (xA < iROIx) || (yA < iROIy) || (zA < iROIz) ||
            (xA < 0    ) || (yA < 0    ) || (zA < 0    ) ||
-           (xA >= ROIwidth)  ||
+           (xA >  eROIx)  ||
            (xA >= cube->cubeWidth)  ||
-           (yA >= ROIheight) ||
+           (yA >  eROIy) ||
            (yA >= cube->cubeHeight) ||
-           (zA >= ROIdepth ) ||
+           (zA >  eROIz ) ||
            (zA >= cube->cubeDepth )
            )
         continue;
@@ -94,7 +91,7 @@ CubeLiveWire::computeDistances
     int linIndex = itb->second;
     toCubeIndex(linIndex, xN, yN, zN, cube);
   }
-  printf("Computing the distances from [%i,%i,%i] is done\n", x0,y0,z0);
+  // printf("Computing the distances from [%i,%i,%i] is done\n", x0,y0,z0);
   computingDistances = false;
   // Cube<uchar, ulong>* cp = dynamic_cast< Cube<uchar, ulong>* >(cube);
   // Cube<float, double>* distances_save = cp->create_blank_cube("distances");
@@ -175,12 +172,15 @@ CubeLiveWire::findShortestPathG
       cube->indexesToMicrometers(indexes, micrometers);
       result->cloud->points.push_back
         (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
-      result->eset.edges.push_back
-        (new EdgeW<Point3D>
-         (&result->cloud->points, result->cloud->points.size()-1,
-          max((int)result->cloud->points.size()-2,0),
-          // 1));
-          1-fabs(distance->distance(xP,yP,zP,xPP,yPP,zPP))/255) );
+      //Fixes the 0,0 problem
+      if((result->cloud->points.size()-1) !=
+         (max((int)result->cloud->points.size()-2,0)))
+        result->eset.edges.push_back
+          (new EdgeW<Point3D>
+           (&result->cloud->points, result->cloud->points.size()-1,
+            max((int)result->cloud->points.size()-2,0),
+            // 1));
+            1 - distance->distance(xP,yP,zP,xPP,yPP,zPP) ) );
       xPP = xP; yPP = yP; zPP = zP;
       int previousInt = previous[zP][yP][xP];
       toCubeIndex(previous[zP][yP][xP], xP, yP, zP, cube);

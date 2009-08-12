@@ -143,6 +143,7 @@ string volume_name;
 vector< string >    objectNames;
 vector< VisibleE* > toDraw;
 vector< DoubleSet<float>* > lSelections;
+int nCubes; //Number of cubes present in the objects
 
 // Parameters
 int argcp;
