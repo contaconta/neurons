@@ -41,7 +41,8 @@ else
 
       case 'IT'
         %display 'IT'
-        responses = mexIntensityFeature(SET.Images, learner_ids, learner_data);
+        %responses = mexIntensityFeature(SET.Images, learner_ids, learner_data);
+        responses = int32(round(5000*rand([length(SET.Images) length(learner_ids)])));
         
       case 'SV'
         responses = rand([length(SET.Images) length(learner_ids)]);

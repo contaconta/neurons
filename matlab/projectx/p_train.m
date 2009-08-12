@@ -25,7 +25,7 @@ clear all;
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
-%disp('...loading DATASETS because labelme is SLOW!'); pause(.01); load DATASETS;   % TEMPORARY!!!!!!
+disp('...loading DATASETS because labelme is SLOW!'); pause(.01); load DATASETS;   % TEMPORARY!!!!!!
 
 %% ============================== preparation =====================================================================
 
@@ -96,7 +96,7 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
 
         
         %...... HACK TO STOP IF REPEATING CLASSIFIER ........
-        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner{ti}, CASCADE(i).CLASSIFIER.learner{ti-1}) && (CASCADE(i).CLASSIFIER.threshold(ti) == CASCADE(i).CLASSIFIER.threshold(ti-1))
+        if (ti > 1) && strcmp(CASCADE(i).CLASSIFIER.learner_id{ti}, CASCADE(i).CLASSIFIER.learner_id{ti-1}) && (CASCADE(i).CLASSIFIER.threshold(ti) == CASCADE(i).CLASSIFIER.threshold(ti-1))
             disp(' REPEATED CLASSIFIER, ABORT!');
             beep; keyboard;
         end
