@@ -1,4 +1,4 @@
-function responses = p_get_feature_responses(SET, learners, listImages, varargin)
+function responses = p_get_feature_responses(SET, learner_ids, learner_data, varargin)
 %P_GET_FEATURE_RESPONSES
 %
 %   TODO: documentation
@@ -32,7 +32,7 @@ if SET.precomputed && (nargin > 3)
     
 % if not, calculate them on the fly
 else
-    switch learners{1}(1:2)
+    switch learner_ids{1}(1:2)
 
       case 'HA'
         %display 'HA'
@@ -41,10 +41,10 @@ else
 
       case 'IT'
         %display 'IT'
-        responses = mexIntensityFeature(SET.Images, learners, listImages);
+        responses = mexIntensityFeature(SET.Images, learner_ids, learner_data);
         
       case 'SV'
-        responses = rand([length(SET.Images) length(learners)]);
+        responses = rand([length(SET.Images) length(learner_ids)]);
             
       otherwise
         error('could not find appropriate function for learner');
