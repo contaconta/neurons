@@ -1,4 +1,4 @@
-function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin)
+function h = p_classify_weak_learner(learner_id, learner_data, polarity, threshold, SET, varargin)
 %% TODO: write documenation
 % returns a row vector, h
 
@@ -19,14 +19,14 @@ function h = p_classify_weak_learner(learner, polarity, threshold, SET, varargin
 
 % get the feature responses to the (integral) images
 %f = double(p_RectangleFeature(SET.IntImages, {learner}));
-f = double(p_get_feature_responses(SET, {learner}));
+f = double(p_get_feature_responses(SET, learner_id, learner_data));
 
 %keyboard;
 
 % perform the weak classification to binary {0, 1}
 h = ( polarity*f) < (polarity * threshold);
 
-if (nargin == 5) && strcmp(varargin{1}, 'boolean')
+if (nargin == 6) && strcmp(varargin{1}, 'boolean')
     return;
 else
     % convert classes to {-1, 1}

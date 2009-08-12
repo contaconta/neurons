@@ -1,4 +1,4 @@
-function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w, l)
+function [error, threshold, pol] = p_select_weak_parameters(learner_id, learner_data, SET, w, l)
 %% TODO: write documenation
 
 %   Copyright © 2009 Computer Vision Lab, 
@@ -16,9 +16,9 @@ function [error, threshold, pol] = p_select_weak_parameters(learner, SET, w, l)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%responses = p_dummy_feature_values(learner, SET);
-%responses = double(p_get_feature_responses(SET, {learner}, l));
-responses = p_get_feature_responses(SET, {learner}, l);
+%responses = p_dummy_feature_values(learner_id, SET);
+%responses = double(p_get_feature_responses(SET, {learner_id}, l));
+responses = p_get_feature_responses(SET, learner_id, learner_data, l);
 
 %keyboard;
 
