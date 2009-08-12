@@ -22,6 +22,8 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <cstdarg>
+#include "neseg.h"
 
 #include <vector>
 #include <sstream>
@@ -78,6 +80,8 @@ vector< double > readVectorDouble(string filename);
 
 void saveFloatVector( vector< float >& vc, string filename);
 
+void renderString(const char* format, ...);
+
 // This class will be used to plot vectors using matlab from the C++ code.
 
 class MATLABDRAW
@@ -85,6 +89,7 @@ class MATLABDRAW
 public:
 
   static void runMatlabSlave() {
+
     // This is an awful hack to see if matlabSlave is running
     int err = system("ps -ef | grep matlabSlave | wc > /tmp/matlabRunning");
     std::ifstream in("/tmp/matlabRunning");
