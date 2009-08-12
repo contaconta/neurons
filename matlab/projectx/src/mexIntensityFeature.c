@@ -54,13 +54,13 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     
     /* Check data type of input argument */
     if (!mxIsCell(prhs[0])) {
-      mexErrMsgTxt("Input array must be of type cell.");
+      mexErrMsgTxt("First argument must be of type cell.");
     }
     if (!mxIsCell(prhs[1])) {
-      mexErrMsgTxt("Input array must be of type cell.");
+      mexErrMsgTxt("Second argument must be of type cell.");
     }
     if (!mxIsCell(prhs[2])) {
-      mexErrMsgTxt("Input array must be of type cell.");
+      mexErrMsgTxt("Third argument must be of type cell.");
     }
     
     /* Get the real data */
