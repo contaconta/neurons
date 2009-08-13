@@ -123,6 +123,14 @@ void addObjectFromString(string name)
     }
     printf("\n");
   }
+  else if( extension == "cbt"){
+    cube = new Cube_T(name);
+    cube->v_r = 1.0;
+    cube->v_g = 1.0;
+    cube->v_b = 1.0;
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    toDraw.push_back(cube);
+  }
   else{
     printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
            name.c_str());

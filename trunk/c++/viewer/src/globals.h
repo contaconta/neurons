@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "Axis.h"
 #include "DoubleSet.h"
+#include "Cube_T.h"
 // #include "GraphCut.h"
 
 #include "plugin_info.h"
@@ -42,6 +43,7 @@ int cubeRowToDraw = 0;
 float layerToDrawXY = 0;
 float layerToDrawXZ = 0;
 float layerToDrawYZ = 0;
+int timeStep = 0;
 
 double wx, wy, wz;
 

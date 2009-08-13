@@ -21,6 +21,8 @@ Y s                    |/            |/
 #ifndef CUBE_H_
 #define CUBE_H_
 
+#include "Cube_P.h"
+
 // #define ulong unsigned long long
 
 #include "neseg.h"
@@ -29,7 +31,6 @@ Y s                    |/            |/
 #include "polynomial.h"
 #include "utils.h"
 #include "VisibleE.h"
-#include "Cube_P.h"
 #include "Cloud_P.h"
 #include <typeinfo>
 
@@ -212,16 +213,16 @@ public:
   void createMIPImage(string filename = "", bool minMax = 0); //0 stands for minimum intensity projection
   
   /** Converts from coordinates in micrometers to a position in indexes.*/
-  void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
+  // void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
   /** Converts from 3d coordinates in micrometers to a position in indexes.*/
-  void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z);
+  // void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z);
 
   /** Converts from coordinates in cube indexes to micrometers.*/
-  void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
+  // void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
 
   /** Converts from 3d coordinates in cube indexes to micrometers.*/
-  void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz);
+  // void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz);
 
   /** Print some cube statistics.*/
   void print_statistics(string filename = "");

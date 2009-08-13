@@ -290,7 +290,10 @@ void draw_objects()
           img->draw();
           glPopMatrix();
         }
-      else if((*itObj)->className()=="Cube"){
+      else if( ((*itObj)->className()=="Cube") ||
+               ((*itObj)->className()=="Cube_T") ||
+               ((*itObj)->className()=="Cube_P")
+               ){
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         if(flag_draw_3D){
           cubeDraw->draw();
@@ -306,6 +309,7 @@ void draw_objects()
       else
         (*itObj)->draw();
     }
+
   draw_last_point();
   if(display_selection)
     {
@@ -335,7 +339,8 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
   if(flag_draw_3D)
     {
       setUpVolumeMatrices();
-      draw_objects();
+      cube->draw();
+      /* draw_objects(); */
 
       setUpVolumeMatrices();
       if(flag_cube_transparency)

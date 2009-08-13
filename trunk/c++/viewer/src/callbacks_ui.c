@@ -448,20 +448,44 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
   }
 
 
-  if(event->keyval == 'e')
+  if(event->keyval == 'q')
     {
       flag_draw_neuron = !flag_draw_neuron;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
 
+  if(event->keyval == 'e')
+    {
+      timeStep ++;
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Cube_T"){
+            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
+            if(timeStep >= cb->cubes.size()){
+              timeStep = cb->cubes.size()-1;
+            }
+            cb->timeStep = timeStep;
+          }
+        }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
+
   if(event->keyval == 'r')
     {
-/*       if(flag_cube_transparency){ */
-/*         printf("The neuron is not rendered with depth information, the point will not be saved\n"); */
-/*         return false; */
-/*       } */
-/*       flag_save_neuron_coordinate = !flag_save_neuron_coordinate; */
-/*       printf("The next point is saved as a neuron coordinate\n"); */
+      timeStep--;
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Cube_T"){
+            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
+            if(timeStep < 0){
+              timeStep = 0;
+            }
+            cb->timeStep = timeStep;
+          }
+        }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
 
   if(majorMode == MOD_ASCEDITOR)
