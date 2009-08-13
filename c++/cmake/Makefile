@@ -203,6 +203,19 @@ cubeDijkstra2/fast:
 .PHONY : cubeDijkstra2/fast
 
 #=============================================================================
+# Target rules for targets named cubeFromImageStack
+
+# Build rule for target.
+cubeFromImageStack: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeFromImageStack
+.PHONY : cubeFromImageStack
+
+# fast build rule for target.
+cubeFromImageStack/fast:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/build
+.PHONY : cubeFromImageStack/fast
+
+#=============================================================================
 # Target rules for targets named cubeLogistic
 
 # Build rule for target.
@@ -406,6 +419,21 @@ home/ggonzale/workspace/neseg/core/CubeDijkstra.s:
 .PHONY : home/ggonzale/workspace/neseg/core/CubeDijkstra.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/core/CubeFactory.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.o
+.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/core/CubeFactory.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.i
+.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/core/CubeFactory.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.s
+.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/core/CubeLiveWire.o:
 	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeLiveWire.o
 .PHONY : home/ggonzale/workspace/neseg/core/CubeLiveWire.o
@@ -419,6 +447,36 @@ home/ggonzale/workspace/neseg/core/CubeLiveWire.i:
 home/ggonzale/workspace/neseg/core/CubeLiveWire.s:
 	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeLiveWire.s
 .PHONY : home/ggonzale/workspace/neseg/core/CubeLiveWire.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/core/Cube_P.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.o
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/core/Cube_P.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.i
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/core/Cube_P.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.s
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/core/Cube_T.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.o
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/core/Cube_T.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.i
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/core/Cube_T.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.s
+.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.s
 
 # target to build an object file
 home/ggonzale/workspace/neseg/core/DoubleSet.o:
@@ -856,6 +914,21 @@ home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s:
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o:
 	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
@@ -1079,6 +1152,7 @@ help:
 	@echo "... cubeCut"
 	@echo "... cubeDecimate"
 	@echo "... cubeDijkstra2"
+	@echo "... cubeFromImageStack"
 	@echo "... cubeLogistic"
 	@echo "... cubeStatistics"
 	@echo "... edit_cache"
@@ -1104,9 +1178,18 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.o"
 	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.i"
 	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.s"
+	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.o"
+	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.i"
+	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.s"
 	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.o"
 	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.i"
 	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.s"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.o"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.i"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.s"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.o"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.i"
+	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.s"
 	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.o"
 	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.i"
 	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.s"
@@ -1194,6 +1277,9 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s"

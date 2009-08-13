@@ -70,15 +70,16 @@ public:
 
   virtual void print_size()=0;
 
-  virtual void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes)=0;
+  // Moved to here from Cube
+  void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
-  virtual void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z)=0;
+  void micrometersToIndexes3(float mx, float my, float mz, int& x, int& y, int& z);
 
-  virtual void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers)=0;
+  void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
 
-  virtual void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz)=0;
+  void indexesToMicrometers3(int x, int y, int z, float& mx, float& my, float& mz);
 
-  virtual void load_texture_brick(int row, int col, float scale = 1.0)=0;
+  virtual void load_texture_brick(int row, int col, float scale=1.0)=0;
 
   virtual void draw()=0;
 
@@ -89,7 +90,6 @@ public:
   (int x0, int y0, int z0, int x1, int y1, int z1,
    float rotx, float roty, float nPlanes, int min_max, float threshold)=0;
 
-
   virtual void draw_layer_tile_XY(float depth, int color=0)=0;
 
   virtual void draw_layer_tile_XZ(float depth, int color=0)=0;
@@ -98,15 +98,15 @@ public:
 
   virtual void min_max(float* min, float* max)=0;
 
-  virtual Cube_P* threshold(float threshold, string output = "output",
-                            bool putHigherValuesTo = false, bool putLowerValuesTo = true,
-                            float highValue = 1, float lowValue = 0)=0;
+  virtual Cube_P* threshold(float thres, string outputName="output",
+                    bool putHigherValuesTo = false, bool putLowerValuesTo = true,
+                    float highValue = 1, float lowValue = 0)=0;
 
-  virtual void print_statistics(string name = "")=0;
+  virtual void print_statistics(string name="")=0;
 
-  virtual void histogram(string name = "")=0;
+  virtual void histogram(string name="")=0;
 
-  virtual void save_as_image_stack(string dirname)=0;
+  virtual void save_as_image_stack(string dirname="")=0;
 
   virtual  vector< vector< int > > decimate
    (float threshold, int window_xy = 8, int window_z = 3, string filemane = "",

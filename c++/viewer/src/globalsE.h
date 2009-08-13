@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "Axis.h"
 #include "DoubleSet.h"
+#include "Cube_T.h"
 // #include "GraphCut.h"
 
 // the plugin function signatures
@@ -58,6 +59,7 @@ extern int cubeRowToDraw;
 extern float layerToDrawXY;
 extern float layerToDrawXZ;
 extern float layerToDrawYZ;
+extern int   timeStep;
 
 extern double wx, wy, wz;
 

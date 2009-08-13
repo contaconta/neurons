@@ -20,8 +20,8 @@ set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
-set(CMAKE_EXE_LINKER_FLAGS "-lgomp")
-set(CMAKE_MODULE_LINKER_FLAGS "-lgomp")
+set(CMAKE_EXE_LINKER_FLAGS    "-lgomp" )
+set(CMAKE_MODULE_LINKER_FLAGS "-lgomp" )
 
 find_package( OpenCV REQUIRED )
 INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIR})
@@ -64,6 +64,9 @@ add_library (viva SHARED
 ../core/CubeDijkstra.cpp
 ../core/Contour.cpp
 ../core/DoubleSet.cpp
+../core/Cube_P.cpp
+../core/Cube_T.cpp
+../core/CubeFactory.cpp
 ## Error while compiling them - Aurelien's help
 #../Core/GraphCut.cpp
 )
@@ -141,6 +144,10 @@ target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
 target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
+target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
+
 
 ## graph tools
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
