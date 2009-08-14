@@ -91,32 +91,30 @@ int getIntensityFeature(unsigned char *test_img,
 */
 
   int K = 0;
-      unsigned char* codebook_patch = img->data;
+  unsigned char* codebook_patch = img->data;
 
-      // Compute Kernel function      
+  // Compute Kernel function      
 #ifdef RBF
-      int temp;
-      for(int i=0;i<patchSize;i++)
-        {
-          temp = test_img[i] - codebook_patch[i];
-          //printf("%u %u\n", test_img[i], codebook_patch[i]);
-          K += temp*temp;
-        }
-      K = sqrt(K);
+  int temp;
+  for(int i=0;i<patchSize;i++)
+    {
+      temp = test_img[i] - codebook_patch[i];
+      //printf("%u %u\n", test_img[i], codebook_patch[i]);
+      K += temp*temp;
+    }
+  K = sqrt(K);
 #else
-      // Linear kernel
+  // Linear kernel
 
-      // Compute dot product
-      for(i=0;i<patchSize;i++)
-        {
-          K += (test_img[i]*codebook_patch[i]);
-        }
-      // Square it
-      K *= K;
+  // Compute dot product
+  for(i=0;i<patchSize;i++)
+    {
+      K += (test_img[i]*codebook_patch[i]);
+    }
+  // Square it
+  K *= K;
 #endif
-      //delete[] point_set;
 
-  //cvReleaseImage(&img);
   return K;
 }
 

@@ -35,8 +35,8 @@
 % end
 % 
 
-width = 10000;
-height = 1000;
+width = 19470;
+height = 5598;
 
 %Start the memory daemon
 system('killall memDaemon');
@@ -57,7 +57,9 @@ A=int32(A);
 for i=1:size(A,1)
   mexStoreResponse(A(i,:),'row',i,'HA');
 end
-
+for i=1:size(A,1)
+  mexStoreResponse(A(i,:),'row',i,'HA');
+end
 
 tic;
 

@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include <vector>
 #include <iostream>
-//#include "cv.h"
-//#include "highgui.h"
 #include "utils.h"
 
 using namespace std;
@@ -127,6 +125,11 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         pImage = (unsigned char*)mxGetData(pCellImage);
         dim_array = mxGetDimensions(pCellImage);
 
+        if(img->width != dim_array[1] || img->height != dim_array[0])
+          {
+            mexErrMsgTxt("getIntensityFeature: img->width != dim_array[1] || img->height != dim_array[0]\n");
+          }
+
         //mexPrintf("Image %d\n",iImage);
 
         for(int iParam = 0;iParam<nParams;iParam++)
@@ -142,5 +145,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
                                                    img);
             iResult++;
           }
-      }    
+      }
+
+    delete img;
 }

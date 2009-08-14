@@ -79,7 +79,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       {
         // Memory allocated using mxCalloc (but not memory allocated with malloc or calloc)
         // is freed automatically by mexErrMsgTxt
-        mexErrMsgTxt("Second argument should be 'row' or 'col'");
+        mexErrMsgTxt("First argument should be 'row' or 'col'");
       }
     mxFree(sFormat);
 
@@ -95,7 +95,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       {
         // Memory allocated using mxCalloc (but not memory allocated with malloc or calloc)
         // is freed automatically by mexErrMsgTxt
-        mexErrMsgTxt("Fourth argument should be a learner type");
+        mexErrMsgTxt("Third argument should be a learner type");
       }
     mxFree(sType);
 

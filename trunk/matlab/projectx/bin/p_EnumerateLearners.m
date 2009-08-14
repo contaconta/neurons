@@ -43,7 +43,9 @@ for l=1:length(LEARNERS.types)
 
 
     otherwise
-    LEARNERS.list = [LEARNERS.list mexEnumerateLearners(LEARNERS.types, IMSIZE)];
+    learner_list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
+    LEARNERS.list = [LEARNERS.list learner_list];
+    LEARNERS.data = [LEARNERS.data cell(1, length(learner_list))];
     % TODO: if features handled by the MEX need to store data in LEARNERS,
     % we need to adjust code to do this
     

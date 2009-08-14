@@ -44,6 +44,9 @@ for l = 1:length(LEARNERS.list)
     responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
 
     % store the responses as a row vector
+    %if l==5998
+	%keyboard
+    %end
     mexStoreResponse(responses,'row',l,'HA');
 end
 

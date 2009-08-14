@@ -18,11 +18,11 @@ function P = test_probmap(CLASSIFIER, data)
 
 
 
-h = zeros(1, length(CLASSIFIER.learner));
+h = zeros(1, length(CLASSIFIER.learner_id));
    
 % weak hypotheses for each weak learner
-for ti = 1:length(CLASSIFIER.learner)
-    h(:,ti) = classify_weak(CLASSIFIER.learner{ti}, CLASSIFIER.polarity(ti), CLASSIFIER.threshold(ti), data, 'boolean');
+for ti = 1:length(CLASSIFIER.learner_id)
+    h(:,ti) = classify_weak(CLASSIFIER.learner_id{ti}, CLASSIFIER.learner_data{ti}, CLASSIFIER.polarity(ti), CLASSIFIER.threshold(ti), data, 'boolean');
 end
 
 %% compute the strong classification
@@ -49,16 +49,16 @@ P = sum(ha,2);
     
     
 %% function to perform weak classfication using a weak learner 
-function h = classify_weak(learner, polarity, threshold, data, varargin)
+function h = classify_weak(learner_id, learner_data, polarity, threshold, data, varargin)
 
-switch learner(1:2)
+switch learner_id(1:2)
   case 'HA'
-        f = mexRectangleFeature({data}, {learner});
+        f = mexRectangleFeature({data}, {learner_id});
   case 'IT'
 	%display 'IT'
 	%size(data)
 	%learner
-        f = mexIntensityFeature({data}, {learner});    
+        f = mexIntensityFeature({data}, {learner_id}, {learner_data});    
   otherwise
     error('could not find appropriate function for learner');
 end
@@ -66,7 +66,7 @@ end
 % perform the weak classification to binary {0, 1}
 h = ( polarity*f) < (polarity * threshold);
 
-if (nargin == 5) && strcmp(varargin{1}, 'boolean')
+if (nargin == 6) && strcmp(varargin{1}, 'boolean')
     return;
 else
     % convert classes to {-1, 1}
