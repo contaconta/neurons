@@ -20,49 +20,66 @@ function p_precompute_features(SET, LEARNERS)
 tic;
 disp('Precomputing features on the TRAIN SET');
 
-system('killall memDaemon');
-system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
+%.................... start the memDaemon .................................
+system('killall memDaemon'); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
 [s,r]=system('ps -ef | grep memDaemon | wc -l');
 if (r ~= 3)
-disp('memDaemon is not running');
+    disp('...memDaemon is not running');
 else
-disp(['started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
+    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
 end
+%..........................................................................
 
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
 
-loopOverLearners = true;
-
-% FIXME : instead of storing response rows all at once, or one row at a time, it will be efficient to store chunks
+% TODO: instead of storing response rows all at once, or one row at a time, it will be efficient to store chunks
 % sized to fit in memory
-if loopOverLearners == true
-  for l = 1:length(LEARNERS.list)
+
+for l = 1:length(LEARNERS.list)
     
     % switch LEARNERS.list(l)(1:2)
     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
-    
+
     % precompute the feature responses for each example for learner l
-    %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
-    %disp('MATLAB p_get_feature_responses')
-    %learner_id = regexp(LEARNERS.list(l), '\d*', 'match');
-    %LEARNERS.data{l} = listImages{ceil((str2num(learner_id{1}{1})+1)/600)};
-    responses = p_get_feature_responses(SET, LEARNERS.list(l),LEARNERS.data(l));
-    
-%     if l==5998
-%         keyboard;
-%     end
-    
+    responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
+
     % store the responses as a row vector
-    %disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
     mexStoreResponse(responses,'row',l,'HA');
-  end
-else
-  
-  responses = p_get_feature_responses(SET, LEARNERS.list,listImages);
-  %disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
-  size(responses)
-  for l = 1:size(responses,2)
-    mexStoreResponse(responses(:,l),'row',l,'HA');
-  end
 end
-toc;
+
+toc; 
+
+
+
+% loopOverLearners = true;
+% if loopOverLearners == true
+%   for l = 1:length(LEARNERS.list)
+%     
+%     % switch LEARNERS.list(l)(1:2)
+%     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
+%     
+%     % precompute the feature responses for each example for learner l
+%     %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
+%     %disp('MATLAB p_get_feature_responses')
+%     %learner_id = regexp(LEARNERS.list(l), '\d*', 'match');
+%     %LEARNERS.data{l} = listImages{ceil((str2num(learner_id{1}{1})+1)/600)};
+%     responses = p_get_feature_responses(SET, LEARNERS.list(l),LEARNERS.data(l));
+%     
+% %     if l==5998
+% %         keyboard;
+% %     end
+%     
+%     % store the responses as a row vector
+%     %disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
+%     mexStoreResponse(responses,'row',l,'HA');
+%   end
+% else
+%   
+%   responses = p_get_feature_responses(SET, LEARNERS.list,listImages);
+%   %disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
+%   size(responses)
+%   for l = 1:size(responses,2)
+%     mexStoreResponse(responses(:,l),'row',l,'HA');
+%   end
+% end
+

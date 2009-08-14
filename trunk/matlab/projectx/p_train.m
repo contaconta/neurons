@@ -25,7 +25,9 @@ clear all;
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
-disp('...loading DATASETS because labelme is SLOW!'); pause(.01); load DATASETS;   % TEMPORARY!!!!!!
+% to save LabelMe indexing time, we check to see if we've already indexed
+DATASETS = load_labelme_index(DATASETS);
+
 
 %% ============================== preparation =====================================================================
 
@@ -37,24 +39,20 @@ logfile(EXPERIMENT.log_filenm, 'erase');logfile(EXPERIMENT.log_filenm, 'header',
 logfile(EXPERIMENT.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'FPs', 'LEARNER'});
 
 % ask the user if they'd like to precompute feature responses 
-if strcmp(input('\nPrecompute feature responses to speed up training time (y/n)? ', 's'), 'y'); DATASETS.precomputed = 1; else; DATASETS.precomputed = 0; end; %#ok<NOSEM>
-
+%if strcmp(input('\nPrecompute feature responses to speed up training time (y/n)? ', 's'), 'y'); DATASETS.precomputed = 1; else; DATASETS.precomputed = 0; end; %#ok<NOSEM>
 
 % define the weak learners
 LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
 
 % collect the training data set
 tic; disp(['...collecting the ' num2str(DATASETS.TRAIN_POS + DATASETS.TRAIN_NEG) ' examples in the TRAIN set.']);
-%TRAIN = p_collect_data(DATASETS, 'train'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 [TRAIN, DATASETS] = p_collect_data2(DATASETS, 'train'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 % precompute TRAIN
 if TRAIN.precomputed; p_precompute_features(TRAIN, LEARNERS); end
 
 % collect the validation data set
 tic; disp(['...collecting the ' num2str(DATASETS.VALIDATION_POS + DATASETS.VALIDATION_NEG) ' examples in the VALIDATION set.']);
-%VALIDATION = p_collect_data(DATASETS, 'validation'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
 [VALIDATION, DATASETS] = p_collect_data2(DATASETS, 'validation'); disp(['   Elapsed time ' num2str(toc) ' seconds.']);
-% precompute VALIDATION
 VALIDATION.precomputed = 0;
 
 %% ============================== train the cascade ==============================================================

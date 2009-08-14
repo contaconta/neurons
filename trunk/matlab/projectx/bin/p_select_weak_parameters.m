@@ -16,11 +16,8 @@ function [error, threshold, pol] = p_select_weak_parameters(learner_id, learner_
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%responses = p_dummy_feature_values(learner_id, SET);
-%responses = double(p_get_feature_responses(SET, {learner_id}, l));
+% collect the feature responses over examples in SET for a given learner
 responses = p_get_feature_responses(SET, learner_id, learner_data, l);
-
-%keyboard;
 
 err = zeros(size(responses)); 
 polarity = zeros(size(err)); 
@@ -81,5 +78,3 @@ end
 [error, q_ind]  = min(err);
 threshold       = double(fsorted(q_ind));
 pol             = polarity(q_ind);
-
-%keyboard;

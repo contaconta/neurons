@@ -37,7 +37,6 @@ for c = [-1 1]  % c = the postive and negative classes
         
     else
         query_string = DATASETS.labelme_neg_query;
-        %query_string = 'non mitochondria';
         if ~isfield(DATASETS, 'LabelMeIndex')
             [data, DATASETS.LabelMeIndex] = p_request_data(query_string, NEG_LIM, DATASETS, 'SIZE', IMSIZE);
         else
