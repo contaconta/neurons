@@ -339,8 +339,8 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
   if(flag_draw_3D)
     {
       setUpVolumeMatrices();
-      cube->draw();
-      /* draw_objects(); */
+      /* cube->draw(); */
+      draw_objects();
 
       setUpVolumeMatrices();
       if(flag_cube_transparency)

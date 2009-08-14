@@ -61,9 +61,10 @@ void EdgeW< P >::draw(){
   pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
   glPushMatrix();
   // glLoadIdentity();
-  glTranslatef(pt[0], pt[1], pt[2]);
-  renderString("%.02f", w);
-  glPopMatrix();
+
+  // glTranslatef(pt[0], pt[1], pt[2]);
+  // renderString("%.02f", w);
+  // glPopMatrix();
 
   // printf("The Current Color is [%f, %f, %f] and w is %f\n",
          // currCol[0],
