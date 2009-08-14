@@ -30,7 +30,8 @@ else (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
   if (UNIX)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
-    include(UsePkgConfig)
+    
+include(UsePkgConfig)
 
     pkgconfig(gtk+-2.0 _GTK2IncDir _GTK2LinkDir _GTK2LinkFlags _GTK2Cflags)
 

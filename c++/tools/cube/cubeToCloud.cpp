@@ -50,6 +50,7 @@ static struct argp_option options[] = {
   {"numberPositive", 'N', "positive_points",-  0, "if defined, the number of positive points to get"},
   {"numberNegative", 'M', "negative_points",-  0, "if defined, the number of negative points to get"},
   {"negativeMask",   'Z', "negative_mask",     0, "if defined, the points of this mask that are 0 are the potential negative candidates"},
+  {"forcePhi",       'f', "phiToPut",          0, "if defined, forces the Phi of the cloud to phiToPut"},
   { 0 }
 };
 
@@ -66,6 +67,8 @@ struct arguments
   bool   save_negative;
   bool   save_orientation;
   string name_negativeMask;
+  bool   forcePhi;
+  double phiToPut;
 };
 
 
@@ -102,6 +105,11 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'Z':
       argments->name_negativeMask = arg;
       break;
+    case 'f':
+      argments->forcePhi = true;
+      argments->phiToPut = atof(arg);
+      break;
+
 
     case ARGP_KEY_ARG:
       if (state->arg_num >= 2)
@@ -171,6 +179,8 @@ int main(int argc, char **argv) {
   args.save_type     = false;
   args.number_points   = 0;
   args.number_negative_points = 0;
+  args.forcePhi = false;
+  args.phiToPut = 0;
   mode = c3D;
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
@@ -261,22 +271,37 @@ int main(int argc, char **argv) {
                                             micr[1], micr[2]));
         break;
       case c3Do:
-        cloud->points.push_back(new Point3Do(micr[0],
-                                             micr[1], micr[2],
-                                             theta->at(idx[0], idx[1], idx[2]),
-                                             phi->at(idx[0], idx[1], idx[2])));
+        if(!args.forcePhi)
+          cloud->points.push_back(new Point3Do(micr[0],
+                                               micr[1], micr[2],
+                                               theta->at(idx[0], idx[1], idx[2]),
+                                               phi->at(idx[0], idx[1], idx[2])));
+        else
+          cloud->points.push_back(new Point3Do(micr[0],
+                                               micr[1], micr[2],
+                                               theta->at(idx[0], idx[1], idx[2]),
+                                               args.phiToPut));
+
         break;
       case c3Dt:
         cloud->points.push_back(new Point3Dt(micr[0],
                                              micr[1], micr[2],1));
         break;
       case c3Dot:
-        cloud->points.push_back(new Point3Dot(micr[0],
-                                              micr[1], micr[2],
-                                              theta->at(idx[0], idx[1], idx[2]),
-                                              phi->at(idx[0], idx[1], idx[2]),1
-                                              )
-                                );
+        if(!args.forcePhi)
+          cloud->points.push_back(new Point3Dot(micr[0],
+                                                micr[1], micr[2],
+                                                theta->at(idx[0], idx[1], idx[2]),
+                                                phi->at(idx[0], idx[1], idx[2]),1
+                                                )
+                                  );
+        else
+          cloud->points.push_back(new Point3Dot(micr[0],
+                                                micr[1], micr[2],
+                                                theta->at(idx[0], idx[1], idx[2]),
+                                                args.phiToPut,1
+                                                )
+                                  );
         break;
       }
   }
@@ -310,27 +335,38 @@ int main(int argc, char **argv) {
                                             micr[1], micr[2]));
         break;
       case c3Do:
-        cloud->points.push_back(new Point3Do(micr[0],
-                                             micr[1], micr[2],
-                                             theta->at(idx[0], idx[1], idx[2]),
-                                             phi->at(idx[0], idx[1], idx[2])));
+        if(!args.forcePhi)
+          cloud->points.push_back(new Point3Do(micr[0],
+                                               micr[1], micr[2],
+                                               theta->at(idx[0], idx[1], idx[2]),
+                                               phi->at(idx[0], idx[1], idx[2])));
+        else
+          cloud->points.push_back(new Point3Do(micr[0],
+                                               micr[1], micr[2],
+                                               theta->at(idx[0], idx[1], idx[2]),
+                                               args.phiToPut));
         break;
       case c3Dt:
         cloud->points.push_back(new Point3Dt(micr[0],
                                              micr[1], micr[2],-1));
         break;
       case c3Dot:
-        cloud->points.push_back(new Point3Dot(micr[0],
-                                              micr[1], micr[2],
-                                              theta->at(idx[0], idx[1], idx[2]),
-                                              phi->at(idx[0], idx[1], idx[2]),
-                                              -1)
-                                );
+        if(!args.forcePhi)
+
+          cloud->points.push_back(new Point3Dot(micr[0],
+                                                micr[1], micr[2],
+                                                theta->at(idx[0], idx[1], idx[2]),
+                                                phi->at(idx[0], idx[1], idx[2]),
+                                                -1));
+        else
+          cloud->points.push_back(new Point3Dot(micr[0],
+                                                micr[1], micr[2],
+                                                theta->at(idx[0], idx[1], idx[2]),
+                                                args.phiToPut,
+                                                -1)
+                                  );
         break;
       }
-
-
-
   }
 
   cloud->saveToFile(args.name_cloud);

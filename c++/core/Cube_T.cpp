@@ -63,6 +63,7 @@ void Cube_T::load_texture_brick(int row, int col, float scale)
 
 void Cube_T::draw()
 {
+  int nPlanes = 500;
   glDisable(GL_DEPTH_TEST);
   GLfloat pModelViewMatrix[16];
   glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
@@ -71,27 +72,37 @@ void Cube_T::draw()
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
   glPushMatrix();
-  cubes[timeStep]->draw(0,0,400,this->v_draw_projection, 0);
+  cubes[timeStep]->draw(0,0,nPlanes,this->v_draw_projection, 0);
   glPopMatrix();
   if(d_halo){
-    if(timeStep - 1 >= 0){
-      cubes[timeStep-1]->v_r = 0;
-      cubes[timeStep-1]->v_g = 0;
-      cubes[timeStep-1]->v_b = 0.6;
-      cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
-      glPushMatrix();
-      glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-1]->draw(0,0,400,this->v_draw_projection, 0);
-      glPopMatrix();
-    }
     if(timeStep - 2 >= 0){
-      cubes[timeStep-2]->v_r = 0;
-      cubes[timeStep-2]->v_g = 0.5;
+      cubes[timeStep-2]->v_r = 0.6;
+      cubes[timeStep-2]->v_g = 0;
       cubes[timeStep-2]->v_b = 0;
       cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-2]->draw(0,0,400,this->v_draw_projection, 0);
+      cubes[timeStep-2]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      glPopMatrix();
+    }
+    if(timeStep - 3 >= 0){
+      cubes[timeStep-3]->v_r = 0;
+      cubes[timeStep-3]->v_g = 0;
+      cubes[timeStep-3]->v_b = 0.5;
+      cubes[timeStep-3]->v_draw_projection = this->v_draw_projection;
+      glPushMatrix();
+      glLoadMatrixf(pModelViewMatrix);
+      cubes[timeStep-3]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      glPopMatrix();
+    }
+    if(timeStep - 4 >= 0){
+      cubes[timeStep-4]->v_r = 0;
+      cubes[timeStep-4]->v_g = 0.4;
+      cubes[timeStep-4]->v_b = 0;
+      cubes[timeStep-4]->v_draw_projection = this->v_draw_projection;
+      glPushMatrix();
+      glLoadMatrixf(pModelViewMatrix);
+      cubes[timeStep-4]->draw(0,0,nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
   }

@@ -37,8 +37,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
 make_directory(${LIBRARY_OUTPUT_PATH})
 make_directory(${EXECUTABLE_OUTPUT_PATH})
 
-find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework REQUIRED)
-set(Boost_USE_MULTITHREAD OFF)
+#find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework REQUIRED)
+#set(Boost_USE_MULTITHREAD OFF)
 # find_package(BBP-SDK REQUIRED)
 
 add_library (viva SHARED
