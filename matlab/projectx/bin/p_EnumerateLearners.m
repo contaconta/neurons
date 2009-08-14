@@ -38,8 +38,8 @@ for l=1:length(LEARNERS.types)
         
     case 'IT'
         [IT_LIST, IT_DATA] = enumerate_it(IMSIZE);
-        LEARNERS.list = [LEARNERS.list IT_LIST];
-        LEARNERS.data = [LEARNERS.data IT_DATA];
+        LEARNERS.list = [LEARNERS.list IT_LIST'];
+        LEARNERS.data = [LEARNERS.data IT_DATA'];
 
 
     otherwise
