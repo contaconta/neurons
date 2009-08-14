@@ -43,6 +43,7 @@ static struct argp_option options[] = {
   {"orientation"  ,  'n', 0,           0,  "Saves the orientation of the points from the neuron" },
   {"theta"  ,  't', "theta_cube",           0,  "Takes the orientation from the theta of the cube" },
   {"phi"  ,  'p', "phi_cube",           0,  "Takes the orientation from the phi bbof the cube" },
+  {"forcephi"  ,  'f', 0,           0,  "if defined forces the orientation in phi of the points to be Pi/2" },
   {"type"  ,         'y', 0,           0,  "Saves the type of the points" },
   { 0 }
 };
@@ -56,6 +57,7 @@ struct arguments
   double width;
   bool saveOrientation;
   bool saveType;
+  bool forcePhi;
   string name_cubeTheta;
   string name_cubePhi;
 };
@@ -93,6 +95,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'p':
       argments->name_cubePhi = arg;
       argments->saveOrientation = true;
+      break;
+    case 'f':
+      argments->forcePhi = true;
       break;
 
     case ARGP_KEY_ARG:
@@ -135,6 +140,7 @@ int main(int argc, char** argv)
   args.name_cubeTheta = "";
   args.name_cubePhi   = "";
   args.width = 0;
+  args.forcePhi = false;
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
 
@@ -150,19 +156,31 @@ int main(int argc, char** argv)
                                       args.saveOrientation, args.saveType,
                                       cube);
 
-  if( (cube!= NULL) && (args.name_cubeTheta!="") && (args.name_cubePhi!="") ){
+  if( (cube!= NULL) && (args.name_cubeTheta!="") ){
     vector< float > nmic(3);
     vector< int > idx(3);
     Cube<float, double>*  theta = new Cube<float, double>(args.name_cubeTheta);
-    Cube<float, double>*  phi = new Cube<float, double>(args.name_cubePhi);
+    Cube<float, double>*  phi = NULL;
+    if(args.name_cubePhi!= "")
+      phi = new Cube<float, double>(args.name_cubePhi);
     for(int i = 0; i < cloud->points.size(); i++){
       Point3Do* pt = dynamic_cast<Point3Dot*>(cloud->points[i]);
       theta->micrometersToIndexes(pt->coords, idx);
       // printf("%i %i %i\n", idx[0], idx[1], idx[2]);
       pt->theta = theta->at(idx[0],idx[1],idx[2]);
-      pt->phi   = phi->at(idx[0],idx[1],idx[2]);
+      if(phi!= NULL)
+        pt->phi   = phi->at(idx[0],idx[1],idx[2]);
+      if (args.forcePhi)
+        pt->phi = M_PI/2;
     }
   }
+  if(args.forcePhi){
+    for(int i = 0; i < cloud->points.size(); i++){
+      Point3Do* pt = dynamic_cast<Point3Dot*>(cloud->points[i]);
+      pt->phi = M_PI/2;
+    }
+  }
+
 
   cloud->saveToFile(args.name_cloud);
 

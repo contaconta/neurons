@@ -2,6 +2,8 @@ German :
 
 - Cube:: Check indexToMicrometers and micrometersToIndexes for the X,Y,Z offsets do it in a matrix form
 
+- Cube: trilinear interpolation in the cube - sample method
+
 - Viewer:: do all the things that are in the TODO
 
 - Clone the objects (points, graphs, clouds, etc....)
