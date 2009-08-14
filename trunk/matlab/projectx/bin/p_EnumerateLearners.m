@@ -38,13 +38,13 @@ for l=1:length(LEARNERS.types)
         
     case 'IT'
         [IT_LIST, IT_DATA] = enumerate_it(IMSIZE);
-        LEARNERS.list = [LEARNERS.list IT_LIST'];
-        LEARNERS.data = [LEARNERS.data IT_DATA'];
+        LEARNERS.list = [LEARNERS.list IT_LIST];
+        LEARNERS.data = [LEARNERS.data IT_DATA];
 
 
     otherwise
     learner_list = mexEnumerateLearners(LEARNERS.types, IMSIZE);
-    LEARNERS.list = [LEARNERS.list learner_list];
+    LEARNERS.list = [LEARNERS.list learner_list'];
     LEARNERS.data = [LEARNERS.data cell(1, length(learner_list))];
     % TODO: if features handled by the MEX need to store data in LEARNERS,
     % we need to adjust code to do this
