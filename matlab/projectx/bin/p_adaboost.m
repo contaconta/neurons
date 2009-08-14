@@ -84,6 +84,8 @@ switch learner_string(1:2)
         feature_type = 'Intensity';
     case 'RA' 
         feature_type = 'Rays';
+    otherwise
+        feature_type = 'Unknown (check p_adaboost.m)';
 end
 s = ['       ✓ SELECTED ' feature_type ' learner, error: ' num2str(MINerr) ', polarity: ' num2str(CLASSIFIER.polarity(ti)) ', threshold: ' num2str(CLASSIFIER.threshold(ti))  ]; disp(s);
 s = ['                  id: ' learner_string ]; disp(s);
@@ -94,8 +96,6 @@ s = ['                  id: ' learner_string ]; disp(s);
 
 %% 4. Update the training weight vector according to misclassifications
 % get selected weak learner's classification results for the TRAIN set
-%h = ada_classify_weak_learner(BESTlearner, weak_classifier, TRAIN)';
-%h = dummy_classify_set(CLASSIFIER.feature{ti}, TRAIN);
 h = p_classify_weak_learner(CLASSIFIER.learner_id(ti), CLASSIFIER.learner_data(ti), CLASSIFIER.polarity(ti), CLASSIFIER.threshold(ti), TRAIN)';
 
 

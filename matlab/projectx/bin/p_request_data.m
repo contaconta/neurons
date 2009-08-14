@@ -31,15 +31,7 @@ function [data, D] = p_request_data(tag_string, N, DATASETS, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
-%DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
-%DATASETS.IMSIZE = [24 24];   % the default example image size
-
-%DATASETS.HOMEIMAGES = DATASETS.DATASETS.HOMEIMAGES;
-%DATASETS.HOMEANNOTATIONS = DATASETS.DATASETS.HOMEANNOTATIONS;
-%DATASETS.IMSIZE = DATASETS.DATASETS.IMSIZE;
-
-SHRINK_BORDER = 10;
+SHRINK_BORDER = 10;     % for collecting negative samples: buffer between positive regions and negative sample regions
 
 for k = 1:nargin-3
     switch class(varargin{k})
@@ -58,7 +50,8 @@ NON = regexp(tag_string, 'non', 'once');
 % create a new LabelMe index if it hasn't been passed as an argument
 if ~exist('D', 'var')
     %D = LMdatabase(DATASETS.HOMEANNOTATIONS);
-    D = LMquery(LMdatabase(DATASETS.HOMEANNOTATIONS), 'folder', 'fibslice');
+    %D = LMquery(LMdatabase(DATASETS.HOMEANNOTATIONS), 'folder', 'fibslice');
+    D = LMdatabase(DATASETS.HOMEANNOTATIONS, DATASETS.LABELME_FOLDERS);
 end
    
 data = cell(1,N);       % image example data will be stored in a cell
@@ -83,26 +76,17 @@ end
 
 
 
-%% GET_POSITIVE_SAMPLES  
+%% ======================= GET_POSITIVE_SAMPLES ===========================
 function [data, D] = get_positive_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j)
 % pick out N examples from Qresult, and remove them from D so they are not
 % re-selected. extract a bounding patch and place it in a cell {data}
 
 i = 1;                  % count the number of query matches we've collected
 
-
-%NObjects = sum(LMcountobject(Qresult));
-
-%samples = sort(population, N, 1));
-
-
 for q = 1:length(Qresult)
     
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
-    
-    % TEMPORARY - MUST PROPERLY FORMAT THE DATA!
-    %I = mat2gray(rgb2gray(I));
 
     for obj = 1:length(Qresult(q).annotation.object)
         data{i} = extract_patch(Qresult, q, obj, I, IMSIZE);
@@ -124,7 +108,7 @@ end
 
 
 
-%% GET_NEGATIVE_SAMPLES  
+%% ======================= GET_NEGATIVE_SAMPLES   =========================
 function [data, D] = get_negative_samples(Qresult, N, HOMEIMAGES, IMSIZE, data, D, j, SHRINK_BORDER)
 % sample N examples from non-queary locations in Qresult, extract a 
 % bounding patch and place it in a cell {data}
@@ -133,11 +117,9 @@ i = 1;          % count the number of query matches we've collected
 OVERLAP = .10;  % how much (%) negative sample can contain positive class
 
 samples = sort(randsample(length(Qresult), N, 1));
-%samples = sort(randsample(1, N, 1));
 
 for q = unique(samples)'
 
-    %q
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
     
@@ -158,13 +140,12 @@ for q = unique(samples)'
         data{i} = sample_point(I, D(j(q)).annotation.nonmask, IMSIZE, OVERLAP);
         i = i + 1;
     end
-    
 end
 
 
 
 
-%% get just the image patch containing the annotation
+%%  ========= get just the image patch containing the annotation ==========
 function data = extract_patch(Qresult, q, obj, I, IMSIZE)
 
 if length(Qresult(q).annotation.object(obj).polygon.pt) > 1
@@ -194,7 +175,7 @@ end
 
 
 
-%% create a Mask of points containing NON-tag_string examples
+%% ===== create a Mask of points containing NON-tag_string examples =======
 function BW = makeNonMask(annotation, I, border)
 
 % try to load a negative mask, if we cannot, then create it and save it
@@ -212,7 +193,7 @@ end
 
 
 
-%% sample a valid data point
+%% =================== sample a valid data point ==========================
 function data = sample_point(I, nonmask, IMSIZE, OVERLAP)
 
 nonvalid = 1;

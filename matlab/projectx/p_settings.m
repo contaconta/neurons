@@ -77,10 +77,12 @@ DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATA
 %DATASETS.filelist = 'persons48x128.txt';    DATASETS.scale_limits = [1 5];  DATASETS.IMSIZE = [128 48];
 
 % parameters for updating the negative examples
+DATASETS.precomputed        = 1;            % (1) speeds up training by precomputing feature responses (0) computes feature responses during training
 DATASETS.delta              = 10;           % re-collection scan step size
 DATASETS.NORM               = 0;            % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
 DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
 DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
+DATASETS.LABELME_FOLDERS    = {'fibslice'};
 DATASETS.labelme_pos_query  = 'mitochondria+interior';
 DATASETS.labelme_neg_query  = 'non mitochondria';
 %DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
