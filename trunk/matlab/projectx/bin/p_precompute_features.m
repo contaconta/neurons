@@ -21,7 +21,7 @@ tic;
 disp('Precomputing features on the TRAIN SET');
 
 %.................... start the memDaemon .................................
-system('killall memDaemon'); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
+system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']);
 [s,r]=system('ps -ef | grep memDaemon | wc -l');
 if (r ~= 3)
     disp('...memDaemon is not running');
