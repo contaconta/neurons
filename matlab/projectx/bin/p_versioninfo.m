@@ -16,7 +16,7 @@ disp(['    ' INFO.email]);
 disp(['    ' INFO.institution ]);
 disp (' ');
 disp(['  started on:  ' datestr(now) ]);
-disp(['  DATA SET:    ' DATASETS.filelist]);
+disp(['  DATA SET:    ' DATASETS.labelme_pos_query]);
 disp(['  LEARNERS:    ' strcat(LEARNERS.types{:}) ]);
 disp (' ');
 disp(['  ' INFO.copyright ]);
