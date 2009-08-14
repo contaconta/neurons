@@ -79,7 +79,7 @@ int getMemSize(int &width, int &height, int shm_key_id)
   */
 
   struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
-  int* dataHmr = (int*) shm + sizeof(struct header_mem_responses);
+  int* dataHmr = (int*) shm + (sizeof(struct header_mem_responses)/sizeof(int));
 
 #ifdef DEBUG_M
   printf("shm %x\n",shm);
@@ -158,7 +158,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
   */
 
   struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
-  int* dataHmr = (int*) shm + sizeof(struct header_mem_responses);
+  int* dataHmr = (int*) shm + (sizeof(struct header_mem_responses)/sizeof(int));
 
 #ifdef DEBUG_M
   printf("shm %x\n",shm);
@@ -238,7 +238,7 @@ int storeWeakLearnerResponses(int* dataSrc, eDataFormat dataFormat,
   else
     {
       // Store data
-      int data_index = index_y * hmr->width + index_x;
+      int data_index = (index_y * hmr->width) + index_x;
       for(int i=0;i<hmrSize;i+=iStep)
         {
           //printf("Data %d %d\n", data_index + i, dataSrc[i]);
@@ -316,7 +316,7 @@ int getWeakLearnerResponses(int* dataDst, eDataFormat dataFormat,
 
   struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
   // TODO : Probably need a template for dataHmr
-  int* dataHmr = (int*) shm + sizeof(struct header_mem_responses);
+  int* dataHmr = (int*) shm + (sizeof(struct header_mem_responses)/sizeof(int));
 
   bool typeFound = false;
   int iLearner;

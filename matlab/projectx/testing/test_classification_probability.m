@@ -1,11 +1,11 @@
 path(path, [pwd '/results/']);  
 %load Test_Jul202009-181146calcifer.mat;
-load Test_Aug102009calcifer.mat
+load Test_Aug142009-095537calcifer.mat
 
 %I = imread('test_2photon_small.png');
 %II = integral_image(I);
 
-I = imread('images/testFIB2.png');
+I = imread('images/testFIB.png');
 II = integral_image(I);
 
 W = [17 17];
@@ -31,4 +31,4 @@ end
 P_I = mat2gray(PROBMAP);
 
 m = colormap('jet');
-imwrite(64*P_I, m, 'result.png', 'PNG');
+imwrite(64*P_I, m, 'result5.png', 'PNG');

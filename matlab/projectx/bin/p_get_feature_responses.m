@@ -36,7 +36,7 @@ else
 
       case 'HA'
         %display 'HA'
-        responses = mexRectangleFeature(SET.IntImages, learners);
+        responses = mexRectangleFeature(SET.IntImages, learner_ids);
         %disp('online computation');
 
       case 'IT'

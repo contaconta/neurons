@@ -28,7 +28,6 @@ p_versioninfo;  % load version info from file
 % to save LabelMe indexing time, we check to see if we've already indexed
 DATASETS = load_labelme_index(DATASETS);
 
-
 %% ============================== preparation =====================================================================
 
 % define the performance goals for each stage

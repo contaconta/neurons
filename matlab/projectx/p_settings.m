@@ -80,13 +80,13 @@ DATASETS.filelist = 'mitochondria24.txt';   DATASETS.scale_limits = [2 9];  DATA
 DATASETS.precomputed        = 1;            % (1) speeds up training by precomputing feature responses (0) computes feature responses during training
 DATASETS.delta              = 10;           % re-collection scan step size
 DATASETS.NORM               = 0;            % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
-DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
-DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
-DATASETS.LABELME_FOLDERS    = {'fibslice'};
+                                            %DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
+%DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
+DATASETS.LABELME_FOLDERS    = {'FIBSLICE'};
 DATASETS.labelme_pos_query  = 'mitochondria+interior';
 DATASETS.labelme_neg_query  = 'non mitochondria';
-%DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
-%DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
+DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
+DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
 
 %IMSIZE = DATASETS.IMSIZE;   % the default example image size 
 
@@ -100,5 +100,5 @@ DATASETS.labelme_neg_query  = 'non mitochondria';
 
 %LEARNERS.types = {'HA_x1_y1_u1_v1'};
 %LEARNERS.types = {'HA_x3_y3_u4_v4'};
-%LEARNERS.types = {'HA_x2_y2_u2_v2'};
-LEARNERS.types = {'IT'};
+LEARNERS.types = {'HA_x3_y3_u2_v2'};
+%LEARNERS.types = {'IT'};
