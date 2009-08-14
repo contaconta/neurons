@@ -20,8 +20,8 @@
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-%% ============================== load parameters and path information ============================================
-clear all;
+%% ============================== load parameters and path information
+%% ============================================
 p_settings;     % load settings from file
 p_versioninfo;  % load version info from file
 
@@ -34,7 +34,7 @@ DATASETS = load_labelme_index(DATASETS);
 BOOST = p_stage_goals(BOOST);
 
 % initialize the log file
-logfile(EXPERIMENT.log_filenm, 'erase');logfile(EXPERIMENT.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(DATASETS.TRAIN_POS) ' positive examples, ' num2str(DATASETS.TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.filelist], ['LEARNERS ' strcat(LEARNERS.types{:})],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
+logfile(EXPERIMENT.log_filenm, 'erase');logfile(EXPERIMENT.log_filenm, 'header', {INFO.appname, ['Version ' INFO.version], ['by ' INFO.author ', ' INFO.email], [num2str(DATASETS.TRAIN_POS) ' positive examples, ' num2str(DATASETS.TRAIN_NEG) ' negative examples.'], ['DATASETS from ' DATASETS.labelme_pos_query], ['LEARNERS ' strcat(LEARNERS.types{:})],['Started at ' datestr(now)], INFO.copyright, '-----------------------------------'});
 logfile(EXPERIMENT.log_filenm, 'column_labels', {'stage', 'step', 'Weak ID', 'Di', 'Fi', 'di', 'fi', 'di(train)', 'fi(train)', 'FPs', 'LEARNER'});
 
 % ask the user if they'd like to precompute feature responses 
