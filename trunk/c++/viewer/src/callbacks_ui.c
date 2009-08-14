@@ -456,23 +456,6 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
 
   if(event->keyval == 'e')
     {
-      timeStep ++;
-      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
-          itObj != toDraw.end(); itObj++)
-        {
-          if((*itObj)->className()=="Cube_T"){
-            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
-            if(timeStep >= cb->cubes.size()){
-              timeStep = cb->cubes.size()-1;
-            }
-            cb->timeStep = timeStep;
-          }
-        }
-      on_drawing3D_expose_event(drawing3D,NULL, NULL);
-    }
-
-  if(event->keyval == 'r')
-    {
       timeStep--;
       for(vector< VisibleE* >::iterator itObj = toDraw.begin();
           itObj != toDraw.end(); itObj++)
@@ -487,6 +470,38 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
         }
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
+
+  if(event->keyval == 'r')
+    {
+      timeStep ++;
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Cube_T"){
+            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
+            if(timeStep >= cb->cubes.size()){
+              timeStep = cb->cubes.size()-1;
+            }
+            cb->timeStep = timeStep;
+          }
+        }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
+  if(event->keyval == 'w')
+    {
+      timeStep ++;
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Cube_T"){
+            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
+            cb->d_halo = !cb->d_halo;
+          }
+        }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
+
+
 
   if(majorMode == MOD_ASCEDITOR)
     keyPressedAsc(widget,event,user_data);

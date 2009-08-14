@@ -14,6 +14,8 @@ public:
 
   int timeStep;
 
+  bool d_halo;
+
   Cube_T(string filename);
 
   void print_size();

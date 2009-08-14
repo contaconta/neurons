@@ -5,6 +5,7 @@ Cube_T::Cube_T(string filename){
 
   printf("Cube_T::loading from %s\n", filename.c_str());
   timeStep = 0;
+  d_halo = false;
 
   cubes.resize(0);
   string extension = getExtension(filename);
@@ -62,11 +63,39 @@ void Cube_T::load_texture_brick(int row, int col, float scale)
 
 void Cube_T::draw()
 {
+  glDisable(GL_DEPTH_TEST);
+  GLfloat pModelViewMatrix[16];
+  glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
   cubes[timeStep]->v_r = this->v_r;
   cubes[timeStep]->v_g = this->v_g;
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
-  cubes[timeStep]->draw();
+  glPushMatrix();
+  cubes[timeStep]->draw(0,0,400,this->v_draw_projection, 0);
+  glPopMatrix();
+  if(d_halo){
+    if(timeStep - 1 >= 0){
+      cubes[timeStep-1]->v_r = 0;
+      cubes[timeStep-1]->v_g = 0;
+      cubes[timeStep-1]->v_b = 0.6;
+      cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
+      glPushMatrix();
+      glLoadMatrixf(pModelViewMatrix);
+      cubes[timeStep-1]->draw(0,0,400,this->v_draw_projection, 0);
+      glPopMatrix();
+    }
+    if(timeStep - 2 >= 0){
+      cubes[timeStep-2]->v_r = 0;
+      cubes[timeStep-2]->v_g = 0.5;
+      cubes[timeStep-2]->v_b = 0;
+      cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
+      glPushMatrix();
+      glLoadMatrixf(pModelViewMatrix);
+      cubes[timeStep-2]->draw(0,0,400,this->v_draw_projection, 0);
+      glPopMatrix();
+    }
+  }
+
 }
 
 void Cube_T::draw
