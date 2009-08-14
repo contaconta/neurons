@@ -59,10 +59,10 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 % DATA SETS FOR TRAINING & VALIDATION 
 %-------------------------------------------------------------------------
 
-DATASETS.TRAIN_POS      = 1470;          % number of positive examples in the training set
-DATASETS.TRAIN_NEG      = 8000;          % number of negative examples in the training set
-DATASETS.VALIDATION_POS = 1470;          % number of positive examples in the validation set
-DATASETS.VALIDATION_NEG = 5000;          % number of negative examples in the validation set
+DATASETS.TRAIN_POS      = 1500;          % number of positive examples in the training set
+DATASETS.TRAIN_NEG      = 1000;          % number of negative examples in the training set
+DATASETS.VALIDATION_POS = 1500;          % number of positive examples in the validation set
+DATASETS.VALIDATION_NEG = 1000;          % number of negative examples in the validation set
 
 % parameters for updating the negative examples
 DATASETS.IMSIZE             = [17 17];      % detector window size
@@ -88,8 +88,7 @@ DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
 %LEARNERS.types = {'HA_x1_y1_u1_v1'};
 %LEARNERS.types = {'HA_x3_y3_u4_v4'};
 %LEARNERS.types = {'HA_x3_y3_u2_v2'};
-LEARNERS.types = {'IT'};
-
+LEARNERS.types = {'IT', 'HA_x3_y3_u4_v4'};
 
 
 % =========== OLD STUFF I DO NOT WANT TO GET RID OF YET ===================
