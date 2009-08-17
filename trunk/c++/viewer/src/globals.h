@@ -4,11 +4,11 @@
 
 #include <gtk/gtk.h>
 #include "Neuron.h"
-#include "CubeFactory.h"
-#include "CloudFactory.h"
-#include "GraphFactory.h"
-#include "utils.h"
-#include "Axis.h"
+// #include "CubeFactory.h"
+// #include "CloudFactory.h"
+// #include "GraphFactory.h"
+// #include "utils.h"
+// #include "Axis.h"
 #include "DoubleSet.h"
 #include "Cube_T.h"
 // #include "GraphCut.h"

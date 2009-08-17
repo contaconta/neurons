@@ -8,12 +8,7 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
-#include "Neuron.h"
 #include "globalsE.h"
-#include "CubeFactory.h"
-#include "CloudFactory.h"
-#include "GraphFactory.h"
-#include "utils.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
