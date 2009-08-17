@@ -139,6 +139,12 @@ target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
 add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
 target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeDerivative ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivative.cpp)
+target_link_libraries(cubeDerivative ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
+target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
 target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
