@@ -190,6 +190,32 @@ cubeDecimate/fast:
 .PHONY : cubeDecimate/fast
 
 #=============================================================================
+# Target rules for targets named cubeDerivative
+
+# Build rule for target.
+cubeDerivative: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeDerivative
+.PHONY : cubeDerivative
+
+# fast build rule for target.
+cubeDerivative/fast:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/build
+.PHONY : cubeDerivative/fast
+
+#=============================================================================
+# Target rules for targets named cubeDerivativesOrder
+
+# Build rule for target.
+cubeDerivativesOrder: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cubeDerivativesOrder
+.PHONY : cubeDerivativesOrder
+
+# fast build rule for target.
+cubeDerivativesOrder/fast:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/build
+.PHONY : cubeDerivativesOrder/fast
+
+#=============================================================================
 # Target rules for targets named cubeDijkstra2
 
 # Build rule for target.
@@ -899,6 +925,36 @@ home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s:
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s
+.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o:
 	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
 .PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
@@ -1151,6 +1207,8 @@ help:
 	@echo "... cubeCalculateAguet"
 	@echo "... cubeCut"
 	@echo "... cubeDecimate"
+	@echo "... cubeDerivative"
+	@echo "... cubeDerivativesOrder"
 	@echo "... cubeDijkstra2"
 	@echo "... cubeFromImageStack"
 	@echo "... cubeLogistic"
@@ -1274,6 +1332,12 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
