@@ -114,7 +114,6 @@ public:
   static void createFigure() {
     runMatlabSlave();
     FILE* stream = fopen("/tmp/matlab", "w");
-    char buff[1024];
     fprintf (stream, "figure\n");
     fclose(stream);
   }
