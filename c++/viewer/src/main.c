@@ -26,6 +26,7 @@
 #include <argp.h>
 #include <assert.h>
 #include "globalsE.h"
+#include "Cube_P.h"
 #include "utils.h"
 using namespace std;
 

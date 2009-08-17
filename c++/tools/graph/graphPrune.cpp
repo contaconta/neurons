@@ -38,6 +38,7 @@ vector<int> findEdgesThatTouchPoint(int nPoint)
   return toReturn;
 }
 
+// nEdge should be passed as -1 in the initial call
 void traceBackToSoma(int nPoint, int nEdge, vector<int>& visitedEdges)
 {
   //If we are in the soma
@@ -74,7 +75,27 @@ int main(int argc, char **argv) {
   gr = new Graph<Point3D, EdgeW<Point3D> >
     ("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.gr");
 
+  printf("Finding the leaves\n");
   vector<int> leaves = gr->findLeaves();
+  //Save the leaves as a cloud for visualization purposses
+  vector<int> idx(3);
+  vector<float> mic(3);
+  Cloud<Point3D>* leavescl = new Cloud<Point3D>();
+  for(int i = 0; i < leaves.size(); i++){
+    leavescl->points.push_back
+      (new Point3D(gr->cloud->points[leaves[i]]->coords[0],
+                   gr->cloud->points[leaves[i]]->coords[1],
+                   gr->cloud->points[leaves[i]]->coords[2]));
+  }
+
+  //Leaves are green
+  leavescl->v_r = 0;
+  leavescl->v_g = 1;
+  leavescl->v_b = 0;
+  leavescl->v_radius = 0.8;
+  leavescl->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/leaves.cl");
+
+
 
   //Check if the edge has already been visited in the tree (should be kept or removed)
   vector<int> edgesVisited(gr->eset.edges.size());
@@ -82,12 +103,13 @@ int main(int argc, char **argv) {
       it != edgesVisited.end(); it++)
     *it = 0;
 
+  // Point in which the edges should be elliminated
   float threshold = 0;
 
   vector<int> edgesTraced;
   for(int i = 0; i < leaves.size(); i++){
   // for(int i = 10; i < 11; i++){
-    printf("Analizing leave %i\n", i);
+    printf("  analizing leave %i\n", i);
     fflush(stdout);
     edgesTraced.resize(0);
     traceBackToSoma(leaves[i], -1, edgesTraced);
@@ -96,14 +118,14 @@ int main(int argc, char **argv) {
     // for(vector<int>::iterator it = edgesTraced.end();
     // it != edgesTraced.begin(); it--){
     for(int it = edgesTraced.size() -1; it >= 0; it--){
-      integral = integral  + log(1-gr->eset.edges[edgesTraced[it]]->w
+      integral = integral  + log( (1-gr->eset.edges[edgesTraced[it]]->w)
                                 /(gr->eset.edges[edgesTraced[it]]->w) );
       if(integral < threshold){
         split = it;
         integral = threshold;
       }
     }
-    printf("  split = %i,  points %i\n", split, edgesTraced.size());
+    printf("    split = %i,  points %i\n", split, edgesTraced.size());
     //From the soma to split will be in the tree
     for(int i = 0; i < split; i++){
       edgesVisited[edgesTraced[i]] = 1;
@@ -122,6 +144,7 @@ int main(int argc, char **argv) {
     printf("%i ", edgesVisited[i]);
   printf("\n");
 
+  printf("Saving the pruned tree\n");
   Graph<Point3D, EdgeW<Point3D> >* pruned =
     new Graph<Point3D, EdgeW<Point3D> >();
   pruned->cloud = gr->cloud;
@@ -171,22 +194,4 @@ int main(int argc, char **argv) {
   }
   out.close();
   out2.close();
-
-  vector<int> idx(3);
-  vector<float> mic(3);
-  Cloud<Point3D>* leavescl = new Cloud<Point3D>();
-  for(int i = 0; i < leaves.size(); i++){
-    leavescl->points.push_back
-      (new Point3D(gr->cloud->points[leaves[i]]->coords[0],
-                   gr->cloud->points[leaves[i]]->coords[1],
-                   gr->cloud->points[leaves[i]]->coords[2]));
-  }
-
-  //Leaves are green
-  leavescl->v_r = 0;
-  leavescl->v_g = 1;
-  leavescl->v_b = 0;
-  leavescl->v_radius = 0.8;
-  leavescl->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/leaves.cl");
-
 }

@@ -12,6 +12,8 @@
 #include "globalsE.h"
 #include "CubeFactory.h"
 #include "CloudFactory.h"
+#include "Cube_P.h"
+#include "Cube_T.h"
 #include "GraphFactory.h"
 #include "utils.h"
 #include "functions.h"

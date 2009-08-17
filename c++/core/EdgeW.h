@@ -55,22 +55,22 @@ void EdgeW< P >::draw(){
             currCol[1],
             currCol[2]);
 
-  vector< double > pt(3);
-  pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
-  pt[1] = ((*this->points)[this->p0]->coords[1] +  (*this->points)[this->p1]->coords[1])/2;
-  pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
-  glPushMatrix();
-  // glLoadIdentity();
-
-  // glTranslatef(pt[0], pt[1], pt[2]);
-  // renderString("%.02f", w);
-  // glPopMatrix();
-
-  // printf("The Current Color is [%f, %f, %f] and w is %f\n",
-         // currCol[0],
-         // currCol[1],
-         // currCol[2], w);
-
+  // To draw the value of the edge
+  if(1){
+    vector< double > pt(3);
+    glColor3f(0,0,0);
+    pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
+    pt[1] = ((*this->points)[this->p0]->coords[1] +  (*this->points)[this->p1]->coords[1])/2;
+    pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
+    glPushMatrix();
+    // glLoadIdentity();
+    glTranslatef(pt[0], pt[1], pt[2]);
+    renderString("%.02f", 1-w);
+    glPopMatrix();
+    glColor3f(currCol[0],
+              currCol[1],
+              currCol[2]);
+  }
 }
 
 template< class P>
