@@ -17,13 +17,19 @@
 #ifndef _STUPID_UTILS_H
 #define _STUPID_UTILS_H 
 
+#ifdef WITH_GLEW
+  #include <GL/glew.h>
+#endif
+#include <GL/glut.h>
+
+
 #include <string>
 #include <stdio.h>
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdarg>
-#include "neseg.h"
+// #include "neseg.h"
 
 #include <vector>
 #include <sstream>
