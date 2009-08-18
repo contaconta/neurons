@@ -20,8 +20,6 @@ function p_precompute_features(SET, LEARNERS)
 tic;
 disp('Precomputing features on the TRAIN SET');
 
-keyboard;
-
 %.................... start the memDaemon .................................
 system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']); pause(0.1);
 [s,r]=system('ps -ef | grep memDaemon | wc -l');

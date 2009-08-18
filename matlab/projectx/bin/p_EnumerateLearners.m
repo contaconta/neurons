@@ -50,8 +50,7 @@ for l=1:length(LEARNERS.types)
         % we need to adjust code to do this
     
     end
-    
-    keyboard;
+
 end
 
 
