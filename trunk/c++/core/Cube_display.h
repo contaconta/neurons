@@ -102,7 +102,7 @@ template <class T, class U>
   printf("Max texture size %i\n", max_texture_size);
 
   #if debug
-  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
+p  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
   printf("Cube::load_texture_brick() creating the texture buffer\n");
   #endif
 
@@ -753,7 +753,7 @@ void Cube<T,U>::draw_layers_parallel()
 
 template< class T, class U>
 void Cube<T,U>::draw(){
-  draw(0,0,500,v_draw_projection,0);
+  draw(0,0,200,v_draw_projection,0);
 }
 
 template <class T, class U>
