@@ -19,6 +19,8 @@ public:
 
   bool d_halo;
 
+  bool d_gt;
+
   Cube_T(string filename);
 
   void print_size();
@@ -33,6 +35,8 @@ public:
   void draw
   (int x0, int y0, int z0, int x1, int y1, int z1,
    float rotx, float roty, float nPlanes, int min_max, float threshold);
+
+  void drawgt();
 
   void draw_layer_tile_XY(float depth, int color=0);
 

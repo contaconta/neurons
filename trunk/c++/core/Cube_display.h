@@ -123,9 +123,10 @@ p  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size
   s_max = (double)limit_y/texture_size_y;
   t_max = (double)limit_z/texture_size_z;
 
-  printf("Load_texture_brick: texture size %i, limit_x = %i, limit_y = %i limit_z = %i\n               texture_size: x=%i y=%i z=%i\n",
+  printf("Load_texture_brick: texture size %i, limit_x = %i, limit_y = %i limit_z = %i\n               texture_size: x=%i y=%i z=%i, r_max=%f, s_max=%f, t_max=%f\n",
          max_texture_size, limit_x, limit_y, limit_z,
-         texture_size_x, texture_size_y,texture_size_z);
+         texture_size_x, texture_size_y,texture_size_z,
+         r_max,s_max,t_max);
 
 
   if( (limit_x<0) || (limit_y<0))

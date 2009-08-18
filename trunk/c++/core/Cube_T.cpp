@@ -6,6 +6,7 @@ Cube_T::Cube_T(string filename){
   printf("Cube_T::loading from %s\n", filename.c_str());
   timeStep = 0;
   d_halo = false;
+  d_gt = false;
 
   cubes.resize(0);
   string extension = getExtension(filename);
@@ -53,10 +54,12 @@ Cube_T::Cube_T(string filename){
   this->type               = cubes[0]->type;
 
   string noExt = getNameFromPathWithoutExtension(filename);
-  string gtName = noExt + ".gt";
+  string gtName = getDirectoryFromPath(filename) +  noExt + ".gt";
+  printf("The ground truth data should be in %s\n", gtName.c_str());
   if(fileExists(gtName)){
     gtData = loadMatrix(gtName);
   }
+  printf("ans it's size is %i\n", gtData.size());
 
 }
 
@@ -68,8 +71,33 @@ void Cube_T::load_texture_brick(int row, int col, float scale)
   }
 }
 
+void Cube_T::drawgt()
+{
+ //Draws the ground truth data
+  if(d_gt){
+    float mx1, my1, mz1, mx2, my2, mz2;
+    for(int i = 0; i < gtData.size(); i++){
+      if(gtData[i][6]-1 == (double)timeStep){
+        indexesToMicrometers3(gtData[i][0],gtData[i][1],gtData[i][2],
+                              mx1, my1, mz1);
+        indexesToMicrometers3(gtData[i][0]+gtData[i][3],
+                              gtData[i][1]+gtData[i][4],
+                              gtData[i][2]+gtData[i][5],
+                              mx2, my2, mz2);
+
+        glColor3f(1.0,0.0,0.0);
+        glPushMatrix();
+        glTranslatef((mx1+mx2)/2, (my1+my2)/2, (mz1+mz2)/2);
+        glutSolidSphere(1.0, 10, 10);
+        glPopMatrix();
+      }
+    }
+  }
+}
+
 void Cube_T::draw()
 {
+  // Draws the cube
   int nPlanes = 500;
   glDisable(GL_DEPTH_TEST);
   GLfloat pModelViewMatrix[16];
@@ -81,11 +109,25 @@ void Cube_T::draw()
   glPushMatrix();
   cubes[timeStep]->draw(0,0,nPlanes,this->v_draw_projection, 0);
   glPopMatrix();
+
+  drawgt();
+
+  // Draws the halo
   if(d_halo){
+    if(timeStep - 1 >= 0){
+      cubes[timeStep-1]->v_r = 0.6;
+      cubes[timeStep-1]->v_g = 0;
+      cubes[timeStep-1]->v_b = 0;
+      cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
+      glPushMatrix();
+      glLoadMatrixf(pModelViewMatrix);
+      cubes[timeStep-1]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      glPopMatrix();
+    }
     if(timeStep - 2 >= 0){
-      cubes[timeStep-2]->v_r = 0.6;
+      cubes[timeStep-2]->v_r = 0;
       cubes[timeStep-2]->v_g = 0;
-      cubes[timeStep-2]->v_b = 0;
+      cubes[timeStep-2]->v_b = 0.5;
       cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
@@ -94,25 +136,16 @@ void Cube_T::draw()
     }
     if(timeStep - 3 >= 0){
       cubes[timeStep-3]->v_r = 0;
-      cubes[timeStep-3]->v_g = 0;
-      cubes[timeStep-3]->v_b = 0.5;
+      cubes[timeStep-3]->v_g = 0.4;
+      cubes[timeStep-3]->v_b = 0;
       cubes[timeStep-3]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
       cubes[timeStep-3]->draw(0,0,nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
-    if(timeStep - 4 >= 0){
-      cubes[timeStep-4]->v_r = 0;
-      cubes[timeStep-4]->v_g = 0.4;
-      cubes[timeStep-4]->v_b = 0;
-      cubes[timeStep-4]->v_draw_projection = this->v_draw_projection;
-      glPushMatrix();
-      glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-4]->draw(0,0,nPlanes,this->v_draw_projection, 0);
-      glPopMatrix();
-    }
   }
+
 
 }
 
@@ -146,6 +179,8 @@ void Cube_T::draw_layer_tile_XY(float depth, int color)
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
   cubes[timeStep]->draw_layer_tile_XY(depth, color);
+  if(color==0)
+    drawgt();
 }
 
 void Cube_T::draw_layer_tile_XZ(float depth, int color)
@@ -155,6 +190,8 @@ void Cube_T::draw_layer_tile_XZ(float depth, int color)
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
   cubes[timeStep]->draw_layer_tile_XZ(depth, color);
+  if(color==0)
+    drawgt();
 }
 
 void Cube_T::draw_layer_tile_YZ(float depth, int color)
@@ -164,6 +201,8 @@ void Cube_T::draw_layer_tile_YZ(float depth, int color)
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
   cubes[timeStep]->draw_layer_tile_YZ(depth, color);
+  if(color==0)
+    drawgt();
 }
 
 void Cube_T::min_max(float* min, float* max)
