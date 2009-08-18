@@ -12,6 +12,9 @@ class Cube_T : public Cube_P
 public:
   vector< Cube_P* > cubes;
 
+  // Hack to put kevin's gt in there
+  vector< vector< double > > gtData;
+
   int timeStep;
 
   bool d_halo;

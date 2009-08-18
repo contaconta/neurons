@@ -51,6 +51,13 @@ Cube_T::Cube_T(string filename){
   this->directory          = getDirectoryFromPath(filename);
   this->filenameParameters = getNameFromPath(filename);
   this->type               = cubes[0]->type;
+
+  string noExt = getNameFromPathWithoutExtension(filename);
+  string gtName = noExt + ".gt";
+  if(fileExists(gtName)){
+    gtData = loadMatrix(gtName);
+  }
+
 }
 
 
