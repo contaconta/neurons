@@ -9,8 +9,8 @@
  */
 
 #define D_MAX_TEXTURE_SIZE      1024
-// #define D_TEXTURE_INTERPOLATION GL_LINEAR
-#define D_TEXTURE_INTERPOLATION GL_NEAREST
+#define D_TEXTURE_INTERPOLATION GL_LINEAR
+// #define D_TEXTURE_INTERPOLATION GL_NEAREST
 
 
 template <class T, class U>
@@ -753,7 +753,7 @@ void Cube<T,U>::draw_layers_parallel()
 
 template< class T, class U>
 void Cube<T,U>::draw(){
-  draw(0,0,200,v_draw_projection,0);
+  draw(0,0,500,v_draw_projection,0);
 }
 
 template <class T, class U>

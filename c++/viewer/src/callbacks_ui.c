@@ -465,7 +465,7 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
           if((*itObj)->className()=="Cube_T"){
             Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
             if(timeStep < 0){
-              timeStep = 0;
+              timeStep = cb->cubes.size()-1;
             }
             cb->timeStep = timeStep;
           }
@@ -482,7 +482,7 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
           if((*itObj)->className()=="Cube_T"){
             Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
             if(timeStep >= cb->cubes.size()){
-              timeStep = cb->cubes.size()-1;
+              timeStep = 0;
             }
             cb->timeStep = timeStep;
           }
