@@ -11,7 +11,7 @@ function [FEAT, EDGE] = spedge_dist(I, angle, stride, edge_method)
 %   Example:
 %   -------------------------
 %   I = imread('cameraman.tif');
-%   SPEDGE = spedge_dist(I,30,2);
+%   SPEDGE = spedge_dist(I,30,2, 11);
 %   imagesc(SPEDGE);  axis image;
 %
 %   Copyright © 2008 Kevin Smith
@@ -60,6 +60,7 @@ if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
                 FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
                 lastedge = [rowx(i) colx(i)];
             else
+                % WE SHOULD COUNT ABSOLUTE STEPS, NOT X OR Y STEPS
                 FEAT(rowx(i),colx(i)) = abs(lastedge(1) - rowx(i));
             end
         end
