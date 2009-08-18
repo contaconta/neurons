@@ -23,6 +23,8 @@
 #include <gtk/gtkgl.h>
 #include <fstream>
 
+
+
 // TODO : where should we put this declaration ?
 struct aPoint3ds
 {
@@ -83,7 +85,7 @@ void setUpMatricesXY(int layerSpan)
               GLfloat depthStep = -1.0f;
               //GLint max_texture_size = 0;
               //glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-              //max_texture_size = 512;
+              //max_texture_size = D_MAX_TEXTURE_SIZE;
               glMatrixMode(GL_PROJECTION);
               glLoadIdentity();
 
@@ -110,7 +112,7 @@ void setUpMatricesXY(int layerSpan)
       GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
       GLint max_texture_size = 0;
       glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-      max_texture_size = 512;
+      max_texture_size = D_MAX_TEXTURE_SIZE;
       glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
 
@@ -154,9 +156,9 @@ void setUpMatricesYZ(int layerSpan)
   GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
   GLint max_texture_size = 0;
   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = 512;
-   int size_texture = 512;
-  int max_texture  = 512;
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  int size_texture = D_MAX_TEXTURE_SIZE;
+  int max_texture  = D_MAX_TEXTURE_SIZE;
 
   GLfloat increment_height =
     min(float(cube->cubeHeight - cube->nRowToDraw*size_texture), float(max_texture));
@@ -197,9 +199,9 @@ void setUpMatricesXZ(int layerSpan)
   GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
   GLint max_texture_size = 0;
   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = 512;
-  int size_texture = 512;
-  int max_texture  = 512;
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  int size_texture = D_MAX_TEXTURE_SIZE;
+  int max_texture  = D_MAX_TEXTURE_SIZE;
   glMatrixMode(GL_PROJECTION);
   GLfloat increment_width =
     min(float(cube->cubeWidth - cube->nColToDraw*size_texture), float(max_texture));
@@ -461,7 +463,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
     cube->draw_layer_tile_XY(layerToDrawXY,1);
-    cube->draw_layer_tile_XZ(layerToDrawXZ,0);
+    /* cube->draw_layer_tile_XZ(layerToDrawXZ,0); */
     cube->draw_layer_tile_YZ(layerToDrawYZ,1);
     setUpMatricesXZ(layerSpanViewZ);
     flag_draw_XZ = true;
@@ -478,7 +480,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     setUpMatricesYZ(1000000);
     cube->draw_layer_tile_XY(layerToDrawXY,1);
     cube->draw_layer_tile_XZ(layerToDrawXZ,1);
-    cube->draw_layer_tile_YZ(layerToDrawYZ,0);
+    /* cube->draw_layer_tile_YZ(layerToDrawYZ,0); */
     setUpMatricesYZ(layerSpanViewZ);
     flag_draw_YZ = true;
     draw_objects();
@@ -492,7 +494,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
     setUpMatricesXY(100000000);
-    cube->draw_layer_tile_XY(layerToDrawXY,0);
+    /* cube->draw_layer_tile_XY(layerToDrawXY,0); */
     cube->draw_layer_tile_XZ(layerToDrawXZ,1);
     cube->draw_layer_tile_YZ(layerToDrawYZ,1);
     setUpMatricesXY(layerSpanViewZ);

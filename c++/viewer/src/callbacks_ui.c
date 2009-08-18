@@ -170,18 +170,18 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
   if(flag_draw_combo && change_layers){
     //If the click is on the XY corner
     if( (window_x > widgetWidth/2) && (window_y > widgetHeight/2) ){
-      layerToDrawXZ = indexes[1]%512;
-      layerToDrawYZ = indexes[0]%512;
+      layerToDrawXZ = indexes[1]%D_MAX_TEXTURE_SIZE;
+      layerToDrawYZ = indexes[0]%D_MAX_TEXTURE_SIZE;
     }
     // In the YZ corner
     if( (window_x > widgetWidth/2) && (window_y < widgetHeight/2) ){
-      layerToDrawXY = indexes[2]%512;
-      layerToDrawXZ = indexes[1]%512;
+      layerToDrawXY = indexes[2]%D_MAX_TEXTURE_SIZE;
+      layerToDrawXZ = indexes[1]%D_MAX_TEXTURE_SIZE;
     }
     //In the XZ corner
     if( (window_x < widgetWidth/2) && (window_y > widgetHeight/2) ){
-      layerToDrawXY = indexes[2]%512;
-      layerToDrawYZ = indexes[0]%512;
+      layerToDrawXY = indexes[2]%D_MAX_TEXTURE_SIZE;
+      layerToDrawYZ = indexes[0]%D_MAX_TEXTURE_SIZE;
     }
     //In the 3D view, it makes no sense
     if( (window_x < widgetWidth/2) && (window_y < widgetHeight/2) ){
@@ -207,9 +207,9 @@ void unProjectMouse()
     //vector< int > indexes(3);
     cube->micrometersToIndexes(world, indexes);
 
-/*         layerToDrawXY = indexes[2]%512; */
-/*         layerToDrawXZ = indexes[1]%512; */
-/*         layerToDrawYZ = indexes[0]%512; */
+/*         layerToDrawXY = indexes[2]%D_MAX_TEXTURE_SIZE; */
+/*         layerToDrawXZ = indexes[1]%D_MAX_TEXTURE_SIZE; */
+/*         layerToDrawYZ = indexes[0]%D_MAX_TEXTURE_SIZE; */
 
     printf("Indexes: %i %i %i\n", indexes[0], indexes[1], indexes[2]);
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
@@ -450,7 +450,7 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
   }
 
 
-  if(event->keyval == 'q')
+  if(event->keyval == 'n')
     {
       flag_draw_neuron = !flag_draw_neuron;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
@@ -491,13 +491,24 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
     }
   if(event->keyval == 'w')
     {
-      timeStep ++;
       for(vector< VisibleE* >::iterator itObj = toDraw.begin();
           itObj != toDraw.end(); itObj++)
         {
           if((*itObj)->className()=="Cube_T"){
             Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
             cb->d_halo = !cb->d_halo;
+          }
+        }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
+  if(event->keyval == 'q')
+    {
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Cube_T"){
+            Cube_T* cb = dynamic_cast<Cube_T*>(*itObj);
+            cb->d_gt = !cb->d_gt;
           }
         }
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
