@@ -34,7 +34,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
                  int nrhs, const mxArray *prhs[])
 {
     unsigned char *pImage;
-    int *pResult;
+    response_type *pResult;
     const mwSize *dim_array;
     mxArray *pCellParam;
     mxArray *pCellImage;
@@ -69,7 +69,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mwSize number_of_dims = 2;
     const mwSize dims[]={nImages, nParams};
     plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
-    pResult = (int*)mxGetData(plhs[0]);
+    //plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxDOUBLE_CLASS,mxREAL);
+    pResult = (response_type*)mxGetData(plhs[0]);
 
     /* Preload cloud and image classes */
     //vector<IplImage*> list_images;
