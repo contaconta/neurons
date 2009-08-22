@@ -128,6 +128,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 
         if(img->width != dim_array[1] || img->height != dim_array[0])
           {
+            mexPrintf("img->width %d, dim_array[1] %d, img->height %d, dim_array[0] %d\n",img->width, dim_array[1], img->height, dim_array[0]);
             mexErrMsgTxt("getIntensityFeature: img->width != dim_array[1] || img->height != dim_array[0]\n");
           }
 
