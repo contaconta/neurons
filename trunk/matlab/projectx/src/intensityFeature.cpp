@@ -3,10 +3,16 @@
 #include "utils.h"
 #include "intensityFeature.h"
 #include "Cloud.h"
+#include "limits.h"
 
-#define RBF
+// TODO : Add sigmoid and polynomial kernels
+enum eKernelType { KT_LINEAR, KT_SSD, KT_RBF};
+eKernelType kernelType = KT_RBF;
 
-int getIntensityFeature(unsigned char *test_img,
+#define SIGMA_SQUARE 0.015625f //0.125^2
+//#define SIGMA_SQUARE 10
+
+response_type getIntensityFeature(unsigned char *test_img,
                         int width, int height,
                         char* weak_learner_param,
                         xImage* img)
@@ -90,30 +96,63 @@ int getIntensityFeature(unsigned char *test_img,
   //printf("Pt %d %d, %d %d depth : %d\n", indexes[0], indexes[1], patchDiameter, img->nChannels,img->depth);
 */
 
-  int K = 0;
+  response_type K = 0;
   unsigned char* codebook_patch = img->data;
 
   // Compute Kernel function      
-#ifdef RBF
-  int temp;
-  for(int i=0;i<patchSize;i++)
+  switch(kernelType)
     {
-      temp = test_img[i] - codebook_patch[i];
-      //printf("%u %u\n", test_img[i], codebook_patch[i]);
-      K += temp*temp;
-    }
-  K = sqrt(K);
-#else
-  // Linear kernel
+    case KT_RBF:
+      {
+        double diff;
+        double ssd=0;
+        double tempK;
+        for(int i=0;i<patchSize;i++)
+          {
+            //K += test_img[i] - codebook_patch[i];
+            //printf("%u %u\n", test_img[i], codebook_patch[i]);
 
-  // Compute dot product
-  for(i=0;i<patchSize;i++)
-    {
-      K += (test_img[i]*codebook_patch[i]);
+            diff = (test_img[i] - codebook_patch[i])/255.0;
+            ssd += (diff*diff);
+          }
+        //printf("%f ",ssd);
+        // TODO : need to rescale K between 0 and 1
+        //ofstream ofs("ITvalues.txt",ios::app);
+        //ofs << tempK << endl;
+        //ofs.write(K);
+        //ofs.close();
+        //const double minK = 238169;
+        //const double maxK = 2.1806e+09;
+        //tempK = (((double)ssd)-minK)/maxK;
+
+        //printf("%f ",tempK);
+        //K = exp(-(double)fabs(K)*SIGMA_SQUARE)*INT_MAX;
+        K = exp(-(double)(ssd)*SIGMA_SQUARE)*INT_MAX;
+        //printf("%d ",K);
+      }
+      break;
+    case KT_SSD:
+      {
+        int temp;
+        for(int i=0;i<patchSize;i++)
+          {
+            temp = test_img[i] - codebook_patch[i];
+            //printf("%u %u\n", test_img[i], codebook_patch[i]);
+            K += temp*temp;
+          }
+        K = sqrt(K);
+      }
+      break;
+    case KT_LINEAR:
+      // Compute dot product
+      for(int i=0;i<patchSize;i++)
+        {
+          K += (test_img[i]*codebook_patch[i]);
+        }
+      // Square it
+      K *= K;
+      break;
     }
-  // Square it
-  K *= K;
-#endif
 
   return K;
 }

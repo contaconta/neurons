@@ -100,8 +100,43 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mxFree(sType);
 
     const mwSize dims[]={data_size};
-    plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
-    int* pData = (int*)mxGetData(plhs[0]);
 
-    getWeakLearnerResponses(pData, eFormat, eType, index);
+    eMemType type;
+    getMemType(type);
+    int res = 0;
+    switch(type)
+      {
+      case MT_DOUBLE:
+        {
+          plhs[0] = mxCreateNumericArray(1,dims,mxDOUBLE_CLASS,mxREAL);
+          double* pData=(double*)mxGetPr(plhs[0]);
+          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+        }
+        break;
+      case MT_CHAR:
+        {
+          plhs[0] = mxCreateNumericArray(1,dims,mxINT8_CLASS,mxREAL);
+          char* pData=(char*)mxGetPr(plhs[0]);
+          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+        }
+        break;
+      case MT_SHORT:
+        {
+          plhs[0] = mxCreateNumericArray(1,dims,mxINT16_CLASS,mxREAL);
+          short* pData=(short*)mxGetPr(plhs[0]);
+          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+        }
+        break;
+      case MT_INT:
+        {
+          plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
+          int* pData=(int*)mxGetPr(plhs[0]);
+          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+        }
+        break;
+      }
+
+    if(res == -1)
+      mexErrMsgTxt("mexLoadResponse: error while loading data.");
+
 }

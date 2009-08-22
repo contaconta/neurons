@@ -34,12 +34,10 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     }
     
     /* Check data type of input argument */
-    /*
     if (!mxIsUint8(prhs[0]) && (!mxIsDouble(prhs[0]))
         && !mxIsUint16(prhs[0]) && !mxIsUint32(prhs[0])){
-    */
-    if(!mxIsInt32(prhs[0])) {
-      mexErrMsgTxt("First argument must be of type int32");
+    /*if(!mxIsInt32(prhs[0])) {*/
+      mexErrMsgTxt("First argument must be of type int/double");
     }
     if (!(mxIsChar(prhs[1]))) {
       mexErrMsgTxt("Second argument must be of type string.");
@@ -56,7 +54,6 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     
 
     /* Get the real data */
-    int* pData=(int*)mxGetPr(prhs[0]);
     int nElements = mxGetNumberOfElements(prhs[0]);
 
     /* Get weak learner index (-1 because C arrays start at 0) */
@@ -94,7 +91,29 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         mexErrMsgTxt("Fourth argument should be a learner type");
       }
     mxFree(sType);
-	
-    if(storeWeakLearnerResponses(pData, eFormat, eType, index, nElements)==-1)
-    	mexErrMsgTxt("mexStoreResponse: error while storing data.");
+
+    int res = 0;
+    if(mxIsDouble(prhs[0]))
+      {
+        double* pData=(double*)mxGetPr(prhs[0]);
+        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
+      }
+    else if (mxIsUint8(prhs[0]))
+      {
+        char* pData=(char*)mxGetPr(prhs[0]);
+        res = storeWeakLearnerResponses<char*>(pData, eFormat, eType, index, nElements);
+      }
+    else if (mxIsUint16(prhs[0]))
+      {
+        short* pData=(short*)mxGetPr(prhs[0]);
+        res = storeWeakLearnerResponses<short*>(pData, eFormat, eType, index, nElements);
+      }
+    else if (mxIsUint32(prhs[0]))
+      {
+        int* pData=(int*)mxGetPr(prhs[0]);
+        res = storeWeakLearnerResponses<int*>(pData, eFormat, eType, index, nElements);
+      }
+
+    if(res == -1)
+      mexErrMsgTxt("mexStoreResponse: error while storing data.");
 }

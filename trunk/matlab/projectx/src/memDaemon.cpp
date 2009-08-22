@@ -164,13 +164,29 @@ int init(int width, int height, char* data_type, int shm_key_id)
   signal(SIGINT, exit_program);
   signal(SIGTERM, exit_program);
 
+  // check data type
+  eMemType type;
   unsigned int data_unit_size = 0;
   if(strcmp(data_type,"char")==0)
-    data_unit_size = sizeof(char);
+    {
+      data_unit_size = sizeof(char);
+      type = MT_CHAR;
+    }
+  if(strcmp(data_type,"short")==0)
+    {
+      data_unit_size = sizeof(short);
+      type = MT_SHORT;
+    }
   else if(strcmp(data_type,"int")==0)
-    data_unit_size = sizeof(int);
+    {
+      data_unit_size = sizeof(int);
+      type = MT_INT;
+    }
   else if(strcmp(data_type,"double")==0)
-    data_unit_size = sizeof(double);
+    {
+      data_unit_size = sizeof(double);
+      type = MT_DOUBLE;
+    }
   else
     {
       printf("Unknown type : %s\n", data_type);
@@ -182,6 +198,7 @@ int init(int width, int height, char* data_type, int shm_key_id)
   memset(&hmr,0,sizeof(hmr));
   hmr.width = width;
   hmr.height = height;
+  hmr.type = type;
 
   printf("Server is initialising\n");
 

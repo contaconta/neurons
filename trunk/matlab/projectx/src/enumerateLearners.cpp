@@ -196,13 +196,38 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
         nb_learners += list_weak_learners.size();
       }
 
+    if(learner_type[iLearnerType][0] == 'R' && learner_type[iLearnerType][1] == 'A')
+      {
+        //TODO : parse arguments
+        int step_size_x = 20;
+        int step_size_y = 20;
+
+        for(int angle=0;angle<=360;angle+=30)
+          {
+            for(int edge_method=0;edge_method<22;edge_method++)
+              {
+                for(int x=1;x<=max_width;x+=step_size_x)
+                for(int y=1;y<=max_height;y+=step_size_y)
+                  {
+                    string s;
+                    stringstream out;
+                    out << "RA_a" << angle << "_e" << edge_method << "_x" << x << "_y" << y;
+                    s = out.str();
+                    list_weak_learners.push_back(s);
+                  }
+              }
+          }
+
+        weak_learner_type_indices[iLearnerType] = nb_learners;
+        nb_learners += list_weak_learners.size();
+      }
+
     if(learner_type[iLearnerType][0] == 'I' && learner_type[iLearnerType][1] == 'T')
       {
-        printf("enum IT\n");
         for(int i=0;i<6000;i++)
           {
-            std::string s;
-            std::stringstream out;
+            string s;
+            stringstream out;
             out << "IT_" << i;
             s = out.str();
 
@@ -212,45 +237,6 @@ int enumerate_learners(char **learner_type, int nb_learner_type, int max_width, 
         //weak_learner_type_indices[iLearnerType] = list_weak_learners.size() - nb_learners;
         weak_learner_type_indices[iLearnerType] = nb_learners;
         nb_learners += list_weak_learners.size();
-
-        /*
-        sIT_params params;
-        while(left_token=strchr(left_token,'_'))
-          {
-            right_token=strchr(left_token+1,'_');
-            // if null, point at the end of the string
-            if(right_token == 0)
-              right_token = learner_type[iLearnerType]+strlen(learner_type[iLearnerType]);
-
-            size = right_token - left_token - 2;
-            if(size > 20)
-              {
-                cout << "Error in enumerate_learner while parsing the string : incorrect format\n";
-                return -1;
-              }
-
-            //printf("left_token %s\n",left_token);
-            //printf("right_token %s\n",right_token);
-
-            switch(*(left_token+1))
-              {
-              case 's':
-                strncpy(temp,left_token+2,size);
-                temp[size] = 0;
-                //printf("x %s\n",temp);
-                params.kernel_size = atoi(temp);
-                break;
-              case 't':
-                strncpy(temp,left_token+2,size);
-                temp[size] = 0;
-                //printf("y %s\n",temp);
-                params.kernel_type = atoi(temp);
-                break;
-              }
-            left_token = right_token;
-          }
-        */
-
       }
   }
 

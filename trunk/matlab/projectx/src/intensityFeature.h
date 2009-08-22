@@ -28,6 +28,8 @@ struct xImage
   unsigned char* data;
 };
 
+typedef int response_type;
+
 // Compute intensity feature from an image
 // @param width and height are the width and the height of the image passed in parameter
 // @param weak_learner_param : string that contains the id of the feature
@@ -37,9 +39,9 @@ struct xImage
 // |         |
 // |         |
 // |_________b
-int getIntensityFeature(unsigned char *test_img,
-                        int width, int height,
-                        char* weak_learner_param,
-                        xImage* img);
+response_type getIntensityFeature(unsigned char *test_img,
+                                  int width, int height,
+                                  char* weak_learner_param,
+                                  xImage* img);
 
 #endif
