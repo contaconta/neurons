@@ -42,9 +42,10 @@ int getMemType(eMemType& type, int shm_key_id = SHMKEYID);
 
 // Store the weak learner responses in the shared memory
 // The responses are stored as 32 bit integers
+// @param : dataSrc is a pointer on the source data
 // @param : either "row" or "column"
 template<class T> 
-int storeWeakLearnerResponses(T dataSrc, eDataFormat dataFormat,
+int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
                               eDataType dataType, int index, int dataSize,
                               int shm_key_id = SHMKEYID)
 {
@@ -101,7 +102,8 @@ int storeWeakLearnerResponses(T dataSrc, eDataFormat dataFormat,
   */
 
   struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
-  int* dataHmr = (int*) shm + (sizeof(struct header_mem_responses)/sizeof(int));
+  // T must be a pointer
+  T* dataHmr = (T*) shm + (sizeof(struct header_mem_responses)/sizeof(T));
 
 #ifdef DEBUG_M
   printf("shm %x\n",shm);
@@ -208,7 +210,7 @@ int storeWeakLearnerResponses(T dataSrc, eDataFormat dataFormat,
 
 // @return a pointer on the data required
 template<class T>
-int getWeakLearnerResponses(T dataDst, eDataFormat dataFormat,
+int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
                             eDataType dataType, int index,
                             int shm_key_id = SHMKEYID)
 {
@@ -261,8 +263,8 @@ int getWeakLearnerResponses(T dataDst, eDataFormat dataFormat,
   */
 
   struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
-  // TODO : Probably need a template for dataHmr
-  int* dataHmr = (int*) shm + (sizeof(struct header_mem_responses)/sizeof(int));
+  // T must be a pointer
+  T* dataHmr = (T*) shm + (sizeof(struct header_mem_responses)/sizeof(T));
 
   bool typeFound = false;
   int iLearner;

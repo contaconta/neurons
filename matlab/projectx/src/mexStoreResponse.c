@@ -34,8 +34,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     }
     
     /* Check data type of input argument */
-    if (!mxIsUint8(prhs[0]) && (!mxIsDouble(prhs[0]))
-        && !mxIsUint16(prhs[0]) && !mxIsUint32(prhs[0])){
+    if( (!mxIsInt8(prhs[0])) && (!mxIsDouble(prhs[0]))
+        && (!mxIsInt16(prhs[0])) && (!mxIsInt32(prhs[0]))){
     /*if(!mxIsInt32(prhs[0])) {*/
       mexErrMsgTxt("First argument must be of type int/double");
     }
@@ -92,26 +92,26 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       }
     mxFree(sType);
 
-    int res = 0;
+    int res = -1;
     if(mxIsDouble(prhs[0]))
       {
         double* pData=(double*)mxGetPr(prhs[0]);
         res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
       }
-    else if (mxIsUint8(prhs[0]))
+    else if (mxIsInt8(prhs[0]))
       {
         char* pData=(char*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses<char*>(pData, eFormat, eType, index, nElements);
+        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
       }
-    else if (mxIsUint16(prhs[0]))
+    else if (mxIsInt16(prhs[0]))
       {
         short* pData=(short*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses<short*>(pData, eFormat, eType, index, nElements);
+        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
       }
-    else if (mxIsUint32(prhs[0]))
+    else if (mxIsInt32(prhs[0]))
       {
         int* pData=(int*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses<int*>(pData, eFormat, eType, index, nElements);
+        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
       }
 
     if(res == -1)
