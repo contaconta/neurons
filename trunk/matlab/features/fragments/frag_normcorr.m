@@ -1,4 +1,4 @@
-function N = frag_normcorr(I, fragment)
+function N = frag_normcorr(I, fragment, p)
 %FRAG_NORMCORR
 %   N = frag_normcorr(I, fragment) computes the normalized correlation
 %   between and image I and an image template framgment. The correlation
@@ -30,4 +30,16 @@ sf = max(0.0000001, std(fragment(:)));
 
 n = numel(I);
 
-N = ( 1/(n-1) ) * sum(sum( ((I-mI).*(fragment-mf)) ./ (sI*sf) )) ;
+%keyboard;
+
+if p==1
+    N = ( 1/(n-1) ) * sum(sum( ((I-mI).*(fragment-mf)) ./ (sI*sf) )) ;
+else
+    N = ( 1/(n-1) ) * sum(sum( (((I-mI).*(fragment-mf)).^p) ./ (sI*sf) )) ;
+end
+
+% TEMPORARILY CONVERT TO A INT32 BECAUSE MEMDAEMON CANNOT STORE DOUBLES!
+%N = int32( (N + 1) * (intmax('int32')/2));
+
+
+%N = sum(sum(I.*fragment));

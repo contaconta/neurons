@@ -65,9 +65,6 @@ end
 
 
 
-
-
-
 %==========================================================================
 function [NORM IMSIZE POS_LIM NEG_LIM] = collect_arguments(DATASETS, set_type)
 
