@@ -38,6 +38,25 @@ Edge<P>::Edge(vector< Point* >* _points, int _p0, int _p1) : Visible(){
 
 template< class P>
 void Edge<P>::draw(){
+  // Prevent algorithms that put edges connected to -1
+  if(p0 == -1){
+    P* pp1 = dynamic_cast<P*>((*points)[p1]);
+    glPushMatrix();
+    glTranslatef(pp1->coords[0],pp1->coords[1],pp1->coords[2]);
+    glColor3f(1.0,1.0,0.0);
+    glutSolidSphere(2.0, 10,10);
+    glPopMatrix();
+    return;
+  }
+  if(p1 == -1){
+    P* pp0 = dynamic_cast<P*>((*points)[p0]);
+    glPushMatrix();
+    glTranslatef(pp0->coords[0],pp0->coords[1],pp0->coords[2]);
+    glColor3f(0.5,0.5,0.0);
+    glutSolidSphere(2.0, 10,10);
+    glPopMatrix();
+    return;
+  }
   P* pp0 = dynamic_cast<P*>((*points)[p0]);
   P* pp1 = dynamic_cast<P*>((*points)[p1]);
   glBegin(GL_LINES);

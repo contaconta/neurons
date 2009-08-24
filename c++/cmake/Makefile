@@ -346,6 +346,32 @@ gslMinimization/fast:
 .PHONY : gslMinimization/fast
 
 #=============================================================================
+# Target rules for targets named neuronFixDuplicatePoints
+
+# Build rule for target.
+neuronFixDuplicatePoints: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 neuronFixDuplicatePoints
+.PHONY : neuronFixDuplicatePoints
+
+# fast build rule for target.
+neuronFixDuplicatePoints/fast:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/build
+.PHONY : neuronFixDuplicatePoints/fast
+
+#=============================================================================
+# Target rules for targets named neuronOutputAllEdgeLengths
+
+# Build rule for target.
+neuronOutputAllEdgeLengths: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 neuronOutputAllEdgeLengths
+.PHONY : neuronOutputAllEdgeLengths
+
+# fast build rule for target.
+neuronOutputAllEdgeLengths/fast:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/build
+.PHONY : neuronOutputAllEdgeLengths/fast
+
+#=============================================================================
 # Target rules for targets named tryManyPathsCloud
 
 # Build rule for target.
@@ -1060,6 +1086,36 @@ home/ggonzale/workspace/neseg/tools/graph/graphPrune.s:
 .PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.s
 
 # target to build an object file
+home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s
+
+# target to build an object file
+home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o
+
+# target to preprocess a source file
+home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i
+
+# target to generate assembly for a file
+home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
+.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
+
+# target to build an object file
 home/ggonzale/workspace/neseg/viewer/src/callbacks.o:
 	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks.o
 .PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks.o
@@ -1220,6 +1276,8 @@ help:
 	@echo "... graphPrune"
 	@echo "... graphToDisplayList"
 	@echo "... gslMinimization"
+	@echo "... neuronFixDuplicatePoints"
+	@echo "... neuronOutputAllEdgeLengths"
 	@echo "... rebuild_cache"
 	@echo "... tryManyPathsCloud"
 	@echo "... viva"
@@ -1359,6 +1417,12 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i"
+	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.o"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.i"
 	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.s"

@@ -56,7 +56,7 @@ void EdgeW< P >::draw(){
             currCol[2]);
 
   // To draw the value of the edge
-  if(1){
+  if(0){
     vector< double > pt(3);
     glColor3f(0,0,0);
     pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;

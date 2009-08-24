@@ -29,9 +29,8 @@ int main(int argc, char **argv) {
     exit(0);
   }
 
-  
   Neuron* neuronita = new Neuron(argv[1]);
-  //neuronita->elliminateDuplicatedPoints(0.5);
+  neuronita->elliminateDuplicatedPoints(0.2);
   neuronita->save(argv[2]);
 
 
