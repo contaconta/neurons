@@ -40,10 +40,8 @@ else
 
       case 'IT'
        	responses = mexIntensityFeature(SET.Images, learner_ids, learner_data)';
-       	%responses = int32(round(5000*rand([length(SET.Images) length(learner_ids)])));
       
       case 'FR'  
-        % TODO: parse the learner ID to get BB and feature ID
       	responses = fragFeature(SET.Images, learner_ids, learner_data);
         
       case '??'
