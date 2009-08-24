@@ -67,7 +67,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     nCodeBook = mxGetNumberOfElements(prhs[2]);
 
     mwSize number_of_dims = 2;
-    const mwSize dims[]={nImages, nParams};
+    //const mwSize dims[]={nImages, nParams};
+    const mwSize dims[]={nParams, nImages};
     plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
     //plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxDOUBLE_CLASS,mxREAL);
     pResult = (response_type*)mxGetData(plhs[0]);
@@ -119,27 +120,28 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     img->height = dim_array[0];
 
     int iResult = 0;
-    for(int iImage = 0;iImage<nImages;iImage++)
+    for(int iParam = 0;iParam<nParams;iParam++)
       {
-        /* retrieve the image */
-        pCellImage = mxGetCell(prhs[0],iImage);
-        pImage = (unsigned char*)mxGetData(pCellImage);
-        dim_array = mxGetDimensions(pCellImage);
 
-        if(img->width != dim_array[1] || img->height != dim_array[0])
+        // retrieve cell content and transform it to a string
+        pCellParam = mxGetCell(prhs[1],iParam);
+        strLength = mxGetN(pCellParam)+1;
+        mxGetString(pCellParam,pParam,strLength);
+
+        for(int iImage = 0;iImage<nImages;iImage++)
           {
-            mexPrintf("img->width %d, dim_array[1] %d, img->height %d, dim_array[0] %d\n",img->width, dim_array[1], img->height, dim_array[0]);
-            mexErrMsgTxt("getIntensityFeature: img->width != dim_array[1] || img->height != dim_array[0]\n");
-          }
+            //mexPrintf("Image %d\n",iImage);
 
-        //mexPrintf("Image %d\n",iImage);
+            /* retrieve the image */
+            pCellImage = mxGetCell(prhs[0],iImage);
+            pImage = (unsigned char*)mxGetData(pCellImage);
+            dim_array = mxGetDimensions(pCellImage);
 
-        for(int iParam = 0;iParam<nParams;iParam++)
-          {
-            // retrieve cell content and transform it to a string
-            pCellParam = mxGetCell(prhs[1],iParam);
-            strLength = mxGetN(pCellParam)+1;
-            mxGetString(pCellParam,pParam,strLength);
+            if(img->width != dim_array[1] || img->height != dim_array[0])
+              {
+                mexPrintf("img->width %d, dim_array[1] %d, img->height %d, dim_array[0] %d\n",img->width, dim_array[1], img->height, dim_array[0]);
+                mexErrMsgTxt("getIntensityFeature: img->width != dim_array[1] || img->height != dim_array[0]\n");
+              }
 
             pResult[iResult] = getIntensityFeature(pImage,
                                                    dim_array[1],dim_array[0],
