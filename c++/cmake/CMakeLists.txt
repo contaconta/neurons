@@ -31,7 +31,7 @@ find_package(GLUT REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR} )
 include_directories(${GLUT_INCLUDE_DIR} )
 include_directories(${CMAKE_SOURCE_DIR}/../core)
-include_directories(${CMAKE_SOURCE_DIR}/../external/graphCuts)
+#include_directories(${CMAKE_SOURCE_DIR}/../external/graphCuts)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../lib/)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
@@ -68,7 +68,7 @@ add_library (viva SHARED
 ../core/Cube_P.cpp
 ../core/Cube_T.cpp
 ../core/CubeFactory.cpp
-../core/GraphCut.cpp
+#../core/GraphCut.cpp
 )
 
 ################################################################################
@@ -115,7 +115,7 @@ find_package(Gmodule REQUIRED )
 add_library (example MODULE ../plugins/src/example/example.cpp)
 add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
 add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
-add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
+#add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
 
 
 ################################################################################
