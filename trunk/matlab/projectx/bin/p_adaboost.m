@@ -84,6 +84,8 @@ switch learner_string(1:2)
         feature_type = 'Intensity';
     case 'RA' 
         feature_type = 'Rays';
+    case 'FR'
+        feature_type = 'Fragment';
     otherwise
         feature_type = 'Unknown (check p_adaboost.m)';
 end
