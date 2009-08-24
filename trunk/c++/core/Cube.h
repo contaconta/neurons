@@ -114,7 +114,7 @@ public:
   /** Creates a cube with the trick of the kevin images.*/
   void create_cube_from_kevin_images
   ( string directory, string format, int layer_init, int layer_end,
-    float voxelWidth, float voxelHeight, float voxelDepth);
+    float voxelWidth, float voxelHeight, float voxelDepth, string name);
 
   /** Creates a cube from an image directory.*/
   void create_cube_from_directory

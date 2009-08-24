@@ -384,9 +384,11 @@ void Cube<T,U>::create_integral_cube_by_layers(string filename)
 template <class T, class U>
 void Cube<T,U>::create_cube_from_kevin_images(
         string directory, string format, int begin, int end,
-        float voxelWidth_p, float voxelHeight_p, float voxelDepth_p)
+        float voxelWidth_p, float voxelHeight_p, float voxelDepth_p,
+        string namec)
 {
-  string name = directory + "/volume.vl";
+
+  string name = directory + "/" + namec + ".vl";
   FILE *fp = fopen(name.c_str(), "w+");
   char image_format[1024];
   sprintf(image_format, "%s/%s", directory.c_str(), format.c_str());
@@ -417,22 +419,24 @@ void Cube<T,U>::create_cube_from_kevin_images(
       cvReleaseImage(&pepe_low);
     }
 
-  string parameters_file = directory + "/volume.nfo";
+  string parameters_file = directory + "/" + namec + ".nfo";
   std::ofstream out_w(parameters_file.c_str());
-  out_w << "parentCubeWidth " << cubeWidth_p << std::endl;
-  out_w << "parentCubeHeight " << cubeHeight_p << std::endl;
-  out_w << "parentCubeDepth " << end - begin + 1 << std::endl;
+//   out_w << "parentCubeWidth " << cubeWidth_p << std::endl;
+//   out_w << "parentCubeHeight " << cubeHeight_p << std::endl;
+//   out_w << "parentCubeDepth " << end - begin + 1 << std::endl;
   out_w << "cubeWidth " << cubeWidth_p << std::endl;
   out_w << "cubeHeight " << cubeHeight_p << std::endl;
   out_w << "cubeDepth " << end - begin + 1 << std::endl;
   out_w << "voxelWidth " << voxelWidth_p << std::endl;
   out_w << "voxelHeight " << voxelHeight_p << std::endl;
   out_w << "voxelDepth " << voxelDepth_p << std::endl;
-  out_w << "rowOffset  0" << std::endl;
-  out_w << "colOffset  0" << std::endl;
+//   out_w << "rowOffset  0" << std::endl;
+//   out_w << "colOffset  0" << std::endl;
   out_w << "x_offset  0" << std::endl;
   out_w << "y_offset  0" << std::endl;
   out_w << "z_offset  0" << std::endl;
+  out_w << "cubeFile " << "./" + namec + ".vl" << std::endl;
+  out_w << "type uchar" << std::endl;
   out_w.close();
 
   this->cubeWidth   = cubeWidth_p     ;
