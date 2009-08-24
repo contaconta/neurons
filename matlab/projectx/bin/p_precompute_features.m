@@ -20,6 +20,9 @@ function p_precompute_features(SET, LEARNERS)
 tic;
 disp('Precomputing features on the TRAIN SET');
 
+% TODO: the memdaemon needs to handle different data types being stored:
+% int, double, float
+
 %.................... start the memDaemon .................................
 system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' int &']); pause(0.1);
 [s,r]=system('ps -ef | grep memDaemon | wc -l');
@@ -30,7 +33,7 @@ else
 end
 %..........................................................................
 
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
 
 % TODO: instead of storing response rows all at once, or one row at a time, it will be efficient to store chunks
 % sized to fit in memory
@@ -42,7 +45,7 @@ for l = 1:length(LEARNERS.list)
 
     % precompute the feature responses for each example for learner l
     responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
-
+    %responses = uint16(responses);
     % store the responses as a row vector
     %if l==5998
 	%keyboard

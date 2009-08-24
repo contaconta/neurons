@@ -23,30 +23,32 @@ function responses = p_get_feature_responses(SET, learner_ids, learner_data, var
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-% if we have precomputed the feature values, recall them from memdaemon
+%% if we have precomputed the feature values, recall them from memdaemon
 if SET.precomputed && (nargin > 3)
     
     row = varargin{1};
-    responses = mexLoadResponse('row',row,'HA')';
-    %disp('precomputed');
+    responses = mexLoadResponse('row',row,'HA')'; %disp('precomputed');
     
-% if not, calculate them on the fly
+%% if feature response is not stored in memdaemon, calculate on the fly
+% NOTE: responses should be a ROW VECTOR of size [1 Nexamples], otherwise
+% they will cause problems with other functions!
 else
     switch learner_ids{1}(1:2)
 
       case 'HA'
-        %display 'HA'
-        responses = mexRectangleFeature(SET.IntImages, learner_ids);
-        %disp('online computation');
+       	responses = mexRectangleFeature(SET.IntImages, learner_ids)';
 
       case 'IT'
-        %display 'IT'
-        responses = mexIntensityFeature(SET.Images, learner_ids, learner_data);
-        %responses = int32(round(5000*rand([length(SET.Images) length(learner_ids)])));
+       	responses = mexIntensityFeature(SET.Images, learner_ids, learner_data)';
+       	%responses = int32(round(5000*rand([length(SET.Images) length(learner_ids)])));
+      
+      case 'FR'  
+        % TODO: parse the learner ID to get BB and feature ID
+      	responses = fragFeature(SET.Images, learner_ids, learner_data);
         
-      case 'SV'
-        responses = rand([length(SET.Images) length(learner_ids)]);
-            
+      case '??'
+        responses = rand([length(learner_ids) length(SET.Images)]);
+        
       otherwise
         error('could not find appropriate function for learner');
     end
