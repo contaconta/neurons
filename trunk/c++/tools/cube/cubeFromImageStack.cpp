@@ -24,7 +24,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  if(!((argc!=10) || (argc!=11))){
+  if(! ((argc==10) || (argc==11))){
     printf("Usage: cubeFromImageStack directory image_format nlayer_b nlayer_e voxel_width voxel_height voxel_depth volume_name invert{0,1} kevinFormat{0,1}\n");
     exit(0);
   }

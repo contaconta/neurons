@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 
   // Computation of the complete graph
   Graph<Point3D, EdgeW<Point3D> >* cptGraph;
-  if(1){
+  if(0){
     //Definition of the window where to search for neighbors
     int windowX = 50;
     int windowY = 50;
@@ -184,6 +184,7 @@ int main(int argc, char **argv) {
   fflush(stdout);
   Graph<Point3D, EdgeW<Point3D> >* mst =
     cptGraph->primFromThisGraph();
+  printf("Saving the MST as a graph\n");
   mst->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.gr");
 
 
