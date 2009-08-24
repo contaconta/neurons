@@ -21,7 +21,7 @@ function responses = fragFeature(Images, learner_ids, learner_data)
 % pre-allocate the responses array (row vector)
 %responses = int32(zeros([1 length(Images)]));     % CAST to INT32 temporarily for memdaemon compliance
 %responses = zeros(size(Images));
-responses = zeros([length(Images) 1]);
+responses = zeros([1 length(Images)]);
 
 % loop through the cell of Images
 for i=1:length(Images)
