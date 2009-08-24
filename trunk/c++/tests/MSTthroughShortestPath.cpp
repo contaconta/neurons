@@ -185,6 +185,7 @@ int main(int argc, char **argv) {
   Graph<Point3D, EdgeW<Point3D> >* mst =
     cptGraph->primFromThisGraph();
   printf("Saving the MST as a graph\n");
+  mst->saveToFile("here.gr");
   mst->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.gr");
 
 
