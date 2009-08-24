@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Neuron.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -30,10 +31,14 @@ int main(int argc, char **argv) {
   }
 
   Neuron* neuronita = new Neuron(argv[1]);
-  vector< double > lengths; // =  neuronita->getAllEdgesLength();
+  vector< double > lengths=  neuronita->getAllEdgesLength();
   for(int i = 0; i < lengths.size(); i++){
     std::cout << lengths[i] << std::endl;
   }
+
+  double mean, variance;
+  secondStatistics(lengths,  &mean, &variance);
+  printf("The mean of the lengths is %f and the variance is %f\n", mean, variance);
 
   return 0;
 

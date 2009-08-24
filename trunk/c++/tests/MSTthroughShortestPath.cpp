@@ -27,6 +27,7 @@
 #include <map>
 #include "EdgeW.h"
 #ifdef WITH_OPENMP
+#include "Neuron.h"
 #include <omp.h>
 #endif
 
@@ -47,6 +48,13 @@ int main(int argc, char **argv) {
   Cloud<Point3D>* seedPointsSelected = new Cloud<Point3D>
     ();
 
+  Neuron* neuronita = new Neuron("/media/neurons/steerableFilters3D/tmp/n7_4_fix.asc");
+  vector< double > lengths=  neuronita->getAllEdgesLength();
+  double m_length = 0;
+  double v_length = 0;
+  secondStatistics(lengths,  &m_length, &v_length);
+  printf("The mean is %f and the variance is %f\n", m_length, v_length);
+
   Cloud<Point3D>* soma = new Cloud<Point3D>();
   soma->points.push_back(decimatedCloud->points[0]);
   soma->v_r = 1.0;
@@ -56,111 +64,121 @@ int main(int argc, char **argv) {
   soma->saveToFile
     ("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/soma.cl");
 
-  //Definition of the window where to search for neighbors
-  int windowX = 80;
-  int windowY = 80;
-  int windowZ = 40;
-  // int iROIx,iROIy,iROIz;
+  // Computation of the complete graph
+  Graph<Point3D, EdgeW<Point3D> >* cptGraph;
+  if(1){
+    //Definition of the window where to search for neighbors
+    int windowX = 50;
+    int windowY = 50;
+    int windowZ = 30;
+    // int iROIx,iROIy,iROIz;
 
 
-  Graph<Point3D, EdgeW<Point3D> >* cptGraph =
-    new Graph<Point3D, EdgeW< Point3D> >();
-  for(int i = 0; i < decimatedCloud->points.size(); i++)
-    cptGraph->cloud->points.push_back(
-                                      new Point3D(decimatedCloud->points[i]->coords[0],
-                                                  decimatedCloud->points[i]->coords[1],
-                                                  decimatedCloud->points[i]->coords[2]));
-  int nthreads = 1;
-  vector< CubeLiveWire* > cubeLiveWires;
-  vector< Cube<float, double>*> cubes;
+    cptGraph =
+      new Graph<Point3D, EdgeW< Point3D> >();
+    for(int i = 0; i < decimatedCloud->points.size(); i++)
+      cptGraph->cloud->points.push_back(
+                                        new Point3D(decimatedCloud->points[i]->coords[0],
+                                                    decimatedCloud->points[i]->coords[1],
+                                                    decimatedCloud->points[i]->coords[2]));
+    int nthreads = 1;
+    vector< CubeLiveWire* > cubeLiveWires;
+    vector< Cube<float, double>*> cubes;
 
 #ifdef WITH_OPENMP
-  nthreads = omp_get_max_threads();
-  omp_set_num_threads(nthreads);
+    nthreads = omp_get_max_threads();
+    omp_set_num_threads(nthreads);
 #endif
 
 
 
-  printf("Performing detection with N = %i threads\n", nthreads);
-  cubeLiveWires.resize(nthreads);
-  cubes.resize(nthreads);
-  for(int i = 0; i < nthreads; i++){
-    cubes[i] = new Cube<float, double>
-      ("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/cuts.nfo");
-    DistanceDijkstraColorNegatedEuclideanAnisotropic* djkc
-      = new DistanceDijkstraColorNegatedEuclideanAnisotropic(cubes[i]);
-    cubeLiveWires[i] = new CubeLiveWire(cubes[i], djkc);;
-  }
-
-  int endPoint = decimatedCloud->points.size();
-// #ifdef WITH_OPENMP
-#pragma omp parallel for
-// #endif
-  for(int i = 0; i < endPoint; i ++){
-  // for(int i = 50; i < 51; i ++){
-    int nth = 0;
-// #ifdef WITH_OPENMP
-    nth = omp_get_thread_num();
-// #endif
-    vector<int>   idxs(3);
-    vector<int>   idxs2(3);
-    vector<float> microm(3);
-    char graphName[1024];
-    printf("Computing distances for point %i with thread %i\n", i, nth);
-    fflush(stdout);
-    microm[0] = decimatedCloud->points[i]->coords[0];
-    microm[1] = decimatedCloud->points[i]->coords[1];
-    microm[2] = decimatedCloud->points[i]->coords[2];
-    cubes[nth]->micrometersToIndexes(microm, idxs);
-    cubeLiveWires[nth]->iROIx = max(0, idxs[0]-windowX/2);
-    cubeLiveWires[nth]->iROIy = max(0, idxs[1]-windowY/2);
-    cubeLiveWires[nth]->iROIz = max(0, idxs[2]-windowZ/2);
-    cubeLiveWires[nth]->eROIx = min((int)cubes[nth]->cubeWidth -1, idxs[0]+windowX/2);
-    cubeLiveWires[nth]->eROIy = min((int)cubes[nth]->cubeHeight-1, idxs[1]+windowY/2);
-    cubeLiveWires[nth]->eROIz = min((int)cubes[nth]->cubeDepth -1, idxs[2]+windowZ/2);
-    cubeLiveWires[nth]->computeDistances(idxs[0], idxs[1], idxs[2]);
-
-    //Check if the point is in the whereabouts of the cloud
-    for(int j = 0; j < decimatedCloud->points.size(); j++){
-      if(j==i) continue;
-      microm[0] = decimatedCloud->points[j]->coords[0];
-      microm[1] = decimatedCloud->points[j]->coords[1];
-      microm[2] = decimatedCloud->points[j]->coords[2];
-      cubes[nth]->micrometersToIndexes(microm, idxs2);
-      if(  (idxs2[0] >= cubeLiveWires[nth]->iROIx) &&
-           (idxs2[0] <= cubeLiveWires[nth]->eROIx) &&
-           (idxs2[1] >= cubeLiveWires[nth]->iROIy) &&
-           (idxs2[1] <= cubeLiveWires[nth]->eROIy) &&
-           (idxs2[2] >= cubeLiveWires[nth]->iROIz) &&
-           (idxs2[2] <= cubeLiveWires[nth]->eROIz)
-         )
-        {
-          Graph<Point3D, EdgeW<Point3D> >* shortestPath =
-            cubeLiveWires[nth]->findShortestPathG(idxs[0] ,idxs[1] ,idxs[2],
-                                            idxs2[0],idxs2[1],idxs2[2]);
-          sprintf(graphName,
-                  "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr", i, j);
-          float cost =
-            cubes[nth]->integralOverCloud(shortestPath->cloud)
-            /shortestPath->cloud->points.size();
-          shortestPath->cloud->v_r = cost;
-          shortestPath->cloud->v_g = 1-cost;
-          // shortestPath->cloud->v_b = gsl_rng_uniform(r);
-          shortestPath->cloud->v_radius = 0.4;
-          shortestPath->saveToFile(graphName);
-          cptGraph->eset.edges.push_back(new
-                            EdgeW< Point3D> (&cptGraph->cloud->points, i,j,1-cost));
-        }
+    printf("Performing detection with N = %i threads\n", nthreads);
+    cubeLiveWires.resize(nthreads);
+    cubes.resize(nthreads);
+    for(int i = 0; i < nthreads; i++){
+      cubes[i] = new Cube<float, double>
+        ("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/cuts.nfo");
+      DistanceDijkstraColorNegatedEuclideanAnisotropic* djkc
+        = new DistanceDijkstraColorNegatedEuclideanAnisotropic(cubes[i]);
+      cubeLiveWires[i] = new CubeLiveWire(cubes[i], djkc);;
     }
+
+    int endPoint = decimatedCloud->points.size();
+    // #ifdef WITH_OPENMP
+#pragma omp parallel for
+    // #endif
+    for(int i = 0; i < endPoint; i ++){
+      // for(int i = 50; i < 51; i ++){
+      int nth = 0;
+      // #ifdef WITH_OPENMP
+      nth = omp_get_thread_num();
+      // #endif
+      vector<int>   idxs(3);
+      vector<int>   idxs2(3);
+      vector<float> microm(3);
+      vector<float> microm2(3);
+      char graphName[1024];
+      printf("Computing distances for point %i with thread %i\n", i, nth);
+      fflush(stdout);
+      microm[0] = decimatedCloud->points[i]->coords[0];
+      microm[1] = decimatedCloud->points[i]->coords[1];
+      microm[2] = decimatedCloud->points[i]->coords[2];
+      cubes[nth]->micrometersToIndexes(microm, idxs);
+      cubeLiveWires[nth]->iROIx = max(0, idxs[0]-windowX/2);
+      cubeLiveWires[nth]->iROIy = max(0, idxs[1]-windowY/2);
+      cubeLiveWires[nth]->iROIz = max(0, idxs[2]-windowZ/2);
+      cubeLiveWires[nth]->eROIx = min((int)cubes[nth]->cubeWidth -1, idxs[0]+windowX/2);
+      cubeLiveWires[nth]->eROIy = min((int)cubes[nth]->cubeHeight-1, idxs[1]+windowY/2);
+      cubeLiveWires[nth]->eROIz = min((int)cubes[nth]->cubeDepth -1, idxs[2]+windowZ/2);
+      cubeLiveWires[nth]->computeDistances(idxs[0], idxs[1], idxs[2]);
+
+      //Check if the point is in the whereabouts of the cloud
+      for(int j = 0; j < decimatedCloud->points.size(); j++){
+        if(j==i) continue;
+        microm2[0] = decimatedCloud->points[j]->coords[0];
+        microm2[1] = decimatedCloud->points[j]->coords[1];
+        microm2[2] = decimatedCloud->points[j]->coords[2];
+        cubes[nth]->micrometersToIndexes(microm2, idxs2);
+        if(  (idxs2[0] >= cubeLiveWires[nth]->iROIx) &&
+             (idxs2[0] <= cubeLiveWires[nth]->eROIx) &&
+             (idxs2[1] >= cubeLiveWires[nth]->iROIy) &&
+             (idxs2[1] <= cubeLiveWires[nth]->eROIy) &&
+             (idxs2[2] >= cubeLiveWires[nth]->iROIz) &&
+             (idxs2[2] <= cubeLiveWires[nth]->eROIz)
+             )
+          {
+            Graph<Point3D, EdgeW<Point3D> >* shortestPath =
+              cubeLiveWires[nth]->findShortestPathG(idxs[0] ,idxs[1] ,idxs[2],
+                                                    idxs2[0],idxs2[1],idxs2[2]);
+            sprintf(graphName,
+                    "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr", i, j);
+            float cost =
+              cubes[nth]->integralOverCloud(shortestPath->cloud)
+              /shortestPath->cloud->points.size();
+            shortestPath->cloud->v_r = cost;
+            shortestPath->cloud->v_g = 1-cost;
+            shortestPath->cloud->v_b = 0;
+            // shortestPath->cloud->v_b = gsl_rng_uniform(r);
+            shortestPath->cloud->v_radius = 0.4;
+            shortestPath->saveToFile(graphName);
+            double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
+                                 (microm2[1]-microm[1])*(microm2[1]-microm[1]) +
+                                 (microm2[2]-microm[2])*(microm2[2]-microm[2]) );
+            cptGraph->eset.edges.push_back(new
+                                           EdgeW< Point3D> (&cptGraph->cloud->points, i,j,
+                                                            1-cost*exp(-(length-m_length)/(2*v_length)) ) );
+          }
+      }
+    }
+
+
+    cptGraph->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/complete.gr");
+  } else {
+    Graph_P* cptGraphP =
+      GraphFactory::load("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/complete.gr");
+    cptGraph =
+      dynamic_cast< Graph<Point3D, EdgeW<Point3D> >* >(cptGraphP);
   }
-
-
-  cptGraph->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/complete.gr");
-
-  // Graph_P* cptGraphP =
-    // GraphFactory::load("complete.gr");
-  // Graph<Point3D, EdgeW<Point3D> >* cptGraph =
-    // dynamic_cast< Graph<Point3D, EdgeW<Point3D> >* >(cptGraphP);
 
   printf("Computing the MST on the complete graph\n");
   fflush(stdout);

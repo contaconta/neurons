@@ -246,3 +246,18 @@ void renderString(const char* format, ...)
    glutBitmapCharacter(font, *c);
  }
 }
+
+
+void secondStatistics(vector< double > data, double* mean, double* variance)
+{
+  *mean = 0;
+  *variance = 0;
+  for(int i = 0; i < data.size(); i++)
+    *mean = *mean +  data[i];
+  *mean = *mean/data.size();
+
+  for(int i = 0; i < data.size(); i++)
+    *variance = *variance + (data[i]-*mean)*(data[i]-*mean);
+  *variance = sqrt(*variance/data.size());
+
+}

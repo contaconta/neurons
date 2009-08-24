@@ -122,6 +122,7 @@ add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
 ## Compilation of the tools
 ################################################################################
 
+################################################################################
 ## cube tools
 
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
@@ -154,8 +155,9 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
-
+################################################################################
 ## graph tools
+
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
@@ -165,7 +167,19 @@ target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
 add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
 target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
+################################################################################
+## neuron tools
+
+add_executable(neuronOutputAllEdgeLengths ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronOutputAllEdgeLengths.cpp)
+target_link_libraries(neuronOutputAllEdgeLengths ${LINK_LIBRARIES_ALL})
+
+add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
+target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
+
+
+################################################################################
 ## Test examples
+
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 

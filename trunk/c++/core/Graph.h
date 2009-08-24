@@ -390,8 +390,8 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraph()
                 }
             }
         }
-      // if(i%max(cloud->points.size()/100,1)==0)
-        // { printf("#"); fflush(stdout);}
+      if(i%max((int)((float)cloud->points.size()/100),1)==0)
+        { printf("%.01f\r", i*100.0/cloud->points.size()); fflush(stdout);}
     }
 
   printf("]\n");
@@ -423,8 +423,10 @@ vector<int> Graph<P,E>::findLeaves()
   }
   for(int i = 0; i < eset.edges.size(); i++)
     {
-      connections[eset.edges[i]->p0]++;
-      connections[eset.edges[i]->p1]++;
+      if(eset.edges[i]->p0 != -1)
+        connections[eset.edges[i]->p0]++;
+      if(eset.edges[i]->p1 != -1)
+        connections[eset.edges[i]->p1]++;
     }
   for(int i = 0; i < connections.size(); i++){
     if(connections[i] == 1){

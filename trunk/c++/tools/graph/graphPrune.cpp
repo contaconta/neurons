@@ -87,7 +87,6 @@ int main(int argc, char **argv) {
                    gr->cloud->points[leaves[i]]->coords[1],
                    gr->cloud->points[leaves[i]]->coords[2]));
   }
-
   //Leaves are green
   leavescl->v_r = 0;
   leavescl->v_g = 1;
