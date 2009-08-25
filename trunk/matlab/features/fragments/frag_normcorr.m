@@ -41,5 +41,8 @@ function N = frag_normcorr(I, fragment, p)
 % TEMPORARILY CONVERT TO A INT32 BECAUSE MEMDAEMON CANNOT STORE DOUBLES!
 %N = int32( (N + 1) * (intmax('int32')/2));
 
+I = double(I); fragment = double(fragment);
 
-N = sum(sum(double(I).*double(fragment)));
+N = ( 1/(numel(I)-1) ) * sum(sum( ((I).*(fragment))));
+
+%N = sum(sum(double(I).*double(fragment)))/numel(fragment);

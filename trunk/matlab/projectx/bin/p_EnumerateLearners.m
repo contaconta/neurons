@@ -97,7 +97,7 @@ count = 1;
 nfragments = 1;
 
 % create a vector containing the scales fragments will appear
-s = smin:ss:smax;
+s = smin:ss:smax;  if isequal(size(s), [1 1]); s = [s s]; end;
 
 % create a vector containing images we will extract the data from.
 imglist = sort(ceil(length(DATASETS.LabelMeIndex)*rand([1 N])));
@@ -117,7 +117,7 @@ for n = 1:N
     % extract a detector-sized sample
     r = max(1, ceil(size(I,1)*rand - DATASETS.IMSIZE(1)));
     c = max(1, ceil(size(I,2)*rand - DATASETS.IMSIZE(2)));
-    sample = I(r:r+DATASETS.IMSIZE, c:c+DATASETS.IMSIZE);
+    sample = I(r:r+DATASETS.IMSIZE-1, c:c+DATASETS.IMSIZE-1);
     
     % extact the fragment
     fsize = randsample(s,1);
@@ -133,6 +133,7 @@ for n = 1:N
     FR_DATA{count} = fragment; %#ok<AGROW>
 
     count = count + 1;
+   
     
 %     % extact the fragment
 %     fsize = randsample(s,1, true, s/sum(s) );

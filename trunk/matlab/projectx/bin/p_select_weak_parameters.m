@@ -16,7 +16,8 @@ function [error, threshold, pol] = p_select_weak_parameters(learner_id, learner_
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-% collect the feature responses over examples in SET for a given learner
+% ROW VECTOR of the feature responses over examples in SET for learner l
+%disp(num2str(l));
 responses = p_get_feature_responses(SET, learner_id, learner_data, l);
 
 err = zeros(size(responses)); 

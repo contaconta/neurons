@@ -19,22 +19,22 @@ function responses = fragFeature(Images, learner_ids, learner_data)
 
 
 % pre-allocate the responses array (row vector)
-%responses = int32(zeros([1 length(Images)]));     % CAST to INT32 temporarily for memdaemon compliance
-%responses = zeros(size(Images));
+%responses = int32(zeros([1 length(Images)]));     % CAST to INT32
 responses = zeros([1 length(Images)]);
 
 % loop through the cell of Images
 for i=1:length(Images)
    
     % parse the learner_id to get parameters for the feature
-    m = regexp(learner_ids, 'FR_(\d*)?_p_(\d*)?_img_(\d*)?_bb_(\d*)_(\d*)_(\d*)_(\d*)', 'tokens');
-    BB = [str2double(m{1}{1}{4})  str2double(m{1}{1}{5}) str2double(m{1}{1}{6}) str2double(m{1}{1}{7})];
-    p = str2double(m{1}{1}{2});
+    m = regexp(learner_ids{1}, 'FR_(\d*)?_p_(\d*)?_img_(\d*)?_bb_(\d*)_(\d*)_(\d*)_(\d*)', 'tokens');
+    BB = [str2double(m{1}{4})  str2double(m{1}{5}) str2double(m{1}{6}) str2double(m{1}{7})];
+    p = str2double(m{1}{2});
     %id = a(1);
     %img = a(2);
     
     % compute the feature response and store it in responses
     responses(i) = frag_feature(Images{i}, learner_data{1}, BB, p); 
    
+    %disp([ 'Image i=' num2str(i) ' learner_id=' learner_ids{1} ]);
     
 end

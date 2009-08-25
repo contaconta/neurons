@@ -27,7 +27,7 @@ make
 #GCC=/usr/bin/c++
 GCC=g++
 #MEX_ARG="-cxx `pkg-config --libs opencv`"
-MEX_ARG="-cxx"
+MEX_ARG="-cxx -O"
 MEX_EXE=`which mex`
 if [ a$MEX_EXE = 'a' ]
 then
@@ -44,6 +44,8 @@ $GCC -fPIC $CFLAGS -I$MEXPATH mexEnumerateLearners.c
 $GCC -fPIC $CFLAGS -I$MEXPATH mexStoreResponse.c
 $GCC -fPIC $CFLAGS -I$MEXPATH mexLoadResponse.c
 $GCC -fPIC $CFLAGS -I$MEXPATH mexIntensityFeature.c
+$GCC -fPIC $CFLAGS -I$MEXPATH mexNormCorr.c
+$GCC -fPIC $CFLAGS -I$MEXPATH mexDotProduct.c
 $MEX_EXE mexBoxIntegral.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/libProjectX.dir/loadImage.o -lgcc -outdir ../bin/ $MEX_ARG
 $MEX_EXE mexIntegralImage.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/libProjectX.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
 $MEX_EXE mexRectangleFeature.o CMakeFiles/libProjectX.dir/integral.o CMakeFiles/libProjectX.dir/loadImage.o -lgcc -outdir ../bin/  $MEX_ARG
@@ -51,3 +53,5 @@ $MEX_EXE mexEnumerateLearners.o CMakeFiles/libProjectX.dir/enumerateLearners.o C
 $MEX_EXE mexStoreResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
 $MEX_EXE mexLoadResponse.o CMakeFiles/libProjectX.dir/common.o CMakeFiles/libProjectX.dir/memClient.o -lgcc -outdir ../bin $MEX_ARG
 $MEX_EXE mexIntensityFeature.o CMakeFiles/libProjectX.dir/intensityFeature.o CMakeFiles/libProjectX.dir/utils.o CMakeFiles/libProjectX.dir/Cloud.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexNormCorr.o -lgcc -outdir ../bin $MEX_ARG
+$MEX_EXE mexDotProduct.o -lgcc -outdir ../bin $MEX_ARG

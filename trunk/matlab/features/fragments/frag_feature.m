@@ -29,18 +29,24 @@ function F = frag_feature(I, fragment, BB, p)
 
 
 % extract a patch from I defined by the BB
-patch = I(BB(2):BB(2)+BB(4), BB(1):BB(1)+BB(3));
+%patch = I(BB(2):BB(2)+BB(4), BB(1):BB(1)+BB(3));
 
-% scale the fragment to the appropriate size, if necessary
-if ~isequal(size(fragment), [BB(4)+1 BB(3)+1])
-    fragment = imresize(fragment, [BB(4)+1 BB(3)+1]);
-end
+% % scale the fragment to the appropriate size, if necessary
+% if ~isequal(size(fragment), [BB(4)+1 BB(3)+1])
+%     fragment = imresize(fragment, [BB(4)+1 BB(3)+1]);
+% end
+
+
+% TEMP DEBUGGING!
+patch = I;  %fragment = imresize(fragment, size(I));
 
 if isequal(size(patch), size(fragment))
     
     % the feature response is the normalized correlation between the patch
     % and the scaled fragment
-    F = frag_normcorr(patch, fragment, p);
+    F = mexNormCorr(double(patch), double(fragment));
+    %F = double(mexIntensityFeature({patch}, {'IT_'}, {fragment}));
+    %F = frag_normcorr(patch, fragment, p);
     
 else
    error('Error frag_feature: the size of the patch extracted with the BB did not match the size of the scaled fragment');
