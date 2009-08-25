@@ -20,16 +20,9 @@ function p_precompute_features(SET, LEARNERS)
 tic;
 disp('Precomputing features on the TRAIN SET');
 
-%.................... start the memDaemon .................................
-dtype = get_datatype(LEARNERS.types);
-system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']); pause(0.1);
-[s,r]=system('ps -ef | grep memDaemon | wc -l');
-if (r ~= 3)
-    disp('...memDaemon is not running');
-else
-    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']);
-end
-%..........................................................................
+
+% start the memDaemon, which is used to store our precomputed feature responses
+start_memDaemon(LEARNERS, SET);
 
 W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
 
@@ -51,21 +44,39 @@ toc;
 
 
 
+
+
+
+
+
+function start_memDaemon(LEARNERS, SET)
+%%=========================================================================
+dtype = get_datatype(LEARNERS.types);
+system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']); pause(0.1);
+[s,r]=system('ps -ef | grep memDaemon | grep -v -e "grep"');
+if r
+    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']);
+else
+    disp('...memDaemon is not running'); 
+end
+
+
+
 %%=========================================================================
 function dtype = get_datatype(types)
 
 dtype = cell(size(types));
 
 for t = 1:length(types)
-    switch types{t1}(1:2)
+    switch types{t}(1:2)
         case 'HA'
-            dtype{t} = 'int32';
+            dtype{t} = 'int';
         case 'IT'
-            dtype{t} = 'int32';
+            dtype{t} = 'int';
         case 'FR'
             dtype{t} = 'double';
         case '??'
-            dtype{t} = 'int32';
+            dtype{t} = 'int';
         otherwise
             error('Error p_precompute_features.m: could not find appropriate function for learner');
     end
