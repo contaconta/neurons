@@ -30,16 +30,16 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/local/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /usr/local/bin/cmake -E remove -f
+RM = /usr/bin/cmake -E remove -f
 
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/local/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ggonzale/workspace/neseg/cmake
+CMAKE_SOURCE_DIR = /home/ggonzale/workspace/viva/cmake
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/ggonzale/workspace/viva/cmake
@@ -60,7 +60,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -359,664 +359,664 @@ viva/fast:
 .PHONY : viva/fast
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Axis.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Axis.o
-.PHONY : home/ggonzale/workspace/neseg/core/Axis.o
+home/ggonzale/workspace/viva/core/Axis.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Axis.o
+.PHONY : home/ggonzale/workspace/viva/core/Axis.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Axis.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Axis.i
-.PHONY : home/ggonzale/workspace/neseg/core/Axis.i
+home/ggonzale/workspace/viva/core/Axis.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Axis.i
+.PHONY : home/ggonzale/workspace/viva/core/Axis.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Axis.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Axis.s
-.PHONY : home/ggonzale/workspace/neseg/core/Axis.s
+home/ggonzale/workspace/viva/core/Axis.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Axis.s
+.PHONY : home/ggonzale/workspace/viva/core/Axis.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Cloud.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cloud.o
-.PHONY : home/ggonzale/workspace/neseg/core/Cloud.o
+home/ggonzale/workspace/viva/core/Cloud.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cloud.o
+.PHONY : home/ggonzale/workspace/viva/core/Cloud.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Cloud.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cloud.i
-.PHONY : home/ggonzale/workspace/neseg/core/Cloud.i
+home/ggonzale/workspace/viva/core/Cloud.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cloud.i
+.PHONY : home/ggonzale/workspace/viva/core/Cloud.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Cloud.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cloud.s
-.PHONY : home/ggonzale/workspace/neseg/core/Cloud.s
+home/ggonzale/workspace/viva/core/Cloud.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cloud.s
+.PHONY : home/ggonzale/workspace/viva/core/Cloud.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Contour.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Contour.o
-.PHONY : home/ggonzale/workspace/neseg/core/Contour.o
+home/ggonzale/workspace/viva/core/Contour.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Contour.o
+.PHONY : home/ggonzale/workspace/viva/core/Contour.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Contour.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Contour.i
-.PHONY : home/ggonzale/workspace/neseg/core/Contour.i
+home/ggonzale/workspace/viva/core/Contour.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Contour.i
+.PHONY : home/ggonzale/workspace/viva/core/Contour.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Contour.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Contour.s
-.PHONY : home/ggonzale/workspace/neseg/core/Contour.s
+home/ggonzale/workspace/viva/core/Contour.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Contour.s
+.PHONY : home/ggonzale/workspace/viva/core/Contour.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/CubeDijkstra.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeDijkstra.o
-.PHONY : home/ggonzale/workspace/neseg/core/CubeDijkstra.o
+home/ggonzale/workspace/viva/core/CubeDijkstra.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeDijkstra.o
+.PHONY : home/ggonzale/workspace/viva/core/CubeDijkstra.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/CubeDijkstra.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeDijkstra.i
-.PHONY : home/ggonzale/workspace/neseg/core/CubeDijkstra.i
+home/ggonzale/workspace/viva/core/CubeDijkstra.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeDijkstra.i
+.PHONY : home/ggonzale/workspace/viva/core/CubeDijkstra.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/CubeDijkstra.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeDijkstra.s
-.PHONY : home/ggonzale/workspace/neseg/core/CubeDijkstra.s
+home/ggonzale/workspace/viva/core/CubeDijkstra.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeDijkstra.s
+.PHONY : home/ggonzale/workspace/viva/core/CubeDijkstra.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/CubeFactory.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.o
-.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.o
+home/ggonzale/workspace/viva/core/CubeFactory.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeFactory.o
+.PHONY : home/ggonzale/workspace/viva/core/CubeFactory.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/CubeFactory.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.i
-.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.i
+home/ggonzale/workspace/viva/core/CubeFactory.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeFactory.i
+.PHONY : home/ggonzale/workspace/viva/core/CubeFactory.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/CubeFactory.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeFactory.s
-.PHONY : home/ggonzale/workspace/neseg/core/CubeFactory.s
+home/ggonzale/workspace/viva/core/CubeFactory.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeFactory.s
+.PHONY : home/ggonzale/workspace/viva/core/CubeFactory.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/CubeLiveWire.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeLiveWire.o
-.PHONY : home/ggonzale/workspace/neseg/core/CubeLiveWire.o
+home/ggonzale/workspace/viva/core/CubeLiveWire.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeLiveWire.o
+.PHONY : home/ggonzale/workspace/viva/core/CubeLiveWire.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/CubeLiveWire.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeLiveWire.i
-.PHONY : home/ggonzale/workspace/neseg/core/CubeLiveWire.i
+home/ggonzale/workspace/viva/core/CubeLiveWire.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeLiveWire.i
+.PHONY : home/ggonzale/workspace/viva/core/CubeLiveWire.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/CubeLiveWire.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/CubeLiveWire.s
-.PHONY : home/ggonzale/workspace/neseg/core/CubeLiveWire.s
+home/ggonzale/workspace/viva/core/CubeLiveWire.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/CubeLiveWire.s
+.PHONY : home/ggonzale/workspace/viva/core/CubeLiveWire.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Cube_P.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.o
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.o
+home/ggonzale/workspace/viva/core/Cube_P.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_P.o
+.PHONY : home/ggonzale/workspace/viva/core/Cube_P.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Cube_P.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.i
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.i
+home/ggonzale/workspace/viva/core/Cube_P.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_P.i
+.PHONY : home/ggonzale/workspace/viva/core/Cube_P.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Cube_P.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_P.s
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_P.s
+home/ggonzale/workspace/viva/core/Cube_P.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_P.s
+.PHONY : home/ggonzale/workspace/viva/core/Cube_P.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Cube_T.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.o
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.o
+home/ggonzale/workspace/viva/core/Cube_T.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_T.o
+.PHONY : home/ggonzale/workspace/viva/core/Cube_T.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Cube_T.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.i
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.i
+home/ggonzale/workspace/viva/core/Cube_T.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_T.i
+.PHONY : home/ggonzale/workspace/viva/core/Cube_T.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Cube_T.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Cube_T.s
-.PHONY : home/ggonzale/workspace/neseg/core/Cube_T.s
+home/ggonzale/workspace/viva/core/Cube_T.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Cube_T.s
+.PHONY : home/ggonzale/workspace/viva/core/Cube_T.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/DoubleSet.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/DoubleSet.o
-.PHONY : home/ggonzale/workspace/neseg/core/DoubleSet.o
+home/ggonzale/workspace/viva/core/DoubleSet.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/DoubleSet.o
+.PHONY : home/ggonzale/workspace/viva/core/DoubleSet.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/DoubleSet.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/DoubleSet.i
-.PHONY : home/ggonzale/workspace/neseg/core/DoubleSet.i
+home/ggonzale/workspace/viva/core/DoubleSet.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/DoubleSet.i
+.PHONY : home/ggonzale/workspace/viva/core/DoubleSet.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/DoubleSet.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/DoubleSet.s
-.PHONY : home/ggonzale/workspace/neseg/core/DoubleSet.s
+home/ggonzale/workspace/viva/core/DoubleSet.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/DoubleSet.s
+.PHONY : home/ggonzale/workspace/viva/core/DoubleSet.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Edge.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Edge.o
-.PHONY : home/ggonzale/workspace/neseg/core/Edge.o
+home/ggonzale/workspace/viva/core/Edge.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Edge.o
+.PHONY : home/ggonzale/workspace/viva/core/Edge.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Edge.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Edge.i
-.PHONY : home/ggonzale/workspace/neseg/core/Edge.i
+home/ggonzale/workspace/viva/core/Edge.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Edge.i
+.PHONY : home/ggonzale/workspace/viva/core/Edge.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Edge.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Edge.s
-.PHONY : home/ggonzale/workspace/neseg/core/Edge.s
+home/ggonzale/workspace/viva/core/Edge.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Edge.s
+.PHONY : home/ggonzale/workspace/viva/core/Edge.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/EdgeSet.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/EdgeSet.o
-.PHONY : home/ggonzale/workspace/neseg/core/EdgeSet.o
+home/ggonzale/workspace/viva/core/EdgeSet.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/EdgeSet.o
+.PHONY : home/ggonzale/workspace/viva/core/EdgeSet.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/EdgeSet.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/EdgeSet.i
-.PHONY : home/ggonzale/workspace/neseg/core/EdgeSet.i
+home/ggonzale/workspace/viva/core/EdgeSet.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/EdgeSet.i
+.PHONY : home/ggonzale/workspace/viva/core/EdgeSet.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/EdgeSet.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/EdgeSet.s
-.PHONY : home/ggonzale/workspace/neseg/core/EdgeSet.s
+home/ggonzale/workspace/viva/core/EdgeSet.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/EdgeSet.s
+.PHONY : home/ggonzale/workspace/viva/core/EdgeSet.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Graph.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Graph.o
-.PHONY : home/ggonzale/workspace/neseg/core/Graph.o
+home/ggonzale/workspace/viva/core/Graph.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Graph.o
+.PHONY : home/ggonzale/workspace/viva/core/Graph.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Graph.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Graph.i
-.PHONY : home/ggonzale/workspace/neseg/core/Graph.i
+home/ggonzale/workspace/viva/core/Graph.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Graph.i
+.PHONY : home/ggonzale/workspace/viva/core/Graph.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Graph.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Graph.s
-.PHONY : home/ggonzale/workspace/neseg/core/Graph.s
+home/ggonzale/workspace/viva/core/Graph.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Graph.s
+.PHONY : home/ggonzale/workspace/viva/core/Graph.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Mask.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Mask.o
-.PHONY : home/ggonzale/workspace/neseg/core/Mask.o
+home/ggonzale/workspace/viva/core/Mask.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Mask.o
+.PHONY : home/ggonzale/workspace/viva/core/Mask.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Mask.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Mask.i
-.PHONY : home/ggonzale/workspace/neseg/core/Mask.i
+home/ggonzale/workspace/viva/core/Mask.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Mask.i
+.PHONY : home/ggonzale/workspace/viva/core/Mask.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Mask.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Mask.s
-.PHONY : home/ggonzale/workspace/neseg/core/Mask.s
+home/ggonzale/workspace/viva/core/Mask.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Mask.s
+.PHONY : home/ggonzale/workspace/viva/core/Mask.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Neuron.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Neuron.o
-.PHONY : home/ggonzale/workspace/neseg/core/Neuron.o
+home/ggonzale/workspace/viva/core/Neuron.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Neuron.o
+.PHONY : home/ggonzale/workspace/viva/core/Neuron.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Neuron.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Neuron.i
-.PHONY : home/ggonzale/workspace/neseg/core/Neuron.i
+home/ggonzale/workspace/viva/core/Neuron.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Neuron.i
+.PHONY : home/ggonzale/workspace/viva/core/Neuron.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Neuron.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Neuron.s
-.PHONY : home/ggonzale/workspace/neseg/core/Neuron.s
+home/ggonzale/workspace/viva/core/Neuron.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Neuron.s
+.PHONY : home/ggonzale/workspace/viva/core/Neuron.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Parser.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Parser.o
-.PHONY : home/ggonzale/workspace/neseg/core/Parser.o
+home/ggonzale/workspace/viva/core/Parser.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Parser.o
+.PHONY : home/ggonzale/workspace/viva/core/Parser.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Parser.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Parser.i
-.PHONY : home/ggonzale/workspace/neseg/core/Parser.i
+home/ggonzale/workspace/viva/core/Parser.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Parser.i
+.PHONY : home/ggonzale/workspace/viva/core/Parser.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Parser.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Parser.s
-.PHONY : home/ggonzale/workspace/neseg/core/Parser.s
+home/ggonzale/workspace/viva/core/Parser.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Parser.s
+.PHONY : home/ggonzale/workspace/viva/core/Parser.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point.o
+home/ggonzale/workspace/viva/core/Point.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point.o
+.PHONY : home/ggonzale/workspace/viva/core/Point.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point.i
+home/ggonzale/workspace/viva/core/Point.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point.i
+.PHONY : home/ggonzale/workspace/viva/core/Point.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point.s
+home/ggonzale/workspace/viva/core/Point.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point.s
+.PHONY : home/ggonzale/workspace/viva/core/Point.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point2D.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2D.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point2D.o
+home/ggonzale/workspace/viva/core/Point2D.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2D.o
+.PHONY : home/ggonzale/workspace/viva/core/Point2D.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point2D.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2D.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point2D.i
+home/ggonzale/workspace/viva/core/Point2D.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2D.i
+.PHONY : home/ggonzale/workspace/viva/core/Point2D.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point2D.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2D.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point2D.s
+home/ggonzale/workspace/viva/core/Point2D.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2D.s
+.PHONY : home/ggonzale/workspace/viva/core/Point2D.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point2Do.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Do.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Do.o
+home/ggonzale/workspace/viva/core/Point2Do.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Do.o
+.PHONY : home/ggonzale/workspace/viva/core/Point2Do.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point2Do.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Do.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Do.i
+home/ggonzale/workspace/viva/core/Point2Do.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Do.i
+.PHONY : home/ggonzale/workspace/viva/core/Point2Do.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point2Do.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Do.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Do.s
+home/ggonzale/workspace/viva/core/Point2Do.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Do.s
+.PHONY : home/ggonzale/workspace/viva/core/Point2Do.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point2Dot.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Dot.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Dot.o
+home/ggonzale/workspace/viva/core/Point2Dot.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Dot.o
+.PHONY : home/ggonzale/workspace/viva/core/Point2Dot.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point2Dot.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Dot.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Dot.i
+home/ggonzale/workspace/viva/core/Point2Dot.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Dot.i
+.PHONY : home/ggonzale/workspace/viva/core/Point2Dot.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point2Dot.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point2Dot.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point2Dot.s
+home/ggonzale/workspace/viva/core/Point2Dot.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point2Dot.s
+.PHONY : home/ggonzale/workspace/viva/core/Point2Dot.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point3D.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3D.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point3D.o
+home/ggonzale/workspace/viva/core/Point3D.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3D.o
+.PHONY : home/ggonzale/workspace/viva/core/Point3D.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point3D.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3D.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point3D.i
+home/ggonzale/workspace/viva/core/Point3D.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3D.i
+.PHONY : home/ggonzale/workspace/viva/core/Point3D.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point3D.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3D.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point3D.s
+home/ggonzale/workspace/viva/core/Point3D.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3D.s
+.PHONY : home/ggonzale/workspace/viva/core/Point3D.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point3Do.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Do.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Do.o
+home/ggonzale/workspace/viva/core/Point3Do.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Do.o
+.PHONY : home/ggonzale/workspace/viva/core/Point3Do.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point3Do.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Do.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Do.i
+home/ggonzale/workspace/viva/core/Point3Do.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Do.i
+.PHONY : home/ggonzale/workspace/viva/core/Point3Do.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point3Do.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Do.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Do.s
+home/ggonzale/workspace/viva/core/Point3Do.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Do.s
+.PHONY : home/ggonzale/workspace/viva/core/Point3Do.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point3Dot.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dot.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dot.o
+home/ggonzale/workspace/viva/core/Point3Dot.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dot.o
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dot.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point3Dot.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dot.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dot.i
+home/ggonzale/workspace/viva/core/Point3Dot.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dot.i
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dot.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point3Dot.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dot.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dot.s
+home/ggonzale/workspace/viva/core/Point3Dot.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dot.s
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dot.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/Point3Dt.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dt.o
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dt.o
+home/ggonzale/workspace/viva/core/Point3Dt.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dt.o
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dt.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/Point3Dt.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dt.i
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dt.i
+home/ggonzale/workspace/viva/core/Point3Dt.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dt.i
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dt.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/Point3Dt.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/Point3Dt.s
-.PHONY : home/ggonzale/workspace/neseg/core/Point3Dt.s
+home/ggonzale/workspace/viva/core/Point3Dt.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/Point3Dt.s
+.PHONY : home/ggonzale/workspace/viva/core/Point3Dt.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/ascParser2.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/ascParser2.o
-.PHONY : home/ggonzale/workspace/neseg/core/ascParser2.o
+home/ggonzale/workspace/viva/core/ascParser2.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/ascParser2.o
+.PHONY : home/ggonzale/workspace/viva/core/ascParser2.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/ascParser2.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/ascParser2.i
-.PHONY : home/ggonzale/workspace/neseg/core/ascParser2.i
+home/ggonzale/workspace/viva/core/ascParser2.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/ascParser2.i
+.PHONY : home/ggonzale/workspace/viva/core/ascParser2.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/ascParser2.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/ascParser2.s
-.PHONY : home/ggonzale/workspace/neseg/core/ascParser2.s
+home/ggonzale/workspace/viva/core/ascParser2.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/ascParser2.s
+.PHONY : home/ggonzale/workspace/viva/core/ascParser2.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/core/utils.o:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/utils.o
-.PHONY : home/ggonzale/workspace/neseg/core/utils.o
+home/ggonzale/workspace/viva/core/utils.o:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/utils.o
+.PHONY : home/ggonzale/workspace/viva/core/utils.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/core/utils.i:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/utils.i
-.PHONY : home/ggonzale/workspace/neseg/core/utils.i
+home/ggonzale/workspace/viva/core/utils.i:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/utils.i
+.PHONY : home/ggonzale/workspace/viva/core/utils.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/core/utils.s:
-	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/neseg/core/utils.s
-.PHONY : home/ggonzale/workspace/neseg/core/utils.s
+home/ggonzale/workspace/viva/core/utils.s:
+	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/home/ggonzale/workspace/viva/core/utils.s
+.PHONY : home/ggonzale/workspace/viva/core/utils.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o:
-	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
-.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
+home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.o:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.o
+.PHONY : home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i:
-	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i
-.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i
+home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.i:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.i
+.PHONY : home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s:
-	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s
-.PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s
+home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.s:
+	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.s
+.PHONY : home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tests/graphToDisplayList.o:
-	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.o
-.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.o
+home/ggonzale/workspace/viva/tests/graphToDisplayList.o:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/viva/tests/graphToDisplayList.o
+.PHONY : home/ggonzale/workspace/viva/tests/graphToDisplayList.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tests/graphToDisplayList.i:
-	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.i
-.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.i
+home/ggonzale/workspace/viva/tests/graphToDisplayList.i:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/viva/tests/graphToDisplayList.i
+.PHONY : home/ggonzale/workspace/viva/tests/graphToDisplayList.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tests/graphToDisplayList.s:
-	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/neseg/tests/graphToDisplayList.s
-.PHONY : home/ggonzale/workspace/neseg/tests/graphToDisplayList.s
+home/ggonzale/workspace/viva/tests/graphToDisplayList.s:
+	$(MAKE) -f CMakeFiles/graphToDisplayList.dir/build.make CMakeFiles/graphToDisplayList.dir/home/ggonzale/workspace/viva/tests/graphToDisplayList.s
+.PHONY : home/ggonzale/workspace/viva/tests/graphToDisplayList.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tests/gslMinimization.o:
-	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.o
-.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.o
+home/ggonzale/workspace/viva/tests/gslMinimization.o:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/viva/tests/gslMinimization.o
+.PHONY : home/ggonzale/workspace/viva/tests/gslMinimization.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tests/gslMinimization.i:
-	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.i
-.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.i
+home/ggonzale/workspace/viva/tests/gslMinimization.i:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/viva/tests/gslMinimization.i
+.PHONY : home/ggonzale/workspace/viva/tests/gslMinimization.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tests/gslMinimization.s:
-	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/neseg/tests/gslMinimization.s
-.PHONY : home/ggonzale/workspace/neseg/tests/gslMinimization.s
+home/ggonzale/workspace/viva/tests/gslMinimization.s:
+	$(MAKE) -f CMakeFiles/gslMinimization.dir/build.make CMakeFiles/gslMinimization.dir/home/ggonzale/workspace/viva/tests/gslMinimization.s
+.PHONY : home/ggonzale/workspace/viva/tests/gslMinimization.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o:
-	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
-.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o
+home/ggonzale/workspace/viva/tests/tryManyPathsCloud.o:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/viva/tests/tryManyPathsCloud.o
+.PHONY : home/ggonzale/workspace/viva/tests/tryManyPathsCloud.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i:
-	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i
-.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i
+home/ggonzale/workspace/viva/tests/tryManyPathsCloud.i:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/viva/tests/tryManyPathsCloud.i
+.PHONY : home/ggonzale/workspace/viva/tests/tryManyPathsCloud.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s:
-	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s
-.PHONY : home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s
+home/ggonzale/workspace/viva/tests/tryManyPathsCloud.s:
+	$(MAKE) -f CMakeFiles/tryManyPathsCloud.dir/build.make CMakeFiles/tryManyPathsCloud.dir/home/ggonzale/workspace/viva/tests/tryManyPathsCloud.s
+.PHONY : home/ggonzale/workspace/viva/tests/tryManyPathsCloud.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeAt.o:
-	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.o
+home/ggonzale/workspace/viva/tools/cube/cubeAt.o:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/viva/tools/cube/cubeAt.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeAt.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeAt.i:
-	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.i
+home/ggonzale/workspace/viva/tools/cube/cubeAt.i:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/viva/tools/cube/cubeAt.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeAt.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeAt.s:
-	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeAt.s
+home/ggonzale/workspace/viva/tools/cube/cubeAt.s:
+	$(MAKE) -f CMakeFiles/cubeAt.dir/build.make CMakeFiles/cubeAt.dir/home/ggonzale/workspace/viva/tools/cube/cubeAt.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeAt.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o:
-	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o
+home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.o:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i:
-	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i
+home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.i:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s:
-	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s
+home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.s:
+	$(MAKE) -f CMakeFiles/cubeCalculateAguet.dir/build.make CMakeFiles/cubeCalculateAguet.dir/home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeCut.o:
-	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.o
+home/ggonzale/workspace/viva/tools/cube/cubeCut.o:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/viva/tools/cube/cubeCut.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCut.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeCut.i:
-	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.i
+home/ggonzale/workspace/viva/tools/cube/cubeCut.i:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/viva/tools/cube/cubeCut.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCut.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeCut.s:
-	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/neseg/tools/cube/cubeCut.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeCut.s
+home/ggonzale/workspace/viva/tools/cube/cubeCut.s:
+	$(MAKE) -f CMakeFiles/cubeCut.dir/build.make CMakeFiles/cubeCut.dir/home/ggonzale/workspace/viva/tools/cube/cubeCut.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeCut.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o:
-	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o
+home/ggonzale/workspace/viva/tools/cube/cubeDecimate.o:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/viva/tools/cube/cubeDecimate.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDecimate.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i:
-	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i
+home/ggonzale/workspace/viva/tools/cube/cubeDecimate.i:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/viva/tools/cube/cubeDecimate.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDecimate.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s:
-	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s
+home/ggonzale/workspace/viva/tools/cube/cubeDecimate.s:
+	$(MAKE) -f CMakeFiles/cubeDecimate.dir/build.make CMakeFiles/cubeDecimate.dir/home/ggonzale/workspace/viva/tools/cube/cubeDecimate.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDecimate.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o:
-	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o
+home/ggonzale/workspace/viva/tools/cube/cubeDerivative.o:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivative.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivative.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i:
-	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i
+home/ggonzale/workspace/viva/tools/cube/cubeDerivative.i:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivative.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivative.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s:
-	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s
+home/ggonzale/workspace/viva/tools/cube/cubeDerivative.s:
+	$(MAKE) -f CMakeFiles/cubeDerivative.dir/build.make CMakeFiles/cubeDerivative.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivative.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivative.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o:
-	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o
+home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.o:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i:
-	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i
+home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.i:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s:
-	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s
+home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.s:
+	$(MAKE) -f CMakeFiles/cubeDerivativesOrder.dir/build.make CMakeFiles/cubeDerivativesOrder.dir/home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o:
-	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o
+home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.o:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i:
-	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i
+home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.i:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s:
-	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s
+home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.s:
+	$(MAKE) -f CMakeFiles/cubeDijkstra2.dir/build.make CMakeFiles/cubeDijkstra2.dir/home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o:
-	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o
+home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.o:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i:
-	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i
+home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.i:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s:
-	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s
+home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.s:
+	$(MAKE) -f CMakeFiles/cubeFromImageStack.dir/build.make CMakeFiles/cubeFromImageStack.dir/home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o:
-	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o
+home/ggonzale/workspace/viva/tools/cube/cubeLogistic.o:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/viva/tools/cube/cubeLogistic.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeLogistic.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i:
-	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i
+home/ggonzale/workspace/viva/tools/cube/cubeLogistic.i:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/viva/tools/cube/cubeLogistic.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeLogistic.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s:
-	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s
+home/ggonzale/workspace/viva/tools/cube/cubeLogistic.s:
+	$(MAKE) -f CMakeFiles/cubeLogistic.dir/build.make CMakeFiles/cubeLogistic.dir/home/ggonzale/workspace/viva/tools/cube/cubeLogistic.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeLogistic.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o:
-	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o
+home/ggonzale/workspace/viva/tools/cube/cubeStatistics.o:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/viva/tools/cube/cubeStatistics.o
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeStatistics.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i:
-	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i
+home/ggonzale/workspace/viva/tools/cube/cubeStatistics.i:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/viva/tools/cube/cubeStatistics.i
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeStatistics.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s:
-	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s
-.PHONY : home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s
+home/ggonzale/workspace/viva/tools/cube/cubeStatistics.s:
+	$(MAKE) -f CMakeFiles/cubeStatistics.dir/build.make CMakeFiles/cubeStatistics.dir/home/ggonzale/workspace/viva/tools/cube/cubeStatistics.s
+.PHONY : home/ggonzale/workspace/viva/tools/cube/cubeStatistics.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o:
-	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o
+home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.o:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.o
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i:
-	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i
+home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.i:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.i
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s:
-	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s
+home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.s:
+	$(MAKE) -f CMakeFiles/graphFindLeaves.dir/build.make CMakeFiles/graphFindLeaves.dir/home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.s
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/graph/graphPrim.o:
-	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.o
+home/ggonzale/workspace/viva/tools/graph/graphPrim.o:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/viva/tools/graph/graphPrim.o
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrim.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/graph/graphPrim.i:
-	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.i
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.i
+home/ggonzale/workspace/viva/tools/graph/graphPrim.i:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/viva/tools/graph/graphPrim.i
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrim.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/graph/graphPrim.s:
-	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrim.s
+home/ggonzale/workspace/viva/tools/graph/graphPrim.s:
+	$(MAKE) -f CMakeFiles/graphPrim.dir/build.make CMakeFiles/graphPrim.dir/home/ggonzale/workspace/viva/tools/graph/graphPrim.s
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrim.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/graph/graphPrune.o:
-	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.o
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.o
+home/ggonzale/workspace/viva/tools/graph/graphPrune.o:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/viva/tools/graph/graphPrune.o
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrune.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/graph/graphPrune.i:
-	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.i
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.i
+home/ggonzale/workspace/viva/tools/graph/graphPrune.i:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/viva/tools/graph/graphPrune.i
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrune.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/graph/graphPrune.s:
-	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/neseg/tools/graph/graphPrune.s
-.PHONY : home/ggonzale/workspace/neseg/tools/graph/graphPrune.s
+home/ggonzale/workspace/viva/tools/graph/graphPrune.s:
+	$(MAKE) -f CMakeFiles/graphPrune.dir/build.make CMakeFiles/graphPrune.dir/home/ggonzale/workspace/viva/tools/graph/graphPrune.s
+.PHONY : home/ggonzale/workspace/viva/tools/graph/graphPrune.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o:
-	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o
+home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.o:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.o
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i:
-	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i
+home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.i:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.i
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s:
-	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s
+home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.s:
+	$(MAKE) -f CMakeFiles/neuronFixDuplicatePoints.dir/build.make CMakeFiles/neuronFixDuplicatePoints.dir/home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.s
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o:
-	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o
+home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.o:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.o
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.o
 
 # target to preprocess a source file
-home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i:
-	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i
+home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.i:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.i
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.i
 
 # target to generate assembly for a file
-home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s:
-	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
-.PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
+home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.s:
+	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.s
+.PHONY : home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.s
 
 # Help Target
 help:
@@ -1046,138 +1046,138 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... tryManyPathsCloud"
 	@echo "... viva"
-	@echo "... home/ggonzale/workspace/neseg/core/Axis.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Axis.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Axis.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Cloud.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Cloud.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Cloud.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Contour.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Contour.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Contour.s"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.o"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.i"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeDijkstra.s"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.o"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.i"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeFactory.s"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.o"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.i"
-	@echo "... home/ggonzale/workspace/neseg/core/CubeLiveWire.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_P.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Cube_T.s"
-	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.o"
-	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.i"
-	@echo "... home/ggonzale/workspace/neseg/core/DoubleSet.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Edge.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Edge.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Edge.s"
-	@echo "... home/ggonzale/workspace/neseg/core/EdgeSet.o"
-	@echo "... home/ggonzale/workspace/neseg/core/EdgeSet.i"
-	@echo "... home/ggonzale/workspace/neseg/core/EdgeSet.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Graph.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Graph.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Graph.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Mask.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Mask.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Mask.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Neuron.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Neuron.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Neuron.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Parser.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Parser.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Parser.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2D.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2D.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2D.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Do.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Do.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Do.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Dot.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Dot.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point2Dot.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3D.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3D.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3D.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Do.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Do.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Do.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dot.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dot.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dot.s"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dt.o"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dt.i"
-	@echo "... home/ggonzale/workspace/neseg/core/Point3Dt.s"
-	@echo "... home/ggonzale/workspace/neseg/core/ascParser2.o"
-	@echo "... home/ggonzale/workspace/neseg/core/ascParser2.i"
-	@echo "... home/ggonzale/workspace/neseg/core/ascParser2.s"
-	@echo "... home/ggonzale/workspace/neseg/core/utils.o"
-	@echo "... home/ggonzale/workspace/neseg/core/utils.i"
-	@echo "... home/ggonzale/workspace/neseg/core/utils.s"
-	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o"
-	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i"
-	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s"
-	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.o"
-	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.i"
-	@echo "... home/ggonzale/workspace/neseg/tests/graphToDisplayList.s"
-	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.o"
-	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.i"
-	@echo "... home/ggonzale/workspace/neseg/tests/gslMinimization.s"
-	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.o"
-	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.i"
-	@echo "... home/ggonzale/workspace/neseg/tests/tryManyPathsCloud.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeAt.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCalculateAguet.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeCut.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDecimate.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivative.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDerivativesOrder.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeDijkstra2.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeFromImageStack.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeLogistic.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/cube/cubeStatistics.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphFindLeaves.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrim.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/graph/graphPrune.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronFixDuplicatePoints.s"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i"
-	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s"
+	@echo "... home/ggonzale/workspace/viva/core/Axis.o"
+	@echo "... home/ggonzale/workspace/viva/core/Axis.i"
+	@echo "... home/ggonzale/workspace/viva/core/Axis.s"
+	@echo "... home/ggonzale/workspace/viva/core/Cloud.o"
+	@echo "... home/ggonzale/workspace/viva/core/Cloud.i"
+	@echo "... home/ggonzale/workspace/viva/core/Cloud.s"
+	@echo "... home/ggonzale/workspace/viva/core/Contour.o"
+	@echo "... home/ggonzale/workspace/viva/core/Contour.i"
+	@echo "... home/ggonzale/workspace/viva/core/Contour.s"
+	@echo "... home/ggonzale/workspace/viva/core/CubeDijkstra.o"
+	@echo "... home/ggonzale/workspace/viva/core/CubeDijkstra.i"
+	@echo "... home/ggonzale/workspace/viva/core/CubeDijkstra.s"
+	@echo "... home/ggonzale/workspace/viva/core/CubeFactory.o"
+	@echo "... home/ggonzale/workspace/viva/core/CubeFactory.i"
+	@echo "... home/ggonzale/workspace/viva/core/CubeFactory.s"
+	@echo "... home/ggonzale/workspace/viva/core/CubeLiveWire.o"
+	@echo "... home/ggonzale/workspace/viva/core/CubeLiveWire.i"
+	@echo "... home/ggonzale/workspace/viva/core/CubeLiveWire.s"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_P.o"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_P.i"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_P.s"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_T.o"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_T.i"
+	@echo "... home/ggonzale/workspace/viva/core/Cube_T.s"
+	@echo "... home/ggonzale/workspace/viva/core/DoubleSet.o"
+	@echo "... home/ggonzale/workspace/viva/core/DoubleSet.i"
+	@echo "... home/ggonzale/workspace/viva/core/DoubleSet.s"
+	@echo "... home/ggonzale/workspace/viva/core/Edge.o"
+	@echo "... home/ggonzale/workspace/viva/core/Edge.i"
+	@echo "... home/ggonzale/workspace/viva/core/Edge.s"
+	@echo "... home/ggonzale/workspace/viva/core/EdgeSet.o"
+	@echo "... home/ggonzale/workspace/viva/core/EdgeSet.i"
+	@echo "... home/ggonzale/workspace/viva/core/EdgeSet.s"
+	@echo "... home/ggonzale/workspace/viva/core/Graph.o"
+	@echo "... home/ggonzale/workspace/viva/core/Graph.i"
+	@echo "... home/ggonzale/workspace/viva/core/Graph.s"
+	@echo "... home/ggonzale/workspace/viva/core/Mask.o"
+	@echo "... home/ggonzale/workspace/viva/core/Mask.i"
+	@echo "... home/ggonzale/workspace/viva/core/Mask.s"
+	@echo "... home/ggonzale/workspace/viva/core/Neuron.o"
+	@echo "... home/ggonzale/workspace/viva/core/Neuron.i"
+	@echo "... home/ggonzale/workspace/viva/core/Neuron.s"
+	@echo "... home/ggonzale/workspace/viva/core/Parser.o"
+	@echo "... home/ggonzale/workspace/viva/core/Parser.i"
+	@echo "... home/ggonzale/workspace/viva/core/Parser.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point2D.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point2D.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point2D.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Do.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Do.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Do.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Dot.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Dot.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point2Dot.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point3D.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point3D.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point3D.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Do.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Do.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Do.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dot.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dot.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dot.s"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dt.o"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dt.i"
+	@echo "... home/ggonzale/workspace/viva/core/Point3Dt.s"
+	@echo "... home/ggonzale/workspace/viva/core/ascParser2.o"
+	@echo "... home/ggonzale/workspace/viva/core/ascParser2.i"
+	@echo "... home/ggonzale/workspace/viva/core/ascParser2.s"
+	@echo "... home/ggonzale/workspace/viva/core/utils.o"
+	@echo "... home/ggonzale/workspace/viva/core/utils.i"
+	@echo "... home/ggonzale/workspace/viva/core/utils.s"
+	@echo "... home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.o"
+	@echo "... home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.i"
+	@echo "... home/ggonzale/workspace/viva/tests/MSTthroughShortestPath.s"
+	@echo "... home/ggonzale/workspace/viva/tests/graphToDisplayList.o"
+	@echo "... home/ggonzale/workspace/viva/tests/graphToDisplayList.i"
+	@echo "... home/ggonzale/workspace/viva/tests/graphToDisplayList.s"
+	@echo "... home/ggonzale/workspace/viva/tests/gslMinimization.o"
+	@echo "... home/ggonzale/workspace/viva/tests/gslMinimization.i"
+	@echo "... home/ggonzale/workspace/viva/tests/gslMinimization.s"
+	@echo "... home/ggonzale/workspace/viva/tests/tryManyPathsCloud.o"
+	@echo "... home/ggonzale/workspace/viva/tests/tryManyPathsCloud.i"
+	@echo "... home/ggonzale/workspace/viva/tests/tryManyPathsCloud.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeAt.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeAt.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeAt.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCalculateAguet.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCut.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCut.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeCut.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDecimate.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDecimate.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDecimate.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivative.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivative.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivative.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDerivativesOrder.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeDijkstra2.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeFromImageStack.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeLogistic.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeLogistic.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeLogistic.s"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeStatistics.o"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeStatistics.i"
+	@echo "... home/ggonzale/workspace/viva/tools/cube/cubeStatistics.s"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.o"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.i"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphFindLeaves.s"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrim.o"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrim.i"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrim.s"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrune.o"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrune.i"
+	@echo "... home/ggonzale/workspace/viva/tools/graph/graphPrune.s"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.o"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.i"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronFixDuplicatePoints.s"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.o"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.i"
+	@echo "... home/ggonzale/workspace/viva/tools/neuron/neuronOutputAllEdgeLengths.s"
 .PHONY : help
 
 

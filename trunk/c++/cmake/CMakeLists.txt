@@ -1,10 +1,10 @@
+
 cmake_minimum_required(VERSION 2.4)
 if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
 site_name(HOST)
-message("The host is " ${HOST})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Modules")
 
@@ -24,8 +24,8 @@ ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
 
-#set(CMAKE_BUILD_TYPE debug) #debug none release distribution
-set(CMAKE_BUILD_TYPE release) #debug none release distribution
+set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+#set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 ################################################################################
 ## External Libraries and Linking Command
@@ -68,9 +68,10 @@ ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
 ################################################################################
 ## Compilation flags and file organization
 ################################################################################
-#set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS} " -g -pg")
-set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS} "-O3")
+set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_DEBUG    ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_RELEASE  ${CMAKE_CXX_FLAGS} " -o3 ")
+message("Cmake CXX flags debug " ${CMAKE_CXX_FLAGS})
 
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
