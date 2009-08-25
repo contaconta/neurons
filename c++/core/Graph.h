@@ -416,7 +416,6 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraph()
 template< class P, class E>
 Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
 {
-  printf("Graph<P,E>::primFromThisGraph of %i points  [", cloud->points.size());
   //Erases the edges
 
   Graph<Point3D, EdgeW<Point3D> >* toReturn = new Graph<Point3D, EdgeW<Point3D> >();
@@ -430,20 +429,43 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
   vector< int > closest_in_tree(cloud->points.size());
   vector< double > distances_to_tree(cloud->points.size());
 
-  //Initialization
+  // Allocation of a NxN matrix that will store the distances
+  //  and a pseudo-matrix to store the neighbors
+  printf("Graph<P,E>::primFromThisGraphFast initializing the data structures\n");
+  vector< vector< int > > neighbors;
+  neighbors.resize(cloud->points.size());
+  vector< vector< double > > distances;
+  distances.resize(cloud->points.size());
+  for(int i = 0; i < cloud->points.size; i++){
+    distances[i].resize(cloud->points.size());
+  }
+  for(int i = 0; i < cloud->points.size; i++)
+    for(int j = 0; j < distances[i].size(); j++)
+      distances[i][j] = DBL_MAX;
+
+  for(int i = 0; i < eset.edges.size(); i++){
+    neighbors[eset.edges[i]->p0].push_back(eset.edges[i]->p1);
+    neighbors[eset.edges[i]->p1].push_back(eset.edges[i]->p0);
+    EdgeW<P> * edg = dynamic_cast<EdgeW<P>* >(eset.edges[i]);
+    distances[eset.edges[i]->p0][eset.edges[i]->p1] = edg->w;
+    distances[eset.edges[i]->p1][eset.edges[i]->p0] = edg->w;
+  }
+
   for(int i = 0; i < cloud->points.size(); i++)
     {
       parents[i] = -1;
       closest_in_tree[i] = 0;
-      distances_to_tree[i] = distanceInGraph(0,i);
+      distances_to_tree[i] = distances[0][i];
     }
   parents[0] = 0;
 
+  printf("Graph<P,E>::primFromThisGraphFast of %i points  [", cloud->points.size());
   for(int i = 0; i < cloud->points.size(); i++)
     {
       //Find the point that is not in the graph but closer to the graph
       int cls_idx = 0;
       double min_distance = DBL_MAX;
+      // This can be done faster using an double map
       for(int cls = 0; cls < cloud->points.size(); cls++)
         if( (parents[cls] == -1) && (distances_to_tree[cls] < min_distance) ){
             min_distance = distances_to_tree[cls];
@@ -452,11 +474,12 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
       //Now we update the data structures for new iterations
       parents[cls_idx] = closest_in_tree[cls_idx];
       double distance_update = 0;
-      for(int cls2 = 0; cls2 < cloud->points.size(); cls2++)
+      // for(int cls2 = 0; cls2 < cloud->points.size(); cls2++)
+      for(int i = 0; i < neighbors[cls_idx].size(); i++)
         {
-          if (parents[cls2] == -1)
+          if (parents[ neighbors[cls_idx][i] ] == -1)
             {
-              distance_update = distanceInGraph(cls2, cls_idx);
+              distance_update = distances[ neighbors[cls_idx][i] ][cls_idx];
               if(distance_update < distances_to_tree[cls2])
                 {
                   distances_to_tree[cls2] = distance_update;
