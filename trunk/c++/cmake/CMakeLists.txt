@@ -139,7 +139,7 @@ add_library (viva SHARED
 ## Compilation of the viewer
 ################################################################################
 
-IF(${GLEW_LIBRARY})
+IF(${GLEW_FOUND})
  add_executable(vivaView
   ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ascEdit.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks.c
@@ -158,7 +158,7 @@ ENDIF(${GLEW_LIBRARY})
 ## Compilation of the plugins to the viewer
 ################################################################################
 
-IF(${GLEW_LIBRARY})
+IF(${GLEW_FOUND})
  add_library (example MODULE ../plugins/src/example/example.cpp)
  add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
  add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
