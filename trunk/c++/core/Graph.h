@@ -39,6 +39,7 @@ public:
 
   // Calculates the MST using the edges already in the graph
   Graph<Point3D, EdgeW<Point3D> >* primFromThisGraph();
+  Graph<Point3D, EdgeW<Point3D> >* primFromThisGraphFast();
 
   /** Finds the distance between to points in the graph. If there is an edge between
       those points, it returns the weight of the edge and if there is none, it will return
@@ -411,6 +412,80 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraph()
 
   return toReturn;
 }
+
+template< class P, class E>
+Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
+{
+  printf("Graph<P,E>::primFromThisGraph of %i points  [", cloud->points.size());
+  //Erases the edges
+
+  Graph<Point3D, EdgeW<Point3D> >* toReturn = new Graph<Point3D, EdgeW<Point3D> >();
+
+  //Copies the cloud to the new graph
+  for(int i = 0; i < cloud->points.size(); i++)
+    toReturn->cloud->points.push_back(cloud->points[i]);
+
+  //Implementation of Prim's algtrithm as described in "Algorithms in C", by Robert Sedgewick
+  vector< int > parents(cloud->points.size());
+  vector< int > closest_in_tree(cloud->points.size());
+  vector< double > distances_to_tree(cloud->points.size());
+
+  //Initialization
+  for(int i = 0; i < cloud->points.size(); i++)
+    {
+      parents[i] = -1;
+      closest_in_tree[i] = 0;
+      distances_to_tree[i] = distanceInGraph(0,i);
+    }
+  parents[0] = 0;
+
+  for(int i = 0; i < cloud->points.size(); i++)
+    {
+      //Find the point that is not in the graph but closer to the graph
+      int cls_idx = 0;
+      double min_distance = DBL_MAX;
+      for(int cls = 0; cls < cloud->points.size(); cls++)
+        if( (parents[cls] == -1) && (distances_to_tree[cls] < min_distance) ){
+            min_distance = distances_to_tree[cls];
+            cls_idx = cls;}
+
+      //Now we update the data structures for new iterations
+      parents[cls_idx] = closest_in_tree[cls_idx];
+      double distance_update = 0;
+      for(int cls2 = 0; cls2 < cloud->points.size(); cls2++)
+        {
+          if (parents[cls2] == -1)
+            {
+              distance_update = distanceInGraph(cls2, cls_idx);
+              if(distance_update < distances_to_tree[cls2])
+                {
+                  distances_to_tree[cls2] = distance_update;
+                  closest_in_tree[cls2] = cls_idx;
+                }
+            }
+        }
+      if(i%max((int)((float)cloud->points.size()/100),1)==0)
+        { printf("%.01f\r", i*100.0/cloud->points.size()); fflush(stdout);}
+    }
+
+  printf("]\n");
+
+  float edgeWeight = 0;
+  for(int i = 0; i < parents.size(); i++){
+    for(int j = 0; j < eset.edges.size(); j++){
+      if( ((eset.edges[j]->p0 == i) && (eset.edges[j]->p1 == parents[i])) ||
+          ((eset.edges[j]->p1 == i) && (eset.edges[j]->p0 == parents[i])) ){
+        EdgeW<Point3D>* tmp = dynamic_cast< EdgeW<Point3D>* >(eset.edges[j]);
+        edgeWeight = tmp->w;
+      }
+    }
+    toReturn->eset.edges.push_back
+      (new EdgeW<Point3D>(toReturn->eset.points, i, parents[i], edgeWeight));
+  }
+
+  return toReturn;
+}
+
 
 
 template< class P, class E>
