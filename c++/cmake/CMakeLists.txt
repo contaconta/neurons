@@ -3,7 +3,8 @@ if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(HOST $ENV{HOSTNAME})
+site_name(HOST)
+message("The host is " ${HOST})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Modules")
 
@@ -13,13 +14,13 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-IF(${HOST} STREQUAL "bbpsg1")
+IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
   set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
-ELSE(${HOST} STREQUAL "bbpsg1")
+ELSE(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER "c++")
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -fopenmp -D WITH_OPENMP ")
-ENDIF(${HOST} STREQUAL "bbpsg1")
+ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
 
