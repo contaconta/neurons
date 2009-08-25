@@ -493,7 +493,7 @@ bool ascParser2::parseMainSection(Neuron* neuron)
       switch(sn)
 	{
 	case ascParser2::INTRO:
-          std:cout << "Parsing intro section" << std::endl;
+          std::cout << "Parsing intro section" << std::endl;
           parseInfoSection();
           break;
 
@@ -555,6 +555,7 @@ bool ascParser2::parseMainSection(Neuron* neuron)
           break;
 	}
     }
+  return false;
 }
 
 
@@ -603,12 +604,19 @@ bool ascParser2::parseInfoSection()
 }
 
 bool ascParser2::parseSectionSection(){
-  if(!getAndCheck("(")) error("Error while getting '(' in the Section section");
-  if(!getAndCheck("sections"))
+  if(!getAndCheck("(")) {
+    error("Error while getting '(' in the Section section");
+    return false;
+  }
+  if(!getAndCheck("sections")){
     error("Error while getting 'section' in the section section");
-  if(!getAndCheck(")"))
+    return false;
+  }
+  if(!getAndCheck(")")){
     error("Error while getting ')' in the section section");
-
+    return false;
+  }
+  return true;
 }
 
 bool ascParser2::parseImageCoords()
@@ -1220,7 +1228,7 @@ bool ascParser2::parseMarkerSection(vector< NeuronMarker >& markers)
 
 bool ascParser2::parseProjectionMatrix(Neuron* neuron)
 {
-  size_t found;
+  int found;
   found = filename.find_last_of("/");
   if(found == string::npos)
     found = -1;
@@ -1234,7 +1242,7 @@ bool ascParser2::parseProjectionMatrix(Neuron* neuron)
       printf("Error while loading the projection matrix in the neuron: %s. The files will be created.\n", matrixName.c_str());
       readMatrix.close();
       std::ofstream out1(matrixName.c_str());
-      size_t found;
+      int found;
       found = filename.find_last_of("/");
       if(found == string::npos)
         found = -1;
@@ -1328,7 +1336,7 @@ bool ascParser2::parseProjectionMatrix(Neuron* neuron)
 
 
 #endif
-
+  return true;
 }
 
 bool ascParser2::parseFile(Neuron* neuron)
@@ -1642,5 +1650,7 @@ bool ascParser2::saveNeuron(Neuron* neuron, string filename)
   writer << neuron->projectionMatrixInv[15];
   writer << std::endl;
   writer.close();
+
+  return true;
 }
 

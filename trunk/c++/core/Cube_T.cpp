@@ -59,7 +59,7 @@ Cube_T::Cube_T(string filename){
   if(fileExists(gtName)){
     gtData = loadMatrix(gtName);
   }
-  printf("ans it's size is %i\n", gtData.size());
+  printf("ans it's size is %i\n", (int)gtData.size());
 
 }
 
@@ -214,7 +214,7 @@ Cube_P* Cube_T::threshold(float thres, string outputName,
                           bool putHigherValuesTo, bool putLowerValuesTo,
                           float highValue, float lowValue)
 {
-  cubes[timeStep]->threshold(thres, outputName, putHigherValuesTo,
+  return cubes[timeStep]->threshold(thres, outputName, putHigherValuesTo,
                              putLowerValuesTo, highValue, lowValue);
 }
 
@@ -237,7 +237,7 @@ vector< vector< int > > Cube_T::decimate
 (float threshold, int window_xy, int window_z, string filemane,
  bool save_boosting_response)
 {
-  cubes[timeStep]->decimate(threshold, window_xy, window_z, filemane,
+  return cubes[timeStep]->decimate(threshold, window_xy, window_z, filemane,
                             save_boosting_response);
 }
 
@@ -245,7 +245,7 @@ vector< vector< int > > Cube_T::decimate_log
 (float threshold, int window_xy, int window_z, string filemane,
  bool save_boosting_response)
 {
-  cubes[timeStep]->decimate_log(threshold, window_xy, window_z, filemane,
+  return cubes[timeStep]->decimate_log(threshold, window_xy, window_z, filemane,
                                 save_boosting_response);
 }
 
@@ -253,7 +253,7 @@ vector< vector< int > > Cube_T::decimate_log
 vector< vector< int > > Cube_T::decimate_layer
 (int nLayer, float threshold, int window_xy, string filename)
 {
-  cubes[timeStep]->decimate_layer(nLayer, threshold, window_xy, filename);
+  return cubes[timeStep]->decimate_layer(nLayer, threshold, window_xy, filename);
 }
 
 void Cube_T::allocate_alphas(int ni, int nj, int nk)

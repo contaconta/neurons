@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <argp.h>
-#include "utils.h"
+#include "utils_neseg.h"
 
 using namespace std;
 

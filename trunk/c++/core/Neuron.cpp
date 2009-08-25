@@ -906,7 +906,7 @@ void Neuron::printStatistics()
 
   getMaxPoint(axon[0], &maxX, &maxY, &maxZ, &minX, &minY, &minZ, &nSegments);
   printf("Axon has   %i  segments\n", nSegments);
-  printf("Neuron has %i  dendrites\n", dendrites.size());
+  printf("Neuron has %i  dendrites\n", (int)dendrites.size());
 
 
   for(int i = 0; i < dendrites.size(); i++)
@@ -1323,6 +1323,8 @@ NeuronPoint* Neuron::findNextPoint(double x, double y, double z)
 /** FIXME Implement it before calling it */
 NeuronPoint* getRandomPoint()
 {
+  printf("getRandomPoint is not implemented!!!!\n");
+  return NULL;
 }
 
 

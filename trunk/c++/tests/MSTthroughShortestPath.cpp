@@ -26,8 +26,8 @@
 #include <gsl/gsl_rng.h>
 #include <map>
 #include "EdgeW.h"
-#ifdef WITH_OPENMP
 #include "Neuron.h"
+#ifdef WITH_OPENMP
 #include <omp.h>
 #endif
 
@@ -104,15 +104,15 @@ int main(int argc, char **argv) {
     }
 
     int endPoint = decimatedCloud->points.size();
-    // #ifdef WITH_OPENMP
+#ifdef WITH_OPENMP
 #pragma omp parallel for
-    // #endif
+#endif
     for(int i = 0; i < endPoint; i ++){
       // for(int i = 50; i < 51; i ++){
       int nth = 0;
-      // #ifdef WITH_OPENMP
+      #ifdef WITH_OPENMP
       nth = omp_get_thread_num();
-      // #endif
+      #endif
       vector<int>   idxs(3);
       vector<int>   idxs2(3);
       vector<float> microm(3);

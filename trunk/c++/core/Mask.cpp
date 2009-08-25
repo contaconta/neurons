@@ -30,7 +30,7 @@ vector<float> Mask::hermitian_mask(int order, float sigma, bool limit_value){
   vector< double > value(1);
   double norm_coeff = 1.0/(sigma*
                            sqrt(M_PI*
-                                pow(2,order)*
+                                pow(2.0,order)*
                                 factorial_n(order)
                                 )
                            );
@@ -188,7 +188,7 @@ double Mask::energy1DGaussianMask(int dx, double sigma)
   double en = 1;
   en = sqrt(
             double(dfactorial_n(2*dx-1)) /
-            (pow(2,dx+1)*pow(sigma,2*dx+1)*sqrt(M_PI))
+            (pow(2.0,dx+1)*pow(sigma,2*dx+1)*sqrt(M_PI))
             );
   return en;
 
@@ -212,7 +212,7 @@ double Mask::energy2DGaussianMask(int dx, int dy, double sigma)
   double en = 1;
   en = sqrt(
             dfactorial_n(2*dx-1)*dfactorial_n(2*dy-1) /
-            (pow(2,dx+dy+2)*pow(sigma,2*(dx+dy+1))*M_PI)
+            (pow(2.0,dx+dy+2)*pow(sigma,2*(dx+dy+1))*M_PI)
             );
   return en;
 }

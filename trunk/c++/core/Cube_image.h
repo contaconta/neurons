@@ -1839,7 +1839,7 @@ vector< vector< int > > Cube<T,U>::decimate_layer
         coords[2] = nLayer;
         toReturn.push_back(coords);
       }
-    printf("] %i points \n", toReturn.size());
+    printf("] %i points \n", (int)toReturn.size());
 
 
   if(filename!="")
@@ -1922,7 +1922,7 @@ vector< vector< int > > Cube<T,U>::decimate
           }
       }
       printf("Threshold: %f, Layer %02i and %07i points\r",
-             current_threshold, z, valueToCoords.size()); fflush(stdout);
+             current_threshold, z, (int)valueToCoords.size()); fflush(stdout);
     }
 
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
@@ -2049,7 +2049,7 @@ vector< vector< int > > Cube<T,U>::decimate_log(float threshold, int window_xy, 
               }
           }
       }
-      printf("iteration %02i and %07i points\r", z, valueToCoords.size()); fflush(stdout);
+      printf("iteration %02i and %07i points\r", z, (int)valueToCoords.size()); fflush(stdout);
     }
 
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
@@ -2090,7 +2090,7 @@ vector< vector< int > > Cube<T,U>::decimate_log(float threshold, int window_xy, 
         coords[2] = z_p;
         toReturn.push_back(coords);
       }
-    printf("] %i \n", toReturn.size());
+    printf("] %i \n", (int)toReturn.size());
     current_threshold = current_threshold*step_size;
   }
 
