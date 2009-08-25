@@ -64,19 +64,19 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     pResult = (int*)mxGetData(plhs[0]);
 
     int iResult = 0;
-    for(int iImage = 0;iImage<nImages;iImage++)
+    for(int iParam = 0;iParam<nParams;iParam++)
       {
-        /* retrieve the image */
-        pCellImage = mxGetCell(prhs[0],iImage);
-        pIntegralImage = (unsigned int*)mxGetData(pCellImage);
-        dim_array = mxGetDimensions(pCellImage);
+        // retrieve cell content and transform it to a string
+        pCellParam = mxGetCell(prhs[1],iParam);
+        strLength = mxGetN(pCellParam)+1;
+        mxGetString(pCellParam,pParam,strLength);
 
-        for(int iParam = 0;iParam<nParams;iParam++)
+        for(int iImage = 0;iImage<nImages;iImage++)
           {
-            // retrieve cell content and transform it to a string
-            pCellParam = mxGetCell(prhs[1],iParam);
-            strLength = mxGetN(pCellParam)+1;
-            mxGetString(pCellParam,pParam,strLength);
+            /* retrieve the image */
+            pCellImage = mxGetCell(prhs[0],iImage);
+            pIntegralImage = (unsigned int*)mxGetData(pCellImage);
+            dim_array = mxGetDimensions(pCellImage);        
 
             pResult[iResult] = getRectangleFeature(pIntegralImage,dim_array[1],dim_array[0],24,24,pParam);
             iResult++;
