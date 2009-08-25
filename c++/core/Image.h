@@ -16,7 +16,7 @@ Y
 
 
 #ifndef IMAGE_H_
-5B5B#define IMAGE_H_
+#define IMAGE_H_
 
 #include "neseg.h"
 
