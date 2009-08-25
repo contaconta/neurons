@@ -52,7 +52,6 @@ INCLUDE_DIRECTORIES( ${GTKGLEXT_INCLUDE_DIRS} )
 find_package(GLEW)
 message("GLEW has been found: ${GLEW_FOUND}")
 IF(${GLEW_FOUND})
-   message("Inside the glew conditional")
   include_directories( ${GLEW_INCLUDE_DIR})
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_GLEW")
 ENDIF(${GLEW_FOUND})
@@ -62,10 +61,6 @@ find_package(Gmodule)
 set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
 ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
 ${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
-
-#set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-#${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
-
 
 
 ################################################################################
@@ -82,7 +77,6 @@ set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
 message("GMODULE has been found: ${GMODULE_FOUND}")
 IF(${GMODULE_FOUND})
- message("Inside the gmodule conditional")
  set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
  set(CMAKE_EXE_LINKER_FLAGS    "-lgomp" )
  set(CMAKE_MODULE_LINKER_FLAGS "-lgomp" )
@@ -152,7 +146,7 @@ IF(${GLEW_FOUND})
   ${CMAKE_SOURCE_DIR}/../viewer/src/main.c
  )
  target_link_libraries(vivaView ${LINK_LIBRARIES_ALL})
-ENDIF(${GLEW_LIBRARY})
+ENDIF(${GLEW_FOUND})
 
 ################################################################################
 ## Compilation of the plugins to the viewer
@@ -163,7 +157,7 @@ IF(${GLEW_FOUND})
  add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
  add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
  #add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
-ENDIF(${GLEW_LIBRARY})
+ENDIF(${GLEW_FOUND})
 
 ################################################################################
 ## Compilation of the tools
