@@ -54,12 +54,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     nImages = mxGetNumberOfElements(prhs[0]);
     nParams = mxGetNumberOfElements(prhs[1]);
 
-    /* Invert dimensions :
-       Matlab : height, width
-       OpenCV : width, hieght
-    */
     mwSize number_of_dims = 2;
-    const mwSize dims[]={nImages, nParams};
+    const mwSize dims[]={nParams,nImages};
     plhs[0] = mxCreateNumericArray(number_of_dims,dims,mxINT32_CLASS,mxREAL);
     pResult = (int*)mxGetData(plhs[0]);
 
