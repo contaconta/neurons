@@ -69,7 +69,7 @@ ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
 ## Compilation flags and file organization
 ################################################################################
 set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_DEBUG    ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_DEBUG    ${CMAKE_CXX_FLAGS} " -g -pg ")
 set(CMAKE_CXX_FLAGS_RELEASE  ${CMAKE_CXX_FLAGS} " -o3 ")
 message("Cmake CXX flags debug " ${CMAKE_CXX_FLAGS})
 
