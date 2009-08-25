@@ -436,10 +436,10 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
   neighbors.resize(cloud->points.size());
   vector< vector< double > > distances;
   distances.resize(cloud->points.size());
-  for(int i = 0; i < cloud->points.size; i++){
+  for(int i = 0; i < cloud->points.size(); i++){
     distances[i].resize(cloud->points.size());
   }
-  for(int i = 0; i < cloud->points.size; i++)
+  for(int i = 0; i < cloud->points.size(); i++)
     for(int j = 0; j < distances[i].size(); j++)
       distances[i][j] = DBL_MAX;
 
@@ -475,15 +475,15 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
       parents[cls_idx] = closest_in_tree[cls_idx];
       double distance_update = 0;
       // for(int cls2 = 0; cls2 < cloud->points.size(); cls2++)
-      for(int i = 0; i < neighbors[cls_idx].size(); i++)
+      for(int cls2 = 0; cls2 < neighbors[cls_idx].size(); cls2++)
         {
-          if (parents[ neighbors[cls_idx][i] ] == -1)
+          if (parents[ neighbors[cls_idx][cls2] ] == -1)
             {
-              distance_update = distances[ neighbors[cls_idx][i] ][cls_idx];
-              if(distance_update < distances_to_tree[cls2])
+              distance_update = distances[ neighbors[cls_idx][cls2] ][cls_idx];
+              if(distance_update < distances_to_tree[ neighbors[cls_idx][cls2] ])
                 {
-                  distances_to_tree[cls2] = distance_update;
-                  closest_in_tree[cls2] = cls_idx;
+                  distances_to_tree[ neighbors[cls_idx][cls2] ] = distance_update;
+                  closest_in_tree[ neighbors[cls_idx][cls2] ] = cls_idx;
                 }
             }
         }
