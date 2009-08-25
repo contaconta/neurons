@@ -19,7 +19,7 @@ IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
 ELSE(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER "c++")
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -fopenmp -D WITH_OPENMP ")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
@@ -50,18 +50,21 @@ ENDIF(${GTK2_FOUND})
 find_package(GtkGLExt)
 INCLUDE_DIRECTORIES( ${GTKGLEXT_INCLUDE_DIRS} )
 find_package(GLEW)
+message("GLEW has been found: ${GLEW_FOUND}")
 IF(${GLEW_FOUND})
+   message("Inside the glew conditional")
   include_directories( ${GLEW_INCLUDE_DIR})
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_GLEW")
 ENDIF(${GLEW_FOUND})
 
 find_package(Gmodule)
 
-#set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-#${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
-#${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
-
 set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
+${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
+${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
+
+#set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
+#${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
 
 
 
@@ -69,15 +72,17 @@ ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
 ## Compilation flags and file organization
 ################################################################################
 set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_DEBUG    ${CMAKE_CXX_FLAGS} " -g -pg ")
-set(CMAKE_CXX_FLAGS_RELEASE  ${CMAKE_CXX_FLAGS} " -o3 ")
-message("Cmake CXX flags debug " ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_DEBUG    "${CMAKE_CXX_FLAGS} -g -pg ")
+set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS} -o3 ")
+message("Cmake CXX flags debug " ${CMAKE_CXX_FLAGS_DEBUG})
 
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
+message("GMODULE has been found: ${GMODULE_FOUND}")
 IF(${GMODULE_FOUND})
+ message("Inside the gmodule conditional")
  set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
  set(CMAKE_EXE_LINKER_FLAGS    "-lgomp" )
  set(CMAKE_MODULE_LINKER_FLAGS "-lgomp" )
