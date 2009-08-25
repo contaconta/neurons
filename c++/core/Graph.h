@@ -164,7 +164,7 @@ double Graph<P,E>::distanceEuclidean(Point* p1, Point* p2){
 
 template< class P, class E>
 void Graph<P,E>::prim(){
-  printf("Graph<P,E>::prim of %i points  [", cloud->points.size());
+  printf("Graph<P,E>::prim of %i points  [", (int)cloud->points.size());
   //Erases the edges
   eset.edges.resize(0);
 
@@ -343,7 +343,7 @@ double Graph<P,E>::distanceInGraph(int idx1, int idx2)
 template< class P, class E>
 Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraph()
 {
-  printf("Graph<P,E>::primFromThisGraph of %i points  [", cloud->points.size());
+  printf("Graph<P,E>::primFromThisGraph of %i points  [", (int)cloud->points.size());
   //Erases the edges
 
   Graph<Point3D, EdgeW<Point3D> >* toReturn = new Graph<Point3D, EdgeW<Point3D> >();

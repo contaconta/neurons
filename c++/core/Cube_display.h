@@ -114,9 +114,9 @@ p  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size
                         (int)cubeHeight - (nRowToDraw*max_texture_size)));
   int limit_z =  (int)min(max_texture_size, (int)cubeDepth);
 
-  int texture_size_x = (int) pow(2, ceil(log(limit_x)/log(2)) );
-  int texture_size_y = (int) pow(2, ceil(log(limit_y)/log(2)) );
-  int texture_size_z = (int) pow(2, ceil(log(limit_z)/log(2)) );
+  int texture_size_x = (int) pow(2.0, ceil(log((double)limit_x)/log(2.0)) );
+  int texture_size_y = (int) pow(2.0, ceil(log((double)limit_y)/log(2.0)) );
+  int texture_size_z = (int) pow(2.0, ceil(log((double)limit_z)/log(2.0)) );
 
   //Limit od the textures. They are object variables
   r_max = (double)limit_x/texture_size_x;

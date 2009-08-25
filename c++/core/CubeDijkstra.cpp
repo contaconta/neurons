@@ -96,7 +96,7 @@ CubeDijkstra::findShortestPath(int x0, int y0, int z0, int x1, int y1, int z1,
         boundaryCl = boundaryCl2;
         pthread_mutex_unlock(&mutex);
         printf("Evaluated %i points, boundary points: %i\n", nPointsEvaluated,
-               boundaryCl.points.size());
+               (int)boundaryCl.points.size());
         fflush(stdout);
       }
     } //if(&boundaryCl!=NULL)

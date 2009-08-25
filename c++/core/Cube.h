@@ -661,7 +661,7 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
 template <class T, class U>
 void Cube<T,U>::print_size()
 {
-  printf("The size of the template is %i and the type %s\n", sizeof(T), type.c_str());
+  printf("The size of the template is %i and the type %s\n", (int)sizeof(T), type.c_str());
 }
 
 /** Functions related to handling the data in the cube.*/

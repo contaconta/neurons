@@ -1,7 +1,7 @@
 #include "CubeLiveWire.h"
 
 
-void*
+void
 CubeLiveWire::computeDistances
 (int x0, int y0, int z0)
 {
@@ -9,7 +9,7 @@ CubeLiveWire::computeDistances
      (x0 >= cube->cubeWidth) ||
      (y0 >= cube->cubeHeight) ||
      (z0 >= cube->cubeDepth))
-    return NULL;
+    return;
 
   xS = x0; yS = y0; zS = z0;
 

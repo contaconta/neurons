@@ -226,7 +226,7 @@ int main(int argc, char **argv) {
   printf("#it   a          b          f          status\n"); fflush(stdout);
   do
     {
-      printf ("%5d %010.5f %010.5f %010.5f %i\n", iter,
+      printf ("%5d %010.5f %010.5f %010.5f %i\n", (int)iter,
               gsl_vector_get (s->x, 0),
               gsl_vector_get (s->x, 1),
               s->f, status);
@@ -235,7 +235,7 @@ int main(int argc, char **argv) {
       status = gsl_multimin_fdfminimizer_iterate (s);
 
       if (status){
-        printf ("%5d %010.5f %010.5f %010.5f %i\n", iter,
+        printf ("%5d %010.5f %010.5f %010.5f %i\n", (int)iter,
                 gsl_vector_get (s->x, 0),
                 gsl_vector_get (s->x, 1),
                 s->f, status);
@@ -247,7 +247,7 @@ int main(int argc, char **argv) {
       if (status == GSL_SUCCESS){
         printf ("\nMinimum found at:\n");
         printf("   #it   a          b          f          status\n"); fflush(stdout);
-        printf("   %5d %010.5f %010.5f %010.5f %i\n", iter,
+        printf("   %5d %010.5f %010.5f %010.5f %i\n", (int)iter,
                 gsl_vector_get (s->x, 0),
                 gsl_vector_get (s->x, 1),
                 s->f, status);

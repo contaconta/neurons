@@ -33,7 +33,7 @@ public:
 
   }
   float distance(int x0, int y0, int z0, int x1, int y1, int z1){
-    float ds = sqrt( (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+    float ds = sqrt( (double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
     switch(cubeType){
     case 0:
       // return fabs(cubeUchar->at(x0,y0,z0)-cubeUchar->at(x1,y1,z1));
@@ -77,7 +77,7 @@ public:
         ((z0==cube->cubeDepth-1)&&(z1==cube->cubeDepth-1)) )
       return 50.0;
 
-    float module = sqrt( (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+    float module = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
 
     switch(cubeType){
     case 0:
@@ -123,6 +123,7 @@ public:
       // return fabs(cubeFloat->at(x0,y0,z0)-cubeFloat->at(x1,y1,z1));
       break;
     };
+    return 0.0;
   }
 };
 
@@ -153,6 +154,7 @@ public:
       return 1.0-cubeFloat->at(x1,y1,z1);
       break;
     };
+    return 0.0;
   }
 };
 
@@ -180,10 +182,11 @@ public:
       return 1.0-(float)(cubeUchar->at(x1,y1,z1))/255;
       break;
     case 1:
-      dist = sqrt( (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+      dist = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
       return 1.0-cubeFloat->at(x1,y1,z1)/dist;
       break;
     };
+    return 0.0;
   }
 };
 
@@ -214,10 +217,11 @@ public:
       return 1.0-(float)(cubeUchar->at(x1,y1,z1))/255;
       break;
     case 1:
-      dist = sqrt( (x0-x1)*(x0-x1) + ratioY*(y0-y1)*(y0-y1) + ratioZ*(z0-z1)*(z0-z1));
+      dist = sqrt((double) (x0-x1)*(x0-x1) + ratioY*(y0-y1)*(y0-y1) + ratioZ*(z0-z1)*(z0-z1));
       return 1.0-cubeFloat->at(x1,y1,z1)/dist;
       break;
     };
+    return 0.0;
   }
 };
 

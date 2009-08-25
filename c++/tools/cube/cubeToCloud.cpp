@@ -22,7 +22,7 @@
 #include "Neuron.h"
 #include "Cloud.h"
 #include "CloudFactory.h"
-#include "utils.h"
+#include "utils_neseg.h"
 #include <argp.h>
 #include <gsl/gsl_rng.h>
 

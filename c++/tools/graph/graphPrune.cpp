@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
         integral = threshold;
       }
     }
-    printf("    split = %i,  points %i\n", split, edgesTraced.size());
+    printf("    split = %i,  points %i\n", split, (int)edgesTraced.size());
     //From the soma to split will be in the tree
     for(int i = 0; i < split; i++){
       edgesVisited[edgesTraced[i]] = 1;
