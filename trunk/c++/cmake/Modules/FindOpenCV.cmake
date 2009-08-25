@@ -56,6 +56,7 @@ SET (OpenCV_POSSIBLE_ROOT_DIRS
   "$ENV{ProgramFiles}/OpenCV"
   /usr/local
   /usr
+  "${HOME}"
   )
 
 
