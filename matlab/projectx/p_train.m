@@ -98,7 +98,7 @@ while (Fi > BOOST.targetF)                  % create new cascade stages until we
         %logfile(EXPERIMENT.log_filenm, 'write', [i ti CASCADE(i).CLASSIFIER.feature_index(ti) Di Fi CASCADE(i).di CASCADE(i).fi tpr fpr length(FPs) CASCADE(i).CLASSIFIER.]);
         
         % save the cascade to a file in case something bad happens and we need to restart
-        save(EXPERIMENT.cascade_filenm, 'CASCADE', 'EXPERIMENT', 'DATASETS', 'LEARNERS'); disp(' '); disp(['       ...saved a temporary copy of CASCADE to ' EXPERIMENT.cascade_filenm]);
+        save(EXPERIMENT.cascade_filenm, 'CASCADE', 'EXPERIMENT', 'LEARNERS'); disp(' '); disp(['       ...saved a temporary copy of CASCADE to ' EXPERIMENT.cascade_filenm]);
     
         ti = ti + 1;        % proceed to the next weak learner
     end
