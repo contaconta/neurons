@@ -120,6 +120,7 @@ samples = sort(randsample(length(Qresult), N, 1));
 
 for q = unique(samples)'
 
+    % read the "nonFILE.jpg" annotation denoting non-class locations
     filenm = [HOMEIMAGES '/' Qresult(q).annotation.folder '/' Qresult(q).annotation.filename];
     I = imread(filenm);
     

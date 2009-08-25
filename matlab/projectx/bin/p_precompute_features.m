@@ -20,16 +20,14 @@ function p_precompute_features(SET, LEARNERS)
 tic;
 disp('Precomputing features on the TRAIN SET');
 
-% TODO: the memdaemon needs to handle different data types being stored:
-% int, double, float
-
 %.................... start the memDaemon .................................
-system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' double &']); pause(0.1);
+dtype = get_datatype(LEARNERS.types);
+system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']); pause(0.1);
 [s,r]=system('ps -ef | grep memDaemon | wc -l');
 if (r ~= 3)
     disp('...memDaemon is not running');
 else
-    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' double &']);
+    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']);
 end
 %..........................................................................
 
@@ -40,16 +38,10 @@ W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
 
 for l = 1:length(LEARNERS.list)
     
-    % switch LEARNERS.list(l)(1:2)
     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
 
     % precompute the feature responses for each example for learner l
     responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
-    %responses = uint16(responses);
-    % store the responses as a row vector
-    %if l==5998
-	%keyboard
-    %end
     mexStoreResponse(responses,'row',l,'HA');
 end
 
@@ -57,35 +49,33 @@ toc;
 
 
 
-% loopOverLearners = true;
-% if loopOverLearners == true
-%   for l = 1:length(LEARNERS.list)
-%     
-%     % switch LEARNERS.list(l)(1:2)
-%     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
-%     
-%     % precompute the feature responses for each example for learner l
-%     %responses = uint32(p_get_feature_responses(SET, LEARNERS.list(l)));
-%     %disp('MATLAB p_get_feature_responses')
-%     %learner_id = regexp(LEARNERS.list(l), '\d*', 'match');
-%     %LEARNERS.data{l} = listImages{ceil((str2num(learner_id{1}{1})+1)/600)};
-%     responses = p_get_feature_responses(SET, LEARNERS.list(l),LEARNERS.data(l));
-%     
-% %     if l==5998
-% %         keyboard;
-% %     end
-%     
-%     % store the responses as a row vector
-%     %disp(['MATLAB mexStoreResponse ' num2str(l) ' ' num2str(size(responses))]);
-%     mexStoreResponse(responses,'row',l,'HA');
-%   end
-% else
-%   
-%   responses = p_get_feature_responses(SET, LEARNERS.list,listImages);
-%   %disp(['MATLAB mexStoreResponse ' num2str(length(responses))]);
-%   size(responses)
-%   for l = 1:size(responses,2)
-%     mexStoreResponse(responses(:,l),'row',l,'HA');
-%   end
-% end
+
+
+%%=========================================================================
+function dtype = get_datatype(types)
+
+dtype = cell(size(types));
+
+for t = 1:length(types)
+    switch types{t1}(1:2)
+        case 'HA'
+            dtype{t} = 'int32';
+        case 'IT'
+            dtype{t} = 'int32';
+        case 'FR'
+            dtype{t} = 'double';
+        case '??'
+            dtype{t} = 'int32';
+        otherwise
+            error('Error p_precompute_features.m: could not find appropriate function for learner');
+    end
+end
+            
+dtype = unique(dtype);
+
+if length(dtype) > 1
+    error('Error p_precompute_features.m: attempted to mix data types in memdaemon');
+else
+    dtype = dtype{1};
+end
 
