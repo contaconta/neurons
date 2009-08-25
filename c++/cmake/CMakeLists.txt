@@ -3,44 +3,101 @@ if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
+set(HOST $ENV{HOSTNAME})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Modules")
 
 project("VIVA - Volumetric Image Visualization and Analysis")
 
-set(CMAKE_C_COMPILER "c++")
+################################################################################
+## Compiler and build type
+################################################################################
+
+IF(${HOST} STREQUAL "bbpsg1")
+  set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
+  set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
+ELSE(${HOST} STREQUAL "bbpsg1")
+  set(CMAKE_C_COMPILER "c++")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -fopenmp -D WITH_OPENMP ")
+ENDIF(${HOST} STREQUAL "bbpsg1")
+message("Hostname = " ${HOST} ", using the following CXX compiler: "
+  ${CMAKE_CXX_COMPILER})
+
 #set(CMAKE_BUILD_TYPE debug) #debug none release distribution
 set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
-set(CMAKE_CXX_FLAGS         "-D WITH_OPENMP -fopenmp -D WITH_GLEW")
-set(CMAKE_CXX_FLAGS_DEBUG   "-D WITH_OPENMP -fopenmp -g -pg -D WITH_GLEW")
-set(CMAKE_CXX_FLAGS_RELEASE "-D WITH_OPENMP -fopenmp -O3 -D WITH_GLEW")
+################################################################################
+## External Libraries and Linking Command
+################################################################################
+find_package(OpenCV REQUIRED )
+include_directories( ${OPENCV_INCLUDE_DIR})
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories(${GLUT_INCLUDE_DIR} )
+find_package(GSL REQUIRED )
+include_directories(${GSL_INCLUDE_DIR})
+
+#find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework REQUIRED)
+#set(Boost_USE_MULTITHREAD OFF)
+# find_package(BBP-SDK REQUIRED)
+
+## Needed by the viewer and modules
+find_package(GTK2)
+IF(${GTK2_FOUND})
+  INCLUDE_DIRECTORIES( ${GTK2_INCLUDE_DIRS})
+ENDIF(${GTK2_FOUND})
+find_package(GtkGLExt)
+INCLUDE_DIRECTORIES( ${GTKGLEXT_INCLUDE_DIRS} )
+find_package(GLEW)
+IF(${GLEW_FOUND})
+  include_directories( ${GLEW_INCLUDE_DIR})
+ENDIF(${GLEW_FOUND})
+
+find_package(Gmodule)
+
+#set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
+#${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
+#${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
+
+set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
+${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
+
+
+
+################################################################################
+## Compilation flags and file organization
+################################################################################
+#set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
+set(CMAKE_CXX_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS} " -g -pg")
+set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS} "-O3")
 
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_C_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
-set(CMAKE_EXE_LINKER_FLAGS    "-lgomp" )
-set(CMAKE_MODULE_LINKER_FLAGS "-lgomp" )
 
-find_package( OpenCV REQUIRED )
-INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIR})
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
+IF(${GMODULE_FOUND})
+ set(CMAKE_SHARED_LINKER_FLAGS "-lgomp ")
+ set(CMAKE_EXE_LINKER_FLAGS    "-lgomp" )
+ set(CMAKE_MODULE_LINKER_FLAGS "-lgomp" )
+ENDIF(${GMODULE_FOUND})
 
-include_directories(${OPENGL_INCLUDE_DIR} )
-include_directories(${GLUT_INCLUDE_DIR} )
 include_directories(${CMAKE_SOURCE_DIR}/../core)
 #include_directories(${CMAKE_SOURCE_DIR}/../external/graphCuts)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../lib/)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
+set(CMAKE_SHARED_MODULE_PREFIX "plugins/")
+set(CMAKE_CXX_MODULE_PATH ${CMAKE_SOURCE_DIR}/../lib/plugins)
 make_directory(${LIBRARY_OUTPUT_PATH})
 make_directory(${EXECUTABLE_OUTPUT_PATH})
+make_directory(${CMAKE_CXX_MODULE_PATH})
 
-#find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework REQUIRED)
-#set(Boost_USE_MULTITHREAD OFF)
-# find_package(BBP-SDK REQUIRED)
+
+
+
+################################################################################
+## VIVA Library - Core of the game
+################################################################################
 
 add_library (viva SHARED
 ../core/utils.cpp
@@ -75,48 +132,31 @@ add_library (viva SHARED
 ## Compilation of the viewer
 ################################################################################
 
-find_package(GTK2 REQUIRED)
-INCLUDE_DIRECTORIES( ${GTK2_INCLUDE_DIRS} )
-find_package(GtkGLExt REQUIRED)
-INCLUDE_DIRECTORIES( ${GTKGLEXT_INCLUDE_DIRS} )
-find_package(GLEW REQUIRED)
-INCLUDE_DIRECTORIES( ${GLEW_INCLUDE_DIR})
-
-add_executable(vivaView
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ascEdit.c
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks.c
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_draw.c
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_menu.c
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_select.c
-${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ui.c
-${CMAKE_SOURCE_DIR}/../viewer/src/support.c
-${CMAKE_SOURCE_DIR}/../viewer/src/interface.c
-${CMAKE_SOURCE_DIR}/../viewer/src/main.c
-)
-
-find_package(GSL REQUIRED )
-include_directories(${GSL_INCLUDE_DIR})
-set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
-${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
-
-target_link_libraries(vivaView ${LINK_LIBRARIES_ALL})
+IF(${GLEW_LIBRARY})
+ add_executable(vivaView
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ascEdit.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_draw.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_menu.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_select.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ui.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/support.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/interface.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/main.c
+ )
+ target_link_libraries(vivaView ${LINK_LIBRARIES_ALL})
+ENDIF(${GLEW_LIBRARY})
 
 ################################################################################
 ## Compilation of the plugins to the viewer
 ################################################################################
 
-set(CMAKE_SHARED_MODULE_PREFIX "plugins/")
-set(CMAKE_CXX_MODULE_PATH ${CMAKE_SOURCE_DIR}/../lib/plugins)
-make_directory(${CMAKE_CXX_MODULE_PATH})
-
-find_package(Gmodule REQUIRED )
-
-add_library (example MODULE ../plugins/src/example/example.cpp)
-add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
-add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
-#add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
-
+IF(${GLEW_LIBRARY})
+ add_library (example MODULE ../plugins/src/example/example.cpp)
+ add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
+ add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
+ #add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
+ENDIF(${GLEW_LIBRARY})
 
 ################################################################################
 ## Compilation of the tools

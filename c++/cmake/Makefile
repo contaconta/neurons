@@ -30,13 +30,13 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake
+CMAKE_COMMAND = /usr/local/bin/cmake
 
 # The command to remove a file.
-RM = /usr/bin/cmake -E remove -f
+RM = /usr/local/bin/cmake -E remove -f
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+CMAKE_EDIT_COMMAND = /usr/local/bin/ccmake
 
 # The top-level source directory on which CMake was run.
 CMAKE_SOURCE_DIR = /home/ggonzale/workspace/neseg/cmake
@@ -50,7 +50,7 @@ CMAKE_BINARY_DIR = /home/ggonzale/workspace/viva/cmake
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -60,7 +60,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -97,32 +97,6 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
-
-#=============================================================================
-# Target rules for targets named CubeDijkstra2
-
-# Build rule for target.
-CubeDijkstra2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 CubeDijkstra2
-.PHONY : CubeDijkstra2
-
-# fast build rule for target.
-CubeDijkstra2/fast:
-	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/build
-.PHONY : CubeDijkstra2/fast
-
-#=============================================================================
-# Target rules for targets named CubeLiveWire
-
-# Build rule for target.
-CubeLiveWire: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 CubeLiveWire
-.PHONY : CubeLiveWire
-
-# fast build rule for target.
-CubeLiveWire/fast:
-	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/build
-.PHONY : CubeLiveWire/fast
 
 #=============================================================================
 # Target rules for targets named MSTthroughShortestPath
@@ -268,19 +242,6 @@ cubeStatistics/fast:
 .PHONY : cubeStatistics/fast
 
 #=============================================================================
-# Target rules for targets named example
-
-# Build rule for target.
-example: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 example
-.PHONY : example
-
-# fast build rule for target.
-example/fast:
-	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/build
-.PHONY : example/fast
-
-#=============================================================================
 # Target rules for targets named graphFindLeaves
 
 # Build rule for target.
@@ -396,19 +357,6 @@ viva: cmake_check_build_system
 viva/fast:
 	$(MAKE) -f CMakeFiles/viva.dir/build.make CMakeFiles/viva.dir/build
 .PHONY : viva/fast
-
-#=============================================================================
-# Target rules for targets named vivaView
-
-# Build rule for target.
-vivaView: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 vivaView
-.PHONY : vivaView
-
-# fast build rule for target.
-vivaView/fast:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/build
-.PHONY : vivaView/fast
 
 # target to build an object file
 home/ggonzale/workspace/neseg/core/Axis.o:
@@ -786,51 +734,6 @@ home/ggonzale/workspace/neseg/core/utils.s:
 .PHONY : home/ggonzale/workspace/neseg/core/utils.s
 
 # target to build an object file
-home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o:
-	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i:
-	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s:
-	$(MAKE) -f CMakeFiles/CubeDijkstra2.dir/build.make CMakeFiles/CubeDijkstra2.dir/home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o:
-	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i:
-	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s:
-	$(MAKE) -f CMakeFiles/CubeLiveWire.dir/build.make CMakeFiles/CubeLiveWire.dir/home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/plugins/src/example/example.o:
-	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.o
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/plugins/src/example/example.i:
-	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.i
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/plugins/src/example/example.s:
-	$(MAKE) -f CMakeFiles/example.dir/build.make CMakeFiles/example.dir/home/ggonzale/workspace/neseg/plugins/src/example/example.s
-.PHONY : home/ggonzale/workspace/neseg/plugins/src/example/example.s
-
-# target to build an object file
 home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o:
 	$(MAKE) -f CMakeFiles/MSTthroughShortestPath.dir/build.make CMakeFiles/MSTthroughShortestPath.dir/home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
 .PHONY : home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o
@@ -1115,149 +1018,12 @@ home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s:
 	$(MAKE) -f CMakeFiles/neuronOutputAllEdgeLengths.dir/build.make CMakeFiles/neuronOutputAllEdgeLengths.dir/home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
 .PHONY : home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s
 
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_select.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_select.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_select.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_select.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_select.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_select.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_select.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_select.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_select.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/interface.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/interface.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/interface.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/interface.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/interface.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/interface.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/interface.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/interface.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/interface.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/main.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/main.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/main.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/main.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/main.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/main.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/main.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/main.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/main.s
-
-# target to build an object file
-home/ggonzale/workspace/neseg/viewer/src/support.o:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/support.o
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/support.o
-
-# target to preprocess a source file
-home/ggonzale/workspace/neseg/viewer/src/support.i:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/support.i
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/support.i
-
-# target to generate assembly for a file
-home/ggonzale/workspace/neseg/viewer/src/support.s:
-	$(MAKE) -f CMakeFiles/vivaView.dir/build.make CMakeFiles/vivaView.dir/home/ggonzale/workspace/neseg/viewer/src/support.s
-.PHONY : home/ggonzale/workspace/neseg/viewer/src/support.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... CubeDijkstra2"
-	@echo "... CubeLiveWire"
 	@echo "... MSTthroughShortestPath"
 	@echo "... cubeAt"
 	@echo "... cubeCalculateAguet"
@@ -1270,7 +1036,6 @@ help:
 	@echo "... cubeLogistic"
 	@echo "... cubeStatistics"
 	@echo "... edit_cache"
-	@echo "... example"
 	@echo "... graphFindLeaves"
 	@echo "... graphPrim"
 	@echo "... graphPrune"
@@ -1281,7 +1046,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... tryManyPathsCloud"
 	@echo "... viva"
-	@echo "... vivaView"
 	@echo "... home/ggonzale/workspace/neseg/core/Axis.o"
 	@echo "... home/ggonzale/workspace/neseg/core/Axis.i"
 	@echo "... home/ggonzale/workspace/neseg/core/Axis.s"
@@ -1357,15 +1121,6 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/core/utils.o"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.i"
 	@echo "... home/ggonzale/workspace/neseg/core/utils.s"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.o"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.i"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeDijkstra2/CubeDijkstra2.s"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.o"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.i"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/CubeLiveWire/cubeLiveWire.s"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.o"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.i"
-	@echo "... home/ggonzale/workspace/neseg/plugins/src/example/example.s"
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.o"
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.i"
 	@echo "... home/ggonzale/workspace/neseg/tests/MSTthroughShortestPath.s"
@@ -1423,33 +1178,6 @@ help:
 	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.o"
 	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.i"
 	@echo "... home/ggonzale/workspace/neseg/tools/neuron/neuronOutputAllEdgeLengths.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ascEdit.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_draw.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_menu.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_select.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_select.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_select.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/callbacks_ui.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/interface.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/interface.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/interface.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/main.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/main.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/main.s"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/support.o"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/support.i"
-	@echo "... home/ggonzale/workspace/neseg/viewer/src/support.s"
 .PHONY : help
 
 
