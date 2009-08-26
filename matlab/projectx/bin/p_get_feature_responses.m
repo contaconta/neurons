@@ -36,7 +36,7 @@ else
     switch learner_ids{1}(1:2)
 
       case 'HA'
-       	responses = mexRectangleFeature(SET.IntImages, learner_ids)';
+       	responses = mexRectangleFeature(SET.IntImages, learner_ids);
 
       case 'IT'
        	responses = double(mexIntensityFeature(SET.Images, learner_ids, learner_data));
