@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
     new Graph<Point3D, EdgeW<Point3D> >();
   pruned->cloud = gr->cloud;
   for(int i = 0; i < edgesVisited.size(); i++){
-    if(edgesVisited[i] > 0)
+    if(edgesVisited[i] >= 0)
       pruned->eset.edges.push_back
         (new EdgeW<Point3D>(&pruned->cloud->points,
                             gr->eset.edges[i]->p0,
@@ -156,41 +156,44 @@ int main(int argc, char **argv) {
                             gr->eset.edges[i]->w));
   }
   pruned->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/pruned.gr");
+  pruned->saveToFile("pruned.gr");
 
 
-  std::ofstream out("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/pruned.lst");
-  std::ofstream out2("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/pruned_out.lst");
-  char buff[1024];
-  for(int i = 0; i < edgesVisited.size(); i++){
-  // for(int i = 0; i < 1; i++){
-    if(edgesVisited[i] >= 0){
-      sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr",
-              gr->eset.edges[i]->p0,
-              gr->eset.edges[i]->p1);
-      if(fileExists(buff)){
-        out << buff << std::endl;
-      }
-      sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr",
-              gr->eset.edges[i]->p1,
-              gr->eset.edges[i]->p0);
-      if(fileExists(buff)){
-        out << buff << std::endl;
-      }
-    } else {
-      sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr",
-              gr->eset.edges[i]->p0,
-              gr->eset.edges[i]->p1);
-      if(fileExists(buff)){
-        out2 << buff << std::endl;
-      }
-      sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr",
-              gr->eset.edges[i]->p1,
-              gr->eset.edges[i]->p0);
-      if(fileExists(buff)){
-        out2 << buff << std::endl;
+  if(1){
+    std::ofstream out("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/pruned.lst");
+    std::ofstream out2("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/pruned_out.lst");
+    char buff[1024];
+    for(int i = 0; i < edgesVisited.size(); i++){
+      // for(int i = 0; i < 1; i++){
+      if(edgesVisited[i] >= 0){
+        sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr",
+                gr->eset.edges[i]->p0,
+                gr->eset.edges[i]->p1);
+        if(fileExists(buff)){
+          out << buff << std::endl;
+        }
+        sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr",
+                gr->eset.edges[i]->p1,
+                gr->eset.edges[i]->p0);
+        if(fileExists(buff)){
+          out << buff << std::endl;
+        }
+      } else {
+        sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr",
+                gr->eset.edges[i]->p0,
+                gr->eset.edges[i]->p1);
+        if(fileExists(buff)){
+          out2 << buff << std::endl;
+        }
+        sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr",
+                gr->eset.edges[i]->p1,
+                gr->eset.edges[i]->p0);
+        if(fileExists(buff)){
+          out2 << buff << std::endl;
+        }
       }
     }
+    out.close();
+    out2.close();
   }
-  out.close();
-  out2.close();
 }

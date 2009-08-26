@@ -516,18 +516,26 @@ vector<int> Graph<P,E>::findLeaves()
 {
   vector<int> leaves;
   vector< int > connections(cloud->points.size());
+  vector< int > pointsNotConnectedToTree(cloud->points.size());
   for(int i = 0; i < connections.size(); i++){
     connections[i] = 0;
+    pointsNotConnectedToTree[i] = 0;
   }
   for(int i = 0; i < eset.edges.size(); i++)
     {
       if(eset.edges[i]->p0 != -1)
         connections[eset.edges[i]->p0]++;
+      else if (eset.edges[i]->p1 != -1)
+        pointsNotConnectedToTree[eset.edges[i]->p1] = 1;
+
       if(eset.edges[i]->p1 != -1)
         connections[eset.edges[i]->p1]++;
+      else if (eset.edges[i]->p0 != -1)
+        pointsNotConnectedToTree[eset.edges[i]->p0] = 1;
+
     }
   for(int i = 0; i < connections.size(); i++){
-    if(connections[i] == 1){
+    if( (connections[i] == 1 ) && (pointsNotConnectedToTree[i]!=1) ){
       leaves.push_back(i);}
   }
         return leaves;

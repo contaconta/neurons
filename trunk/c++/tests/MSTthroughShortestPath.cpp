@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 
   // Computation of the complete graph
   Graph<Point3D, EdgeW<Point3D> >* cptGraph;
-  if(0){
+  if(1){
     //Definition of the window where to search for neighbors
     int windowX = 50;
     int windowY = 50;
@@ -85,10 +85,10 @@ int main(int argc, char **argv) {
     vector< CubeLiveWire* > cubeLiveWires;
     vector< Cube<float, double>*> cubes;
 
-#ifdef WITH_OPENMP
-    nthreads = omp_get_max_threads();
-    omp_set_num_threads(nthreads);
-#endif
+// #ifdef WITH_OPENMP
+    // nthreads = omp_get_max_threads();
+    // omp_set_num_threads(nthreads);
+// #endif
 
 
 
@@ -104,9 +104,9 @@ int main(int argc, char **argv) {
     }
 
     int endPoint = decimatedCloud->points.size();
-#ifdef WITH_OPENMP
-#pragma omp parallel for
-#endif
+// #ifdef WITH_OPENMP
+// #pragma omp parallel for
+// #endif
     for(int i = 0; i < endPoint; i ++){
       // for(int i = 50; i < 51; i ++){
       int nth = 0;
@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
               cubeLiveWires[nth]->findShortestPathG(idxs[0] ,idxs[1] ,idxs[2],
                                                     idxs2[0],idxs2[1],idxs2[2]);
             sprintf(graphName,
-                    "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr", i, j);
+                    "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr", i, j);
             float cost =
               cubes[nth]->integralOverCloud(shortestPath->cloud)
               /shortestPath->cloud->points.size();
@@ -164,9 +164,9 @@ int main(int argc, char **argv) {
             double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
                                  (microm2[1]-microm[1])*(microm2[1]-microm[1]) +
                                  (microm2[2]-microm[2])*(microm2[2]-microm[2]) );
-            cptGraph->eset.edges.push_back(new
-                                           EdgeW< Point3D> (&cptGraph->cloud->points, i,j,
-                                                            1-cost*exp(-(length-m_length)/(2*v_length)) ) );
+            cptGraph->eset.edges.push_back(
+                         new EdgeW< Point3D> (&cptGraph->cloud->points, i,j,
+                           1-cost*exp(-(length-m_length)*(length-m_length)/(2*v_length)) ) );
           }
       }
     }
@@ -183,26 +183,27 @@ int main(int argc, char **argv) {
   printf("Computing the MST on the complete graph\n");
   fflush(stdout);
   Graph<Point3D, EdgeW<Point3D> >* mst =
-    cptGraph->primFromThisGraph();
+    cptGraph->primFromThisGraphFast();
   printf("Saving the MST as a graph\n");
   mst->saveToFile("here.gr");
   mst->saveToFile("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.gr");
 
 
   //Saves the MST as a list of paths
-  printf("Saving the MST as a list\n");
-  std::ofstream out("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.lst");
-  char buff[1024];
-  for(int i =0; i < mst->eset.edges.size(); i++){
-    if( (mst->eset.edges[i]->p0 == mst->eset.edges[i]->p1 ) ||
-        (mst->eset.edges[i]->p0 == -1) ||
-        (mst->eset.edges[i]->p1 == -1) )
+  if(1){
+    printf("Saving the MST as a list\n");
+    std::ofstream out("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/mstFromCptGraph.lst");
+    char buff[1024];
+    for(int i =0; i < mst->eset.edges.size(); i++){
+      if( (mst->eset.edges[i]->p0 == mst->eset.edges[i]->p1 ) ||
+          (mst->eset.edges[i]->p0 == -1) ||
+          (mst->eset.edges[i]->p1 == -1) )
         continue;
-    sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/path_%04i_%04i.gr",
-            mst->eset.edges[i]->p0,
-            mst->eset.edges[i]->p1);
-    out << buff << std::endl;
+      sprintf(buff, "/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/paths/path_%04i_%04i.gr",
+              mst->eset.edges[i]->p0,
+              mst->eset.edges[i]->p1);
+      out << buff << std::endl;
+    }
+    out.close();
   }
-  out.close();
-
 }//main
