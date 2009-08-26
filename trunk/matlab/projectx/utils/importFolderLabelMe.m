@@ -93,7 +93,7 @@ for i = 1:length(d)
     if (i == 1) || (i == length(d))
         R = input(['\nWould you like to view image annotation ' num2str(i) ' to be imported?\n(y/n): '], 's');
         if strcmp(R, 'y')
-            LMPlot(A, 1, HOMEIMAGES);
+            LMplot(A, 1, HOMEIMAGES);
             input('\nPress Enter to continue');
         end
     end

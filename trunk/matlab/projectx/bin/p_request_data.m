@@ -45,12 +45,10 @@ for k = 1:nargin-3
 end
 
 % set a flag if we are looking for a NON-class
-NON = regexp(tag_string, 'non', 'once');
+NON = regexp(tag_string, '!', 'once');
 
 % create a new LabelMe index if it hasn't been passed as an argument
 if ~exist('D', 'var')
-    %D = LMdatabase(DATASETS.HOMEANNOTATIONS);
-    %D = LMquery(LMdatabase(DATASETS.HOMEANNOTATIONS), 'folder', 'fibslice');
     D = LMdatabase(DATASETS.HOMEANNOTATIONS, DATASETS.LABELME_FOLDERS);
 end
    

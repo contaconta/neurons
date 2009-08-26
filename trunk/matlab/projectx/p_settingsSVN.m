@@ -25,12 +25,13 @@
 clear all;
 
 % set paths we need for toolboxes
-addpath([pwd, '/../spedges/']);             % append the path to the ray's toolbox 
 addpath([pwd, '/../toolboxes/kevin/']); 	% append the path to kevin's toolbox
 addpath([pwd, '/../toolboxes/LabelMeToolbox/'], '-begin');   % append the path to kevin's toolbox
 addpath([pwd, '/bin/']);                    % append the path to sub-functions
 addpath([pwd, '/testing/']);                % append path to quality testing functions
 addpath([pwd, '/images/']);                 % append path to test images subdirectory
+addpath([pwd, '/../features/fragments/']);
+addpath([pwd, '/../features/spedges/']);    % append the path to the ray's toolbox 
 
 % seed the random number generator
 s = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(s);  %rand('twister', 100);    % seed for Matlab 7.8 (?)
@@ -59,23 +60,24 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 % DATA SETS FOR TRAINING & VALIDATION 
 %-------------------------------------------------------------------------
 
-DATASETS.TRAIN_POS      = 1500;          % number of positive examples in the training set
+DATASETS.TRAIN_POS      = 1000;          % number of positive examples in the training set
 DATASETS.TRAIN_NEG      = 1000;          % number of negative examples in the training set
-DATASETS.VALIDATION_POS = 1500;          % number of positive examples in the validation set
+DATASETS.VALIDATION_POS = 1000;          % number of positive examples in the validation set
 DATASETS.VALIDATION_NEG = 1000;          % number of negative examples in the validation set
 
 % parameters for updating the negative examples
-DATASETS.IMSIZE             = [17 17];      % detector window size
+DATASETS.IMSIZE             = [24 24];      % detector window size
 DATASETS.precomputed        = 1;            % (1) speeds up training by precomputing feature responses (0) computes feature responses during training
 DATASETS.delta              = 10;           % re-collection scan step size
 DATASETS.NORM               = 0;            % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
-DATASETS.labelme_pos_query  = 'mitochondria+interior';
-DATASETS.labelme_neg_query  = 'non mitochondria';
-DATASETS.LABELME_FOLDERS    = {'FIBSLICE'};
+DATASETS.labelme_pos_query  = 'face';
+DATASETS.labelme_neg_query  = 'nonface';
+DATASETS.LABELME_FOLDERS    = {'faces24x24', 'nonfaces24x24'};
+% DATASETS.labelme_pos_query  = 'mitochondria+interior';
+% DATASETS.labelme_neg_query  = '!mitochondria';
+% DATASETS.LABELME_FOLDERS    = {'FIBSLICE'};
 DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
 DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
-%DATASETS.HOMEIMAGES = '/localhome/aurelien/usr/share/Data/LabelMe/Images';
-%DATASETS.HOMEANNOTATIONS = '/localhome/aurelien/usr/share/Data/LabelMe/Annotations';
 
 %-------------------------------------------------------------------------
 % WEAK LEARNERS
@@ -85,10 +87,13 @@ DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
 % AB_ followed by parameters specific to each learner type which are parsed
 % and interpreted by p_define_weak_learners.
 
-%LEARNERS.types = {'HA_x1_y1_u1_v1'};
-%LEARNERS.types = {'HA_x3_y3_u4_v4'};
-%LEARNERS.types = {'HA_x3_y3_u2_v2'};
-LEARNERS.types = {'IT', 'HA_x3_y3_u4_v4'};
+LEARNERS.types = {'HA_x3_y3_u3_v3'};
+%LEARNERS.types = {'IT', 'HA_x3_y3_u3_v3'};
+%LEARNERS.types = {'FR_N_100_smin_17_smax_17_p_1'};
+%LEARNERS.types = {'IT'};
+
+
+
 
 
 % =========== OLD STUFF I DO NOT WANT TO GET RID OF YET ===================
