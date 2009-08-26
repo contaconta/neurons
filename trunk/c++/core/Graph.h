@@ -144,9 +144,26 @@ void Graph<P,E>::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-    VisibleE::draw();
-    eset.draw();
-    cloud->draw();
+    if(0){
+      VisibleE::draw();
+      eset.draw();
+      cloud->draw();
+    }
+    else {
+      eset.draw();
+      vector<int> pointsWithEdges(cloud->points.size());
+      for(int i = 0; i < eset.edges.size(); i++){
+          if(eset.edges[i]->p0 != -1)
+            pointsWithEdges[eset.edges[i]->p0] = 1;
+          if(eset.edges[i]->p1 != -1)
+            pointsWithEdges[eset.edges[i]->p1] = 1;
+        }
+            for(int i = 0; i < pointsWithEdges.size(); i++){
+              if(pointsWithEdges[i] == 1){
+                cloud->points[i]->draw();
+              }
+            }
+    }
     glEndList();
   }
   else{

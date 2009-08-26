@@ -2,6 +2,8 @@
 #define EDGEW_H_
 
 #include "Edge.h"
+#include <iomanip>
+#include <limits>
 
 template < class P=Point>
 class EdgeW : public Edge< P >
@@ -45,7 +47,7 @@ void EdgeW< P >::draw(){
 
   glGetFloatv(GL_CURRENT_COLOR, currCol);
 
-  glColor3f(wth,
+  glColor3f(1-wth,
             0,
             0);
 
@@ -75,7 +77,9 @@ void EdgeW< P >::draw(){
 
 template< class P>
 void EdgeW<P>::save(ostream &out){
-  out << this->p0 << " " << this->p1 << " " << w <<  std::endl;
+  out << std::setprecision(5) << std::fixed;
+  out << this->p0 << " " << this->p1 << " ";
+  out << std::setprecision(20) << std::scientific << w <<  std::endl;
 }
 
 template< class P>

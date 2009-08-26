@@ -85,10 +85,10 @@ int main(int argc, char **argv) {
     vector< CubeLiveWire* > cubeLiveWires;
     vector< Cube<float, double>*> cubes;
 
-// #ifdef WITH_OPENMP
-    // nthreads = omp_get_max_threads();
-    // omp_set_num_threads(nthreads);
-// #endif
+#ifdef WITH_OPENMP
+    nthreads = omp_get_max_threads();
+    omp_set_num_threads(nthreads);
+#endif
 
 
 
@@ -104,9 +104,9 @@ int main(int argc, char **argv) {
     }
 
     int endPoint = decimatedCloud->points.size();
-// #ifdef WITH_OPENMP
-// #pragma omp parallel for
-// #endif
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
     for(int i = 0; i < endPoint; i ++){
       // for(int i = 50; i < 51; i ++){
       int nth = 0;
