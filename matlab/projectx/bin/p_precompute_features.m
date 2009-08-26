@@ -34,8 +34,9 @@ for l = 1:length(LEARNERS.list)
     W = wristwatch(W, 'update', l, 'text', '       precomputed feature ');
 
     % precompute the feature responses for each example for learner l
-    responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
-    mexStoreResponse(responses,'row',l,'HA');
+    mexStoreResponse(p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l)),'row',l,'HA');
+    %responses = p_get_feature_responses(SET, LEARNERS.list(l), LEARNERS.data(l));
+    %mexStoreResponse(responses,'row',l,'HA');
 end
 
 toc; 

@@ -39,7 +39,7 @@ else
        	responses = mexRectangleFeature(SET.IntImages, learner_ids);
 
       case 'IT'
-       	responses = double(mexIntensityFeature(SET.Images, learner_ids, learner_data));
+       	responses = mexIntensityFeature(SET.Images, learner_ids, learner_data);
 %         for i = 1:length(SET.Images)
 %             %responses(i) = double(mexIntensityFeature(SET.Images(i), learner_ids, learner_data));
 %             %responses(i) = mexNormCorr(double(SET.Images{i}), double(learner_data{1})) + 5;
