@@ -14,6 +14,9 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
+#set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+set(CMAKE_BUILD_TYPE release) #debug none release distribution
+
 IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
   set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
@@ -23,9 +26,6 @@ ELSE(${HOST} STREQUAL bbpsg1)
 ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
-
-set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-#set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 ################################################################################
 ## External Libraries and Linking Command
