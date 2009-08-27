@@ -257,7 +257,8 @@ int main(int argc, char **argv) {
   while (status == GSL_CONTINUE && iter < 10000);
 
   Cube<float,double>* orig  = new Cube<float,double>
-    ("/media/neurons/steerableFilters3D/tmp/cut2NegatedEuclideanAnisotropic/cut.nfo");
+    ("/home/ggonzale/mount/cvlabfiler/n7_4/cut.nfo");
+
   Cube<float,double>* flts = orig->create_blank_cube
     ("cuts");
 

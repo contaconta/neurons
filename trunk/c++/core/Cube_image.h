@@ -1925,6 +1925,8 @@ vector< vector< int > > Cube<T,U>::decimate
              current_threshold, z, (int)valueToCoords.size()); fflush(stdout);
     }
 
+    if(valueToCoords.size() == 0) break;
+
     typename multimap< T, int >::iterator iter = valueToCoords.begin();
     T min_value_it = (*iter).first;
     // if(sizeof(T)==1)
