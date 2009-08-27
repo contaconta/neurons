@@ -449,13 +449,16 @@ on_videorotation_activate              (GtkMenuItem     *menuitem,
      flag_draw_dual = false;
      on_drawing3D_expose_event(drawing3D,NULL, user_data);
      char imageName[1024];
-     for(int i = 0; i <= 360; i+=15){
+     for(int i = 0; i < 360; i+=10){
        rot3DY = i;
        on_drawing3D_expose_event(drawing3D,NULL, user_data);
        sprintf(imageName,"/tmp/img%03i.jpg", i);
        saveScreenShot(imageName);
      }
-     int error = system("images2mpeg.sh /tmp output.avi 6.25");
+     char command[1024];
+     sprintf(command, "mencode_movie.sh /tmp %i %i output.avi 10", (int)widgetWidth, (int)widgetHeight);
+     printf("%s\n", command);
+     int error = system(command);
   }
 
 }

@@ -153,16 +153,16 @@ void Graph<P,E>::draw(){
       eset.draw();
       vector<int> pointsWithEdges(cloud->points.size());
       for(int i = 0; i < eset.edges.size(); i++){
-          if(eset.edges[i]->p0 != -1)
+        if((eset.edges[i]->p0 != -1) && (eset.edges[i]->p1 != -1)){
             pointsWithEdges[eset.edges[i]->p0] = 1;
-          if(eset.edges[i]->p1 != -1)
             pointsWithEdges[eset.edges[i]->p1] = 1;
         }
-            for(int i = 0; i < pointsWithEdges.size(); i++){
-              if(pointsWithEdges[i] == 1){
-                cloud->points[i]->draw();
-              }
-            }
+      }
+      for(int i = 0; i < pointsWithEdges.size(); i++){
+        if(pointsWithEdges[i] == 1){
+          cloud->points[i]->draw();
+        }
+      }
     }
     glEndList();
   }
