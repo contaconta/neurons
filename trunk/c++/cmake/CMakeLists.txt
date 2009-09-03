@@ -48,9 +48,9 @@ IF(${BBP-SDK_FOUND})
         set(Boost_USE_MULTITHREAD OFF)
   ENDIF(${Boost_FOUND})
   # message("BBP has been found")
-ELSE(${BBP-SDK_FOUND} AND ${Boost_FOUND})
+ELSE(${BBP-SDK_FOUND})
 message("BBP has NOT been found")
-ENDIF(${BBP-SDK_FOUND} AND ${Boost_FOUND})
+ENDIF(${BBP-SDK_FOUND})
 
 ## Needed by the viewer and modules
 find_package(GTK2)
@@ -179,6 +179,9 @@ ENDIF(${GLEW_FOUND})
 
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
+target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
 target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})

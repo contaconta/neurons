@@ -137,11 +137,27 @@ my_fdf (const gsl_vector *x, void *params,
 
 int main(int argc, char **argv) {
 
-  param  = new Cube<float,double>
-    ("/media/neurons/steerableFilters3D/resultVolumes/result-4-e-2-2-groundTruth-1-estimated.nfo");
+  if(argc!=5){
+    printf("Usage: cubeLogistic cubeFromWhichGetTheValues cloudWithPoints OriginalCube SigmoidCubeName\n");
+    exit(0);
+  }
+  string cubeDataName(argv[1]);
+  string cloudName   (argv[2]);
+  string cubeName    (argv[3]);
+  string outputName  (argv[4]);
 
-  cl = new Cloud<Point3Dot>
-    ("/media/neurons/steerableFilters3D/test.cl");
+  param  = new Cube<float,double>(cubeDataName);
+//     ("/media/neurons/steerableFilters3D/resultVolumes/result-4-e-2-2-groundTruth-1-estimated.nfo");
+
+  cl = new Cloud<Point3Dot>(cloudName);
+//     ("/media/neurons/steerableFilters3D/test.cl");
+
+  Cube<float,double>* orig  = new Cube<float,double>(cubeName);
+//     ("/home/ggonzale/mount/cvlabfiler/n7_4/cut.nfo");
+
+  Cube<float,double>* flts = orig->create_blank_cube(outputName);
+//     ("cuts");
+
 
   // t.resize(cl->points.size());
   // xv.resize(cl->points.size());
@@ -255,12 +271,6 @@ int main(int argc, char **argv) {
 
     }
   while (status == GSL_CONTINUE && iter < 10000);
-
-  Cube<float,double>* orig  = new Cube<float,double>
-    ("/home/ggonzale/mount/cvlabfiler/n7_4/cut.nfo");
-
-  Cube<float,double>* flts = orig->create_blank_cube
-    ("cuts");
 
   double a = gsl_vector_get (s->x, 0);
   double b = gsl_vector_get (s->x, 1);
