@@ -39,7 +39,7 @@ vector<int> findEdgesThatTouchPoint(int nPoint)
 }
 
 // nEdge should be passed as -1 in the initial call
-void traceBackToSoma(int nPoint, int nEdge, vector<int>& visitedEdges)
+void traceBackToSoma(int nPoint, int nEdge, vector<int>& visitedEdges, vector<int>& parentEdges)
 {
   //If we are in the soma
   if(nPoint == 0){
@@ -56,7 +56,7 @@ void traceBackToSoma(int nPoint, int nEdge, vector<int>& visitedEdges)
     if( gr->eset.edges[edgesThatTouch[i]]->p0 == nPoint)
       otherPoint = gr->eset.edges[edgesThatTouch[i]]->p1;
     else otherPoint = gr->eset.edges[edgesThatTouch[i]]->p0;
-    traceBackToSoma(otherPoint, edgesThatTouch[i], visitedEdges);
+    traceBackToSoma(otherPoint, edgesThatTouch[i], visitedEdges, parentEdges);
   }
 
   int sizeAfterKids = visitedEdges.size();
@@ -107,8 +107,8 @@ int main(int argc, char **argv) {
 
   vector<int> edgesTraced;
   // This vector will keep a list of the edges that will go to the parent
-  vector<int> parentEdges(gr->eseg.edges.size());
-  for(int i = 0; i < parentEdges; i++)
+  vector<int> parentEdges(gr->eset.edges.size());
+  for(int i = 0; i < parentEdges.size(); i++)
     parentEdges[i] = -1;
 
   for(int i = 0; i < leaves.size(); i++){

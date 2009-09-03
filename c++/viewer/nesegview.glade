@@ -151,6 +151,15 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkMenuItem" id="videorotationtime">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">VideoRotationTime</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_videorotationtime_activate" last_modification_time="Fri, 28 Aug 2009 09:35:35 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkImageMenuItem" id="cut1">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-cut</property>

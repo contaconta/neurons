@@ -9,7 +9,7 @@
 # _____________________________________________________________________________
 #
 
-cmake_minimum_required(VERSION 2.4)
+# cmake_minimum_required(VERSION 2.4)
 
 
 # PATH ________________________________________________________________________
@@ -20,10 +20,11 @@ find_path(BBP-SDK_PATH include/bbp.h
     /opt
     /sw/BBP-SDK
     /opt/BBP-SDK
+    /usr/local
 )
 
 if (BBP-SDK_PATH)
-    set (BBP-SDK_FOUND TRUE)
+    set (BBP-SDK_FOUND 1)
 endif (BBP-SDK_PATH)
 
 # HEADERS _____________________________________________________________________
@@ -72,7 +73,7 @@ if (BBP-SDK_FOUND)
 	#    set_property(DIRECTORY ${CMAKE_SOURCE_DIR}
 	#                 PROPERTY COMPILE_DEFINITIONS_DEBUG
 	#                 ${BBP-SDK_DEFINITIONS})
-	    include(${BBP-SDK_PATH}/lib/BBP-SDK.Release.cmake)
+	    # include(${BBP-SDK_PATH}/lib/BBP-SDK.Release.cmake)
 	    set_property(DIRECTORY ${CMAKE_SOURCE_DIR}
 			 PROPERTY COMPILE_DEFINITIONS_RELEASE
 			 ${BBP-SDK_DEFINITIONS})

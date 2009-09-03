@@ -337,3 +337,7 @@ on_videolayers_activate                (GtkMenuItem     *menuitem,
 void
 on_videorotation_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_videorotationtime_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
