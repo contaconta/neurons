@@ -691,6 +691,67 @@ void Cube<T,U>::calculate_second_derivates(float sigma_xy, float sigma_z)
   out.close();
 }
 
+template <class T, class U>
+void Cube<T,U>::calculate_second_derivates_memory(float sigma_xy, float sigma_z)
+{
+  char file_cubeSteer[1024];
+  sprintf(file_cubeSteer, "%scubeSteer_%02.2f_%02.2f.nfo", 
+          directory.c_str(), sigma_xy, sigma_z);
+
+  std::ofstream out(file_cubeSteer);
+
+  printf("Cube<T,U>::calculate_second_derivates(): creating the temporary directory\n");
+
+  Cube<float,double>* tmp = create_blank_cube("tmp", false);
+
+  string vl = ".vl";
+  string nfo = ".nfo";
+  char vol_name[512];
+  vector< string > names(6);
+  names[0] = "gxx";
+  names[1] = "gxy";
+  names[2] = "gxz";
+  names[3] = "gyy";
+  names[4] = "gyz";
+  names[5] = "gzz";
+
+  Cube<float,double>* derivates;
+
+  for(int i = 0; i < 6; i++){
+
+    out << names[i] << " ";
+    sprintf(vol_name, "%s_%02.2f_%02.2f", names[i].c_str(),sigma_xy,sigma_z);
+
+    char all_name[1024];
+    sprintf(all_name, "%s%s.nfo", directory.c_str(), vol_name);
+
+    // if(fileExists(all_name))
+      // continue;
+
+    derivates = create_blank_cube(vol_name, false);
+
+    out << directory << vol_name << ".nfo" << std::endl;
+
+    printf("Cube<T,U>::calculate_second_derivates(): creating %s\n", names[i].c_str());
+
+    if(i==0)
+      this->second_derivate_xx(sigma_xy, sigma_z, derivates, tmp);
+    if(i==1)
+      this->second_derivate_xy(sigma_xy, sigma_z, derivates, tmp);
+    if(i==2)
+      this->second_derivate_xz(sigma_xy, sigma_z, derivates, tmp);
+    if(i==3)
+      this->second_derivate_yy(sigma_xy, sigma_z, derivates, tmp);
+    if(i==4)
+      this->second_derivate_yz(sigma_xy, sigma_z, derivates, tmp);
+    if(i==5)
+      this->second_derivate_zz(sigma_xy, sigma_z, derivates, tmp);
+
+    delete derivates;
+  }
+  out.close();
+}
+
 
 
 template <class T, class U>

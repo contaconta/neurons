@@ -97,8 +97,10 @@ public:
   /** Saves the parameters into the given file.*/
   void save_parameters(string filenameParams);
 
-  /** Initializes the pointers to the volume file*/
-  void load_volume_data(string filenameVoxelData);
+  /** Initializes the pointers to the volume file. If the parameter reflectToFile is 
+   turned to false, it will allocate the size of the cube in the memory of the computer,
+   but not save it in the file filenameVoxelData*/
+  void load_volume_data(string filenameVoxelData, bool reflectToFile = true);
 
   /** Initializes the pointers to the integral cube.*/
   void load_integral_volume(string filename);
@@ -269,7 +271,7 @@ public:
   Cube<T,U>* duplicate_clean(string filename);
 
   /** Creates a blank cube with the same dimensions and float type.*/
-  Cube<float,double>* create_blank_cube(string filename);
+  Cube<float,double>* create_blank_cube(string filename, bool reflectToFile = true);
 
   /** Creates a blanck cube with the same dimensions and uchar type*/
   Cube<uchar,ulong>*  create_blank_cube_uchar(string filename);
@@ -458,6 +460,7 @@ public:
 
   /** Calculates all the second derivates of the cube.*/
   void calculate_second_derivates(float sigma_xy, float sigma_z);
+  void calculate_second_derivates_memory(float sigma_xy, float sigma_z);
 
   /** Calculates the eigenvalues of the cube using the information in the directory name.*/
   void calculate_eigen_values(string directory_name);
@@ -640,7 +643,7 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
 //   nColToDraw = -1;
 //   nRowToDraw = -1;
 //   glGenTextures(1, &wholeTexture);
-//   glGenTextures(1, &wholeTextureTrue);
+//   glGenTextures(1, &wholeTexturerue);
 
   init();
   load_parameters(filenameParams);

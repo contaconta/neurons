@@ -96,28 +96,31 @@ void Cube<T,U>::save_parameters(string filename)
 
 
 template <class T, class U>
-void Cube<T,U>::load_volume_data(string filenameVoxelData)
+void Cube<T,U>::load_volume_data(string filenameVoxelData, bool reflectToFile)
 {
- fildes = open64(filenameVoxelData.c_str(), O_RDWR);
 
- if(fildes == -1) //The file does not exist
-   {
-     printf("The file %s does not exist.Aborting.\n", filenameVoxelData.c_str());
-     exit(0);
-   }
+  // If there is actually a file where I want to map the volume
+  if(reflectToFile){
+    fildes = open64(filenameVoxelData.c_str(), O_RDWR);
+    if(fildes == -1) //The file does not exist
+      {
+        printf("The file %s does not exist.Aborting.\n", filenameVoxelData.c_str());
+        exit(0);
+      }
+    void* mapped_file = mmap64(0,
+                               cubeWidth*cubeHeight*cubeDepth*sizeof(T),
+                               PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
+    if(mapped_file == MAP_FAILED)
+      {
+        printf("Cube<T,U>::load_volume_data: There is a bug here, volume not loaded. %s\n",
+               filenameVoxelData.c_str());
+        exit(0);
+      }
+    voxels_origin = (T*) mapped_file;
+  } else {
+    voxels_origin = (T*)calloc(cubeWidth*cubeHeight*cubeDepth,sizeof(T));
+  }
 
- void* mapped_file = mmap64(0,
-                            cubeWidth*cubeHeight*cubeDepth*sizeof(T),
-                            PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
-
- if(mapped_file == MAP_FAILED)
-    {
-      printf("Cube<T,U>::load_volume_data: There is a bug here, volume not loaded. %s\n",
-              filenameVoxelData.c_str());
-      exit(0);
-    }
-
-  voxels_origin = (T*) mapped_file;
   voxels = (T***)malloc(cubeDepth*sizeof(T**));
 
   //Initializes the pointer structure to acces quickly to the voxels
@@ -1310,7 +1313,7 @@ Cube<T,U>*  Cube<T,U>::duplicate_clean(string name)
 
 
 template <class T, class U>
-Cube<float,double>*  Cube<T,U>::create_blank_cube(string name)
+Cube<float,double>*  Cube<T,U>::create_blank_cube(string name, bool reflectToFile)
 {
   string vl = ".vl";
   string nfo = ".nfo";
@@ -1332,9 +1335,11 @@ Cube<float,double>*  Cube<T,U>::create_blank_cube(string name)
   toReturn->directory = directory;
   toReturn->type = "float";
   toReturn->filenameVoxelData = name + vl;
-  toReturn->save_parameters(this->directory + name + nfo);
-  toReturn->create_volume_file(this->directory + name + vl);
-  toReturn->load_volume_data(this->directory + name + vl);
+  if(reflectToFile){
+    toReturn->save_parameters(this->directory + name + nfo);
+    toReturn->create_volume_file(this->directory + name + vl);
+  }
+  toReturn->load_volume_data(this->directory + name + vl, reflectToFile);
 
   return toReturn;
 }

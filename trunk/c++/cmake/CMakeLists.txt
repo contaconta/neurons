@@ -21,7 +21,8 @@ IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
   set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
 ELSE(${HOST} STREQUAL bbpsg1)
-  set(CMAKE_C_COMPILER "c++")
+  set(CMAKE_C_COMPILER "g++-4.2")
+  set(CMAKE_CXX_COMPILER "g++-4.2")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
@@ -38,9 +39,16 @@ include_directories(${GLUT_INCLUDE_DIR} )
 find_package(GSL REQUIRED )
 include_directories(${GSL_INCLUDE_DIR})
 
-#find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework REQUIRED)
-#set(Boost_USE_MULTITHREAD OFF)
-# find_package(BBP-SDK REQUIRED)
+find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework)
+find_package(BBP-SDK)
+IF(${BBP-SDK_FOUND} AND ${Boost_FOUND})
+  INCLUDE_DIRECTORIES( ${BBP-SDK_INCLUDE_DIRS})
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_BBP")
+  set(Boost_USE_MULTITHREAD OFF)
+  # message("BBP has been found")
+ELSE(${BBP-SDK_FOUND} AND ${Boost_FOUND})
+message("BBP has NOT been found")
+ENDIF(${BBP-SDK_FOUND} AND ${Boost_FOUND})
 
 ## Needed by the viewer and modules
 find_package(GTK2)
@@ -60,7 +68,8 @@ find_package(Gmodule)
 
 set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
 ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
-${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} viva)
+${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} 
+${BBP-SDK_LIB} ${Boost_LIBRARIES} viva)
 
 
 ################################################################################
@@ -169,6 +178,9 @@ ENDIF(${GLEW_FOUND})
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
+target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
 target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
@@ -196,6 +208,20 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
+target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
+
+
+################################################################################
+## image tools
+add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
+target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
+
+add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
+target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
+
+
+
 ################################################################################
 ## graph tools
 
@@ -208,6 +234,10 @@ target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
 add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
 target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
+add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
+target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
+
+
 ################################################################################
 ## neuron tools
 
@@ -216,6 +246,9 @@ target_link_libraries(neuronOutputAllEdgeLengths ${LINK_LIBRARIES_ALL})
 
 add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
 target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
+
+add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
+target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################

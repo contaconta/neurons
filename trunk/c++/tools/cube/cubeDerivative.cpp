@@ -55,8 +55,4 @@ int main(int argc, char **argv) {
   Cube<float, double>* output = cube->create_blank_cube(buff);
 
   cube->calculate_derivative(nx, ny, nz, sxy, sxy, sz, output, tmp);
-
-
-
-
 }

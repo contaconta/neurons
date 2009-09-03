@@ -471,3 +471,52 @@ on_videorotation_activate              (GtkMenuItem     *menuitem,
 
 //-------------------------------------------------
 
+
+void
+on_videorotationtime_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  //Gets the pointer to the Cube_T
+  Cube_T* cb = NULL;
+  for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+      itObj != toDraw.end(); itObj++)
+    {
+      if((*itObj)->className()=="Cube_T"){
+        cb = dynamic_cast<Cube_T*>(*itObj);
+        if(timeStep < 0){
+          timeStep = cb->cubes.size()-1;
+        }
+        cb->timeStep = timeStep;
+      }
+    }
+
+  if(cb!=NULL){
+     flag_draw_3D = true;
+     flag_draw_XY = false;
+     flag_draw_XZ = false;
+     flag_draw_YZ = false;
+     flag_draw_combo = false;
+     flag_draw_dual = false;
+     on_drawing3D_expose_event(drawing3D,NULL, user_data);
+     int error = system("rm -rf /tmp/img*.jpg");
+     char imageName[1024];
+     int maxTime = cb->cubes.size();
+     for(int ts = 0; ts < maxTime; ts++){
+     /* for(int i = 0; i < 360; i+=5){ */
+       /* int i = 360*ts/maxTime; //angle */
+       int i = 0;
+       rot3DY = i;
+       cb->timeStep = ts;
+       on_drawing3D_expose_event(drawing3D,NULL, user_data);
+       sprintf(imageName,"/tmp/img%03i.jpg", ts);
+       saveScreenShot(imageName);
+     }
+     char command[1024];
+     sprintf(command, "mencode_movie.sh /tmp %i %i output.avi 10", (int)widgetWidth, (int)widgetHeight);
+     printf("%s\n", command);
+     error = system(command);
+  }
+
+
+}
+

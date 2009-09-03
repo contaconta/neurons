@@ -1,4 +1,5 @@
 
+
 /////////////////////////////////////////////////////////////////////////
 // This program is free software; you can redistribute it and/or       //
 // modify it under the terms of the GNU General Public License         //
@@ -28,12 +29,12 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  printf("Not general for any type of cloud, only for Point3Dot\n");
   if(argc!=4){
     printf("Use: cloudSplit orig cloud1 cloud2\n");
     exit(0);
   }
 
+  printf("Not general for any type of cloud, only for Point3Dot\n");
 
   Cloud<Point3Dot>* orig = new Cloud<Point3Dot>(argv[1]);
   Cloud<Point3Dot>* dest1 = new Cloud<Point3Dot>();
@@ -45,6 +46,9 @@ int main(int argc, char **argv) {
     else
       dest2->points.push_back(orig->points[i]);
   }
+
+  printf("The original cloud has %i points, dest1 has %i and dest2 has %i\n",
+         orig->points.size(), dest1->points.size(), dest2->points.size());
 
   dest1->saveToFile(argv[2]);
   dest2->saveToFile(argv[3]);

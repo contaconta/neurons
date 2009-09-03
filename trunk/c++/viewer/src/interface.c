@@ -46,6 +46,7 @@ create_ascEditor (void)
   GtkWidget *image1;
   GtkWidget *videolayers;
   GtkWidget *videorotation;
+  GtkWidget *videorotationtime;
   GtkWidget *cut1;
   GtkWidget *copy1;
   GtkWidget *paste1;
@@ -162,6 +163,10 @@ create_ascEditor (void)
   videorotation = gtk_menu_item_new_with_mnemonic (_("VIdeoRotation"));
   gtk_widget_show (videorotation);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotation);
+
+  videorotationtime = gtk_menu_item_new_with_mnemonic (_("VideoRotationTime"));
+  gtk_widget_show (videorotationtime);
+  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotationtime);
 
   cut1 = gtk_image_menu_item_new_from_stock ("gtk-cut", accel_group);
   gtk_widget_show (cut1);
@@ -399,6 +404,9 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) videorotation, "activate",
                     G_CALLBACK (on_videorotation_activate),
                     NULL);
+  g_signal_connect ((gpointer) videorotationtime, "activate",
+                    G_CALLBACK (on_videorotationtime_activate),
+                    NULL);
   g_signal_connect ((gpointer) cut1, "activate",
                     G_CALLBACK (on_cut1_activate),
                     NULL);
@@ -514,6 +522,7 @@ create_ascEditor (void)
   GLADE_HOOKUP_OBJECT (ascEditor, image1, "image1");
   GLADE_HOOKUP_OBJECT (ascEditor, videolayers, "videolayers");
   GLADE_HOOKUP_OBJECT (ascEditor, videorotation, "videorotation");
+  GLADE_HOOKUP_OBJECT (ascEditor, videorotationtime, "videorotationtime");
   GLADE_HOOKUP_OBJECT (ascEditor, cut1, "cut1");
   GLADE_HOOKUP_OBJECT (ascEditor, copy1, "copy1");
   GLADE_HOOKUP_OBJECT (ascEditor, paste1, "paste1");
