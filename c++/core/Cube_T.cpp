@@ -64,10 +64,12 @@ Cube_T::Cube_T(string filename){
 }
 
 
-void Cube_T::load_texture_brick(int row, int col, float scale)
+void Cube_T::load_texture_brick(int row, int col, float scale, float _max, float _min)
 {
+  float max, min;
+  this->min_max(&min, &max);
   for(int i = 0; i < cubes.size(); i++){
-    cubes[i]->load_texture_brick(row, col, scale);
+    cubes[i]->load_texture_brick(row, col, scale, min, max);
   }
 }
 
@@ -98,7 +100,7 @@ void Cube_T::drawgt()
 void Cube_T::draw()
 {
   // Draws the cube
-  int nPlanes = 500;
+  int nPlanes = 300;
   glDisable(GL_DEPTH_TEST);
   GLfloat pModelViewMatrix[16];
   glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
@@ -114,34 +116,46 @@ void Cube_T::draw()
 
   // Draws the halo
   if(d_halo){
-    if(timeStep - 1 >= 0){
-      cubes[timeStep-1]->v_r = 0.6;
-      cubes[timeStep-1]->v_g = 0;
-      cubes[timeStep-1]->v_b = 0;
-      cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
+    // if(timeStep - 1 >= 0){
+      // cubes[timeStep-1]->v_r = 0.6;
+      // cubes[timeStep-1]->v_g = 0;
+      // cubes[timeStep-1]->v_b = 0;
+      // cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
+      // glPushMatrix();
+      // glLoadMatrixf(pModelViewMatrix);
+      // cubes[timeStep-1]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      // glPopMatrix();
+    // }
+    // if(timeStep - 2 >= 0){
+      // cubes[timeStep-2]->v_r = 0;
+      // cubes[timeStep-2]->v_g = 0;
+      // cubes[timeStep-2]->v_b = 0.5;
+      // cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
+      // glPushMatrix();
+      // glLoadMatrixf(pModelViewMatrix);
+      // cubes[timeStep-2]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      // glPopMatrix();
+    // }
+    // if(timeStep - 3 >= 0){
+      // cubes[timeStep-3]->v_r = 0;
+      // cubes[timeStep-3]->v_g = 0.4;
+      // cubes[timeStep-3]->v_b = 0;
+      // cubes[timeStep-3]->v_draw_projection = this->v_draw_projection;
+      // glPushMatrix();
+      // glLoadMatrixf(pModelViewMatrix);
+      // cubes[timeStep-3]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      // glPopMatrix();
+    // }
+    for(int i = 0; i < timeStep; i++){
+      glDisable(GL_DEPTH_TEST);
+      GLfloat pModelViewMatrix[16];
+      glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
+      cubes[timeStep]->v_r = this->v_r;
+      cubes[timeStep]->v_g = this->v_g;
+      cubes[timeStep]->v_b = this->v_b;
+      cubes[timeStep]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
-      glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-1]->draw(0,0,nPlanes,this->v_draw_projection, 0);
-      glPopMatrix();
-    }
-    if(timeStep - 2 >= 0){
-      cubes[timeStep-2]->v_r = 0;
-      cubes[timeStep-2]->v_g = 0;
-      cubes[timeStep-2]->v_b = 0.5;
-      cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
-      glPushMatrix();
-      glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-2]->draw(0,0,nPlanes,this->v_draw_projection, 0);
-      glPopMatrix();
-    }
-    if(timeStep - 3 >= 0){
-      cubes[timeStep-3]->v_r = 0;
-      cubes[timeStep-3]->v_g = 0.4;
-      cubes[timeStep-3]->v_b = 0;
-      cubes[timeStep-3]->v_draw_projection = this->v_draw_projection;
-      glPushMatrix();
-      glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-3]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      cubes[timeStep]->draw(0,0,nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
   }
@@ -207,7 +221,13 @@ void Cube_T::draw_layer_tile_YZ(float depth, int color)
 
 void Cube_T::min_max(float* min, float* max)
 {
-  cubes[timeStep]->min_max(min, max);
+  float curr_min, curr_max;
+  cubes[0]->min_max(min, max);
+  for(int i = 1; i < cubes.size(); i++){
+    cubes[i]->min_max(&curr_min, &curr_max);
+    if(curr_min < *min) *min = curr_min;
+    if(curr_max < *max) *max = curr_max;
+  }
 }
 
 Cube_P* Cube_T::threshold(float thres, string outputName,

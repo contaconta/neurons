@@ -19,13 +19,15 @@ public:
 
   bool d_halo;
 
+  bool d_allInOne;
+
   bool d_gt;
 
   Cube_T(string filename);
 
   void print_size();
 
-  void load_texture_brick(int row, int col, float scale=1.0);
+  void load_texture_brick(int row, int col, float scale=1.0, float max = 0.0, float min = 0.0);
 
   void draw();
 
