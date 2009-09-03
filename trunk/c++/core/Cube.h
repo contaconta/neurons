@@ -295,7 +295,8 @@ public:
 
   /** Loads the texture of the brick represented by the row, col. Both start at 0.
       A transfer function can be supplied to change the color of the voxels*/
-  void load_texture_brick(int row, int col, float scale = 1.0);
+  void load_texture_brick(int row, int col, float scale = 1.0,
+                          float min = 0.0, float max = 0.0);
 
   /** Loads a thresholded brick.*/
   void load_thresholded_texture_brick(int row, int col, float threshold);

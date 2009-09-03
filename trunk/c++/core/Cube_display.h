@@ -91,7 +91,7 @@ void Cube<T,U>::load_whole_texture()
 }
 
 template <class T, class U>
-  void Cube<T,U>::load_texture_brick(int row, int col, float scale)
+void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, float _max)
 {
   nColToDraw = col;
   nRowToDraw = row;
@@ -102,7 +102,7 @@ template <class T, class U>
   printf("Max texture size %i\n", max_texture_size);
 
   #if debug
-p  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
+  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
   printf("Cube::load_texture_brick() creating the texture buffer\n");
   #endif
 
@@ -296,19 +296,25 @@ p  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size
       printf("Cube::load_texture_brick() creating texture from floats\n");
       float max_texture = -10e6;
       float min_texture = 10e6;
-      for(int z = 0; z < limit_z; z++)
-        {
-          for(int y = 0; y < limit_y; y++)
-            {
-              for(int x = 0; x < limit_x; x++)
-                {
-                  if(max_texture <  this->at(col_offset+x,row_offset+y,z))
-                    max_texture = this->at(col_offset+x,row_offset+y,z);
-                  if(min_texture >  this->at(col_offset+x,row_offset+y,z))
-                    min_texture = this->at(col_offset+x,row_offset+y,z);
-                }
-            }
-        }
+      if(_min == _max){
+        min_max(&min_texture, &max_texture);
+      } else {
+        max_texture = _max;
+        min_texture = _min;
+      }
+      // for(int z = 0; z < limit_z; z++)
+        // {
+          // for(int y = 0; y < limit_y; y++)
+            // {
+              // for(int x = 0; x < limit_x; x++)
+                // {
+                  // if(max_texture <  this->at(col_offset+x,row_offset+y,z))
+                    // max_texture = this->at(col_offset+x,row_offset+y,z);
+                  // if(min_texture >  this->at(col_offset+x,row_offset+y,z))
+                    // min_texture = this->at(col_offset+x,row_offset+y,z);
+                // }
+            // }
+        // }
       printf("Cube::load_texture_brick(): max=%f and min=%f\n", (float)max_texture, (float)min_texture);
       printf("Loading texture brick %i %i [", row, col);
       int depth_y;
