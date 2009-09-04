@@ -30,6 +30,7 @@ addpath([pwd, '/../toolboxes/LabelMeToolbox/'], '-begin');   % append the path t
 addpath([pwd, '/bin/']);                    % append the path to sub-functions
 addpath([pwd, '/testing/']);                % append path to quality testing functions
 addpath([pwd, '/images/']);                 % append path to test images subdirectory
+addpath([pwd, '/utils/']);                  % append path to utilities subdirectory
 addpath([pwd, '/../features/fragments/']);
 addpath([pwd, '/../features/spedges/']);    % append the path to the ray's toolbox 
 
@@ -60,22 +61,27 @@ EXPERIMENT.log_filenm       = ['./logs/' EXPERIMENT.NAME EXPERIMENT.datestr EXPE
 % DATA SETS FOR TRAINING & VALIDATION 
 %-------------------------------------------------------------------------
 
-DATASETS.TRAIN_POS      = 1000;          % number of positive examples in the training set
-DATASETS.TRAIN_NEG      = 1000;          % number of negative examples in the training set
-DATASETS.VALIDATION_POS = 1000;          % number of positive examples in the validation set
-DATASETS.VALIDATION_NEG = 1000;          % number of negative examples in the validation set
+DATASETS.TRAIN_POS      = 2000;          % number of positive examples in the training set
+DATASETS.TRAIN_NEG      = 2000;          % number of negative examples in the training set
+DATASETS.VALIDATION_POS = 2000;          % number of positive examples in the validation set
+DATASETS.VALIDATION_NEG = 2000;          % number of negative examples in the validation set
 
 % parameters for updating the negative examples
 DATASETS.IMSIZE             = [24 24];      % detector window size
 DATASETS.precomputed        = 1;            % (1) speeds up training by precomputing feature responses (0) computes feature responses during training
-DATASETS.delta              = 10;           % re-collection scan step size
 DATASETS.NORM               = 0;            % normalize intensity? (1=FACES,NUCLEI,PERSONS, 0=MITO,CONTOURS)
-DATASETS.labelme_pos_query  = 'face';
-DATASETS.labelme_neg_query  = 'nonface';
-DATASETS.LABELME_FOLDERS    = {'faces24x24', 'nonfaces24x24'};
-% DATASETS.labelme_pos_query  = 'mitochondria+interior';
-% DATASETS.labelme_neg_query  = '!mitochondria';
-% DATASETS.LABELME_FOLDERS    = {'FIBSLICE'};
+DATASETS.flist              = {};           % function handles for preprocessing the images can be defined here, e.g. {@(x)mat2gray(x), @(x)imresize(x, [300 300])};
+DATASETS.posXY              = 5;
+DATASETS.negXY              = 100;
+DATASETS.pos_query          = 'face';
+DATASETS.neg_query          = '@nonface';
+DATASETS.LABELME_FOLDERS    = {'faces24x24', 'nonfaces_sm'};
+% DATASETS.pos_query          = '@mitochondria';
+% DATASETS.neg_query          = '!mitochondria';
+% DATASETS.LABELME_FOLDERS    = {'FIBSEM'};
+% DATASETS.pos_query          = '@car,@truck,@sign';
+% DATASETS.neg_query          = '!car&truck@sign';
+% DATASETS.LABELME_FOLDERS    = {'05june05_static_street_porter'};
 DATASETS.HOMEIMAGES         = '/osshare/Work/Data/LabelMe/Images';
 DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
 
@@ -87,7 +93,7 @@ DATASETS.HOMEANNOTATIONS    = '/osshare/Work/Data/LabelMe/Annotations';
 % AB_ followed by parameters specific to each learner type which are parsed
 % and interpreted by p_define_weak_learners.
 
-LEARNERS.types = {'HA_x3_y3_u3_v3'};
+LEARNERS.types = {'HA_x2_y2_u2_v2'};
 %LEARNERS.types = {'IT', 'HA_x3_y3_u3_v3'};
 %LEARNERS.types = {'FR_N_100_smin_17_smax_17_p_1'};
 %LEARNERS.types = {'IT'};

@@ -23,7 +23,7 @@ filenm = ['./temp/' 'LMINDEX_' cell2mat(DATASETS.LABELME_FOLDERS) '.mat'];
 
 if exist(filenm, 'file')
     % folders have been indexed, load from a file to save time indexing
-    disp(['...loading LabelMeIndex for folders: ' cell2mat(DATASETS.LABELME_FOLDERS)]); pause(.001);
+    disp(['... loading LabelMeIndex for folders: ' cell2mat(DATASETS.LABELME_FOLDERS)]); pause(.001);
     D = load(filenm);
     DATASETS.LabelMeIndex = D.D;
 else

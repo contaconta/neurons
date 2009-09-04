@@ -100,7 +100,7 @@ s = ['                  id: ' learner_string ]; disp(s);
 h = p_classify_weak_learner(CLASSIFIER.learner_id(ti), CLASSIFIER.learner_data(ti), CLASSIFIER.polarity(ti), CLASSIFIER.threshold(ti), TRAIN);
 
 % reweight misclassified examples to be more important (& store)
-e = h ~= TRAIN.class;           %abs( h - TRAIN(:).class);
+e = h ~= TRAIN.class';           %abs( h - TRAIN(:).class);
 w = w .* (beta * ones(size(w))).^(1 - e);
 CLASSIFIER.w = w;   
 

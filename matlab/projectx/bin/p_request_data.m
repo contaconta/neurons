@@ -31,6 +31,8 @@ function [data, D] = p_request_data(tag_string, N, DATASETS, varargin)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+
+% parameters
 SHRINK_BORDER = 10;     % for collecting negative samples: buffer between positive regions and negative sample regions
 
 for k = 1:nargin-3

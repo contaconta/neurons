@@ -17,14 +17,15 @@ function p_precompute_features(SET, LEARNERS)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
-tic;
-disp('Precomputing features on the TRAIN SET');
-
+%tic;
+disp('    Precomputing features on the TRAIN SET    ');
+%cprintf('black', '  '); cprintf('-black', 'defined %d HA learners:', length(learner_list)); cprintf('black', ' %s\n', LEARNERS.types{l});
+        
 
 % start the memDaemon, which is used to store our precomputed feature responses
 start_memDaemon(LEARNERS, SET);
 
-W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 100);
+W = wristwatch('start', 'end', length(LEARNERS.list), 'every', 5000);
 
 % TODO: instead of storing response rows all at once, or one row at a time, it will be efficient to store chunks
 % sized to fit in memory
@@ -39,7 +40,7 @@ for l = 1:length(LEARNERS.list)
     %mexStoreResponse(responses,'row',l,'HA');
 end
 
-toc; 
+%toc; 
 
 
 
@@ -56,9 +57,9 @@ dtype = get_datatype(LEARNERS.types);
 system('killall memDaemon'); pause(0.1); system(['./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']); pause(0.1);
 [s,r]=system('ps -ef | grep memDaemon | grep -v -e "grep"');
 if r
-    disp(['...started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']);
+    disp(['       started memDaemon : ./bin/memDaemon ' int2str(length(SET.class)) ' ' int2str(length(LEARNERS.list)) ' ' dtype ' &']);
 else
-    disp('...memDaemon is not running'); 
+    disp('       memDaemon is not running'); 
 end
 
 

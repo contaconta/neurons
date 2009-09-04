@@ -60,6 +60,8 @@ for l=1:length(LEARNERS.types)
         learner_list = mexEnumerateLearners(LEARNERS.types(l), DATASETS.IMSIZE);
         LEARNERS.list = [LEARNERS.list learner_list'];
         LEARNERS.data = [LEARNERS.data cell(1, length(learner_list))];
+        %cprintf('black', '  '); cprintf('-black', 'defined %d HA learners:', length(learner_list)); cprintf('black', ' %s\n', LEARNERS.types{l});
+        disp(['    defined ' num2str(length(learner_list)) ' HA learners: ' LEARNERS.types{l}]);
         
     otherwise
         error('Error p_EnumerateLearners: learners were not properly enumerated.');
@@ -71,12 +73,14 @@ for l=1:length(LEARNERS.types)
 end
 
 
-for i = 1:length(LEARNERS.types)
-    type = LEARNERS.types{i};
-    disp(['   defined ' type(1:2) ' learners.']);    
-end
+% for i = 1:length(LEARNERS.types)
+%     type = LEARNERS.types{i};
+%     %disp(['... defined ' type(1:2) ' learners.']);    
+%     %cprintf('black', '\n... '); cprintf('-black', 'defined %s learners\n', type(1:2));
+%     cprintf('black', '  '); cprintf('-black', 'defined %s learners\n', 'HA');
+% end
 
-%disp(['   Defined ' num2str(length(LEARNERS.list)) ' learners. Elapsed time ' num2str(toc) ' seconds.']);
+disp(['... Total ' num2str(length(LEARNERS.list)) ' learners defined. Elapsed time ' num2str(toc) ' seconds.']);
 
 
 
