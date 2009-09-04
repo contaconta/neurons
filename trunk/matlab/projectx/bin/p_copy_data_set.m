@@ -25,7 +25,8 @@ function SET = p_copy_data_set(SET, inds)
 
 flist = fields(SET);
 
-N = length(SET.class);
+%N = length(SET.class);
+N = length(SET.Images);
 
 for i=1:length(flist)
     if length(SET.(flist{i})) == N

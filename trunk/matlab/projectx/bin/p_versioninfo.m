@@ -16,8 +16,12 @@ disp(['    ' INFO.email]);
 disp(['    ' INFO.institution ]);
 disp (' ');
 disp(['  started on:  ' datestr(now) ]);
-disp(['  DATA SET:    ' DATASETS.labelme_pos_query]);
+disp(['  + query:     ' DATASETS.pos_query]);
+disp(['  - query:     ' DATASETS.neg_query]);
 disp(['  LEARNERS:    ' strcat(LEARNERS.types{:}) ]);
+disp(['  TRAIN:       ' num2str(DATASETS.TRAIN_POS) '+ examples, ' num2str(DATASETS.TRAIN_NEG) '- examples']);
+disp(['  VALIDATION:  ' num2str(DATASETS.VALIDATION_POS) '+ examples, ' num2str(DATASETS.VALIDATION_NEG) '- examples']);
+
 disp (' ');
 disp(['  ' INFO.copyright ]);
 disp(' ');

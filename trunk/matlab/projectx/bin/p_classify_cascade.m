@@ -25,7 +25,8 @@ else
 end
 
 % initialize the classification vector to be all positive classes
-C =  ones(size(SET.class));
+%C =  ones(size(SET.class));
+C = ones(size(SET.Images));
 
 % loop through each stage of the cascade (even if it is only 1 stage)
 for s = 1:length(CASCADE)

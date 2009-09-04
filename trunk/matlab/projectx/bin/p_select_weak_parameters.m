@@ -30,8 +30,8 @@ wsorted = w(inds);                              % weights sorted according to ab
 
 
 %% efficient way to find optimal threshold from page 6 of [Viola-Jones IJCV 2004]
-TPOS = sum((SET.class==1).*w);                  % Total sum of class 1 example weights
-TNEG = sum((SET.class==-1).*w);                 % Total sum of class -1 example weights
+TPOS = sum((SET.class==1)'.*w);                  % Total sum of class 1 example weights
+TNEG = sum((SET.class==-1)'.*w);                 % Total sum of class -1 example weights
 SPOS = 0;                                       % Running sum of class 1 example weights
 SNEG = 0;                                       % Running sum of class -1 example weights
 

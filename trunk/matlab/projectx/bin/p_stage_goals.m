@@ -32,33 +32,33 @@ NStages = BOOST.Nstages;
 targetF = BOOST.targetF;
 targetD = BOOST.targetD;
 
-BOOST.goals(1).dmin = .90;
-BOOST.goals(1).fmax = 1e-5;
+% BOOST.goals(1).dmin = .90;
+% BOOST.goals(1).fmax = 1e-5;
 
-% BOOST.goals(1).dmin = .99;
-% BOOST.goals(1).fmax = .5;
-% %---------------------------------------------------
-% BOOST.goals(2).dmin = .99;
-% BOOST.goals(2).fmax = .5;
-% %---------------------------------------------------
-% BOOST.goals(3).dmin = .99;
-% BOOST.goals(3).fmax =  .45;
-% %---------------------------------------------------
-% BOOST.goals(4).dmin = .991;
-% BOOST.goals(4).fmax =  .45;
-% %---------------------------------------------------
-% BOOST.goals(5).dmin = .992;
-% BOOST.goals(5).fmax =  .4;
-% %---------------------------------------------------
-% BOOST.goals(6).dmin = .993;
-% BOOST.goals(6).fmax =  .4;
-% %---------------------------------------------------
-% 
-% S = length(BOOST.goals); Dcurrent = prod([BOOST.goals(:).dmin]); Fcurrent = prod([BOOST.goals(:).fmax]);
-% 
-% % now automatically determine the goals for the remaining stages
-% for s = S:NStages;
-%     BOOST.goals(s).dmin = (targetD/Dcurrent)^(1/abs(NStages-S+1));
-%     BOOST.goals(s).fmax = (targetF/Fcurrent)^(1/abs(NStages-S+1));
-% end
+BOOST.goals(1).dmin = .99;
+BOOST.goals(1).fmax = .5;
+%---------------------------------------------------
+BOOST.goals(2).dmin = .99;
+BOOST.goals(2).fmax = .5;
+%---------------------------------------------------
+BOOST.goals(3).dmin = .99;
+BOOST.goals(3).fmax =  .45;
+%---------------------------------------------------
+BOOST.goals(4).dmin = .991;
+BOOST.goals(4).fmax =  .45;
+%---------------------------------------------------
+BOOST.goals(5).dmin = .992;
+BOOST.goals(5).fmax =  .4;
+%---------------------------------------------------
+BOOST.goals(6).dmin = .993;
+BOOST.goals(6).fmax =  .4;
+%---------------------------------------------------
+
+S = length(BOOST.goals); Dcurrent = prod([BOOST.goals(:).dmin]); Fcurrent = prod([BOOST.goals(:).fmax]);
+
+% now automatically determine the goals for the remaining stages
+for s = S:NStages;
+    BOOST.goals(s).dmin = (targetD/Dcurrent)^(1/abs(NStages-S+1));
+    BOOST.goals(s).fmax = (targetF/Fcurrent)^(1/abs(NStages-S+1));
+end
 
