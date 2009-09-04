@@ -26,7 +26,9 @@ mkdir([HOMEIMAGES LABELMEFOLDER]);
 mkdir([HOMEANNOTATIONS LABELMEFOLDER]);
 
 % create a list of the images in the source folder
-d = dir([SOURCEFOLDER '*.png']);
+d1 = dir([SOURCEFOLDER '*.png']);
+d2 = dir([SOURCEFOLDER '*.jpg']);
+d = [d1; d2];
 
 clear prepend_string;
 for i = 1:length(d)
