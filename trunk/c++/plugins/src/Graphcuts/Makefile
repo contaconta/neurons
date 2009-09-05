@@ -6,12 +6,12 @@ SHELL=/bin/bash
 # Compiler to use - if you want to use openmp you neefd g++ > 4.2
 # if the flags are 1, you enable the use of the libraries
 # libraries required:
-#    neseg:  opencv, gsl, opengl
+#    viva:  opencv, gsl, opengl
 #    viewer: gtk, gtkglext, glew
-#    tools:  the same as neseg
+#    tools:  the same as viva
 #CPP = /opt/intel/cc/10.0.023/bin/icc 
-CPP = g++-4.2
-RELEASE=0
+CPP = g++-4.3
+RELEASE=1
 USE_OPENMP=1
 USE_GLEW=1
 USE_BBP=0
@@ -108,9 +108,9 @@ include  $(ALL_SOURCES:.cpp=.d)
 $(OBJ):$(OBJ_DIR)%.o:%.cpp
 	$(CPP) $(CFLAGS) $(CFLAGSPLUGINS) $(CFLAGSGTK) $(CFLAGSGTKEXT)  $< -o $@
 
-$(EXEC): bin/%:$(OBJ_DIR)$(SRC_DIR)%.o lib/libneseg.a
-	$(CPP) -shared -Wl $(LDFLAGS) $(LDFLAGSPLUGINS) $(OBJ_DIR)$(SRC_DIR)$(@F).o -o $@ -lneseg
-ifndef NESEG_NO_LINKS
+$(EXEC): bin/%:$(OBJ_DIR)$(SRC_DIR)%.o lib/libviva.a
+	$(CPP) -shared -Wl $(LDFLAGS) $(LDFLAGSPLUGINS) $(OBJ_DIR)$(SRC_DIR)$(@F).o -o $@ -lviva
+ifndef VIVA_NO_LINKS
 	ln -sf $(DIR)/$(BIN_DIR)$(@F) $(INST_DIR)$(@F)
 endif
 
