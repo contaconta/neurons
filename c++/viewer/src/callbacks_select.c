@@ -390,8 +390,7 @@ on_run_graph_cuts_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
   printf("run_graph_cut %s\n", cube->type.c_str());
-  //const char* nm1 = "GraphCuts";
-  const char* nm1 = "LoadSeeds";
+  const char* nm1 = "GraphCuts";
   plugin_activate(nm1);
 
   /*
@@ -414,6 +413,13 @@ on_run_graph_cuts_clicked              (GtkButton       *button,
   */
 }
 
+void
+on_load_seeds_pressed                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  const char* nm1 = "LoadSeeds";
+  plugin_activate(nm1);
+}
 
 void
 on_load_selection_clicked                (GtkButton       *button,

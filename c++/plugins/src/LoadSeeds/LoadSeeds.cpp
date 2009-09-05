@@ -10,6 +10,7 @@
 #include "Cloud.h"
 #include <pthread.h>
 #include "DoubleSet.h"
+#include "utils.h"
 
 extern "C"
 {
@@ -47,7 +48,8 @@ extern "C"
   {
     printf("Plugin: run\n");
     int x,y,z;
-    float wx,wy,wz;
+    //float wx,wy,wz;
+    int ix,iy,iz;
     DoubleSet<float>* ds = 0;
 
     for(vector<Object*>::iterator itObject = objects.begin();
@@ -73,69 +75,77 @@ extern "C"
         printf("Error : no DoubleSet or Cube\n");
         return false;
       }
+    
+    // Load files
+    string dir = "/localhome/aurelien/Sources/EM/Superpixels/predict/";
+    vector<string> files;
+    get_files_in_dir(dir, files);
 
-    // Add points
-    ifstream ifs("/home/alboot/Sources/EM/svm_test/Model-8-4000-3-i/FIBSLICE1600-02_u8-b1.predict");
+    const int sampleSpace = 8; // FIXME : should be a param
+    const int NB_LABELS = 3;
+    int label;
+    double pb[NB_LABELS];
 
-    if(ifs)
+    // -2*sampleSpace as we don't have the borders of the image
+    int width = localCube->cubeWidth - (sampleSpace*2);
+    int height = localCube->cubeHeight - (sampleSpace*2);
+    
+    printf("w %d h %d\n",width, height);
+
+    int z = 0;
+    for(vector<string>::iterator itFiles = files.begin();
+        itFiles != files.end(); itFiles++)
       {
-        int label;
-        const int NB_LABELS = 3;
-        double pb[NB_LABELS];
-        const int sampleSpace = 8; // FIXME : should be a param
 
-        // -2*sampleSpace as we don't have the borders of the image
-        int width = localCube->cubeWidth - (sampleSpace*2);
-        int height = localCube->cubeHeight - (sampleSpace*2);
+        string filename = dir + *itFiles;
+        ifstream ifs(filename);
 
-        printf("w %d h %d\n",width, height);
+        if(ifs)
+          {
+            // jump first line
+            char buffer[256];
+            ifs.getline(buffer,256);
+            printf("Buffer %s\n",buffer);
 
-        int z = 0; // FIXME : should iterate
-
-        // jump first line
-        char buffer[256];
-        ifs.getline(buffer,256);
-        printf("Buffer %s\n",buffer);
-
-        for(int x=0;x<width;x++)
-          for(int y=0;y<height;y++)
-            {
-              if(ifs.fail())
-                break;
-                  
-              if(x%4 == 0 && y%4 == 0)
-                continue;
-
-              ifs >> label;
-              for(int i=0;i<NB_LABELS;i++)
+            for(int x=-width/2;x<width/2;x++)
+              for(int y=-height/2;y<height/2;y++)
                 {
-                  ifs >> pb[i];
-                  printf("pb %f", pb[i]);
+                  if(ifs.fail())
+                    break;
+                  
+                  if(x%16 != 0 || y%16 != 0)
+                    continue;
+
+                  ifs >> label;
+                  for(int i=0;i<NB_LABELS;i++)
+                    {
+                      ifs >> pb[i];
+                      //printf("pb %f", pb[i]);
+                    }
+
+                  localCube->micrometersToIndexes3((float)x,(float)y,(float)z,
+                                                ix,iy,iz);
+
+                  if(x < 10 && y < 10)
+                    printf("%d %d %d %d %d %d %d\n",x,y,z,ix,iy,iz,label);
+
+                  PointDs<float>* pt = new PointDs<float>;
+                  pt->indexes.push_back(ix);
+                  pt->indexes.push_back(iy);
+                  pt->indexes.push_back(iz);
+                  pt->coords.push_back(x);
+                  pt->coords.push_back(y);
+                  pt->coords.push_back(z);
+                  if(label == -1)
+                    ds->addPoint(pt,1);
+                  else if(label == 1)
+                    ds->addPoint(pt,2);
                 }
-
-              localCube->indexesToMicrometers3(x,y,z,
-                                               wx,wy,wz);
-
-              printf(" %f %f %f\n",wx,wy,wz);
-
-              PointDs<float>* pt = new PointDs<float>;
-              pt->indexes.push_back(x);
-              pt->indexes.push_back(y);
-              pt->indexes.push_back(z);
-              pt->coords.push_back(wx);
-              pt->coords.push_back(wy);
-              pt->coords.push_back(wz);
-              if(label == -1)
-                ds->addPoint(pt,1);
-              else if(label == 1)
-                ds->addPoint(pt,2);
-            }
-
-        printf("DoubleSet Loaded\n");
+          }
+        z++;
       }
-    else
-      return false;
 
+    printf("DoubleSet Loaded\n");
     /*
     if (pthread_create(&thread, NULL, thread_func, NULL) != 0)
       return false;

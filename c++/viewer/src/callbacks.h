@@ -341,3 +341,7 @@ on_videorotation_activate              (GtkMenuItem     *menuitem,
 void
 on_videorotationtime_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_load_seeds_pressed                  (GtkButton       *button,
+                                        gpointer         user_data);
