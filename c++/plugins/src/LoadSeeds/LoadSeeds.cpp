@@ -47,8 +47,6 @@ extern "C"
   G_MODULE_EXPORT const bool plugin_run(vector<Object*>& objects)
   {
     printf("Plugin: run\n");
-    int x,y,z;
-    //float wx,wy,wz;
     int ix,iy,iz;
     DoubleSet<float>* ds = 0;
 
@@ -77,7 +75,7 @@ extern "C"
       }
     
     // Load files
-    string dir = "/localhome/aurelien/Sources/EM/Superpixels/predict/";
+    string dir = "/home/alboot/Sources/EM/Superpixels/predict/";
     vector<string> files;
     get_files_in_dir(dir, files);
 
@@ -92,13 +90,17 @@ extern "C"
     
     printf("w %d h %d\n",width, height);
 
+    float mx,my,mz;
     int z = 0;
     for(vector<string>::iterator itFiles = files.begin();
         itFiles != files.end(); itFiles++)
       {
+        printf("File %s",itFiles->c_str());
+        if(getExtension(*itFiles)!="predict")
+          continue;
 
         string filename = dir + *itFiles;
-        ifstream ifs(filename);
+        ifstream ifs(filename.c_str());
 
         if(ifs)
           {
@@ -107,14 +109,13 @@ extern "C"
             ifs.getline(buffer,256);
             printf("Buffer %s\n",buffer);
 
-            for(int x=-width/2;x<width/2;x++)
-              for(int y=-height/2;y<height/2;y++)
+            //for(int x=-width/2;x<width/2;x++)
+            //  for(int y=-height/2;y<height/2;y++)
+            for(int x=0;x<width;x++)
+              for(int y=0;y<height;y++)
                 {
                   if(ifs.fail())
                     break;
-                  
-                  if(x%16 != 0 || y%16 != 0)
-                    continue;
 
                   ifs >> label;
                   for(int i=0;i<NB_LABELS;i++)
@@ -123,23 +124,28 @@ extern "C"
                       //printf("pb %f", pb[i]);
                     }
 
-                  localCube->micrometersToIndexes3((float)x,(float)y,(float)z,
-                                                ix,iy,iz);
+                  if(x%8 != 0 || y%8 != 0)
+                    continue;
 
-                  if(x < 10 && y < 10)
-                    printf("%d %d %d %d %d %d %d\n",x,y,z,ix,iy,iz,label);
+                  localCube->indexesToMicrometers3(x,y,z,
+                                                   mx,my,mz);
+
+                  //if(x < 10 && y < 10)
+                  //  printf("%d %d %d %d %d %d %d\n",x,y,z,ix,iy,iz,label);
 
                   PointDs<float>* pt = new PointDs<float>;
-                  pt->indexes.push_back(ix);
-                  pt->indexes.push_back(iy);
-                  pt->indexes.push_back(iz);
-                  pt->coords.push_back(x);
-                  pt->coords.push_back(y);
-                  pt->coords.push_back(z);
+                  pt->indexes.push_back(x);
+                  pt->indexes.push_back(y);
+                  pt->indexes.push_back(z);
+                  pt->coords.push_back(mx);
+                  pt->coords.push_back(my);
+                  pt->coords.push_back(mz);
                   if(label == -1)
                     ds->addPoint(pt,1);
                   else if(label == 1)
                     ds->addPoint(pt,2);
+                  else if(label != 2)
+                    printf("Error : unknown label\n");
                 }
           }
         z++;
