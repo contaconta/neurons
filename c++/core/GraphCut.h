@@ -50,17 +50,14 @@ class GraphCut : public VisibleE
 
  string graphcut_name;
 
- //vector< Point3Di* >* sink_points;
- //vector< Point3Di* >* source_points;
+ // true if the run_maxflow method is running
+ bool running_maxflow;
+
  DoubleSet<P>* set_points;
 
- //template <class T, class U>
  GraphCut(Cube_P* cube);
 
  ~GraphCut();
-
- //void addSinkPoint(Point3Di* point);
- //void addSourcePoint(Point3Di* point);
  
  void clear();
  
@@ -92,17 +89,15 @@ template< class P>
 int GraphCut<P>::graphcut_id = 0;
 
 template< class P>
-//template <class T, class U>
 GraphCut<P>::GraphCut(Cube_P* cube) : VisibleE(){
     init();
-    //source_points = new vector<Point3Di*>;
-    //sink_points = new vector<Point3Di*>;
     set_points = 0;
     m_node_ids = 0;
     m_graph = 0;
     m_cube = cube;
     lastX = lastY = lastZ = -999; // dummy value to indicate that the DL is not initialized
     m_segDL = -1;
+    running_maxflow = false;
 }
 
 template< class P>
@@ -114,7 +109,6 @@ void GraphCut<P>::init(){
 }
 
 template< class P>
-//GraphCut<P>::~GraphCut() : ~Visible(){
 GraphCut<P>::~GraphCut() {
   // Free memory
   if(m_node_ids!=0)
@@ -136,27 +130,11 @@ GraphCut<P>::~GraphCut() {
   m_cube->delete_alphas(ni,nj,nk);
 #endif
 
-  /*
-  for(vector< Point3Di* >::iterator itPoints = source_points->begin();
-      itPoints != source_points->end(); itPoints++)
-    {
-      delete *itPoints;
-    }
-  delete source_points;
-  for(vector< Point3Di* >::iterator itPoints = sink_points->begin();
-      itPoints != sink_points->end(); itPoints++)
-    {
-      delete *itPoints;
-    }
-  delete sink_points;
-  */
   delete set_points;
 }
 
 template< class P>
 void GraphCut<P>::clear(){
-  //source_points->clear();
-  //sink_points->clear();
   set_points->clear();
 }
 
@@ -193,6 +171,7 @@ void GraphCut<P>::drawSeeds(int x, int y, int z){
 
 template< class P>
 void GraphCut<P>::draw(int x, int y, int z){
+  //if(m_graph==0 && !running_maxflow)
   if(m_graph==0)
     return;
 
@@ -257,7 +236,6 @@ void GraphCut<P>::draw_in_DL(int x, int y, int z){
     for(int i = si;i<ei;i++)
       for(int j = sj;j<ej;j++)
 	{
-	  //if(m_graph->what_segment(m_node_ids[i-si][j-sj][k-sk]) == GraphType::SOURCE)
 	  if(m_graph->what_segment(m_node_ids[i][j][k]) == GraphType::SOURCE)
 	    {
 #ifdef USE_ALPHA
@@ -281,35 +259,6 @@ void GraphCut<P>::draw_in_DL(int x, int y, int z){
 
 template< class P>
 void GraphCut<P>::save(const string& filename){
-
-  /*
-  if(source_points->size()==0 && sink_points->size()==0)
-    return;
-
-  std::ofstream writer(filename.c_str());
-
-  if(!writer.good())
-    {
-      printf("Error while creating file %s\n", filename.c_str());
-      return;
-    }
-
-  writer << "SOURCE\n";
-  for(vector< Point3Di* >::iterator itPoints = source_points->begin();
-      itPoints != source_points->end(); itPoints++)
-    {
-      writer << (*itPoints)->coords[0] << " " << (*itPoints)->coords[1] << " " << (*itPoints)->coords[2] <<  std::endl;
-    }
-
-  writer << "SINK\n";
-  for(vector< Point3Di* >::iterator itPoints = sink_points->begin();
-      itPoints != sink_points->end(); itPoints++)
-    {
-      writer << (*itPoints)->coords[0] << " " << (*itPoints)->coords[1] << " " << (*itPoints)->coords[2] <<  std::endl;
-    }
-
-  writer.close();
-  */
   set_points->save(filename);
 }
 
@@ -318,74 +267,8 @@ template<class T, class U>
 bool GraphCut<P>::load(Cube<T,U>* cube, const char* fileName)
 {
   set_points->load(fileName);
-  /*
-  string sName(fileName);
-  sName += ".save";
-  std::ifstream reader(sName.c_str());
-  if(!reader.good())
-    {
-      printf("Graphcut: loader can not find the file: %s\n", sName.c_str());
-      return false;
-    }
-
-  string gLine;
-  char type = 0; // SOURCE
-  while(getline(reader, gLine))
-    {
-      if(gLine == "SOURCE")
-	{
-	  printf("Graphcut : SOURCE\n");
-	  type = 0;
-	}
-      else if(gLine == "SINK")
-	{
-	  printf("Graphcut : SINK\n");
-	  type = 1;
-	}
-      else
-	{
-	  istringstream gStream(gLine);
-	  string gElement;
-	  Point3Di* p = new Point3Di();
-	  // read every element from the line that is seperated by spaces
-	  while(getline(gStream, gElement, ' '))
-	    {
-	      istringstream iss(gElement);
-	      float element;
-	      iss >> element;
-	      p->coords.push_back(element);
-	    }
-
-	  m_cube->indexesToMicrometers(p->coords, p->w_coords);
-	  if(type == 0)
-	    {
-	      source_points->push_back(p);
-	    }
-	  else
-	    {
-	      sink_points->push_back(p);
-	    }
-	}
-    }
-
-  reader.close();
-  */
   return true;
 }
-
-/*
-template< class P>
-void GraphCut<P>::addSourcePoint(Point3Di* point)
-{
-    source_points->push_back(point);
-}
-
-template< class P>
-void GraphCut<P>::addSinkPoint(Point3Di* point)
-{
-    sink_points->push_back(point);
-}
-*/
 
 template< class P>
 void GraphCut<P>::setCube(Cube_P* cube)
@@ -393,6 +276,11 @@ void GraphCut<P>::setCube(Cube_P* cube)
   m_cube = cube;
 }
 
+/*
+ * Run Min-Cut/Max-Flow algorithm for energy minimization
+ * Energy function is defined as E = B + R
+ * B = Boundary term, R = Regional term  
+ */
 template< class P>
 template<class T, class U>
   void GraphCut<P>::run_maxflow(Cube<T,U>* cube, int layer_id)
@@ -402,11 +290,14 @@ template<class T, class U>
   float weightToSource;
   float weightToSink;
   float weight;
+  typename vector< PointDs<P>* >::iterator itPoint;
   const float sigma = 1/5.0f;
   // TODO : compute the weight k
   // (weight of edge between mark object to the source or mark background to the sink)
   //float K = FLT_MAX;
   float K = 100;
+
+  running_maxflow = true;
 
   // Free memory
   if(m_node_ids!=0)
@@ -474,38 +365,54 @@ template<class T, class U>
 
   printf("GraphCut : Nodes added\n");
 
-  // Debug
-  nEdges = 0;
-
+  // Compute histogram for boundary term
   /*
-  for(i = 0;i<ni;i++)
-    {
-      for(j = 0;j<nj;j++)
-	{
-	  for(k = 0;k<nk;k++)
-	    {
-	      m_node_ids[i][j][k] = m_graph->add_node();
-	    }
-	}
-    }
+  int** histo_B = new int*[3];
+  for(int i=0;i<3;i++)
+    histo_B[i] = new int[255];
   */
 
-  typename vector< PointDs<P>* >::iterator itPoint;
+  const int nbItemsPerBin = 25;
+  const int histoSize = 255/nbItemsPerBin;
+  float* histoSource = new float[histoSize];
+  int binId;
+  memset(histoSource,0,histoSize);
+  for(itPoint=set_points->set1.begin();
+      itPoint != set_points->set1.end();itPoint++)
+    {
+      binId = (int)(cube->at((*itPoint)->indexes[0], (*itPoint)->indexes[1], (*itPoint)->indexes[2])/nbItemsPerBin) - 1;
+      histoSource[binId]++;
+    }
+
+  float* histoSink = new float[histoSize];
+  memset(histoSink,0,histoSize);
+  for(itPoint=set_points->set2.begin();
+      itPoint != set_points->set2.end();itPoint++)
+    {
+      binId = (int)(cube->at((*itPoint)->indexes[0], (*itPoint)->indexes[1], (*itPoint)->indexes[2])/nbItemsPerBin) - 1;
+      histoSink[binId]++;
+    }
+
+  // Normalize histograms
+  for(int i = 0;i<histoSize;i++)
+    {
+      histoSource[i] /= histoSize;
+      histoSink[i] /= histoSize;
+    }
+
+  nEdges = 0;
   for(int i = 0;i<ni;i++)
     {
-      printf("i %d\n",i);
+      printf("* %d/%d\n",i,ni);
       for(int j = 0;j<nj;j++)
 	{
 	for(int k = 0;k<nk;k++)
 	{
-	  // Energy term : E = B + R
-	  // B = Boundary term, R = Regional term  
-
 	  // Compute regional term
 	  weightToSink = 0;
 	  weightToSource = 0;
-	  // Compute weights to source and sink nodes
-          
+
+	  // Compute weights to source and sink nodes          
 	  for(itPoint=set_points->set1.begin();
               itPoint != set_points->set1.end();itPoint++)
 	    {
@@ -513,6 +420,7 @@ template<class T, class U>
 		{
 		  //printf("Source found %d %d %d\n", i, j, k+startK);
 		  weightToSource = K;
+                  break;
 		}
 	    }
 
@@ -523,8 +431,24 @@ template<class T, class U>
 		{
 		  //printf("Sink found %d %d %d\n", i, j, k+startK);
 		  weightToSink = K;
+                  break;
 		}
 	    }
+
+          if(weightToSource != K)
+            {
+              // Get value from histogram
+              binId = (int)(cube->at(i,j,k)/nbItemsPerBin) - 1;
+              /*if(binId >= histoSize)
+                printf("binId >= histoSize\n");*/
+              weightToSource = histoSource[binId];
+            }
+          if(weightToSink != K)
+            {
+              // Get value from histogram
+              binId = (int)(cube->at(i,j,k)/nbItemsPerBin) - 1;
+              weightToSink = histoSink[binId];
+            }
 
           m_graph->add_tweights(m_node_ids[i][j][k],weightToSource,weightToSink);
 
@@ -699,7 +623,12 @@ template<class T, class U>
   m_cube->load_texture_brick(m_cube->nRowToDraw, m_cube->nColToDraw);
 #endif
 
+  // Cleaning
+  delete[] histoSource;
+  delete[] histoSink;
+
   printf("GraphCut : Max flow algorithm has ended\n");
+  running_maxflow = false;
 }
 
 template< class P>
