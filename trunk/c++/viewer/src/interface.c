@@ -945,11 +945,12 @@ create_ascEditControlsSelect (void)
   GtkWidget *brush_size;
   GtkWidget *drawing_mode;
   GtkWidget *display_drawings;
+  GtkWidget *load_seeds;
 
   ascEditControlsSelect = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (ascEditControlsSelect), _("Select tool"));
 
-  table3 = gtk_table_new (14, 2, FALSE);
+  table3 = gtk_table_new (15, 2, FALSE);
   gtk_widget_show (table3);
   gtk_container_add (GTK_CONTAINER (ascEditControlsSelect), table3);
 
@@ -1020,13 +1021,13 @@ create_ascEditControlsSelect (void)
 
   run_graph_cuts = gtk_button_new_with_mnemonic (_("Run Graph cuts"));
   gtk_widget_show (run_graph_cuts);
-  gtk_table_attach (GTK_TABLE (table3), run_graph_cuts, 0, 1, 9, 10,
+  gtk_table_attach (GTK_TABLE (table3), run_graph_cuts, 0, 1, 10, 11,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_g = gtk_label_new (_("g"));
   gtk_widget_show (label_g);
-  gtk_table_attach (GTK_TABLE (table3), label_g, 1, 2, 9, 10,
+  gtk_table_attach (GTK_TABLE (table3), label_g, 1, 2, 10, 11,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_g), 0, 0.5);
@@ -1083,7 +1084,7 @@ create_ascEditControlsSelect (void)
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (table3), hbox2, 0, 1, 10, 11,
+  gtk_table_attach (GTK_TABLE (table3), hbox2, 0, 1, 11, 12,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
@@ -1109,6 +1110,12 @@ create_ascEditControlsSelect (void)
   gtk_tool_button_set_label (GTK_TOOL_BUTTON (display_drawings), _("Draw"));
   gtk_widget_show (display_drawings);
   gtk_container_add (GTK_CONTAINER (drawing_mode), display_drawings);
+
+  load_seeds = gtk_button_new_with_mnemonic (_("Load seeds"));
+  gtk_widget_show (load_seeds);
+  gtk_table_attach (GTK_TABLE (table3), load_seeds, 0, 1, 9, 10,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   g_signal_connect ((gpointer) create_selection, "clicked",
                     G_CALLBACK (on_create_selection_clicked),
@@ -1139,6 +1146,9 @@ create_ascEditControlsSelect (void)
                     NULL);
   g_signal_connect ((gpointer) display_drawings, "toggled",
                     G_CALLBACK (on_display_drawings_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) load_seeds, "pressed",
+                    G_CALLBACK (on_load_seeds_pressed),
                     NULL);
 
   atko = gtk_widget_get_accessible (ascEditControlsSelect);
@@ -1173,6 +1183,7 @@ create_ascEditControlsSelect (void)
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, brush_size, "brush_size");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, drawing_mode, "drawing_mode");
   GLADE_HOOKUP_OBJECT (ascEditControlsSelect, display_drawings, "display_drawings");
+  GLADE_HOOKUP_OBJECT (ascEditControlsSelect, load_seeds, "load_seeds");
 
   gtk_widget_grab_default (selection_type);
   return ascEditControlsSelect;
