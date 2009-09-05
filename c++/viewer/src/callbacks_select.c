@@ -300,7 +300,7 @@ on_remove_selection_clicked              (GtkButton       *button,
 
 void plugin_activate(const char* label)
 {
-  string dir("plugins/bin/");
+  string dir("lib/plugins/");
 
   char * pPath = getenv ("NESEG_PATH");
   if (pPath!=0)
