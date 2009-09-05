@@ -21,8 +21,8 @@ IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
   set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
 ELSE(${HOST} STREQUAL bbpsg1)
-  set(CMAKE_C_COMPILER "g++-4.2")
-  set(CMAKE_CXX_COMPILER "g++-4.2")
+  set(CMAKE_C_COMPILER "g++-4.3")
+  set(CMAKE_CXX_COMPILER "g++-4.3")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
@@ -94,7 +94,7 @@ IF(${GMODULE_FOUND})
 ENDIF(${GMODULE_FOUND})
 
 include_directories(${CMAKE_SOURCE_DIR}/../core)
-#include_directories(${CMAKE_SOURCE_DIR}/../external/graphCuts)
+include_directories(${CMAKE_SOURCE_DIR}/../external/graphCuts)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../lib/)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
@@ -137,7 +137,7 @@ add_library (viva SHARED
 ../core/Cube_P.cpp
 ../core/Cube_T.cpp
 ../core/CubeFactory.cpp
-#../core/GraphCut.cpp
+../core/GraphCut.cpp
 )
 
 ################################################################################
@@ -167,7 +167,8 @@ IF(${GLEW_FOUND})
  add_library (example MODULE ../plugins/src/example/example.cpp)
  add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
  add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
- #add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
+ add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
+ add_library (LoadSeeds MODULE ../plugins/src/LoadSeeds/LoadSeeds.cpp)
 ENDIF(${GLEW_FOUND})
 
 ################################################################################
