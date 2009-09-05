@@ -97,12 +97,15 @@ extern "C"
         ifs.getline(buffer,256);
         printf("Buffer %s\n",buffer);
 
-        for(int x=0;x<width;x+=30)
-          for(int y=0;y<height;y+=30)
+        for(int x=0;x<width;x++)
+          for(int y=0;y<height;y++)
             {
               if(ifs.fail())
                 break;
                   
+              if(x%4 == 0 && y%4 == 0)
+                continue;
+
               ifs >> label;
               for(int i=0;i<NB_LABELS;i++)
                 {
