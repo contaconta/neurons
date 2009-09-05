@@ -158,7 +158,8 @@ extern "C"
   {
     aPoint3d = (sPoint3d*)user_data;
     
-    printf("Expose %d %d %d\n",aPoint3d->x,aPoint3d->y,aPoint3d->z);
+    // FIXME : Bug when passing arguments ?
+    //printf("Expose %d %d %d\n",aPoint3d->x,aPoint3d->y,aPoint3d->z);
     //aPoint3d->x = 1;
     //aPoint3d->y = -1;
     //aPoint3d->z = -1;
@@ -166,22 +167,25 @@ extern "C"
     //printf("Expose 2 %d %d\n", graphCut, graphCut->set_points);
 
 
-    glPushMatrix();
-
-    graphCut->draw(-1,-1,-1);
-    //graphCut->draw(aPoint3d->x,aPoint3d->y,aPoint3d->z);
-    //graphCut->drawSegmentation(aPoint3d->x,aPoint3d->y,aPoint3d->z);
-
-    /*
-    for(vector< GraphCut<Point3D>* >::iterator itGraphCut = lGraphCuts.begin();
-        itGraphCut != lGraphCuts.end(); itGraphCut++)
+    if(!graphCut->running_maxflow)
       {
-        (*itGraphCut)->draw(aPoint3d.x,aPoint3d.y,aPoint3d.z);
-        (*itGraphCut)->drawSegmentation(aPoint3d.x,aPoint3d.y,aPoint3d.z);
-      }
-    */
+        glPushMatrix();
 
-    glPopMatrix();
+        graphCut->draw(-1,-1,-1);
+        //graphCut->draw(aPoint3d->x,aPoint3d->y,aPoint3d->z);
+        //graphCut->drawSegmentation(aPoint3d->x,aPoint3d->y,aPoint3d->z);
+
+        /*
+          for(vector< GraphCut<Point3D>* >::iterator itGraphCut = lGraphCuts.begin();
+          itGraphCut != lGraphCuts.end(); itGraphCut++)
+          {
+          (*itGraphCut)->draw(aPoint3d.x,aPoint3d.y,aPoint3d.z);
+          (*itGraphCut)->drawSegmentation(aPoint3d.x,aPoint3d.y,aPoint3d.z);
+          }
+        */
+
+        glPopMatrix();
+      }
   }
 
   G_MODULE_EXPORT const bool plugin_quit()
