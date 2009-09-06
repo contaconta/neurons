@@ -20,6 +20,7 @@ There is a special emphasis on making the software easy to use, fast and compreh
 
 The contents of the directory are:
 bin      - programs compiled
+cmake	 - CMake file to generate a makefile automatically. All the modules are included in the Modules directory. You can copy those files to /usr/share/cmake-2.x/Modules/ (replace 2.x by your version number) but this is not necessary.
 core     - the library source code
 lib      - the library
 objects  - place to store intermediate objects compiled
