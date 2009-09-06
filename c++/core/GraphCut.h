@@ -365,13 +365,8 @@ template<class T, class U>
 
   printf("GraphCut : Nodes added\n");
 
+#ifdef USE_HISTOGRAM
   // Compute histogram for boundary term
-  /*
-  int** histo_B = new int*[3];
-  for(int i=0;i<3;i++)
-    histo_B[i] = new int[255];
-  */
-
   const int nbItemsPerBin = 25;
   const int histoSize = 255/nbItemsPerBin;
   float* histoSource = new float[histoSize];
@@ -399,6 +394,7 @@ template<class T, class U>
       histoSource[i] /= histoSize;
       histoSink[i] /= histoSize;
     }
+#endif
 
   nEdges = 0;
   for(int i = 0;i<ni;i++)
@@ -435,6 +431,7 @@ template<class T, class U>
 		}
 	    }
 
+#ifdef USE_HISTOGRAM
           if(weightToSource != K)
             {
               // Get value from histogram
@@ -449,6 +446,7 @@ template<class T, class U>
               binId = (int)(cube->at(i,j,k)/nbItemsPerBin) - 1;
               weightToSink = histoSink[binId];
             }
+#endif
 
           m_graph->add_tweights(m_node_ids[i][j][k],weightToSource,weightToSink);
 
@@ -624,8 +622,10 @@ template<class T, class U>
 #endif
 
   // Cleaning
+#ifdef USE_HISTOGRAM
   delete[] histoSource;
   delete[] histoSink;
+#endif
 
   printf("GraphCut : Max flow algorithm has ended\n");
   running_maxflow = false;

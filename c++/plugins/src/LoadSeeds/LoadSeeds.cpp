@@ -75,7 +75,7 @@ extern "C"
       }
     
     // Load files
-    string dir = "/home/alboot/Sources/EM/Superpixels/predict/";
+    string dir = "/localhome/aurelien/Sources/EM/Superpixels/predict/";
     vector<string> files;
     get_files_in_dir(dir, files);
 
@@ -85,8 +85,12 @@ extern "C"
     double pb[NB_LABELS];
 
     // -2*sampleSpace as we don't have the borders of the image
-    int width = localCube->cubeWidth - (sampleSpace*2);
-    int height = localCube->cubeHeight - (sampleSpace*2);
+    //int width = localCube->cubeWidth - (sampleSpace*2);
+    //int height = localCube->cubeHeight - (sampleSpace*2);
+
+    // sampleSpace as we don't have the borders of the image
+    int width = localCube->cubeWidth - sampleSpace;
+    int height = localCube->cubeHeight - sampleSpace;
     
     printf("w %d h %d\n",width, height);
 
@@ -95,6 +99,7 @@ extern "C"
     for(vector<string>::iterator itFiles = files.begin();
         itFiles != files.end(); itFiles++)
       {
+
         printf("File %s",itFiles->c_str());
         if(getExtension(*itFiles)!="predict")
           continue;
@@ -111,8 +116,8 @@ extern "C"
 
             //for(int x=-width/2;x<width/2;x++)
             //  for(int y=-height/2;y<height/2;y++)
-            for(int x=0;x<width;x++)
-              for(int y=0;y<height;y++)
+            for(int x=sampleSpace;x<width;x++)
+              for(int y=sampleSpace;y<height;y++)
                 {
                   if(ifs.fail())
                     break;
@@ -148,6 +153,7 @@ extern "C"
                     printf("Error : unknown label\n");
                 }
           }
+
         z++;
       }
 
