@@ -32,12 +32,12 @@ int main(int argc, char **argv) {
   }
 
   Cube< float, double>* output = cubes[0]->create_blank_cube(argv[argc-1]);
-  float max = DBL_MIN;
+  float maxval = DBL_MIN;
   for(int z = 0; z < cubes[0]->cubeDepth; z++)
     for(int y = 0; y < cubes[0]->cubeHeight; y++)
       for(int x = 0; x < cubes[0]->cubeWidth; x++)
         {
-          prod = 1;
+          maxval = DBL_MIN;
           for(int cb = 0; cb < cubes.size(); cb++)
             if(cubes[cb]->at(x,y,z)>maxval){
               maxval = cubes[cb]->at(x,y,z);
