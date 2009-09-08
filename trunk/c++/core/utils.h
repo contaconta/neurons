@@ -29,12 +29,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdarg>
+#include <cfloat>
 // #include "neseg.h"
 
 #include <vector>
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <dirent.h>
 #include <string>
@@ -43,6 +45,8 @@
 #include "Mask.h"
 
 using namespace std;
+
+int copyFile(string initialFilePath, string outputFilePath);
 
 bool fileExists(string filename);
 
@@ -56,6 +60,10 @@ string getExtension(string path);
 
 int get_files_in_dir(string dir, vector<string> &files);
 
+bool directoryExists(string strPath);
+
+int makeDirectory(string filename);
+
 string getDerivativeName(int order_x, int order_y, int order_z,
                          float sigma_x, float sigma_y, float sigma_z,
                          string directory = "");
@@ -67,7 +75,13 @@ vector< vector< double > > loadMatrix(string filename);
 
 vector< vector< double > > loadMatrix(istream &in);
 
+vector< vector< double > > allocateMatrix(int rows, int cols);
+
 void saveMatrix(vector< vector< double > > & matrix, string filename);
+
+void getMaxInMatrix(vector< vector< double > > & matrix, double& value, int& row, int& col);
+
+void getMinInMatrix(vector< vector< double > > & matrix, double& value, int& row, int& col);
 
 int factorial_n(int n);
 
