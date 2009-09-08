@@ -187,6 +187,9 @@ target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
 target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
+target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
 target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
 
