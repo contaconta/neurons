@@ -181,6 +181,9 @@ ENDIF(${GLEW_FOUND})
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
+target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
 target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 
