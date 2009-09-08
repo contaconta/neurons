@@ -133,10 +133,44 @@ vector< vector< double > > loadMatrix(istream &file){
   return toReturn;
 }
 
+vector< vector< double > > allocateMatrix(int rows, int cols)
+{
+  vector< vector< double > > toRet(rows);
+  for(int i = 0; i < rows; i++)
+    for(int j = 0; j < cols; j++)
+      toRet[i].push_back(0);
+  return toRet;
+
+}
+
+void getMaxInMatrix(vector< vector< double > > & matrix, double& value, int& row, int& col)
+{
+  value = DBL_MIN;
+  for(int i_row = 0; i_row < matrix.size(); i_row++)
+    for(int i_col = 0; i_col < matrix[i_row].size(); i_col++)
+      if(matrix[i_row][i_col] > value){
+        value = matrix[i_row][i_col];
+        row = i_row;
+        col = i_col;
+      }
+}
+
+void getMinInMatrix(vector< vector< double > > & matrix, double& value, int& row, int& col)
+{
+  value = DBL_MAX;
+  for(int i_row = 0; i_row < matrix.size(); i_row++)
+    for(int i_col = 0; i_col < matrix[i_row].size(); i_col++)
+      if(matrix[i_row][i_col] < value){
+        value = matrix[i_row][i_col];
+        row = i_row;
+        col = i_col;
+      }
+}
 
 void saveMatrix(vector< vector< double > > & matrix, string filename)
 {
   std::ofstream out(filename.c_str());
+  out << std::setprecision(20) << std::scientific;
   for(int j = 0; j < matrix.size(); j++){
     for(int i = 0; i < matrix[j].size()-1; i++)
       out << matrix[j][i] << " ";
@@ -192,6 +226,7 @@ bool isNumber(string s){
 
 void saveVectorDouble(vector< double > &vc, string filename){
   std::ofstream out(filename.c_str());
+  out << std::setprecision(20) << std::scientific;
   for(int i = 0; i < vc.size(); i++)
     out << vc[i] << std::endl;
   out.close();
@@ -260,4 +295,64 @@ void secondStatistics(vector< double > data, double* mean, double* variance)
     *variance = *variance + (data[i]-*mean)*(data[i]-*mean);
   *variance = sqrt(*variance/data.size());
 
+}
+
+
+bool directoryExists(string strPath)
+{
+if ( access( strPath.c_str(), 0 ) == 0 )
+    {
+        struct stat status;
+        stat( strPath.c_str(), &status );
+
+        if ( status.st_mode & S_IFDIR )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+      return false;
+    }
+}
+
+int makeDirectory(string directory){
+  return mkdir(directory.c_str(), 0775);
+}
+
+
+int copyFile(string initialFilePath, string outputFilePath)
+{
+  ifstream initialFile(initialFilePath.c_str(), ios::in|ios::binary);
+  ofstream outputFile (outputFilePath.c_str(),  ios::out|ios::binary);
+
+  initialFile.seekg(0, ios::end);
+  long fileSize = initialFile.tellg();
+
+  if(initialFile.is_open() && outputFile.is_open())
+    {
+      short * buffer = new short[fileSize/2];
+      initialFile.seekg(0, ios::beg);
+      initialFile.read((char*)buffer, fileSize);
+      outputFile.write((char*)buffer, fileSize);
+      delete[] buffer;
+    }
+  else if(!outputFile.is_open())
+    {
+      cout<<"I couldn't open "<<outputFilePath<<" for copying!\n";
+      return 0;
+    }
+  else if(!initialFile.is_open())
+    {
+      cout<<"I couldn't open "<<initialFilePath<<" for copying!\n";
+      return 0;
+    }
+
+  initialFile.close();
+  outputFile.close();
+  return 1;
 }

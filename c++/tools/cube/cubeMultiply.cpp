@@ -26,21 +26,21 @@ using namespace std;
 int main(int argc, char **argv) {
 
 
-  vector< Cube<float, double>* > cubes();
+  vector< Cube<float, double>* > cubes;
   for(int i = 1; i < argc-1; i++){
-    // cubes.push_back(new Cube<float, double>(argv[i]) );
+    cubes.push_back(new Cube<float, double>(argv[i]) );
   }
 
-  // Cube< float, double>* output = cubes[0]->create_blank_cube(argv[argc-1]);
-  // float prod = 1;
-  // for(int z = 0; z < cubes[0]->cubeDepth; z++)
-    // for(int y = 0; y < cubes[0]->cubeHeight; y++)
-      // for(int x = 0; x < cubes[0]->cubeWidth; x++)
-        // {
-          // prod = 1;
-          // for(int cb = 0; cb < cubes.size(); cb++)
-            // prod = prod*cubes[cb]->at(x,y,z);
-          // output->put(x,y,z,prod);
-        // }
+  Cube< float, double>* output = cubes[0]->create_blank_cube(argv[argc-1]);
+  float prod = 1;
+  for(int z = 0; z < cubes[0]->cubeDepth; z++)
+    for(int y = 0; y < cubes[0]->cubeHeight; y++)
+      for(int x = 0; x < cubes[0]->cubeWidth; x++)
+        {
+          prod = 1;
+          for(int cb = 0; cb < cubes.size(); cb++)
+            prod = prod*cubes[cb]->at(x,y,z);
+          output->put(x,y,z,prod);
+        }
 
 }
