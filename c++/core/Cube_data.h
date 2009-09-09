@@ -908,10 +908,11 @@ void Cube<T,U>::histogram(string filename)
   }
   else{
     std::ofstream out(filename.c_str());
-    out << min << std::endl;
-    out << max << std::endl;
-    for(int i = 0; i < boxes.size(); i++)
-      out << boxes[i] << std::endl;
+    for(int i =0; i < boxes.size(); i++){
+      printf("[%f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i]);
+      out << min + i*range/100 << " " << min + (i+1)*range/100
+          << " " << boxes[i] << std::endl;
+    }
     out.close();
   }
 }

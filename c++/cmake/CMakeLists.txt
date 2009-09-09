@@ -190,6 +190,9 @@ target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
 target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
+target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
 target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
 
