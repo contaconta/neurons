@@ -28,6 +28,62 @@ public:
     weight = _weight;
   }
 
+  void draw(float width){
+    if(type == 1)
+      glColor3f(0.0,0.0,1.0);
+    if(type == -1)
+      glColor3f(1.0,0.0,0.0);
+    Point3Do::draw(width);
+  }
+
+  void save(ostream &out){
+    for(int i = 0; i < 3; i++)
+      out << coords[i] << " ";
+    out << theta << " " << phi << " "
+        << type << " " << weight << std::endl;
+  }
+
+  bool load(istream &in){
+    coords.resize(3);
+    int start = in.tellg();
+    for(int i = 0; i < 3; i++){
+      in >> coords[i];
+      if(in.fail()){
+        in.clear();
+        in.seekg(start+1); //????????? Why that one
+        return false;
+      }
+    }
+    in >> theta;
+    if(in.fail()){
+      in.clear();
+      in.seekg(start+1); //????????? Why that one
+      return false;
+    }
+    in >> phi;
+    if(in.fail()){
+      in.clear();
+      in.seekg(start+1); //????????? Why that one
+      return false;
+    }
+    in >> type;
+    if(in.fail()){
+      in.clear();
+      in.seekg(start+1); //????????? Why that one
+      return false;
+    }
+
+    in >> weight;
+    if(in.fail()){
+      in.clear();
+      in.seekg(start+1); //????????? Why that one
+      return false;
+    }
+
+    return true;
+  }
+
+
   virtual string className(){
     return "Point3Dotw";
   }

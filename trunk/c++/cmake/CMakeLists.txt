@@ -193,6 +193,9 @@ target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
 target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
+target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
 target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
 
@@ -264,6 +267,9 @@ target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
 
 add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
 target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
+target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
