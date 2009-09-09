@@ -38,7 +38,9 @@ static char args_doc[] = "neuron.asc cloud.cl";
 /* The options we understand. */
 static struct argp_option options[] = {
   {"verbose"  ,    'v', 0,           0,  "Produce verbose output" },
-  {"min_width"  ,  'w', "min_width",           0,  "Produce verbose output" },
+  {"min_width"  ,  'w', "min_width",           0,  "minimum width of the point" },
+  {"max_width"  ,  'x', "max_width",           0,  "maximum width of the point" },
+  {"save_width"  , 'W',  0,                    0,  "saves the width of the points" },
   {"onlyIfInCube",  'c', "cube",           0,  "Only takes the points that fall inside the cube" },
   {"orientation"  ,  'n', 0,           0,  "Saves the orientation of the points from the neuron" },
   {"theta"  ,  't', "theta_cube",           0,  "Takes the orientation from the theta of the cube" },
@@ -54,7 +56,9 @@ struct arguments
   string name_cloud;
   string name_cube;
   int verbose;
-  double width;
+  double max_width;
+  double min_width;
+  bool saveWidth;
   bool saveOrientation;
   bool saveType;
   bool forcePhi;
@@ -77,7 +81,15 @@ parse_opt (int key, char *arg, struct argp_state *state)
       argments->verbose = 1;
       break;
     case 'w':
-      argments->width = atof(arg);
+      argments->max_width = atof(arg);
+      argments->saveWidth = true;
+      break;
+    case 'x':
+      argments->min_width = atof(arg);
+      argments->saveWidth = true;
+      break;
+    case 'W':
+      argments->saveWidth = true;
       break;
     case 'n':
       argments->saveOrientation = true;
@@ -139,13 +151,16 @@ int main(int argc, char** argv)
   args.saveType = false;
   args.name_cubeTheta = "";
   args.name_cubePhi   = "";
-  args.width = 0;
+  args.max_width = 1e100;
+  args.min_width = 0;
+  args.saveWidth = false;
   args.forcePhi = false;
 
   argp_parse (&argp, argc, argv, 0, 0, &args);
 
   Neuron* neuronita = new Neuron(args.name_neuron);
-  double min_width = args.width;
+  double min_width = args.min_width;
+  double max_width = args.max_width;
 
   Cube_P* cube = NULL;
   if(args.name_cube != ""){
@@ -154,7 +169,7 @@ int main(int argc, char** argv)
 
   Cloud_P* cloud = neuronita->toCloud(args.name_cloud,
                                       args.saveOrientation, args.saveType,
-                                      cube);
+                                      cube, args.saveWidth);
 
   if( (cube!= NULL) && (args.name_cubeTheta!="") ){
     vector< float > nmic(3);
@@ -174,10 +189,18 @@ int main(int argc, char** argv)
         pt->phi = M_PI/2;
     }
   }
-  if(args.forcePhi){
-    for(int i = 0; i < cloud->points.size(); i++){
-      Point3Do* pt = dynamic_cast<Point3Dot*>(cloud->points[i]);
-      pt->phi = M_PI/2;
+
+  cloud->saveToFile(args.name_cloud);
+
+  printf("Removing whatever should be removed\n");
+  if(((args.min_width != 0) || (args.max_width!=1e100)) && args.saveWidth){
+    for(int i = cloud->points.size()-1; i >= 0; i--){
+      printf("%i\n", i);
+      Point3Dotw* pt = dynamic_cast<Point3Dotw*>(cloud->points[i]);
+      if( (pt->weight < args.min_width) || (pt->weight > args.max_width)){
+         vector<Point*>::iterator itRemove = cloud->points.begin() + i;
+         cloud->points.erase(itRemove);
+      }
     }
   }
 

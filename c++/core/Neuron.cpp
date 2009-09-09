@@ -433,8 +433,8 @@ void Neuron::drawSegmentAsLines(NeuronSegment* segment, vector< float > root, bo
 
       glPushMatrix();
       glTranslatef(xyz[0], xyz[1], xyz[2]);
-      // glutSolidSphere(segment->points[i].coords[3]/3, 10, 10);
-      glutWireSphere(1, 5, 5);
+      glutSolidSphere(segment->points[i].coords[3], 10, 10);
+      // glutWireSphere(1, 5, 5);
       glPopMatrix();
 
     }
@@ -2151,18 +2151,21 @@ void Neuron::toCloudOld(std::ofstream& points_of,
 
 //Ich bin ein Berliner
 Cloud_P* Neuron::toCloud(string cloudName,
-                     bool saveOrientation,
-                     bool saveType,
-                     Cube_P* cubeLimit)
+                         bool saveOrientation,
+                         bool saveType,
+                         Cube_P* cubeLimit,
+                         bool saveWidth)
 {
 
   Cloud_P* cloud;
-  if(saveOrientation && saveType){
+  if(saveOrientation && saveType && !saveWidth){
     cloud = new Cloud< Point3Dot >(cloudName);
   } else if (saveOrientation & !saveType) {
     cloud = new Cloud< Point3Do >(cloudName);
   } else if (!saveOrientation & !saveType){
     cloud = new Cloud< Point3D >(cloudName);
+  } else if (saveOrientation && saveType && saveWidth) {
+    cloud = new Cloud< Point3Dotw >(cloudName);
   }
 
   int point_number = 0;
@@ -2178,10 +2181,11 @@ Cloud_P* Neuron::toCloud(string cloudName,
 
 
 void Neuron::toCloud(NeuronSegment* segment,
-             Cloud_P* cloud,
-             bool saveOrientation,
-             bool saveType,
-             Cube_P* cubeLimit)
+                     Cloud_P* cloud,
+                     bool saveOrientation,
+                     bool saveType,
+                     Cube_P* cubeLimit,
+                     bool saveWidth)
 {
 
   vector< float > mcoords(3);
@@ -2228,7 +2232,7 @@ void Neuron::toCloud(NeuronSegment* segment,
       phi = acos( (mcnext[2]-mcoords[2])/radius);
     }
 
-    if(saveOrientation && saveType)
+    if(saveOrientation && saveType && !saveWidth)
       cloud->points.push_back(new Point3Dot(mcoords[0],mcoords[1],mcoords[2],
                                             theta, phi, 1));
     if(saveOrientation && !saveType)
@@ -2236,6 +2240,10 @@ void Neuron::toCloud(NeuronSegment* segment,
                                             theta, phi));
     if(!saveOrientation && !saveType)
       cloud->points.push_back(new Point3D(mcoords[0],mcoords[1],mcoords[2]));
+
+    if(saveOrientation && saveType && saveWidth)
+      cloud->points.push_back(new Point3Dotw(mcoords[0],mcoords[1],mcoords[2],
+                                             theta, phi, 1, mcoords[3]));
   }
 
   for(int i = 0; i < segment->childs.size(); i++)

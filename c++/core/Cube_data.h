@@ -902,16 +902,21 @@ void Cube<T,U>::histogram(string filename)
   printf("]\n");
 
   if(filename == ""){
-    for(int i =0; i < boxes.size(); i++)
-      printf("[%f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i]);
+    int totalToNow = 0;
+    for(int i =0; i < boxes.size(); i++){
+      totalToNow = totalToNow + boxes[i];
+      printf("[%f %f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i],
+             totalToNow);}
     printf("\n");
   }
   else{
     std::ofstream out(filename.c_str());
+    int totalToNow = 0;
     for(int i =0; i < boxes.size(); i++){
+      totalToNow = totalToNow + boxes[i];
       printf("[%f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i]);
       out << min + i*range/100 << " " << min + (i+1)*range/100
-          << " " << boxes[i] << std::endl;
+          << " " << boxes[i] << " " << totalToNow << std::endl;
     }
     out.close();
   }

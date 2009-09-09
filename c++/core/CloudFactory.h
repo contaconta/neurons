@@ -44,6 +44,8 @@ public:
       return new Cloud<Point3Dt>();
     else if( s == "Point3Dot")
       return new Cloud<Point3Dot>();
+    else if( s == "Point3Dotw")
+      return new Cloud<Point3Dotw>();
     else{
       printf("CloudFactory:: not such type of point %s\n", s.c_str());
       return NULL;
@@ -64,6 +66,8 @@ public:
       pointType = "Point3Dt";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3Dot>))
       pointType = "Point3Dot";
+    else if(typeid(*cloudOrig) == typeid(Cloud<Point3Dot>))
+      pointType = "Point3Dotw";
     else{
       printf("CloudFactory::No clue what the cloud is made of\n");
       exit(0);

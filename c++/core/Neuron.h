@@ -372,16 +372,18 @@ public:
                int& last_point_number);
 
   Cloud_P* toCloud(string cloudName,
-               bool saveOrientation=false,
-               bool saveType=false,
-               Cube_P* cubeLimit = NULL);
+                   bool saveOrientation=false,
+                   bool saveType=false,
+                   Cube_P* cubeLimit = NULL,
+                   bool saveWidth = false);
 
 
   void toCloud(NeuronSegment* segment,
                Cloud_P* cloud,
                bool saveOrientation = false,
                bool saveType = false,
-               Cube_P* cubeLimit = NULL);
+               Cube_P* cubeLimit = NULL,
+               bool saveWidth = false);
 
 
   /** To parse the neuron.*/
