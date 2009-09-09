@@ -45,7 +45,7 @@ static struct argp_option options[] = {
 
 struct arguments
 {
-  char  *args[2];                /* arg1 & arg2 */
+  char* args[2];                /* arg1 & arg2 */
   bool  putHigherValuesTo, putLowerValuesTo;
   float lowValue;
   float highValue;
