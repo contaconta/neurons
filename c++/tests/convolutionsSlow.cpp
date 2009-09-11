@@ -25,10 +25,10 @@ using namespace std;
 
 int main(int argc, char **argv) {
   Cube<uchar, ulong>* cbu =
-    new Cube<uchar, ulong>("/media/neurons/cutConv/cut.nfo");
+    new Cube<uchar, ulong>("/media/neurons/n3/3d/4/N3_4.nfo");
   Cube<float, double>* tmp =
     new Cube<float, double>(cbu->cubeWidth,  cbu->cubeHeight, cbu->cubeDepth,
-                            "/media/neurons/cutConv/tmp",
+                            "/media/neurons/n3/3d/4/tmp",
                             0.1,0.1,0.1);
   vector< float > mask = Mask::gaussian_mask(2, 4, true);
   printf("Doing the convolution with mask of size %i ...\n", mask.size());
