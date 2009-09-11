@@ -49,18 +49,18 @@ void Cube<T,U>::load_parameters(string filenameParams)
 
    //This is usually because it is an old cube file (has no type and
    //no indication of where is the cubeFile)
-   if(filenameVoxelData == ""){
-     filenameVoxelData = getNameFromPathWithoutExtension(filenameParams) + ".vl";
-     int size = getFileSize(directory + filenameVoxelData);
-     if(  size == cubeDepth*cubeHeight*cubeWidth)
-       type = "uchar";
-     else if ( size == 4*cubeDepth*cubeHeight*cubeWidth)
-       type = "float";
-     else{
-       printf("Unable to guess the type inside the file. Exiting\n");
-       exit(0);
-     }
-   }
+   // if(filenameVoxelData == ""){
+     // filenameVoxelData = getNameFromPathWithoutExtension(filenameParams) + ".vl";
+     // int size = getFileSize(directory + filenameVoxelData);
+     // if(  size == cubeDepth*cubeHeight*cubeWidth)
+       // type = "uchar";
+     // else if ( size == 4*cubeDepth*cubeHeight*cubeWidth)
+       // type = "float";
+     // else{
+       // printf("Unable to guess the type inside the file. Exiting\n");
+       // exit(0);
+     // }
+   // }
 
 
    //  #if debug
@@ -905,7 +905,7 @@ void Cube<T,U>::histogram(string filename)
     int totalToNow = 0;
     for(int i =0; i < boxes.size(); i++){
       totalToNow = totalToNow + boxes[i];
-      printf("[%f %f %f] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i],
+      printf("[%f %f ] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i],
              totalToNow);}
     printf("\n");
   }
@@ -1243,6 +1243,10 @@ template <class T, class U>
 T Cube<T,U>::at(int x, int y, int z) {return voxels[z][y][x];}
 
 template <class T, class U>
+float Cube<T,U>::getValueAsFloat(int x, int y, int z) {return voxels[z][y][x];}
+
+
+template <class T, class U>
 void Cube<T,U>::put(int x, int y, int z, T value) {voxels[z][y][x] = value;}
 
 template <class T, class U>
@@ -1308,6 +1312,32 @@ Cube<T,U>*  Cube<T,U>::duplicate_clean(string name)
     toReturn->type = "uchar";
   else
     toReturn->type = "float";
+  toReturn->filenameVoxelData = name + vl;
+  toReturn->save_parameters(this->directory + name + nfo);
+  toReturn->create_volume_file(this->directory + name + vl);
+  toReturn->load_volume_data(this->directory + name + vl);
+
+  return toReturn;
+}
+
+template <class T, class U>
+Cube<uchar, ulong>*  Cube<T,U>::duplicate_uchar(string name)
+{
+  string vl = ".vl";
+  string nfo = ".nfo";
+
+  Cube<uchar,ulong>* toReturn = new Cube<uchar,ulong>();
+  toReturn->cubeHeight = cubeHeight;
+  toReturn->cubeDepth  = cubeDepth;
+  toReturn->cubeWidth  = cubeWidth;
+  toReturn->voxelHeight = voxelHeight;
+  toReturn->voxelDepth  = voxelDepth;
+  toReturn->voxelWidth  = voxelWidth;
+  toReturn->x_offset = x_offset;
+  toReturn->y_offset = y_offset;
+  toReturn->z_offset = z_offset;
+  toReturn->directory = directory;
+  toReturn->type = "uchar";
   toReturn->filenameVoxelData = name + vl;
   toReturn->save_parameters(this->directory + name + nfo);
   toReturn->create_volume_file(this->directory + name + vl);

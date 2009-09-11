@@ -126,10 +126,11 @@ public:
 
   ~Cube_P(){}
 
+  virtual float getValueAsFloat(int x, int y, int z)=0;
+
   virtual string className(){
     return "Cube";
   }
-
 };
 
 

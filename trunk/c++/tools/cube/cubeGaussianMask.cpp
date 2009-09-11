@@ -18,7 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <argp.h>
-#include "utils_neseg.h"
+#include "utils.h"
+#include "Mask.h"
 
 using namespace std;
 

@@ -2164,7 +2164,7 @@ Cloud_P* Neuron::toCloud(string cloudName,
     cloud = new Cloud< Point3Do >(cloudName);
   } else if (!saveOrientation & !saveType){
     cloud = new Cloud< Point3D >(cloudName);
-  } else if (saveOrientation && saveType && saveWidth) {
+  } else if (saveOrientation & saveType & saveWidth) {
     cloud = new Cloud< Point3Dotw >(cloudName);
   }
 
@@ -2234,16 +2234,17 @@ void Neuron::toCloud(NeuronSegment* segment,
 
     if(saveOrientation && saveType && !saveWidth)
       cloud->points.push_back(new Point3Dot(mcoords[0],mcoords[1],mcoords[2],
-                                            theta, phi, 1));
-    if(saveOrientation && !saveType)
-      cloud->points.push_back(new Point3Do(mcoords[0],mcoords[1],mcoords[2],
-                                            theta, phi));
-    if(!saveOrientation && !saveType)
-      cloud->points.push_back(new Point3D(mcoords[0],mcoords[1],mcoords[2]));
+                                            theta, phi, Point3Dot::TrainingPositive));
+     if(saveOrientation && !saveType)
+       cloud->points.push_back(new Point3Do(mcoords[0],mcoords[1],mcoords[2],
+                                             theta, phi));
+     if(!saveOrientation && !saveType)
+       cloud->points.push_back(new Point3D(mcoords[0],mcoords[1],mcoords[2]));
 
     if(saveOrientation && saveType && saveWidth)
       cloud->points.push_back(new Point3Dotw(mcoords[0],mcoords[1],mcoords[2],
-                                             theta, phi, 1, mcoords[3]));
+                                             theta, phi, Point3Dot::TrainingPositive,
+                                             mcoords[3]));
   }
 
   for(int i = 0; i < segment->childs.size(); i++)

@@ -66,7 +66,7 @@ public:
       pointType = "Point3Dt";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3Dot>))
       pointType = "Point3Dot";
-    else if(typeid(*cloudOrig) == typeid(Cloud<Point3Dot>))
+    else if(typeid(*cloudOrig) == typeid(Cloud<Point3Dotw>))
       pointType = "Point3Dotw";
     else{
       printf("CloudFactory::No clue what the cloud is made of\n");

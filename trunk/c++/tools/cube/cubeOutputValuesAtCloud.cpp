@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
   Cloud<Point3Dot>*     cl = new Cloud<Point3Dot>(argv[2]);
   std::ofstream out(argv[3]);
-
+  
   int idx, idy, idz;
   for(int i = 0; i < cl->points.size(); i++){
     cb->micrometersToIndexes3

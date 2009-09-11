@@ -5,6 +5,7 @@
 #include "Neuron.h"
 #include "DoubleSet.h"
 #include "Cube_P.h"
+#include "Cube_C.h"
 // #include "GraphCut.h"
 
 // the plugin function signatures

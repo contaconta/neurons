@@ -99,7 +99,11 @@ void addObjectFromString(string name)
     img = new Image<float>(name);
     toDraw.push_back(img);
   }
-
+  else if (extension == "nfc")  {
+    cube = new Cube_C(name);
+    toDraw.push_back(cube);
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  }
 #ifdef WITH_BBP
   else if ((extension == "h5")){
     BBP_Morphology* bbpmorph = new BBP_Morphology(name);

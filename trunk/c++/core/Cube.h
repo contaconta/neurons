@@ -253,6 +253,9 @@ public:
   /** Returns the value of the voxel at indexes x,y,z.*/
   T at(int x, int y, int z);
 
+  /** Returns a float with the value of the cube at a position.*/
+  float getValueAsFloat(int x, int y, int z);
+
   /** Changes the value of the voxel at indexes x,y,z.*/
   void put(int x, int y, int z, T value);
 
@@ -269,6 +272,8 @@ public:
 
   /** Duplicates the cube and puts it all in 0.*/
   Cube<T,U>* duplicate_clean(string filename);
+
+  Cube<uchar, ulong>* duplicate_uchar(string filename);
 
   /** Creates a blank cube with the same dimensions and float type.*/
   Cube<float,double>* create_blank_cube(string filename, bool reflectToFile = true);

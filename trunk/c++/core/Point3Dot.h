@@ -15,11 +15,20 @@ class Point3Dot : public Point3Do
 {
 public:
 
-  int type; //-1 or 1 according to the class
+  enum Type{
+    TrainingPositive = 1,
+    TrainingNegative = -1,
+    TruePositive = 2,
+    TrueNegative = 3,
+    FalsePositive = 4,
+    FalseNegative = 5
+  };
+
+  Type type; //-1 or 1 according to the class
 
   Point3Dot();
 
-  Point3Dot(float x, float y, float z,  float theta=0, float phi = 0, int type = -1);
+  Point3Dot(float x, float y, float z,  float theta=0, float phi = 0, Type type = TrainingNegative);
 
   void draw();
 

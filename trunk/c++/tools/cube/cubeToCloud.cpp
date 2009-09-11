@@ -292,14 +292,15 @@ int main(int argc, char **argv) {
           cloud->points.push_back(new Point3Dot(micr[0],
                                                 micr[1], micr[2],
                                                 theta->at(idx[0], idx[1], idx[2]),
-                                                phi->at(idx[0], idx[1], idx[2]),1
+                                                phi->at(idx[0], idx[1], idx[2]),
+                                                Point3Dot::TrainingPositive
                                                 )
                                   );
         else
           cloud->points.push_back(new Point3Dot(micr[0],
                                                 micr[1], micr[2],
                                                 theta->at(idx[0], idx[1], idx[2]),
-                                                args.phiToPut,1
+                                                args.phiToPut,Point3Dot::TrainingPositive
                                                 )
                                   );
         break;
@@ -348,7 +349,8 @@ int main(int argc, char **argv) {
         break;
       case c3Dt:
         cloud->points.push_back(new Point3Dt(micr[0],
-                                             micr[1], micr[2],-1));
+                                             micr[1], micr[2],
+                                             Point3Dot::TrainingNegative));
         break;
       case c3Dot:
         if(!args.forcePhi)
@@ -357,13 +359,13 @@ int main(int argc, char **argv) {
                                                 micr[1], micr[2],
                                                 theta->at(idx[0], idx[1], idx[2]),
                                                 phi->at(idx[0], idx[1], idx[2]),
-                                                -1));
+                                                Point3Dot::TrainingNegative));
         else
           cloud->points.push_back(new Point3Dot(micr[0],
                                                 micr[1], micr[2],
                                                 theta->at(idx[0], idx[1], idx[2]),
                                                 args.phiToPut,
-                                                -1)
+                                                Point3Dot::TrainingNegative)
                                   );
         break;
       }
