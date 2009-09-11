@@ -139,6 +139,7 @@ add_library (viva SHARED
 ../core/Cube_C.cpp
 ../core/CubeFactory.cpp
 ../core/GraphCut.cpp
+../core/Timer.cpp
 )
 
 ################################################################################
