@@ -80,6 +80,8 @@ public:
     return "Cube_T";
   }
 
+  float getValueAsFloat(int x, int y, int z){return 0.0;}
+
 
 };
 

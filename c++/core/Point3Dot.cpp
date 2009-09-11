@@ -9,7 +9,7 @@ Point3Dot::Point3Dot() : Point3Do()
 
 
 Point3Dot::Point3Dot
-(float x, float y, float z, float _theta, float _phi, int _type) : Point3Do(x,y,z,_theta,_phi)
+(float x, float y, float z, float _theta, float _phi, Type _type) : Point3Do(x,y,z,_theta,_phi)
 {
   type = _type;
 }
@@ -23,10 +23,19 @@ void Point3Dot::draw(){
 }
 
 void Point3Dot::draw(float width){
-  if(type == 1)
+  if(type == TrainingPositive)
     glColor3f(0.0,0.0,1.0);
-  if(type == -1)
+  if(type == TrainingNegative)
     glColor3f(1.0,0.0,0.0);
+  if(type == TruePositive)
+    glColor3f(0.0,1.0,0.0);
+  if(type == TrueNegative)
+    glColor3f(0.0,0.5,0.0);
+  if(type == FalsePositive)
+    glColor3f(1.0,0.0,0.0);
+  if(type == FalseNegative)
+    glColor3f(0.0,0.0,1.0);
+
   Point3Do::draw(width);
 }
 
@@ -60,7 +69,9 @@ bool Point3Dot::load(istream &in){
     in.seekg(start+1); //????????? Why that one
     return false;
   }
-  in >> type;
+  int typeInt;
+  in >> typeInt;
+  type = (Type)typeInt;
   if(in.fail()){
     in.clear();
     in.seekg(start+1); //????????? Why that one

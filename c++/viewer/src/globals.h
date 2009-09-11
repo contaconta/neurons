@@ -11,6 +11,7 @@
 // #include "Axis.h"
 #include "DoubleSet.h"
 #include "Cube_T.h"
+#include "Cube_C.h"
 // #include "GraphCut.h"
 
 #include "plugin_info.h"

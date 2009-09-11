@@ -136,6 +136,7 @@ add_library (viva SHARED
 ../core/DoubleSet.cpp
 ../core/Cube_P.cpp
 ../core/Cube_T.cpp
+../core/Cube_C.cpp
 ../core/CubeFactory.cpp
 ../core/GraphCut.cpp
 )
@@ -184,11 +185,17 @@ target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
 target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
+target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
 target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
 target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
+target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
 target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
@@ -255,6 +262,9 @@ target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
 target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 
+add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
+target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
+
 
 ################################################################################
 ## neuron tools
@@ -277,6 +287,13 @@ target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
 
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
+target_link_libraries(convolutionsFast ${LINK_LIBRARIES_ALL})
+
+add_executable(convolutionsSlow ${CMAKE_SOURCE_DIR}/../tests/convolutionsSlow.cpp)
+target_link_libraries(convolutionsSlow ${LINK_LIBRARIES_ALL})
+
 
 add_executable(MSTthroughShortestPath ${CMAKE_SOURCE_DIR}/../tests/MSTthroughShortestPath.cpp)
 target_link_libraries(MSTthroughShortestPath ${LINK_LIBRARIES_ALL})

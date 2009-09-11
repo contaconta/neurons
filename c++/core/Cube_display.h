@@ -192,7 +192,7 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, fl
   if(sizeof(T) == 1)
     {
       GLubyte voxel;
-      
+
       //GLubyte* texel =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
       //for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
       //      texels[t] = 0;

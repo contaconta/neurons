@@ -22,7 +22,7 @@ public:
   }
 
   Point3Dotw(float x, float y, float z,  float theta=0, float phi = 0,
-             int type = -1, double _weight = 0.0) :
+             Type type = TrainingNegative, double _weight = 0.0) :
     Point3Dot(x,y,z,theta,phi,type)
   {
     weight = _weight;
@@ -66,7 +66,9 @@ public:
       in.seekg(start+1); //????????? Why that one
       return false;
     }
-    in >> type;
+    int typeInt;
+    in >> typeInt;
+    type = (Type)typeInt;
     if(in.fail()){
       in.clear();
       in.seekg(start+1); //????????? Why that one
