@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
   }
 
   Cube<float, double>* cb = new Cube<float, double>(argv[1]);
-  // Cube<uchar, ulong >* cb = new Cube<uchar, ulong>(argv[1]);
+//   Cube<uchar, ulong >* cb = new Cube<uchar, ulong>(argv[1]);
 
   Cloud<Point3Dot>*     cl = new Cloud<Point3Dot>(argv[2]);
   std::ofstream out(argv[3]);

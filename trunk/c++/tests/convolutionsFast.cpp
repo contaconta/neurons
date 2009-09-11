@@ -54,6 +54,15 @@ class CubeInMemmoryFloat
     voxels[z][y][x] = value;
   }
 
+  void saveToFile(string filename){
+    FILE* fp = fopen(filename.c_str(), "w");
+    for(int z = 0; z < depth; z++)
+      for(int y = 0; y < height; y++)
+        fwrite(voxels[z][y], sizeof(float), width, fp);
+    fclose(fp);
+  }
+
+
 };
 
 class CubeInMemmoryUchar
@@ -163,13 +172,18 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
+
+  CubeInMemmoryUchar* cbimu = new CubeInMemmoryUchar(512,896,135);
+
   printf("Creating a CubeInMemmoryFloat\n");
-  CubeInMemmoryFloat* cbimf = new CubeInMemmoryFloat(512,512,100);
-  CubeInMemmoryUchar* cbimu = new CubeInMemmoryUchar(512,512,100);
-  cbimu->loadFromFile("/media/neurons/cutConv/cut.vl");
+  CubeInMemmoryFloat* cbimf = new CubeInMemmoryFloat(cbimu->width,
+                                                     cbimu->height,
+                                                     cbimu->depth); 
+  cbimu->loadFromFile("/media/neurons/n3/3d/4/N3_4.vl");
   vector< float > mask = Mask::gaussian_mask(2, 4, true);
   printf("Doing the convolution with mask of size %i ...\n", mask.size());
   cbimu->convolve_horizontally(mask, cbimf);
+  printf("Saving the result \n", mask.size());
+  cbimf->saveToFile("/media/neurons/n3/3d/4/out.vl");
   printf("Exiting ...\n");
-
 }
