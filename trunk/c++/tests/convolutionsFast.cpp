@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "Cube.h"
 #include "Mask.h"
+#include "Timer.h"
 
 class CubeInMemmoryFloat
 {
@@ -173,17 +174,38 @@ using namespace std;
 int main(int argc, char **argv) {
 
 
-  CubeInMemmoryUchar* cbimu = new CubeInMemmoryUchar(512,896,135);
+  Timer timer;
+  unsigned long timeS, timeE;
 
-  printf("Creating a CubeInMemmoryFloat\n");
+  timeS = timer.getMilliseconds();
+  CubeInMemmoryUchar* cbimu = new CubeInMemmoryUchar(1536,3584,148);
+  cbimu->loadFromFile("/media/neurons/n1/3d/1/N1.vl");
+//   cbimu->loadFromFile("/home/ggonzale/mount/cvlabfiler/n1/3d/1/N1.vl");
+  timeE = timer.getMilliseconds();
+  printf("Time to load the uchar:  %u\n", timeE-timeS);
+  fflush(stdout);
+  exit(0);
+  
+
+  timeS = timer.getMilliseconds();
   CubeInMemmoryFloat* cbimf = new CubeInMemmoryFloat(cbimu->width,
                                                      cbimu->height,
                                                      cbimu->depth); 
-  cbimu->loadFromFile("/media/neurons/n3/3d/4/N3_4.vl");
+  timeE = timer.getMilliseconds();
+  printf("Time to allocate the float:  %u\n", timeE-timeS);
+
   vector< float > mask = Mask::gaussian_mask(2, 4, true);
   printf("Doing the convolution with mask of size %i ...\n", mask.size());
+
+  timeS = timer.getMilliseconds();
   cbimu->convolve_horizontally(mask, cbimf);
-  printf("Saving the result \n", mask.size());
-  cbimf->saveToFile("/media/neurons/n3/3d/4/out.vl");
+  timeE = timer.getMilliseconds();
+  printf("Time to do the convolution:  %u\n", timeE-timeS);
+
+  timeS = timer.getMilliseconds();
+  cbimf->saveToFile("/media/neurons/n1/3d/1/out.vl");
+  timeE = timer.getMilliseconds();
+  printf("Time to save the file:  %u\n", timeE-timeS);
+
   printf("Exiting ...\n");
 }
