@@ -6,7 +6,7 @@
   * make sure haar features work for channels of different data types
   * strings -> 'C1_W1x32434blah'
 
-= MemDaemon =
+= Mem Daemon =
   * make a matlab replacement for memdaemon for computers we cannot compile on
   * add a switch in settings to change between memdaemon and matlab equivelent
 
