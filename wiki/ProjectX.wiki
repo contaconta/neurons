@@ -18,6 +18,7 @@
 
 == Bootstrapping == 
   * bootstrapping for soft cascades can be complicated, need to worry about how and when to recollect data for training & validation
+  * Data recollection -> use Aurelien's resize polygon so we can adjust size of regions selected, and can properly select boundary pixels.
 
 == Compatibility across computers ==
   * change buildmex.sh and paths in settings.m so that compiled code is sent to /temp directory. this way we can compile from ICFILER and executables will be stored on the local machine.
