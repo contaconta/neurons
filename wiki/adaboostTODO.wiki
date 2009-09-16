@@ -1,7 +1,0 @@
-=Boosting=
-
-  # Scheme to set cascade goals
-  # Investigate passing weights from one stage to the next
-  # RealBoost
-  # Domain Partitioning
-  # Totally Corrective Boosting
