@@ -1,0 +1,20 @@
+#summary Notes about work to be done on ProjectX.
+#labels ProjectX
+
+= Channels =
+  * convert features so that they work as Channels
+  * make sure haar features work for channels of different data types
+  * strings -> 'C1_W1x32434blah'
+
+= MemDaemon =
+  * make a matlab replacement for memdaemon for computers we cannot compile on
+  * add a switch in settings to change between memdaemon and matlab equivelent
+
+= C++ implementation of classification function =
+  * we wrote feature_response, needs to be debugged/tested
+  * we made changes to memdaemon:  getRow (changed name), getElement (added)
+  * we need to write functions for: decision stumps, decision trees, strong classifier applied to a single example, strong classifier applied to many examples
+  * eventually modify c++ to use data from matlab matrix when necessary
+
+= Bootstrapping = 
+  * bootstrapping for soft cascades can be complicated, need to worry about how and when to recollect data for training & validation
