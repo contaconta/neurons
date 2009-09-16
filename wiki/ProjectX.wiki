@@ -18,3 +18,6 @@
 
 = Bootstrapping = 
   * bootstrapping for soft cascades can be complicated, need to worry about how and when to recollect data for training & validation
+
+= Compatibility across computers =
+  * change buildmex.sh and paths in settings.m so that compiled code is sent to /temp directory. this way we can compile from ICFILER and executables will be stored on the local machine.
