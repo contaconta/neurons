@@ -35,7 +35,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
     }
-    
+   
     /* Check data type of input argument */
     if (!(mxIsChar(prhs[0]))) {
       mexErrMsgTxt("First argument must be of type string.");
@@ -110,28 +110,28 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         {
           plhs[0] = mxCreateNumericArray(1,dims,mxDOUBLE_CLASS,mxREAL);
           double* pData=(double*)mxGetPr(plhs[0]);
-          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+          res = getRow(pData, eFormat, eType, index);
         }
         break;
       case MT_CHAR:
         {
           plhs[0] = mxCreateNumericArray(1,dims,mxINT8_CLASS,mxREAL);
           char* pData=(char*)mxGetPr(plhs[0]);
-          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+          res = getRow(pData, eFormat, eType, index);
         }
         break;
       case MT_SHORT:
         {
           plhs[0] = mxCreateNumericArray(1,dims,mxINT16_CLASS,mxREAL);
           short* pData=(short*)mxGetPr(plhs[0]);
-          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+          res = getRow(pData, eFormat, eType, index);
         }
         break;
       case MT_INT:
         {
           plhs[0] = mxCreateNumericArray(1,dims,mxINT32_CLASS,mxREAL);
           int* pData=(int*)mxGetPr(plhs[0]);
-          res = getWeakLearnerResponses(pData, eFormat, eType, index);
+          res = getRow(pData, eFormat, eType, index);
         }
         break;
       }

@@ -240,6 +240,8 @@ switch ind
         sigma = 1.5;
         thresh = .3;
         EDGE = edge(I,'canny', thresh ,sigma); EDGE = bwmorph(EDGE, 'diag');
+    case 63
+        EDGE = edge(I, 'canny');
 end
 
 if ind <= 37
