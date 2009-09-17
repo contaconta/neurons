@@ -103,6 +103,56 @@ CubeLiveWire::computeDistances
 }
 
 
+void CubeLiveWire::saveParents(string cubeName)
+{
+  Cube<int, long>* parentsC =
+    new Cube<int, long>(cube->cubeWidth, cube->cubeHeight, cube->cubeDepth,
+                        cube->directory + cubeName,
+                        cube->voxelWidth, cube->voxelHeight, cube->voxelDepth);
+  for(int x = 0; x < cube->cubeWidth; x++)
+    for(int y = 0; y < cube->cubeHeight; y++)
+      for(int z = 0; z < cube->cubeDepth; z++){
+        parentsC->put(x,y,z, previous[z][y][x]);
+      }
+}
+
+void CubeLiveWire::loadParents(string cubeName)
+{
+  Cube<int, long>* parentsC =
+    new Cube<int, long>(cubeName);
+  for(int x = 0; x < cube->cubeWidth; x++)
+    for(int y = 0; y < cube->cubeHeight; y++)
+      for(int z = 0; z < cube->cubeDepth; z++){
+        previous[z][y][x] = parentsC->at(x,y,z);
+        if(previous[z][y][x]!=-1)
+          visited[z][y][x] = true;
+      }
+}
+
+void CubeLiveWire::saveDistances(string cubeName)
+{
+  Cube<float, double>* distancesC =
+    new Cube<float, double>(cube->cubeWidth, cube->cubeHeight, cube->cubeDepth,
+                        cube->directory + cubeName,
+                        cube->voxelWidth, cube->voxelHeight, cube->voxelDepth);
+  for(int x = 0; x < cube->cubeWidth; x++)
+    for(int y = 0; y < cube->cubeHeight; y++)
+      for(int z = 0; z < cube->cubeDepth; z++){
+        distancesC->put(x,y,z, distances[z][y][x]);
+      }
+}
+
+void CubeLiveWire::loadDistances(string cubeName)
+{
+  Cube<float, double>* distancesC =
+    new Cube<float, double>(cubeName);
+  for(int x = 0; x < cube->cubeWidth; x++)
+    for(int y = 0; y < cube->cubeHeight; y++)
+      for(int z = 0; z < cube->cubeDepth; z++){
+        distances[z][y][x] = distancesC->at(x,y,z);
+      }
+}
+
 
 Cloud<Point3D>*
 CubeLiveWire::findShortestPath
@@ -149,14 +199,6 @@ CubeLiveWire::findShortestPathG
 
   vector< int > indexes(3);
   vector< float > micrometers(3);
-
-  // indexes[0] = x0;
-  // indexes[1] = y0;
-  // indexes[2] = z0;
-  // cube->indexesToMicrometers(indexes, micrometers);
-
-  // result->cloud->points.push_back
-    // (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
 
   if( (z1 >= 0) && (y1>=0) && (x1>=0) &&
       (z1 < cube->cubeDepth) && (y1 < cube->cubeHeight) && (x1 < cube->cubeWidth) &&

@@ -91,7 +91,7 @@ public:
 
   virtual void draw(){
     glColor3f(v_r, v_g, v_b);
-    glLineWidth(v_radius);
+    // glLineWidth(v_radius);
     if(v_enable_depth_test)
       glEnable(GL_DEPTH_TEST);
     else

@@ -99,6 +99,13 @@ public:
   //Computes the distances to all points in the cube starting in x0, y0, z0 using dijkstra
   void computeDistances(int x0, int y0, int z0);
 
+  void saveParents   (string cubeName);
+
+  void loadParents   (string cubeName);
+
+  void saveDistances   (string cubeName);
+
+  void loadDistances   (string cubeName);
 
   Cloud<Point3D>* findShortestPath(int x0, int y0, int z0,
                                    int x1, int y1, int z1

@@ -182,8 +182,11 @@ public:
       return 1.0-(float)(cubeUchar->at(x1,y1,z1))/255;
       break;
     case 1:
-      dist = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
-      return 1.0-cubeFloat->at(x1,y1,z1)/dist;
+      dist = sqrt((double)
+                  (x0-x1)*(x0-x1)   //*cubeFloat->voxelWidth*cubeFloat->voxelWidth
+                  + (y0-y1)*(y0-y1) //*cubeFloat->voxelHeight*cubeFloat->voxelHeight
+                  + (z0-z1)*(z0-z1)); //*cubeFloat->voxelHeight*cubeFloat->voxelHeight);
+      return exp(((1.0-cubeFloat->at(x1,y1,z1))*dist));
       break;
     };
     return 0.0;
