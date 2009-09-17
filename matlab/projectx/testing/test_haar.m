@@ -38,7 +38,7 @@ LEARNERS.types = {'HA_x1_y1_u1_v1'};
 
 % define individual learners
 DATASETS.IMSIZE = size(I);
-LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS.IMSIZE);
+LEARNERS = p_EnumerateLearners(LEARNERS, DATASETS);
 
 for i = 1:length(LEARNERS.list)
     visualize_haar_feature(LEARNERS.list{i}, DATASETS.IMSIZE, I);
