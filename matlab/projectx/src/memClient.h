@@ -45,9 +45,9 @@ int getMemType(eMemType& type, int shm_key_id = SHMKEYID);
 // @param : dataSrc is a pointer on the source data
 // @param : either "row" or "column"
 template<class T> 
-int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
-                              eDataType dataType, int index, int dataSize,
-                              int shm_key_id = SHMKEYID)
+int storeRow(T* dataSrc, eDataFormat dataFormat,
+             eDataType dataType, int index, int dataSize,
+             int shm_key_id = SHMKEYID)
 {
   int rc;  
   key_t shmkey;
@@ -60,7 +60,7 @@ int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("storeWeakLearnerResponses: ftok() for shm failed\n");
+      printf("storeRow: ftok() for shm failed\n");
       return -1;
     }
 
@@ -68,7 +68,7 @@ int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
    * Retrieve the shared memory segment.
    */
   if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
-    printf("storeWeakLearnerResponses: shmget(%d) initialization failed\n", shmkey);
+    printf("storeRow: shmget(%d) initialization failed\n", shmkey);
     return -1;
   }
 
@@ -76,7 +76,7 @@ int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("storeWeakLearnerResponses: shmat(%d) initialization failed\n", shmid);
+    printf("storeRow: shmat(%d) initialization failed\n", shmid);
     return -1;
   }
 
@@ -165,8 +165,7 @@ int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
       iStep = 1;
     }
   else
-    {
-      index_x = hmr->wlp[iLearner].index + index;
+    {      index_x = hmr->wlp[iLearner].index + index;
       index_y = 0;
       hmrSize = hmr->height;
       iStep = hmr->width;
@@ -201,18 +200,21 @@ int storeWeakLearnerResponses(T* dataSrc, eDataFormat dataFormat,
       }
 #ifdef DEBUG_M
       else
-        printf("storeWeakLearnerResponses: Memory detached\n");
+        printf("storeRow: Memory detached\n");
 #endif
     }
 
   return 0;
 }
 
-// @return a pointer on the data required
+/*
+ * Get a full row from memory
+ * @return a pointer on the data required
+ */
 template<class T>
-int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
-                            eDataType dataType, int index,
-                            int shm_key_id = SHMKEYID)
+int getRow(T* dataDst, eDataFormat dataFormat,
+           eDataType dataType, int index,
+           int shm_key_id = SHMKEYID)
 {
   int rc;  
   key_t shmkey;
@@ -225,7 +227,7 @@ int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
   shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
   if ( shmkey == (key_t)-1 )
     {
-      printf("getWeakLearnerResponses: ftok() for shm failed\n");
+      printf("getRow: ftok() for shm failed\n");
       return -1;
     }
 
@@ -233,7 +235,7 @@ int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
    * Retrieve the shared memory segment.
    */
   if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
-    printf("getWeakLearnerResponses: shmget() initialization failed\n");
+    printf("getRow: shmget() initialization failed\n");
     return -1;
   }
 
@@ -241,7 +243,7 @@ int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
    * Now we attach the segment to our data space.
    */
   if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
-    printf("getWeakLearnerResponses: shmat() initialization failed\n");
+    printf("getRow: shmat() initialization failed\n");
     return -1;
   }
 
@@ -266,6 +268,7 @@ int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
   // T must be a pointer
   T* dataHmr = (T*) shm + (sizeof(struct header_mem_responses)/sizeof(T));
 
+  // Search for the correct type in the header file 
   bool typeFound = false;
   int iLearner;
   for(iLearner=0;iLearner<MAX_NUM_WEAK_LEANER_TYPE;iLearner++)
@@ -354,11 +357,94 @@ int getWeakLearnerResponses(T* dataDst, eDataFormat dataFormat,
       }
 #ifdef DEBUG_M
       else
-        printf("storeWeakLearnerResponses: Memory detached\n");
+        printf("getRow: Memory detached\n");
 #endif
     }
 
   return 0;
 }
+
+
+/*
+ * Get an element from memory
+ * @param dataDst is a pointer on the memory where the element is stored
+ * @return a pointer on the data required
+ */
+template<class T>
+int getElement(T* dataDst, int row, int col,
+               int shm_key_id = SHMKEYID)
+{
+  int rc;
+  key_t shmkey;
+  int shmid;
+  char *shm;
+
+  // Generate IPC keys
+  // Those keys are the same as the ones used by the Deamon
+  shmkey = ftok(SHMKEYPATH,SHMKEYID); //shm_key_id);
+  if ( shmkey == (key_t)-1 )
+    {
+      printf("getElement: ftok() for shm failed\n");
+      return -1;
+    }
+
+  /*
+   * Retrieve the shared memory segment.
+   */
+  if ((shmid = shmget(shmkey, 0, 0666)) < 0) {
+    printf("getElement: shmget() initialization failed\n");
+    return -1;
+  }
+
+  /*
+   * Now we attach the segment to our data space.
+   */
+  if ((shm = (char*) shmat(shmid, NULL, 0)) == (char*) -1) {
+    printf("getElement: shmat() initialization failed\n");
+    return -1;
+  }
+
+  /*
+    key_t semkey;
+  semkey = ftok(SEMKEYPATH,SEMKEYID);
+  if ( semkey == (key_t)-1 )
+    {
+      printf("main: ftok() for sem failed\n");
+      return -1;
+    }
+  // Retrieve semaphore id
+  semid = semget(semkey, NUMSEMS, 0666);
+  if ( semid == -1 )
+    {
+      printf("main: semget() failed\n");
+      return -1;
+    }
+  */
+
+  struct header_mem_responses* hmr = (struct header_mem_responses*) shm;
+  // T must be a pointer
+  T* dataHmr = (T*) shm + (sizeof(struct header_mem_responses)/sizeof(T));
+
+  // Copy data to the destination buffer
+  int data_index = row * hmr->width + col;
+  *dataDst = dataHmr[data_index];
+
+  if(shm != 0)
+    {
+      // Detach from shared memory segment
+      rc = shmdt((const void *) shm);
+      if (rc != 0) {
+        printf("Unable to detach from shared memory segment (rc=%d)\n", rc);
+        return -1;
+      }
+#ifdef DEBUG_M
+      else
+        printf("getElement: Memory detached\n");
+#endif
+    }
+
+  return 0;
+}
+
 
 #endif // MEMCLIENT_H

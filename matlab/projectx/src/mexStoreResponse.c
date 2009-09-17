@@ -96,22 +96,22 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if(mxIsDouble(prhs[0]))
       {
         double* pData=(double*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
+        res = storeRow(pData, eFormat, eType, index, nElements);
       }
     else if (mxIsInt8(prhs[0]))
       {
         char* pData=(char*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
+        res = storeRow(pData, eFormat, eType, index, nElements);
       }
     else if (mxIsInt16(prhs[0]))
       {
         short* pData=(short*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
+        res = storeRow(pData, eFormat, eType, index, nElements);
       }
     else if (mxIsInt32(prhs[0]))
       {
         int* pData=(int*)mxGetPr(prhs[0]);
-        res = storeWeakLearnerResponses(pData, eFormat, eType, index, nElements);
+        res = storeRow(pData, eFormat, eType, index, nElements);
       }
 
     if(res == -1)
