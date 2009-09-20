@@ -39,6 +39,8 @@ for l = 1:lmax
     end
 end
 
+% add a diagonal so that each node is self-connected
+A = max(A, speye(size(A)));
 
 
 
