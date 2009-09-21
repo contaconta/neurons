@@ -1,5 +1,6 @@
 % ========= parameters ==================
-S = 10000;
+S = 5000;
+tic;
 
 % set necessary paths
 addpath([pwd '/utils/']);
@@ -10,41 +11,41 @@ imPath = [pwd '/images/'];
 % fix the random number stream
 s = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(s);  %rand('twister', 100);    % seed for Matlab 7.8 (?)
 
-% load an image we want to play with
-Iraw = imread([imPath 'test.png']);
-
-% load superpixels or atomic regions as a label matrix, L
-HUT = imread([imPath 'testHUTT.ppm']);
-L = rgb2label(HUT);
-
-% G contains average gray levels of I for regions in L 
-Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
-
-% extract and adjacency matrix and list from L
-[G0, G0list] = adjacency(L);
-
-% create a list of superpixel center locations
-centers = zeros(max(L(:)),1);
-for l = 1:max(L(:))
-    pixelList = find(L == l); 
-    [r,c] = ind2sub(size(L), pixelList);
-    centers(l,1) = mean(r);
-    centers(l,2) = mean(c);
-end
-
-% % plot the original image
-% figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % load an image we want to play with
+% Iraw = imread([imPath 'test.png']);
 % 
-% % plot the segmentation with average gray levels
-% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % load superpixels or atomic regions as a label matrix, L
+% HUT = imread([imPath 'testHUTT.ppm']);
+% L = rgb2label(HUT);
 % 
-% % plot the superpixel centers
-% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
-% hold on; plot(centers(:,2), centers(:,1), 'b.');
-
-% % plot the adjacency graph
-% figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
-% hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
+% % G contains average gray levels of I for regions in L 
+% Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
+% 
+% % extract and adjacency matrix and list from L
+% [G0, G0list] = adjacency(L);
+% 
+% % create a list of superpixel center locations
+% centers = zeros(max(L(:)),1);
+% for l = 1:max(L(:))
+%     pixelList = find(L == l); 
+%     [r,c] = ind2sub(size(L), pixelList);
+%     centers(l,1) = mean(r);
+%     centers(l,2) = mean(c);
+% end
+% 
+% % % plot the original image
+% % figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % 
+% % % plot the segmentation with average gray levels
+% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % 
+% % % plot the superpixel centers
+% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % hold on; plot(centers(:,2), centers(:,1), 'b.');
+% 
+% % % plot the adjacency graph
+% % figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
+% % hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
 
 
 B1 = .25;
@@ -79,7 +80,8 @@ end
 
 T = 1.5;  
 Bstart = .66;  Bend = .2;
-B = [Bstart linterp([1 S], [Bstart Bend], 2:S-1) Bend];
+%B = [Bstart linterp([1 S], [Bstart Bend], 2:S-1) Bend];
+B = .5*ones([1 S]);
 
 %% ===================== Metropolis-Hastings ============================
 
@@ -99,12 +101,11 @@ for s = 2:S
     [V0, V0a] = swc_swc2(W, B(s), v);  	% get a list of the members of V0
     V0c = Cw(V0(1));                    % the current color of V0
 
+
     % determine what are the neighbors colors
-    neighbors = [];
-    for m = V0
-        neighbors = [neighbors graphtraverse(G0,m, 'directed', 0, 'depth', 1)]; %#ok<AGROW>
-    end
+    [neighbors,junk] = find(G0(:,V0));
     neighbors = unique(setdiff(neighbors, V0));
+    
     neighborColors = unique(Cw(neighbors));
     neighborColors = setdiff(neighborColors, V0c);
     if isempty(neighborColors)
@@ -132,34 +133,35 @@ for s = 2:S
     % step 6: accept or reject (W or Wp)
     r = rand(1);
     if r <= a
-        % display the V0 and the region we've chosen to merge it to
-        figure(1234); clf;
-        gplotl(W,centers,LABELS,Iraw);
-        gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-        gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-        pause(0.06); refresh;
+%         % display the V0 and the region we've chosen to merge it to
+%         figure(1234); clf;
+%         gplotl(W,centers,LABELS,Iraw);
+%         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+%         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+%         pause(0.06); refresh;
         
         Cw(V0) = c;     % apply new color c to V0
         % step 4: update Wp to reflect CP's new label, including edges
         W = swc_AdjFromColor(G0, Cw, W, [V0c c neighborColors]);
+        [numCw,Cw] = graphconncomp(W, 'directed', 0);
         %W = swc_AdjFromColor(G0, Cw);
         LABELS = LABELSp;
         P(s) = Pp;
-        disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
+        %disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
     else
-        % display the V0 and the region we've chosen to merge it to
-        figure(1234); clf;
-        gplotl(W,centers,LABELS,Iraw);
-        gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
-        gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
-        pause(0.06); refresh;
+%         % display the V0 and the region we've chosen to merge it to
+%         figure(1234); clf;
+%         gplotl(W,centers,LABELS,Iraw);
+%         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
+%         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
+%         pause(0.06); refresh;
         
         P(s) = P(s-1);
-        disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
+        %disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
     end
     
-    figure(445); clf;
-    plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
+%     figure(445); clf;
+%     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
     
    %keyboard;
@@ -168,10 +170,18 @@ end
 
 
 
+toc
 
 
 
 
+
+    % determine what are the neighbors colors
+%     neighbors = [];
+%     for m = V0
+%         neighbors = [neighbors graphtraverse(G0,m, 'directed', 0, 'depth', 1)]; %#ok<AGROW>
+%     end
+%     neighbors = unique(setdiff(neighbors, V0));
 
 
 % % plot the labeled graph
