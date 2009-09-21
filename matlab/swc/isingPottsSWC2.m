@@ -11,46 +11,52 @@ imPath = [pwd '/images/'];
 % fix the random number stream
 s = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(s);  %rand('twister', 100);    % seed for Matlab 7.8 (?)
 
-% % load an image we want to play with
-% Iraw = imread([imPath 'test.png']);
+% load an image we want to play with
+Iraw = imread([imPath 'test.png']);
+
+% load superpixels or atomic regions as a label matrix, L
+disp('Loading the superpixel segmentation image.');
+HUT = imread([imPath 'testHUTT.ppm']);
+disp('Assigning labels to each superpixel in the segmentation image (slow).');
+L = rgb2label(HUT);
+
+% G contains average gray levels of I for regions in L 
+disp('Filling greylevels in superpixel segmentation image.');
+Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
+
+% extract and adjacency matrix and list from L
+disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
+[G0, G0list] = adjacency(L);
+
+% create a list of superpixel center locations
+disp('Computing superpixel center locations.');
+centers = zeros(max(L(:)),1);
+for l = 1:max(L(:))
+    pixelList = find(L == l); 
+    [r,c] = ind2sub(size(L), pixelList);
+    centers(l,1) = mean(r);
+    centers(l,2) = mean(c);
+end
+
+% % plot the original image
+% figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
 % 
-% % load superpixels or atomic regions as a label matrix, L
-% HUT = imread([imPath 'testHUTT.ppm']);
-% L = rgb2label(HUT);
+% % plot the segmentation with average gray levels
+% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
 % 
-% % G contains average gray levels of I for regions in L 
-% Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
-% 
-% % extract and adjacency matrix and list from L
-% [G0, G0list] = adjacency(L);
-% 
-% % create a list of superpixel center locations
-% centers = zeros(max(L(:)),1);
-% for l = 1:max(L(:))
-%     pixelList = find(L == l); 
-%     [r,c] = ind2sub(size(L), pixelList);
-%     centers(l,1) = mean(r);
-%     centers(l,2) = mean(c);
-% end
-% 
-% % % plot the original image
-% % figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
-% % 
-% % % plot the segmentation with average gray levels
-% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
-% % 
-% % % plot the superpixel centers
-% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
-% % hold on; plot(centers(:,2), centers(:,1), 'b.');
-% 
-% % % plot the adjacency graph
-% % figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
-% % hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
+% % plot the superpixel centers
+% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% hold on; plot(centers(:,2), centers(:,1), 'b.');
+
+% % plot the adjacency graph
+% figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
+% hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
 
 
-B1 = .25;
 %create an initial partition of the graph
-W = swc_CP(G0, B1);                              % make initial cuts
+disp('Creating a random initial partiton W of the graph.');
+B1 = .28;
+W = swc_CP(G0, B1);                             % make initial cuts
 [numCw,Cw] = graphconncomp(W, 'directed', 0);   % color the graph
 W = swc_AdjFromColor(G0,Cw);                    % fill in missing adjacency edges
 
@@ -59,7 +65,8 @@ W = swc_AdjFromColor(G0,Cw);                    % fill in missing adjacency edge
 % hold on; gplot(W, [centers(:,2) centers(:,1)], '.-');
 
 
-% assign colors & labels to the initial partition
+% assign labels to the initial partition
+disp('Randomly assigning labels to each region in the graph.')
 LABELS = zeros(size(Cw));
 for c = 1:numCw
     members = find(Cw == c)';
@@ -78,13 +85,14 @@ end
 % gplotc(W, centers, Cw, Iraw);
 
 
+% set the annealing schedule
 T = 1.5;  
 Bstart = .66;  Bend = .2;
 %B = [Bstart linterp([1 S], [Bstart Bend], 2:S-1) Bend];
 B = .5*ones([1 S]);
 
 %% ===================== Metropolis-Hastings ============================
-
+disp('Applying metropolis-hastings with Swendson-Wang cuts.')
 
 % compute the initial posterior
 P = zeros([1 S]);
@@ -133,14 +141,15 @@ for s = 2:S
     % step 6: accept or reject (W or Wp)
     r = rand(1);
     if r <= a
-%         % display the V0 and the region we've chosen to merge it to
-%         figure(1234); clf;
-%         gplotl(W,centers,LABELS,Iraw);
-%         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-%         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-%         pause(0.06); refresh;
+        % display the V0 and the region we've chosen to merge it to
+        figure(1234); clf;
+        gplotl(W,centers,LABELS,Iraw);
+        gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+        gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+        pause(0.06); refresh;
         
         Cw(V0) = c;     % apply new color c to V0
+        
         % step 4: update Wp to reflect CP's new label, including edges
         W = swc_AdjFromColor(G0, Cw, W, [V0c c neighborColors]);
         [numCw,Cw] = graphconncomp(W, 'directed', 0);
@@ -149,17 +158,18 @@ for s = 2:S
         P(s) = Pp;
         %disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
     else
-%         % display the V0 and the region we've chosen to merge it to
-%         figure(1234); clf;
-%         gplotl(W,centers,LABELS,Iraw);
-%         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
-%         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
-%         pause(0.06); refresh;
+        % display the V0 and the region we've chosen to merge it to
+        figure(1234); clf;
+        gplotl(W,centers,LABELS,Iraw);
+        gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
+        gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
+        pause(0.06); refresh;
         
         P(s) = P(s-1);
         %disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
     end
     
+    % plot the progress of the posterior estimate
 %     figure(445); clf;
 %     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
