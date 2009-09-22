@@ -32,7 +32,7 @@ for e = Elist
     %[vi, vj] = ind2sub(size(G), e); %#ok<NASGU>
     
     %q_e(e_ind) = 1 - exp(-B);  % probability to "turn on" an edge
-    q_e(e_ind) = KL(e);
+    q_e(e_ind) = KL(e)*B;
     
     e_ind = e_ind + 1;
 end

@@ -4,7 +4,7 @@ addpath('../utils/libsvm-mat-2.89-3');
 addpath([pwd '/../utils/']);
 %huttPath = '/osshare/Work/software/huttenlocher_segment/';
 %imPath = [pwd '/../images/'];
-imPath = '~/usr/share/Data/LabelMe/Images/FIBSLICE/';
+imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
 imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
 
@@ -15,8 +15,11 @@ training_instance = instance_matrix(1:4000,:);
 %testing_instance = instance_matrix(3001:size(instance_matrix,1),:);
 
 if ~exist('model')
+  disp('Computing model...');
   [model,minI,maxI] = loadModel(training_label, training_instance);
 end
+
+disp('Model computed');
 
 %Y = rand(1,100);
 %img = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0080.png');
@@ -44,11 +47,12 @@ fid = fopen(labelFilenm,'r');
 L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
 L = double(L);
 L = L+1;
+L = L';
 fclose(fid);
 
 imshow(Iraw);
 [x,y] = ginput
-l = L(round(x),round(y));
+l = L(round(y),round(x));
 pixelList = find(L == l);
 
 BW = L==l;
@@ -63,13 +67,15 @@ for n = neighbors
   pixelList = [pixelList;pN];
 end
 
+clear Y Y2;
 [r,c] = ind2sub(size(L), pixelList);
 %I = Iraw(:);
 %Y = double(I(pixelList));
 % FIXME : Vector notation ?
 for i=1:length(c)
-  Y(i) = double(Iraw(c(i),r(i)));
+  Y(i) = double(Iraw(r(i),c(i)));
 end
+Y2 = double(Iraw(pixelList));
 [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI)
 
 % Prediction

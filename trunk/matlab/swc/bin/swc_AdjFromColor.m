@@ -37,17 +37,20 @@ if nargin == 4
     end
     
 elseif nargin == 2
+    %keyboard;
     A = varargin{1};   % the full adjacency map G0
     C = varargin{2};   % a list of vertex colors
     
     W = sparse([],[],[], size(A,1), size(A,1),0);
 
     for c = 1:length(C)
+        %keyboard;
         MASK = sparse([],[],[], size(W,1), size(W,1),0);
         members = find(C == c)';    % vertices belonging to color c
         MASK(members,members) = 1;  % only members rows & columns
         Wc = A.*MASK;               % a small fully connected graph for color c
         W = W + Wc;                 % add for each color to get W
+        disp([ 'completed c=' num2str(c) '/' num2str(length(C(:)))]);
     end
 
     
