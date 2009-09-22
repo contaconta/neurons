@@ -1,10 +1,12 @@
 
 % set necessary paths
 addpath('../utils/libsvm-mat-2.89-3');
+addpath([pwd '/../bin/']);
 addpath([pwd '/../utils/']);
 %huttPath = '/osshare/Work/software/huttenlocher_segment/';
 %imPath = [pwd '/../images/'];
-imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
+%imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
+imPath = '/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/';
 imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
 
@@ -51,7 +53,11 @@ L = L';
 fclose(fid);
 
 imshow(Iraw);
-[x,y] = ginput
+
+outPb = zeros(480,640);
+
+for x=1:640
+for y=1:480
 l = L(round(y),round(x));
 pixelList = find(L == l);
 
@@ -67,16 +73,25 @@ for n = neighbors
   pixelList = [pixelList;pN];
 end
 
-clear Y Y2;
+%clear Y Y2;
+clear Y;
 [r,c] = ind2sub(size(L), pixelList);
 %I = Iraw(:);
 %Y = double(I(pixelList));
 % FIXME : Vector notation ?
-for i=1:length(c)
-  Y(i) = double(Iraw(r(i),c(i)));
+%for i=1:length(c)
+%  Y(i) = double(Iraw(r(i),c(i)));
+%end
+Y = double(Iraw(pixelList));
+[predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI);
+
+outPb(y,x) = find(pb == max(pb),1);
+
 end
-Y2 = double(Iraw(pixelList));
-[predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI)
+end
+
+figure;
+imagesc(outPb);
 
 % Prediction
 %n = testing_instance;

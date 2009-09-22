@@ -17,7 +17,8 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 % load an image we want to play with
 %Iraw = imread([imPath 'test.png']);
 %Iraw = imread('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.png');
-Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
+%Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
+Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
@@ -52,35 +53,35 @@ Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
 % end
     
 load LRK.mat;
-% disp('Filling greylevels in superpixel segmentation image.');
-% Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
-% 
-% % extract and adjacency matrix and list from L
-% disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
-% [G0, G0list] = adjacency(L);
-% 
-% % create a list of superpixel center locations and pixel lists
-% disp('Computing superpixel center locations.');
-% centers = zeros(max(L(:)),1); pixelList = cell([1 size(G0,1)]);
-% for l = 1:max(L(:))
-%     pixelList{l} = find(L == l); 
-%     [r,c] = ind2sub(size(L), pixelList{l});
-%     centers(l,1) = mean(r);
-%     centers(l,2) = mean(c);
-% end
-% 
-% % precompute the KL divergences
-% disp('Precomputing the KL divergences.');
-% KL = edgeKL(Iraw, pixelList, G0, 1);
-% 
-% % initialize the SVM model
-% disp('Computing the SVM model.');
-% if ~exist('model', 'var')
-%     [model, minI, maxI] = svm_model();
-% end
-% 
-% %keyboard;
-% 
+disp('Filling greylevels in superpixel segmentation image.');
+Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
+
+% extract and adjacency matrix and list from L
+disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
+[G0, G0list] = adjacency(L);
+
+% create a list of superpixel center locations and pixel lists
+disp('Computing superpixel center locations.');
+centers = zeros(max(L(:)),1); pixelList = cell([1 size(G0,1)]);
+for l = 1:max(L(:))
+    pixelList{l} = find(L == l); 
+    [r,c] = ind2sub(size(L), pixelList{l});
+    centers(l,1) = mean(r);
+    centers(l,2) = mean(c);
+end
+
+% precompute the KL divergences
+disp('Precomputing the KL divergences.');
+KL = edgeKL(Iraw, pixelList, G0, 1);
+
+% initialize the SVM model
+disp('Computing the SVM model.');
+if ~exist('model', 'var')
+    [model, minI, maxI] = svm_model();
+end
+
+%keyboard;
+
 %create an initial partition of the graph
 disp('Creating a random initial partiton W of the graph.');
 B1 = .28;  B1 = 1;  B1 = .5;
