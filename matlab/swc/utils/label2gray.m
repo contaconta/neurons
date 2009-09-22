@@ -23,10 +23,15 @@ function G = label2gray(L,I)
 
 % fill G with average gray levels
 G = zeros(size(L));
-for l=1:max(L(:))
+Linds = unique(L(:))';
+for l=Linds
     CC = bwconncomp(L == l);
-    g = mean( I(CC.PixelIdxList{1}));
-    G(CC.PixelIdxList{1}) = g;
+    if ~isempty(CC.PixelIdxList)
+        g = mean( I(CC.PixelIdxList{1}));
+        G(CC.PixelIdxList{1}) = g;
+    else
+        disp(['could not find any members of l=' num2str(l)]);
+    end
 end
 
 G = uint8(round(G));

@@ -27,6 +27,7 @@ function gplotl(W, xy, LABELS, Iraw)
 %figure; 
 imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on; 
 colors = bone(max(LABELS(:)));
+%colors = jet(max(LABELS(:)));
 for l = 1:max(LABELS(:))
     A = sparse([],[],[], size(W,1), size(W,1),0);
     members = find(LABELS == l)';
