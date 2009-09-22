@@ -23,7 +23,7 @@ function P = pottsPost(G0, LABELS, B)
 edges = find(triu(G0) == 1)';
 [vi, vj] = ind2sub(size(G0), edges);
 
-P = sum( log(B) * (LABELS(vi) == LABELS(vj)));
+P = sum( B * (LABELS(vi) == LABELS(vj)));
 
 
 

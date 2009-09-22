@@ -1,5 +1,5 @@
 % ========= parameters ==================
-S = 5000;
+S = 20000;
 tic;
 
 % set necessary paths
@@ -11,46 +11,46 @@ imPath = [pwd '/images/'];
 % fix the random number stream
 s = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(s);  %rand('twister', 100);    % seed for Matlab 7.8 (?)
 
-% load an image we want to play with
-Iraw = imread([imPath 'test.png']);
-
-% load superpixels or atomic regions as a label matrix, L
-disp('Loading the superpixel segmentation image.');
-HUT = imread([imPath 'testHUTT.ppm']);
-disp('Assigning labels to each superpixel in the segmentation image (slow).');
-L = rgb2label(HUT);
-
-% G contains average gray levels of I for regions in L 
-disp('Filling greylevels in superpixel segmentation image.');
-Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
-
-% extract and adjacency matrix and list from L
-disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
-[G0, G0list] = adjacency(L);
-
-% create a list of superpixel center locations
-disp('Computing superpixel center locations.');
-centers = zeros(max(L(:)),1);
-for l = 1:max(L(:))
-    pixelList = find(L == l); 
-    [r,c] = ind2sub(size(L), pixelList);
-    centers(l,1) = mean(r);
-    centers(l,2) = mean(c);
-end
-
-% % plot the original image
-% figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % load an image we want to play with
+% Iraw = imread([imPath 'test.png']);
 % 
-% % plot the segmentation with average gray levels
-% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % load superpixels or atomic regions as a label matrix, L
+% disp('Loading the superpixel segmentation image.');
+% HUT = imread([imPath 'testHUTT.ppm']);
+% disp('Assigning labels to each superpixel in the segmentation image (slow).');
+% L = rgb2label(HUT);
 % 
-% % plot the superpixel centers
-% figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
-% hold on; plot(centers(:,2), centers(:,1), 'b.');
-
-% % plot the adjacency graph
-% figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
-% hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
+% % G contains average gray levels of I for regions in L 
+% disp('Filling greylevels in superpixel segmentation image.');
+% Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
+% 
+% % extract and adjacency matrix and list from L
+% disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
+% [G0, G0list] = adjacency(L);
+% 
+% % create a list of superpixel center locations
+% disp('Computing superpixel center locations.');
+% centers = zeros(max(L(:)),1);
+% for l = 1:max(L(:))
+%     pixelList = find(L == l); 
+%     [r,c] = ind2sub(size(L), pixelList);
+%     centers(l,1) = mean(r);
+%     centers(l,2) = mean(c);
+% end
+% 
+% % % plot the original image
+% % figure; imshow(Iraw);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % 
+% % % plot the segmentation with average gray levels
+% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % 
+% % % plot the superpixel centers
+% % figure; imshow(Ig);  axis image off; set(gca, 'Position', [0 0 1 1]);
+% % hold on; plot(centers(:,2), centers(:,1), 'b.');
+% 
+% % % plot the adjacency graph
+% % figure; imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]);
+% % hold on; gplot(G0, [centers(:,2) centers(:,1)], '.-'); 
 
 
 %create an initial partition of the graph
@@ -117,7 +117,7 @@ for s = 2:S
     neighborColors = unique(Cw(neighbors));
     neighborColors = setdiff(neighborColors, V0c);
     if isempty(neighborColors)
-        disp('V0 has no different colored neighbors');
+        %disp('V0 has no different colored neighbors');
         P(s) = P(s-1);
         continue;
     end
@@ -141,12 +141,12 @@ for s = 2:S
     % step 6: accept or reject (W or Wp)
     r = rand(1);
     if r <= a
-        % display the V0 and the region we've chosen to merge it to
-        figure(1234); clf;
-        gplotl(W,centers,LABELS,Iraw);
-        gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-        gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-        pause(0.06); refresh;
+%         % display the V0 and the region we've chosen to merge it to
+%         figure(1234); clf;
+%         gplotl(W,centers,LABELS,Iraw);
+%         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+%         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+%         pause(0.06); refresh;
         
         Cw(V0) = c;     % apply new color c to V0
         
@@ -158,15 +158,21 @@ for s = 2:S
         P(s) = Pp;
         %disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
     else
-        % display the V0 and the region we've chosen to merge it to
-        figure(1234); clf;
-        gplotl(W,centers,LABELS,Iraw);
-        gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
-        gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
-        pause(0.06); refresh;
+%         % display the V0 and the region we've chosen to merge it to
+%         figure(1234); clf;
+%         gplotl(W,centers,LABELS,Iraw);
+%         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
+%         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
+%         pause(0.06); refresh;
         
         P(s) = P(s-1);
         %disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
+    end
+    
+    if mod(s,100) == 0
+        figure(1234); clf;
+        gplotl(W,centers,LABELS,Iraw);
+        pause(0.06); refresh;
     end
     
     % plot the progress of the posterior estimate
