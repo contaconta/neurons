@@ -57,7 +57,7 @@ disp('Filling greylevels in superpixel segmentation image.');
 Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
 
 % extract and adjacency matrix and list from L
-disp('Extracting adjacency grpah G0 from superpixel segmentation image.');
+disp('Extracting adjacency graph G0 from superpixel segmentation image.');
 [G0, G0list] = adjacency(L);
 
 % create a list of superpixel center locations and pixel lists
@@ -97,8 +97,11 @@ LABELS = zeros(size(Cw));
 for c = 1:numCw
     members = find(Cw == c)';
     pixels = Iraw(cell2mat(pixelList(members)'));
-    [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
     
+    % FIXME : The following doesn't work because we pass a set of
+    % pixels belonging to a region butthe SVM was trained
+    % using a superpixel and its immediate neighbors
+    %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
     %LABELS(members) = find(pb == max(pb),1);
     LABELS(members) = 1;
     
@@ -112,7 +115,6 @@ end
 
 % % plot the initial partition
 % figure; gplotl(W,centers,LABELS,Iraw); figure; gplotc(W, centers, Cw, Iraw);
-
 
 % set the annealing schedule
 T = .4055; T = 1.5; 
@@ -128,6 +130,7 @@ P = zeros([1 S]);
 Plist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, [], 'init');
 P(1) = sum(Plist);
 
+keyboard
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
