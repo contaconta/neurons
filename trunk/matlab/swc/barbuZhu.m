@@ -18,7 +18,7 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread([imPath 'test.png']);
 %Iraw = imread('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.png');
 %Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
-Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
@@ -26,10 +26,13 @@ Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.
 % disp('Assigning labels to each superpixel in the segmentation image (slow).');
 % L = rgb2label(HUT);
 %L = readRKLabel('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.dat', [480 640 ])';
-% L = readRKLabel('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0002.dat', [1536 2048 ])';
-% 
- Iraw = Iraw(1:480, 1:640);
-% L = L(1:480,1:640);
+% L = readRKLabel('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0002.dat', [1536 2048 ])'; 
+%L = readRKLabel('/localhome/aurelien/Sources/EM/Superpixels/seg_plus_labels_corrected/FIBSLICE0400.dat', [1536 2048 ])';
+L = readRKLabel('temp/labels/FIBSLICE0002.dat', [2048 1536])';
+
+Iraw = Iraw(1:480, 1:640);
+L = L(1:480,1:640);
+
 % 
 % %keyboard;
 % 
@@ -52,7 +55,7 @@ Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.
 %     end
 % end
     
-load LRK.mat;
+%load LRK.mat;
 disp('Filling greylevels in superpixel segmentation image.');
 Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
 
