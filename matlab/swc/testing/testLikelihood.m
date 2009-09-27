@@ -9,6 +9,8 @@ addpath([pwd '/../utils/']);
 imPath = '/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/';
 imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
+%labelPath = '../temp/seg_plus_labels/';
+labelPath = '../temp/labels/';
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
 training_label = label_vector(1:4000,:);
@@ -43,10 +45,11 @@ Iraw = imread([imPath imName '.png']);
 %  L = rgb2label(HUT);
 %end
 
-labelPath = '../temp/seg_plus_labels/';
 labelFilenm = [labelPath imName '.dat'];
 fid = fopen(labelFilenm,'r');
-L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
+%FIXME :
+%L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
+L = fread(fid,[size(Iraw,1) size(Iraw,2)],'int32');
 L = double(L);
 L = L+1;
 L = L';
