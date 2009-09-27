@@ -246,6 +246,75 @@ private:
 	{
 		return x[i][(int)(x[j][0].value)].value;
 	}
+	double kernel_chisquare(int i, int j) const
+	{
+          const svm_node *px = x[i];
+          const svm_node *py = x[j];
+          double sum = 0;
+          double d;
+          while(px->index != -1 && py->index !=-1)
+            {
+              if(px->index == py->index)
+                {
+                  d = px->value - py->value;
+                  sum += d*d;
+                  d = abs(px->value + py->value);
+                  if(d==0)
+                    sum = 0;
+                  else
+                    sum /= d;
+                  ++px;
+                  ++py;
+                }
+              else
+                {
+                  if(px->index > py->index)
+                    {	
+                      sum += py->value * py->value;
+                      d = abs(py->value);
+                      if(d==0)
+                        sum = 0;
+                      else
+                        sum /= d;
+                      ++py;
+                    }
+                  else
+                    {
+                      sum += px->value * px->value;
+                      d = abs(px->value);
+                      if(d==0)
+                        sum = 0;
+                      else
+                        sum /= d;
+                      ++px;
+                    }
+                }
+            }
+
+          while(px->index != -1)
+            {
+              sum += px->value * px->value;
+              d = abs(px->value);
+              if(d==0)
+                sum = 0;
+              else
+                sum /= d;
+              ++px;
+            }
+
+          while(py->index != -1)
+            {
+              sum += py->value * py->value;
+              d = abs(py->value);
+              if(d==0)
+                sum = 0;
+              else
+                sum /= d;
+              ++py;
+            }
+			
+          return exp(-gamma*sum);
+	}
 };
 
 Kernel::Kernel(int l, svm_node * const * x_, const svm_parameter& param)
@@ -268,6 +337,9 @@ Kernel::Kernel(int l, svm_node * const * x_, const svm_parameter& param)
 			break;
 		case PRECOMPUTED:
 			kernel_function = &Kernel::kernel_precomputed;
+			break;
+		case CHISQUARE:
+			kernel_function = &Kernel::kernel_chisquare;
 			break;
 	}
 
@@ -365,6 +437,73 @@ double Kernel::k_function(const svm_node *x, const svm_node *y,
 			return tanh(param.gamma*dot(x,y)+param.coef0);
 		case PRECOMPUTED:  //x: test (validation), y: SV
 			return x[(int)(y->value)].value;
+                case CHISQUARE:
+                  {
+			double sum = 0;
+                        double d;
+			while(x->index != -1 && y->index !=-1)
+			{
+				if(x->index == y->index)
+				{
+					d = x->value - y->value;
+					sum += d*d;
+                                        d = abs(x->value + y->value);
+                                        if(d==0)
+                                          sum = 0;
+                                        else
+                                          sum /= d;
+					++x;
+					++y;
+				}
+				else
+				{
+					if(x->index > y->index)
+					{	
+						sum += y->value * y->value;
+                                                d = abs(y->value);
+                                                if(d==0)
+                                                  sum = 0;
+                                                else
+                                                  sum /= d;
+						++y;
+					}
+					else
+					{
+						sum += x->value * x->value;
+                                                d = abs(x->value);
+                                                if(d==0)
+                                                  sum = 0;
+                                                else
+                                                  sum /= d;
+						++x;
+					}
+				}
+			}
+
+			while(x->index != -1)
+			{
+				sum += x->value * x->value;
+                                d = abs(x->value);
+                                if(d==0)
+                                  sum = 0;
+                                else
+                                  sum /= d;
+				++x;
+			}
+
+			while(y->index != -1)
+			{
+				sum += y->value * y->value;
+                                d = abs(y->value);
+                                if(d==0)
+                                  sum = 0;
+                                else
+                                  sum /= d;
+				++y;
+			}
+			
+			return exp(-param.gamma*sum);
+                  }
 		default:
 			return 0;  // Unreachable 
 	}
@@ -2623,7 +2762,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	if(param.kernel_type == POLY)
 		fprintf(fp,"degree %d\n", param.degree);
 
-	if(param.kernel_type == POLY || param.kernel_type == RBF || param.kernel_type == SIGMOID)
+	if(param.kernel_type == POLY || param.kernel_type == RBF || param.kernel_type == SIGMOID || param.kernel_type == CHISQUARE)
 		fprintf(fp,"gamma %g\n", param.gamma);
 
 	if(param.kernel_type == POLY || param.kernel_type == SIGMOID)
@@ -2959,7 +3098,8 @@ const char *svm_check_parameter(const svm_problem *prob, const svm_parameter *pa
 	   kernel_type != POLY &&
 	   kernel_type != RBF &&
 	   kernel_type != SIGMOID &&
-	   kernel_type != PRECOMPUTED)
+	   kernel_type != PRECOMPUTED &&
+	   kernel_type != CHISQUARE)
 		return "unknown kernel type";
 
 	if(param->degree < 0)

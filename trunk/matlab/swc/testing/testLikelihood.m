@@ -1,3 +1,6 @@
+% Script to test the correctness of the likelood probability function.
+% This script asks the user to click on a point in the image and returns the probabilities
+% of this point to belong to each of the classes.
 
 % set necessary paths
 addpath('../utils/libsvm-mat-2.89-3');
@@ -11,6 +14,8 @@ imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
 %labelPath = '../temp/seg_plus_labels/';
 labelPath = '../temp/labels/';
+kernelType = '2'; % chi-square kernel
+rescaleData = true;
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
 training_label = label_vector(1:4000,:);
@@ -20,7 +25,7 @@ training_instance = instance_matrix(1:4000,:);
 
 if ~exist('model')
   disp('Computing model...');
-  [model,minI,maxI] = loadModel(training_label, training_instance);
+  [model,minI,maxI] = loadModel(training_label, training_instance, rescaleData, kernelType, true);
 end
 
 disp('Model computed');
@@ -49,39 +54,46 @@ labelFilenm = [labelPath imName '.dat'];
 fid = fopen(labelFilenm,'r');
 %FIXME :
 %L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
-L = fread(fid,[size(Iraw,1) size(Iraw,2)],'int32');
+L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
 L = double(L);
 L = L+1;
 L = L';
 fclose(fid);
 
+figure(64);
 imshow(Iraw);
-[x,y] = ginput
-l = L(round(y),round(x));
-pixelList = find(L == l);
 
-BW = L==l;
-BW = bwmorph(BW,'dilate',1) - BW;
-BW(BW < 0) = 0;
-BW = logical(BW);
-neighbors = L(BW);
-neighbors = setdiff(unique(neighbors),l)';
+while 1
+  figure(64);
+  [x,y] = ginput
+  l = L(round(y),round(x));
+  pixelList = find(L == l);
 
-for n = neighbors
-  pN = find(L == n);
-  pixelList = [pixelList;pN];
+  BW = L==l;
+  BW = bwmorph(BW,'dilate',1) - BW;
+  BW(BW < 0) = 0;
+  BW = logical(BW);
+  neighbors = L(BW);
+  neighbors = setdiff(unique(neighbors),l)';
+
+  for n = neighbors
+    pN = find(L == n);
+    pixelList = [pixelList;pN];
+  end
+
+  %clear Y;
+  [r,c] = ind2sub(size(L), pixelList);
+  figure(65);
+  plot(c,r,'*');
+  %I = Iraw(:);
+  %Y = double(I(pixelList));
+  % FIXME : Vector notation ?
+  %for i=1:length(c)
+  %  Y(i) = double(Iraw(r(i),c(i)));
+  %end
+  Y = double(Iraw(pixelList));
+  [predicted_label, accuracy, pb, fv] = getLikelihood(Y, model,minI,maxI,rescaleData)
 end
-
-clear Y Y2;
-[r,c] = ind2sub(size(L), pixelList);
-%I = Iraw(:);
-%Y = double(I(pixelList));
-% FIXME : Vector notation ?
-for i=1:length(c)
-  Y(i) = double(Iraw(r(i),c(i)));
-end
-Y2 = double(Iraw(pixelList));
-[predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI)
 
 % Prediction
 %n = testing_instance;
