@@ -1,3 +1,4 @@
+% Output an image
 
 % set necessary paths
 addpath('../utils/libsvm-mat-2.89-3');
@@ -6,9 +7,11 @@ addpath([pwd '/../utils/']);
 %huttPath = '/osshare/Work/software/huttenlocher_segment/';
 %imPath = [pwd '/../images/'];
 %imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-imPath = '/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/';
+imPath = '~/usr/share/Data/LabelMe/Images/FIBSLICE/';
 imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
+%labelPath = '../temp/seg_plus_labels/';
+labelPath = '../temp/labels/';
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
 training_label = label_vector(1:4000,:);
@@ -43,55 +46,59 @@ Iraw = imread([imPath imName '.png']);
 %  L = rgb2label(HUT);
 %end
 
-labelPath = '../temp/seg_plus_labels/';
 labelFilenm = [labelPath imName '.dat'];
 fid = fopen(labelFilenm,'r');
-L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
+%FIXME
+%L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
+L = fread(fid,[size(Iraw,1) size(Iraw,2)],'int32');
 L = double(L);
 L = L+1;
 L = L';
 fclose(fid);
 
-imshow(Iraw);
+%imshow(Iraw);
 
-outPb = zeros(480,640);
+%outPb = zeros(480,640);
 
-for x=1:640
-for y=1:480
-l = L(round(y),round(x));
-pixelList = find(L == l);
+x0 = 1;
+for x=x0:640
+  x
+  for y=1:480
+    l = L(round(y),round(x));
+    pixelList = find(L == l);
 
-BW = L==l;
-BW = bwmorph(BW,'dilate',1) - BW;
-BW(BW < 0) = 0;
-BW = logical(BW);
-neighbors = L(BW);
-neighbors = setdiff(unique(neighbors),l)';
+    BW = L==l;
+    BW = bwmorph(BW,'dilate',1) - BW;
+    BW(BW < 0) = 0;
+    BW = logical(BW);
+    neighbors = L(BW);
+    neighbors = setdiff(unique(neighbors),l)';
 
-for n = neighbors
-  pN = find(L == n);
-  pixelList = [pixelList;pN];
+    for n = neighbors
+      pN = find(L == n);
+      pixelList = [pixelList;pN];
+    end
+
+    %clear Y Y2;
+    clear Y;
+    %[r,c] = ind2sub(size(L), pixelList);
+    %I = Iraw(:);
+    %Y = double(I(pixelList));
+    % FIXME : Vector notation ?
+    %for i=1:length(c)
+    %  Y(i) = double(Iraw(r(i),c(i)));
+    %end
+    Y = double(Iraw(pixelList));
+    [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI);
+
+    outPb(y,x) = find(pb == max(pb),1);
+    
+  end
 end
 
-%clear Y Y2;
-clear Y;
-[r,c] = ind2sub(size(L), pixelList);
-%I = Iraw(:);
-%Y = double(I(pixelList));
-% FIXME : Vector notation ?
-%for i=1:length(c)
-%  Y(i) = double(Iraw(r(i),c(i)));
-%end
-Y = double(Iraw(pixelList));
-[predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI);
-
-outPb(y,x) = find(pb == max(pb),1);
-
-end
-end
-
-figure;
-imagesc(outPb);
+%figure;
+%imagesc(outPb);
+save outPb
 
 % Prediction
 %n = testing_instance;
