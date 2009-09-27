@@ -1,11 +1,9 @@
-function [model,minI,maxI] = loadModel(label, instance)
+function [model,minI,maxI] = loadModel(label, instance, rescaleData, kernelType, verbose)
 % Y is a matrix of pixels whose values has to within the range {0,255}.
 % Output : probability of the input set of pixels to belong to a mitochondria
 
-rescaleMat = true;
-
 % scale each feature to the range of [0.1]
-if rescaleMat
+if rescaleData
   T2 = zeros(size(instance));
   m = max(instance);
   for i=1:size(instance,2)
@@ -25,17 +23,17 @@ if rescaleMat
   
 else
   T = instance;
+  minI = 0;
+  maxI = 0;
 end
 
-%model = svmtrain(label, T, '-b 1 -c 8 -g 0.5');
-
 % Parameter selection
-doParamSelection = false;
+doParamSelection = true;
 if doParamSelection
   bestcv = 0;
   for log2c = -1:3,
     for log2g = -4:1,
-      cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
+      cmd = ['-v 5 -t ' num2str(kernelType) ' -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
       cv = svmtrain(label, T, cmd);
       if (cv >= bestcv),
         bestcv = cv; bestc = 2^log2c; bestg = 2^log2g;
@@ -43,7 +41,7 @@ if doParamSelection
       fprintf('%g %g %g (best c=%g, g=%g, rate=%g)\n', log2c, log2g, cv, bestc, bestg, bestcv);
     end
   end
-  model = svmtrain(label, T, ['-b 1 -c ' num2str(bestc) ' -g ' num2str(bestg)]);
+  model = svmtrain(label, T, ['-b 1 -t ' num2str(kernelType) ' -c ' num2str(bestc) ' -g ' num2str(bestg)]);
 else
-  model = svmtrain(label, T, '-b 1 -c 8 -g 2');
+  model = svmtrain(label, T, ['-b 1 -t ' num2str(kernelType) ' -c 8 -g 2']);
 end

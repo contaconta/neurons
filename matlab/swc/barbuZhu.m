@@ -18,7 +18,8 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread([imPath 'test.png']);
 %Iraw = imread('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.png');
 %Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
-Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+%Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
@@ -28,10 +29,16 @@ Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLI
 %L = readRKLabel('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.dat', [480 640 ])';
 % L = readRKLabel('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0002.dat', [1536 2048 ])'; 
 %L = readRKLabel('/localhome/aurelien/Sources/EM/Superpixels/seg_plus_labels_corrected/FIBSLICE0400.dat', [1536 2048 ])';
-L = readRKLabel('temp/labels/FIBSLICE0002.dat', [2048 1536])';
+L = readRKLabel('temp/labels/FIBSLICE0002.dat', [1536 2048])';
 
 Iraw = Iraw(1:480, 1:640);
 L = L(1:480,1:640);
+
+% Rename labels
+Llist = unique(L);
+for l = 1:length(Llist)
+    L(L == Llist(l)) = l;
+end
 
 % 
 % %keyboard;
@@ -104,9 +111,9 @@ for c = 1:numCw
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
     % using a superpixel and its immediate neighbors
-    %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
-    %LABELS(members) = find(pb == max(pb),1);
-    LABELS(members) = 1;
+    [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
+    LABELS(members) = find(pb == max(pb),1);
+    %LABELS(members) = 1;
     
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5

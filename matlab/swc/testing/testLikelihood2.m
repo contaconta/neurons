@@ -1,4 +1,6 @@
-% Output an image
+% Script to test the correctness of the likelood probability function.
+% This script outputs an image whose pixel values correspond to the
+% class label given to each pixel.
 
 % set necessary paths
 addpath('../utils/libsvm-mat-2.89-3');
@@ -50,7 +52,7 @@ labelFilenm = [labelPath imName '.dat'];
 fid = fopen(labelFilenm,'r');
 %FIXME
 %L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
-L = fread(fid,[size(Iraw,1) size(Iraw,2)],'int32');
+L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
 L = double(L);
 L = L+1;
 L = L';

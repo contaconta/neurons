@@ -1,37 +1,40 @@
-labelPath = '../full_size_10img_seg_plus_labels/';
-imagePath = '/localhome/aurelien/Documents/EM/raw_mitochondria2/originals/';
-imageFilenm = [imagePath 'FIBSLICE0002.png'];
-labelFilenm = [labelPath 'FIBSLICE0002.dat'];
+% Create binary files containing a list of neighbors for each superpixel
 
-I = imread(imageFilenm);
+addpath('../utils');
+addpath('../bin');
+labelPath = 'labelsB/';
+imagePath = '/home/alboot/usr/work/data/LabelMe/Images/FIBSLICE/';
+imageExt = '*.png';
+labelExt = '*.dat';
+%imageFilenm = [imagePath 'FIBSLICE0002.png'];
+%labelFilenm = [labelPath 'FIBSLICE0002.dat'];
 
-fid = fopen(labelFilenm,'r');
-L = fread(fid,[size(I,2) size(I,1)],'int32');
-L = double(L);
-L = L+1;
+imgs = dir([imagePath imageExt]);
+dats = dir([labelPath labelExt]);
 
+for i=2:length(dats)
+  
+  outFilenm = ['neighbors' num2str(i) '.dat']
+  
+  % Read image
+  imageFilenm = [imagePath imgs(i).name]
+  I = imread(imageFilenm);
 
-fclose(fid);
+  % Read files containing the labels
+  labelFilenm = [labelPath dats(i).name]
+  L = readRKLabel(labelFilenm, [1536 2048])';
 
+  [G0, G0list] = adjacency(L);
 
-list = unique(L(:))';
+  %keyboard;
 
-for l = list
-
-	BW = L==l;
-	A = zeros(size(BW));
-	BW = bwmorph(BW,'dilate',1) - BW;
-	BW(BW < 0) = 0;
-	BW = logical(BW);
-	neighbors = L(BW);
-	neighbors = setdiff(unique(neighbors),l)';
-	
-	for n = neighbors
-		A(L==n) = find(neighbors ==n);		
-	end
-
-	%imagesc(A);
-	%pause(.0001);
-	%refresh;
-
+  % Output file
+  fid = fopen(outFilenm, 'w');
+  for j=1:length(G0list)
+    for k=1:length(G0list{j})
+      fprintf(fid, '%d ', G0list{j}(k));
+    end
+    fprintf(fid, '\n');
+  end
+  fclose(fid);
 end
