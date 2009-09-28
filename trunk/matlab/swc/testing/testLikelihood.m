@@ -6,6 +6,7 @@
 addpath('../utils/libsvm-mat-2.89-3');
 addpath([pwd '/../bin/']);
 addpath([pwd '/../utils/']);
+listColors = ['g' 'r' 'c' 'm' 'y' 'k'];
 %huttPath = '/osshare/Work/software/huttenlocher_segment/';
 %imPath = [pwd '/../images/'];
 %imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
@@ -14,8 +15,8 @@ imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
 %labelPath = '../temp/seg_plus_labels/';
 labelPath = '../temp/labels/';
-kernelType = '2'; % chi-square kernel
-rescaleData = true;
+kernelType = '5'; % chi-square kernel
+rescaleData = false;
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
 training_label = label_vector(1:4000,:);
@@ -69,6 +70,12 @@ while 1
   l = L(round(y),round(x));
   pixelList = find(L == l);
 
+  [r,c] = ind2sub(size(L), pixelList);
+  figure(65);
+  hold on;
+  plot(c,r,'b*');
+
+  % Find neighbors
   BW = L==l;
   BW = bwmorph(BW,'dilate',1) - BW;
   BW(BW < 0) = 0;
@@ -79,12 +86,13 @@ while 1
   for n = neighbors
     pN = find(L == n);
     pixelList = [pixelList;pN];
+
+    [r,c] = ind2sub(size(L), pN);
+    col=listColors(round(rand(1)*length(listColors)));
+    plot(c,r,[col '*']);
   end
 
   %clear Y;
-  [r,c] = ind2sub(size(L), pixelList);
-  figure(65);
-  plot(c,r,'*');
   %I = Iraw(:);
   %Y = double(I(pixelList));
   % FIXME : Vector notation ?
