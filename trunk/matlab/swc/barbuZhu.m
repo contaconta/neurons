@@ -21,6 +21,9 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 
+useGroundTruth=true;
+IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
+
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
 % HUT = imread([imPath 'testHUTT.ppm']);
@@ -86,7 +89,7 @@ KL = edgeKL(Iraw, pixelList, G0, 1);
 
 % initialize the SVM model
 disp('Computing the SVM model.');
-if ~exist('model', 'var')
+if useGroundTruth==false && ~exist('model', 'var')
     [model, minI, maxI] = svm_model();
 end
 
@@ -111,9 +114,9 @@ for c = 1:numCw
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
     % using a superpixel and its immediate neighbors
-    [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
-    LABELS(members) = find(pb == max(pb),1);
-    %LABELS(members) = 1;
+    %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
+    %LABELS(members) = find(pb == max(pb),1);
+    LABELS(members) = 1;
     
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5
@@ -140,13 +143,13 @@ P = zeros([1 S]);
 Plist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, [], 'init');
 P(1) = sum(Plist);
 
-keyboard
+%keyboard
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
 
 
-keyboard;
+%keyboard;
 %% build the markov chain
 for s = 2:S
     
