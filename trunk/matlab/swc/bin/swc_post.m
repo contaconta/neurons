@@ -7,11 +7,17 @@ function P = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, V0, varargi
 % edges = find(triu(G0) == 1)';
 % [vi, vj] = ind2sub(size(G0), edges);
 
-useGroundTruth=true;
-IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
+if model == 0
+    useGroundTruth=true;
+else
+    useGroundTruth=false;
+end
+%IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = IGroundTruth(:,:,1);
 
 % TODO AL : Debug this function
-keyboard;
+
  
 if strcmp(varargin{1},'init')
     % initialize
@@ -22,7 +28,8 @@ if strcmp(varargin{1},'init')
         nodes = graphtraverse(W,v, 'depth', 1);
 
         if useGroundTruth
-            P(v) = getMostFrequentLabel(pixelList(nodes)',IGroundTruth);
+            lpixels = cell2mat(pixelList(nodes)');
+            P(v) = getMostFrequentLabel(lpixels,IGroundTruth);
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
             [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
@@ -37,22 +44,14 @@ else
 
     	nodes = graphtraverse(W,v, 'depth', 1);
 
-        pixels = Iraw(cell2mat(pixelList(nodes)'));
-        [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
-        P(v) = pb(LABELS(v));
+        if useGroundTruth
+            lpixels = cell2mat(pixelList(nodes)');
+            P(v) = getMostFrequentLabel(lpixels,IGroundTruth);
+        else
+            pixels = Iraw(cell2mat(pixelList(nodes)'));
+            [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
+            P(v) = pb(LABELS(v));
+        end
     end
     
 end
-
-function l = getMostFrequentLabel(pixelList, IGroundTruth)
-
-count = 0;
-for p in pixelList
-if(IGroundTruth(p))
-    count = count + 1;
-else
-    count = count - 1;
-end
-end
-
-l = count > 0;

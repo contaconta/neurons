@@ -18,11 +18,14 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread([imPath 'test.png']);
 %Iraw = imread('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.png');
 %Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
-%Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
-Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+%Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 
 useGroundTruth=true;
-IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
+%IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = IGroundTruth(:,:,1);
+IGroundTruth = IGroundTruth(1:480,1:640);
 
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
@@ -82,6 +85,7 @@ for l = 1:max(L(:))
     centers(l,1) = mean(r);
     centers(l,2) = mean(c);
 end
+% plot(centers(:,1),centers(:,2),'*')
 
 % precompute the KL divergences
 disp('Precomputing the KL divergences.');
@@ -91,6 +95,10 @@ KL = edgeKL(Iraw, pixelList, G0, 1);
 disp('Computing the SVM model.');
 if useGroundTruth==false && ~exist('model', 'var')
     [model, minI, maxI] = svm_model();
+else
+    model = 0;
+    minI = 0;
+    maxI = 0;
 end
 
 %keyboard;
@@ -109,15 +117,22 @@ disp('Randomly assigning labels to each region in the graph.')
 LABELS = zeros(size(Cw));
 for c = 1:numCw
     members = find(Cw == c)';
-    pixels = Iraw(cell2mat(pixelList(members)'));
+    %pixels = Iraw(cell2mat(pixelList(members)'));
     
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
     % using a superpixel and its immediate neighbors
     %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
     %LABELS(members) = find(pb == max(pb),1);
-    LABELS(members) = 1;
+    %LABELS(members) = 1;
     
+    lpixels = cell2mat(pixelList(members)');
+%i2 = zeros(size(IGroundTruth),'uint8');
+%i2(lpixels) = Iraw(lpixels);
+%imshow(i2);
+%keyboard
+    LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5
 %         LABELS(members) = 1;
@@ -125,6 +140,8 @@ for c = 1:numCw
 %         LABELS(members) = 2;
 %     end
 end
+
+keyboard
 
 % % plot the initial partition
 % figure; gplotl(W,centers,LABELS,Iraw); figure; gplotc(W, centers, Cw, Iraw);
