@@ -12,9 +12,9 @@ if model == 0
 else
     useGroundTruth=false;
 end
-%IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
-IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = imread('images/annotation0002.png');
 IGroundTruth = IGroundTruth(:,:,1);
+IGroundTruth = IGroundTruth(1:480,1:640);
 
 % TODO AL : Debug this function
 
@@ -29,7 +29,7 @@ if strcmp(varargin{1},'init')
 
         if useGroundTruth
             lpixels = cell2mat(pixelList(nodes)');
-            P(v) = getMostFrequentLabel(lpixels,IGroundTruth);
+            P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
             [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
@@ -46,7 +46,7 @@ else
 
         if useGroundTruth
             lpixels = cell2mat(pixelList(nodes)');
-            P(v) = getMostFrequentLabel(lpixels,IGroundTruth);
+            P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
             [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);

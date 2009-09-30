@@ -30,7 +30,7 @@ W = triu(W);
 Elist = find(W)';
 
 
-% loop through edges, turn them on/off according to p_e
+% loop through edges, turn them on/off according to q_e
 e_ind = 1; q_e = zeros(size(Elist));
 for e = Elist
     [vi, vj] = ind2sub(size(W), e); %#ok<NASGU>
