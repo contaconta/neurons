@@ -2,8 +2,8 @@
 
 addpath('../utils');
 addpath('../bin');
-labelPath = 'labelsB/';
-imagePath = '/home/alboot/usr/work/data/LabelMe/Images/FIBSLICE/';
+labelPath = 'labels/';
+imagePath = '/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/';
 imageExt = '*.png';
 labelExt = '*.dat';
 %imageFilenm = [imagePath 'FIBSLICE0002.png'];
@@ -14,7 +14,8 @@ dats = dir([labelPath labelExt]);
 
 for i=2:length(dats)
   
-  outFilenm = ['neighbors' num2str(i) '.dat']
+  prefixFilenm = regexp(imgs(i).name, '(.*)png', 'tokens');
+  outFilenm = [prefixFilenm{1}{1} 'dat']
   
   % Read image
   imageFilenm = [imagePath imgs(i).name]
@@ -31,10 +32,12 @@ for i=2:length(dats)
   % Output file
   fid = fopen(outFilenm, 'w');
   for j=1:length(G0list)
+    fprintf(fid, '%d ', j);
     for k=1:length(G0list{j})
       fprintf(fid, '%d ', G0list{j}(k));
     end
     fprintf(fid, '\n');
   end
   fclose(fid);
+
 end
