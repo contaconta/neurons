@@ -15,6 +15,6 @@ else
     if count < 0
         label = 1; % background
     else
-        label = 3; % mitochondria
+        label = 3; % mitochondria interior
     end
 end

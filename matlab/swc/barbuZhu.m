@@ -2,6 +2,10 @@
 S = 20000;  % number of samples
 tic;
 
+% Labels :
+% 1 = Background
+% 2 = Boundary
+% 3 = Mitochondria interior
 LabelList = [1 2 3];
 
 % set necessary paths
@@ -18,12 +22,14 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread([imPath 'test.png']);
 %Iraw = imread('/osshare/Work/neurons/matlab/swc/temp/seg_plus_labels/FIBSLICE0100.png');
 %Iraw = imread('/osshare/Work/Data/LabelMe/Images/fibsem/FIBSLICE0002.png');
-Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+%Iraw = imread('/localhome/aurelien/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 %Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
+Iraw = imread('images/FIBSLICE0002.png');
 
 useGroundTruth=true;
 %IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
-IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
+%IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
+IGroundTruth = imread('images/annotation0002.png');
 IGroundTruth = IGroundTruth(:,:,1);
 IGroundTruth = IGroundTruth(1:480,1:640);
 
@@ -106,7 +112,10 @@ end
 %create an initial partition of the graph
 disp('Creating a random initial partiton W of the graph.');
 B1 = .28;  B1 = 1;  B1 = .5;
-W = swc_CP1(G0, B1, KL);                             % make initial cuts
+W = swc_CP1(G0, B1, KL);         % make initial cuts
+
+% Find the strongly connected components (clique)
+% Cw is a vector indicating to which component each node belongs
 [numCw,Cw] = graphconncomp(W, 'directed', 0);   % color the graph
 %[numCw,Cw] = graphconncomp(W);   % color the graph
 %keyboard;
@@ -124,14 +133,14 @@ for c = 1:numCw
     % using a superpixel and its immediate neighbors
     %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
     %LABELS(members) = find(pb == max(pb),1);
-    %LABELS(members) = 1;
+    LABELS(members) = 1;
     
-    lpixels = cell2mat(pixelList(members)');
+    %lpixels = cell2mat(pixelList(members)');
 %i2 = zeros(size(IGroundTruth),'uint8');
 %i2(lpixels) = Iraw(lpixels);
 %imshow(i2);
 %keyboard
-    LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+    %LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
 
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5
@@ -141,7 +150,7 @@ for c = 1:numCw
 %     end
 end
 
-keyboard
+%keyboard
 
 % % plot the initial partition
 % figure; gplotl(W,centers,LABELS,Iraw); figure; gplotc(W, centers, Cw, Iraw);
@@ -173,7 +182,7 @@ for s = 2:S
     % step 1: select a seed vertex v
     v = randsample(size(W,1),1);
     
-    % step 2: grow a region V0 with color
+    % step 2: grow a region V0 with color V0c
     B_CUT = .6;
     [V0, V0a] = swc_swc2_1(W, B_CUT, v, KL);  	% get a list of the members of V0
     V0c = Cw(V0(1));                    % the current color of V0
@@ -207,8 +216,9 @@ for s = 2:S
     Cwp(V0) = c;
     %Pp = pottsPost(G0, Cwp, T);   
     %Pp = swc_posterior(W, LABELSp, model, minI, maxI, B(s), pixelList,Iraw);
-    Pplist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, V0, Plist);
+    Pplist = swc_post(W, LABELSp, model, minI, maxI, pixelList, Iraw, V0, Plist);
     
+    % Compute cardinality
     Pp = sum(Pplist(V0));
     Pold = sum(Plist(V0));
     
@@ -219,11 +229,11 @@ for s = 2:S
     r = rand(1);
     if r <= a
         % display the V0 and the region we've chosen to merge it to
-%         figure(1234); clf;
-%         gplotl(W,centers,LABELS,Iraw);
-%         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-%         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-%         pause(0.06); refresh;
+         figure(1234); clf;
+         gplotl(W,centers,LABELS,Iraw);
+         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+         pause(0.06); refresh;
 %         figure(1234); clf;
 %         Itemp = Iraw;
 %         for v = V0
@@ -240,17 +250,17 @@ for s = 2:S
         LABELS = LABELSp;
         %P(s) = Pp;
         P(s) = sum(Pplist);
-%         disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
+         disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
     else
 %         % display the V0 and the region we've chosen to merge it to
-%         figure(1234); clf;
-%         gplotl(W,centers,LABELS,Iraw);
-%         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
-%         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
-%         pause(0.06); refresh;
+         figure(1234); clf;
+         gplotl(W,centers,LABELS,Iraw);
+         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
+         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
+         pause(0.06); refresh;
         
         P(s) = P(s-1);
-%         disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
+         disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
     end
     
     if mod(s,100) == 0
@@ -269,7 +279,7 @@ for s = 2:S
 %     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
     
-   %keyboard;
+   keyboard;
    
 end
 
