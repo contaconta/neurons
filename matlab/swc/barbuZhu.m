@@ -150,8 +150,6 @@ for c = 1:numCw
 %     end
 end
 
-%keyboard
-
 % % plot the initial partition
 % figure; gplotl(W,centers,LABELS,Iraw); figure; gplotc(W, centers, Cw, Iraw);
 
@@ -169,11 +167,11 @@ P = zeros([1 S]);
 Plist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, [], 'init');
 P(1) = sum(Plist);
 
-%keyboard
+createMovie = true;
+report = fopen('report.txt','w');
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
-
 
 %keyboard;
 %% build the markov chain
@@ -200,13 +198,15 @@ for s = 2:S
 %     end
     
     % step 3: choose a new color & label for V0
-    c = randsample([neighborColors max(Cw)+1], 1);
-    if c == max(Cw)+1
-        newL = randsample(LabelList, 1);
-    else
-        newL = LABELS(find(Cw == c, 1));
-    end
-    
+%     c = randsample([neighborColors max(Cw)+1], 1);
+%     if c == max(Cw)+1
+%         newL = randsample(LabelList, 1);
+%     else
+%         newL = LABELS(find(Cw == c, 1));
+%     end
+
+    newL = randsample(LabelList, 1);
+
     LABELSp = LABELS;
     LABELSp(V0) = newL;
     
@@ -240,8 +240,12 @@ for s = 2:S
 %             Itemp(pixelList{v}) = 255;
 %         end
 %         gplotl(W,centers,LABELS,Itemp);
-        
-        
+
+        if createMovie
+          fprintf(report,['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL) '\n']);
+          eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);          
+        end
+
         
         % step 4: update Wp to reflect CP's new label, including edges
         Cw(V0) = c;     % apply new color c to V0
@@ -250,7 +254,15 @@ for s = 2:S
         LABELS = LABELSp;
         %P(s) = Pp;
         P(s) = sum(Pplist);
-         disp(['accepted sample ' num2str(s) ', a=' num2str(a)]);
+         disp(['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL)]);
+         
+         
+         figure(1235); clf;
+         gplotl(W,centers,LABELS,Iraw);
+         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+         pause(0.06); refresh;
+         
     else
 %         % display the V0 and the region we've chosen to merge it to
          figure(1234); clf;
@@ -259,27 +271,38 @@ for s = 2:S
          gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
          pause(0.06); refresh;
         
+         if createMovie
+           fprintf(report,['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL) '\n']);
+           eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);
+         end
+         
         P(s) = P(s-1);
-         disp(['rejected sample ' num2str(s) ', a=' num2str(a)]);
+         disp(['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL)]);
     end
     
-    if mod(s,100) == 0
-        figure(1234); clf;
-        gplotl(W,centers,LABELS,Iraw);
-        %gplotc(W,centers,LABELS,Iraw);
-        %pause(0.06); refresh;
-        figure(445); clf;
-        plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
-        pause(0.06); refresh;
-        disp([' sample ' num2str(s) ' NUMCOLORS=' num2str(max(Cw)) ', P='  num2str(P(s)) ', a=' num2str(a)]);
+    if mod(s,20) == 0
+      % Save file
+      fclose(report);
+      report = fopen('report.txt','a');
     end
+    
+%     if mod(s,100) == 0
+%         figure(1234); clf;
+%         gplotl(W,centers,LABELS,Iraw);
+%         %gplotc(W,centers,LABELS,Iraw);
+%         %pause(0.06); refresh;
+%         figure(445); clf;
+%         plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
+%         pause(0.06); refresh;
+%         disp([' sample ' num2str(s) ' NUMCOLORS=' num2str(max(Cw)) ', P='  num2str(P(s)) ', a=' num2str(a)]);
+%     end
     
     % plot the progress of the posterior estimate
 %     figure(445); clf;
 %     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
     
-   keyboard;
+    %keyboard;
    
 end
 
