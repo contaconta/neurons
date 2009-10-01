@@ -133,14 +133,14 @@ for c = 1:numCw
     % using a superpixel and its immediate neighbors
     %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
     %LABELS(members) = find(pb == max(pb),1);
-    LABELS(members) = 1;
+    %LABELS(members) = 1;
     
-    %lpixels = cell2mat(pixelList(members)');
-%i2 = zeros(size(IGroundTruth),'uint8');
-%i2(lpixels) = Iraw(lpixels);
-%imshow(i2);
-%keyboard
-    %LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+    lpixels = cell2mat(pixelList(members)');
+    %i2 = zeros(size(IGroundTruth),'uint8');
+    %i2(lpixels) = Iraw(lpixels);
+    %imshow(i2);
+    %keyboard
+    LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
 
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5
@@ -169,6 +169,10 @@ P(1) = sum(Plist);
 
 createMovie = true;
 report = fopen('report.txt','w');
+displayOn = true;
+if createMovie
+  displayOn = true;
+end
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
@@ -228,12 +232,14 @@ for s = 2:S
     % step 6: accept or reject (W or Wp)
     r = rand(1);
     if r <= a
-        % display the V0 and the region we've chosen to merge it to
-         figure(1234); clf;
-         gplotl(W,centers,LABELS,Iraw);
-         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-         pause(0.06); refresh;
+         % display the V0 and the region we've chosen to merge it to
+         if displayOn
+           figure(1234); clf;
+           gplotl(W,centers,LABELS,Iraw);
+           gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+           gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+           pause(0.06); refresh;
+         end
 %         figure(1234); clf;
 %         Itemp = Iraw;
 %         for v = V0
@@ -242,8 +248,10 @@ for s = 2:S
 %         gplotl(W,centers,LABELS,Itemp);
 
         if createMovie
-          fprintf(report,['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL) '\n']);
-          eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);          
+          txtReport = ['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL)];
+          fprintf(report,[txtReport '\n']);
+          legend(txtReport);
+          eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);
         end
 
         
@@ -256,27 +264,31 @@ for s = 2:S
         P(s) = sum(Pplist);
          disp(['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL)]);
          
-         
-         figure(1235); clf;
-         gplotl(W,centers,LABELS,Iraw);
-         gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-         gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-         pause(0.06); refresh;
-         
+         if displayOn
+           figure(1235); clf;
+           gplotl(W,centers,LABELS,Iraw);
+           gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+           gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+           pause(0.06); refresh;
+         end
     else
 %         % display the V0 and the region we've chosen to merge it to
-         figure(1234); clf;
-         gplotl(W,centers,LABELS,Iraw);
-         gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
-         gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
-         pause(0.06); refresh;
+         if displayOn
+           figure(1234); clf;
+           gplotl(W,centers,LABELS,Iraw);
+           gplotregion(W,centers, Cw, c, [.6 0 0], 's-');
+           gplotregion(V0a,centers, Cw, V0c, [1 0 0], 'o-');
+           pause(0.06); refresh;
+         end
         
          if createMovie
-           fprintf(report,['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL) '\n']);
+           txtReport = ['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL)];
+           fprintf(report,[txtReport '\n']);           
+           legend(txtReport);
            eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);
          end
          
-        P(s) = P(s-1);
+         P(s) = P(s-1);
          disp(['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL)]);
     end
     
