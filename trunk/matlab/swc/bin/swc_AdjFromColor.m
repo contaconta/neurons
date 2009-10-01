@@ -29,11 +29,15 @@ if nargin == 4
     for c = colors 
         MASK = sparse([],[],[], size(W,1), size(W,1),0);
         members = find(C == c);
-        W(members,:) = 0;
-        W(:,members) = 0;
-        MASK(members,members) = 1;
-        Wc = A.*MASK;
-        W(members,members) = Wc(members, members);
+        if(~isempty(members))
+          % Reset edges
+          W(members,:) = 0;
+          W(:,members) = 0;
+          % Add new edges between adjacent colors
+          MASK(members,members) = 1;
+          Wc = A.*MASK;
+          W(members,members) = Wc(members, members);
+        end
     end
     
 elseif nargin == 2
