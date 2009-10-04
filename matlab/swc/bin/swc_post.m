@@ -1,4 +1,5 @@
-function P = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, V0, varargin)
+function P = swc_post(W, LABELS, model, minI, maxI, rescaleData, IGroundTruth, ...
+                      useGroundTruth, pixelList, Iraw, V0, varargin)
 %
 % P = swc_post(W, LABELS, model, minI, maxI, B, pixelList, Iraw, V0, P)
 % P = swc_post(W, LABELS, model, minI, maxI, B, pixelList, Iraw, V0, 'init')
@@ -7,16 +8,15 @@ function P = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, V0, varargi
 % edges = find(triu(G0) == 1)';
 % [vi, vj] = ind2sub(size(G0), edges);
 
-if model == 0
-    useGroundTruth=true;
-else
-    useGroundTruth=false;
-end
-IGroundTruth = imread('images/annotation0002.png');
-IGroundTruth = IGroundTruth(:,:,1);
-IGroundTruth = IGroundTruth(1:480,1:640);
-
-% TODO AL : Debug this function
+%if model == 0
+%if isequal(class(model),'struct')
+%    useGroundTruth=true;
+%else
+%    useGroundTruth=false;
+%end
+%IGroundTruth = imread('images/annotation0002.png');
+%IGroundTruth = IGroundTruth(:,:,1);
+%IGroundTruth = IGroundTruth(1:480,1:640);
 
  
 if strcmp(varargin{1},'init')
@@ -32,7 +32,8 @@ if strcmp(varargin{1},'init')
             P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
-            [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
+            [predicted_label, accuracy, pb] = getLikelihood(pixels, ...
+                                                            model,minI,maxI,rescaleData);
             P(v) = pb(LABELS(v));
         end
     end
@@ -49,7 +50,8 @@ else
             P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
-            [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);
+            [predicted_label, accuracy, pb] = getLikelihood(pixels, ...
+                                                            model,minI,maxI,rescaleData);
             P(v) = pb(LABELS(v));
         end
     end

@@ -9,6 +9,20 @@ tic;
 %LabelList = [1 2 3];
 LabelList = [1 2];
 
+% Debug parameters
+exportToFileOnly = false;
+createMovie = true;
+report = fopen('report.txt','w');
+displayOn = true;
+if createMovie
+  displayOn = true;
+end
+if exportToFileOnly
+  h = figure('Visible', 'off');
+  createMovie = false;
+  displayOn = false;
+end
+
 % set necessary paths
 addpath([pwd '/utils/']);
 addpath([pwd '/bin/']);
@@ -27,13 +41,15 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 Iraw = imread('images/FIBSLICE0002.png');
 
-useGroundTruth = false;
+useGroundTruth = true;
 rescaleData = true;
 kernelType = 2; % RBF kernel
 if useGroundTruth
   IGroundTruth = imread('images/annotation0002.png');
   IGroundTruth = IGroundTruth(:,:,1);
   IGroundTruth = IGroundTruth(1:480,1:640);
+else
+  IGroundTruth = 0;
 end
 
 % load superpixels or atomic regions as a label matrix, L
@@ -83,7 +99,7 @@ Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
 
 % extract and adjacency matrix and list from L
 disp('Extracting adjacency graph G0 from superpixel segmentation image.');
-%[G0, G0list] = adjacency(L);
+[G0, G0list] = adjacency(L);
 
 % create a list of superpixel center locations and pixel lists
 disp('Computing superpixel center locations.');
@@ -101,14 +117,17 @@ disp('Precomputing the KL divergences.');
 KL = edgeKL(Iraw, pixelList, G0, 1);
 
 % initialize the SVM model
-if useGroundTruth==false && ~exist('model', 'var')
-  disp('Computing the SVM model.');
-  feature_vectors = [pwd '/temp/Model-0-4200-3-sup/feature_vectors'];
-  [label_vector, instance_matrix] = libsvmread(feature_vectors);
-  training_label = label_vector(1:4000,:);
-  training_instance = instance_matrix(1:4000,:);
+if useGroundTruth==false
+  if ~exist('model', 'var')
+    disp('Computing the SVM model.');
+    feature_vectors = [pwd '/temp/Model-0-4200-3-sup/feature_vectors'];
+    [label_vector, instance_matrix] = libsvmread(feature_vectors);
+    training_label = label_vector(1:4000,:);
+    training_instance = instance_matrix(1:4000,:);
 
-  [model,minI,maxI] = loadModel(training_label,training_instance,rescaleData,kernelType);
+    [model,minI,maxI] = loadModel(training_label,training_instance, ...
+                                  rescaleData,kernelType);
+  end
 else
   disp('No model computed. Ground truth data will be used.');
   model = 0;
@@ -177,22 +196,9 @@ disp('Computing initial posterior');
 P = zeros([1 S]);
 %P(1) = pottsPost(G0, Cw, T);
 %P(1) = swc_posterior(W, LABELS, model, minI, maxI, B(1), pixelList,Iraw);
-Plist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, [], 'init');
+Plist = swc_post(W, LABELS, model, minI, maxI, rescaleData, IGroundTruth, ...
+                 useGroundTruth, pixelList, Iraw, [], 'init');
 P(1) = sum(Plist);
-
-exportToFileOnly = true;
-createMovie = false;
-report = fopen('report.txt','w');
-displayOn = false;
-if createMovie
-  displayOn = true;
-end
-if exportToFileOnly
-  h = figure('Visible', 'off');
-  createMovie = false;
-  displayOn = false;
-end
-
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
@@ -243,7 +249,8 @@ for s = 2:S
     Cwp(V0) = c;
     %Pp = pottsPost(G0, Cwp, T);   
     %Pp = swc_posterior(W, LABELSp, model, minI, maxI, B(s), pixelList,Iraw);
-    Pplist = swc_post(W, LABELSp, model, minI, maxI, pixelList, Iraw, V0, Plist);
+    Pplist = swc_post(W, LABELSp, model, minI, maxI, rescaleData, IGroundTruth, ...
+                      useGroundTruth, pixelList, Iraw, V0, Plist);
     
     % Compute cardinality
     Pp = sum(Pplist(V0));
