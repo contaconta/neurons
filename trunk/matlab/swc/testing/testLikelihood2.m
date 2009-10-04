@@ -23,21 +23,10 @@ training_instance = instance_matrix(1:4000,:);
 
 if ~exist('model')
   disp('Computing model...');
-  [model,minI,maxI] = loadModel(training_label, training_instance);
+  [model,minI,maxI] = loadModel(training_label, training_instance,1,2);
 end
 
 disp('Model computed');
-
-%Y = rand(1,100);
-%img = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0080.png');
-%img = img(:,:,1);
-%figure, imshow(img);
-%h = imrect;
-%position = wait(h)
-% position has the form [xmin ymin width height]
-%masked_img=img(position(2):position(2)+position(4), position(1):position(1)+position(3));
-%imshow(masked_img);
-%Y = masked_img(:);
 
 % load an image we want to play with
 Iraw = imread([imPath imName '.png']);
@@ -49,19 +38,15 @@ Iraw = imread([imPath imName '.png']);
 %end
 
 labelFilenm = [labelPath imName '.dat'];
-fid = fopen(labelFilenm,'r');
-%FIXME
-%L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
-L = fread(fid,[size(Iraw,2) size(Iraw,1)],'int32');
-L = double(L);
-L = L+1;
-L = L';
-fclose(fid);
+size(Iraw,2)
+size(Iraw,1)
+L = readRKLabel(labelFilenm, [size(Iraw,2) size(Iraw,1)])';
 
-%imshow(Iraw);
+% extract and adjacency matrix and list from L
+disp('Extracting adjacency graph G0 from superpixel segmentation image.');
+[G0, G0list] = adjacency(L);
 
-%outPb = zeros(480,640);
-
+disp('Adjacency matrix extracted');
 x0 = 1;
 for x=x0:640
   x
@@ -69,12 +54,7 @@ for x=x0:640
     l = L(round(y),round(x));
     pixelList = find(L == l);
 
-    BW = L==l;
-    BW = bwmorph(BW,'dilate',1) - BW;
-    BW(BW < 0) = 0;
-    BW = logical(BW);
-    neighbors = L(BW);
-    neighbors = setdiff(unique(neighbors),l)';
+    neighbors = G0list{l};
 
     for n = neighbors
       pN = find(L == n);
@@ -91,7 +71,7 @@ for x=x0:640
     %  Y(i) = double(Iraw(r(i),c(i)));
     %end
     Y = double(Iraw(pixelList));
-    [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI);
+    [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI,true);
 
     outPb(y,x) = find(pb == max(pb),1);
     

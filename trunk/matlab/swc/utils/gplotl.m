@@ -25,8 +25,11 @@ function gplotl(W, xy, LABELS, Iraw)
 
 % plot the labeled graph
 %figure; 
-imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on; 
-colors = bone(max(LABELS(:)));
+imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on;
+% FIXME : white color appears black on screen captures ?
+colors = bone(max(LABELS(:))+1);
+colors = colors(1:size(colors,1)-1,:); % remove first color (white)
+%colors = bone(max(LABELS(:)));
 %colors = jet(max(LABELS(:)));
 for l = 1:max(LABELS(:))
     A = sparse([],[],[], size(W,1), size(W,1),0);

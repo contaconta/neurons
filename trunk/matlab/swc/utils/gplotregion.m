@@ -31,5 +31,5 @@ for c = cs
     members = find(C == c)';
     MASK(members,members) = 1;
     A = W.*MASK;
-    gplot2(A, [xy(:,2) xy(:,1)], linespc, 'Color', color);
+    gplot2(A, [xy(:,2) xy(:,1)], linespc, 'Color', color, 'LineWidth',2,'MarkerSize',8);
 end
