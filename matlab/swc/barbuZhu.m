@@ -27,12 +27,14 @@ st = RandStream.create('mt19937ar','seed',5489);  RandStream.setDefaultStream(st
 %Iraw = imread('/home/alboot/usr/share/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png');
 Iraw = imread('images/FIBSLICE0002.png');
 
-useGroundTruth=true;
-%IGroundTruth = imread('/home/alboot/usr/work/EM/raw_mitochondria/annotation/annotation0002.png');
-%IGroundTruth = imread('/localhome/aurelien/Documents/EM/raw_mitochondria/annotation/annotation0002.png');
-IGroundTruth = imread('images/annotation0002.png');
-IGroundTruth = IGroundTruth(:,:,1);
-IGroundTruth = IGroundTruth(1:480,1:640);
+useGroundTruth = false;
+rescaleData = true;
+kernelType = 2; % RBF kernel
+if useGroundTruth
+  IGroundTruth = imread('images/annotation0002.png');
+  IGroundTruth = IGroundTruth(:,:,1);
+  IGroundTruth = IGroundTruth(1:480,1:640);
+end
 
 % load superpixels or atomic regions as a label matrix, L
 % disp('Loading the superpixel segmentation image.');
@@ -99,13 +101,19 @@ disp('Precomputing the KL divergences.');
 KL = edgeKL(Iraw, pixelList, G0, 1);
 
 % initialize the SVM model
-disp('Computing the SVM model.');
 if useGroundTruth==false && ~exist('model', 'var')
-    [model, minI, maxI] = svm_model();
+  disp('Computing the SVM model.');
+  feature_vectors = [pwd '/temp/Model-0-4200-3-sup/feature_vectors'];
+  [label_vector, instance_matrix] = libsvmread(feature_vectors);
+  training_label = label_vector(1:4000,:);
+  training_instance = instance_matrix(1:4000,:);
+
+  [model,minI,maxI] = loadModel(training_label,training_instance,rescaleData,kernelType);
 else
-    model = 0;
-    minI = 0;
-    maxI = 0;
+  disp('No model computed. Ground truth data will be used.');
+  model = 0;
+  minI = 0;
+  maxI = 0;
 end
 
 %keyboard;
@@ -127,21 +135,25 @@ disp('Randomly assigning labels to each region in the graph.')
 LABELS = zeros(size(Cw));
 for c = 1:numCw
     members = find(Cw == c)';
-    %pixels = Iraw(cell2mat(pixelList(members)'));
     
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
     % using a superpixel and its immediate neighbors
-    %[predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI);    
-    %LABELS(members) = find(pb == max(pb),1);
+    if useGroundTruth
+      lpixels = cell2mat(pixelList(members)');
+      LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+      %i2 = zeros(size(IGroundTruth),'uint8');
+      %i2(lpixels) = Iraw(lpixels);
+      %imshow(i2);
+      %keyboard
+    else
+      pixels = Iraw(cell2mat(pixelList(members)'));
+      [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI,rescaleData);    
+      LABELS(members) = find(pb == max(pb),1);
+    end
+
     %LABELS(members) = 1;
     
-    lpixels = cell2mat(pixelList(members)');
-    %i2 = zeros(size(IGroundTruth),'uint8');
-    %i2(lpixels) = Iraw(lpixels);
-    %imshow(i2);
-    %keyboard
-    LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
 
     %LABELS(members) = randsample(LabelList,1);
 %     if rand(1) < .5
