@@ -1,4 +1,4 @@
-function [model,minI,maxI] = loadModel(label, instance, rescaleData, kernelType, verbose)
+function [model,minI,maxI] = loadModel(label, instance, rescaleData, kernelType)
 % Y is a matrix of pixels whose values has to within the range {0,255}.
 % Output : probability of the input set of pixels to belong to a mitochondria
 
