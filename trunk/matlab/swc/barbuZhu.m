@@ -6,7 +6,8 @@ tic;
 % 1 = Background
 % 2 = Boundary
 % 3 = Mitochondria interior
-LabelList = [1 2 3];
+%LabelList = [1 2 3];
+LabelList = [1 2];
 
 % set necessary paths
 addpath([pwd '/utils/']);
@@ -80,7 +81,7 @@ Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
 
 % extract and adjacency matrix and list from L
 disp('Extracting adjacency graph G0 from superpixel segmentation image.');
-[G0, G0list] = adjacency(L);
+%[G0, G0list] = adjacency(L);
 
 % create a list of superpixel center locations and pixel lists
 disp('Computing superpixel center locations.');
@@ -167,12 +168,19 @@ P = zeros([1 S]);
 Plist = swc_post(W, LABELS, model, minI, maxI, pixelList, Iraw, [], 'init');
 P(1) = sum(Plist);
 
-createMovie = true;
+exportToFileOnly = true;
+createMovie = false;
 report = fopen('report.txt','w');
-displayOn = true;
+displayOn = false;
 if createMovie
   displayOn = true;
 end
+if exportToFileOnly
+  h = figure('Visible', 'off');
+  createMovie = false;
+  displayOn = false;
+end
+
 
 %% ===================== Metropolis-Hastings ============================
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
@@ -188,7 +196,7 @@ for s = 2:S
     B_CUT = .6;
     [V0, V0a] = swc_swc2_1(W, B_CUT, v, KL);  	% get a list of the members of V0
     V0c = Cw(V0(1));                    % the current color of V0
-
+    disp(['V0 size=' num2str(size(V0,2)) ', NbAdj=' num2str(sum(sum(V0a==1)))])
 
     % determine what are the neighbors colors
     [neighbors,junk] = find(G0(:,V0));
@@ -202,14 +210,17 @@ for s = 2:S
 %     end
     
     % step 3: choose a new color & label for V0
-%     c = randsample([neighborColors max(Cw)+1], 1);
-%     if c == max(Cw)+1
-%         newL = randsample(LabelList, 1);
-%     else
-%         newL = LABELS(find(Cw == c, 1));
-%     end
-
-    newL = randsample(LabelList, 1);
+    newColor = ones(1,max(1,size(neighborColors,2))).*(max(Cw)+1);
+    c = randsample([neighborColors newColor], 1);
+    %c = randsample([neighborColors (max(Cw)+1)], 1);
+    if c == max(Cw)+1
+        newL = randsample(LabelList, 1);
+        type_move = 'Split';
+    else
+        newL = LABELS(find(Cw == c, 1));
+        type_move = 'Merge';
+    end
+    %newL = randsample(LabelList, 1);
 
     LABELSp = LABELS;
     LABELSp(V0) = newL;
@@ -248,7 +259,9 @@ for s = 2:S
 %         gplotl(W,centers,LABELS,Itemp);
 
         if createMovie
-          txtReport = ['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL)];
+          txtReport = ['Accepted ' num2str(s) '(a=' num2str(a) ...
+                       '), newL=' num2str(newL) ', ' type_move];
+          txtReport = [txtReport ', V0 size=' num2str(size(V0,2)) ', NbAdj=' num2str(sum(sum(V0a==1)))];
           fprintf(report,[txtReport '\n']);
           legend(txtReport);
           eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);
@@ -264,13 +277,13 @@ for s = 2:S
         P(s) = sum(Pplist);
          disp(['accepted sample ' num2str(s) ', a=' num2str(a) ', newL=' num2str(newL)]);
          
-         if displayOn
-           figure(1235); clf;
-           gplotl(W,centers,LABELS,Iraw);
-           gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
-           gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
-           pause(0.06); refresh;
-         end
+%          if displayOn
+%            figure(1235); clf;
+%            gplotl(W,centers,LABELS,Iraw);
+%            gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+%            gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+%            pause(0.06); refresh;
+%          end
     else
 %         % display the V0 and the region we've chosen to merge it to
          if displayOn
@@ -282,32 +295,49 @@ for s = 2:S
          end
         
          if createMovie
-           txtReport = ['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL)];
+          txtReport = ['Rejected ' num2str(s) '(a=' num2str(a) ...
+                       '), newL=' num2str(newL) ', ' type_move];           
+           txtReport = [txtReport ', V0 size=' num2str(size(V0,2)) ', NbAdj=' num2str(sum(sum(V0a==1)))];
            fprintf(report,[txtReport '\n']);           
            legend(txtReport);
            eval(['print -f1234 -dpng imgs/img' num2str(s) '.png']);
          end
          
          P(s) = P(s-1);
-         disp(['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' num2str(newL)]);
+         disp(['rejected sample ' num2str(s) ', a=' num2str(a) ', L=' ...
+               num2str(newL)]);
+         
+%          if displayOn
+%            figure(1235); clf;
+%            gplotl(W,centers,LABELS,Iraw);
+%            gplotregion(W,centers, Cw, c, [0 .6 0], 's-');
+%            gplotregion(V0a,centers, Cw, V0c, [0 1 0], 'o-');
+%            pause(0.06); refresh;
+%          end
     end
     
-    if mod(s,20) == 0
+    if createMovie && mod(s,20) == 0
       % Save file
       fclose(report);
       report = fopen('report.txt','a');
     end
     
-%     if mod(s,100) == 0
-%         figure(1234); clf;
-%         gplotl(W,centers,LABELS,Iraw);
-%         %gplotc(W,centers,LABELS,Iraw);
-%         %pause(0.06); refresh;
-%         figure(445); clf;
-%         plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
-%         pause(0.06); refresh;
-%         disp([' sample ' num2str(s) ' NUMCOLORS=' num2str(max(Cw)) ', P='  num2str(P(s)) ', a=' num2str(a)]);
-%     end
+    if ~displayOn && mod(s,100) == 0
+      if exportToFileOnly
+        clf;
+        gplotl(W,centers,LABELS,Iraw);
+        eval(['print -f' int2str(h) ' -dpng imgs/img' num2str(s) '.png']);
+      else      
+        figure(1234); clf;
+        gplotl(W,centers,LABELS,Iraw);
+        %gplotc(W,centers,LABELS,Iraw);
+        %pause(0.06); refresh;
+        figure(445); clf;
+        plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
+        pause(0.06); refresh;
+        disp([' sample ' num2str(s) ' NUMCOLORS=' num2str(max(Cw)) ', P='  num2str(P(s)) ', a=' num2str(a)]);
+      end
+    end
     
     % plot the progress of the posterior estimate
 %     figure(445); clf;
@@ -315,6 +345,7 @@ for s = 2:S
         
     
     %keyboard;
+    %keydown = waitforbuttonpress;
    
 end
 
