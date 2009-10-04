@@ -1,5 +1,10 @@
-function makeGraph(labelFilenm, outFilenm)
+function makeGraph(labelFilenm, outFilenm,closeMatlab)
 % Create binary files containing a list of neighbors for each superpixel in the specified image
+
+if nargin<3 || isempty(closeMatlab)
+ closeMatlab = 0;
+end
+
 
 addpath('../utils');
 addpath('../bin');
@@ -19,3 +24,7 @@ for j=1:length(G0list)
   fprintf(fid, '\n');
 end
 fclose(fid);
+
+if closeMatlab
+  quit
+end
