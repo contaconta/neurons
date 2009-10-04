@@ -14,6 +14,7 @@ imName = 'FIBSLICE0720'
 feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
 %labelPath = '../temp/seg_plus_labels/';
 labelPath = '../temp/labels/';
+rescaleData = 1;
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
 training_label = label_vector(1:4000,:);
@@ -23,7 +24,7 @@ training_instance = instance_matrix(1:4000,:);
 
 if ~exist('model')
   disp('Computing model...');
-  [model,minI,maxI] = loadModel(training_label, training_instance,1,2);
+  [model,minI,maxI] = loadModel(training_label, training_instance,rescaleData,2);
 end
 
 disp('Model computed');
@@ -40,7 +41,12 @@ Iraw = imread([imPath imName '.png']);
 labelFilenm = [labelPath imName '.dat'];
 size(Iraw,2)
 size(Iraw,1)
-L = readRKLabel(labelFilenm, [size(Iraw,2) size(Iraw,1)])';
+L = readRKLabel(labelFilenm, [size(Iraw,1) size(Iraw,2)])';
+
+% Only select part of the image (do not rescale before loading L)
+L = L(1:480,1:640);
+Iraw = Iraw(1:480,1:640);
+outPb = zeros(size(L));
 
 % extract and adjacency matrix and list from L
 disp('Extracting adjacency graph G0 from superpixel segmentation image.');
@@ -48,9 +54,9 @@ disp('Extracting adjacency graph G0 from superpixel segmentation image.');
 
 disp('Adjacency matrix extracted');
 x0 = 1;
-for x=x0:640
+for x=x0:size(Iraw,2)
   x
-  for y=1:480
+  for y=1:size(Iraw,1)
     l = L(round(y),round(x));
     pixelList = find(L == l);
 
@@ -71,7 +77,7 @@ for x=x0:640
     %  Y(i) = double(Iraw(r(i),c(i)));
     %end
     Y = double(Iraw(pixelList));
-    [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI,true);
+    [predicted_label, accuracy, pb] = getLikelihood(Y, model,minI,maxI,rescaleData);
 
     outPb(y,x) = find(pb == max(pb),1);
     
