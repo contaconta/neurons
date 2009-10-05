@@ -98,8 +98,12 @@ disp('Filling greylevels in superpixel segmentation image.');
 Ig = label2gray(L,Iraw); Ig = uint8(round(Ig));
 
 % extract and adjacency matrix and list from L
-disp('Extracting adjacency graph G0 from superpixel segmentation image.');
-[G0, G0list] = adjacency(L);
+if ~exist('G0','var')
+  disp('Extracting adjacency graph G0 from superpixel segmentation image.');
+  [G0, G0list] = adjacency(L);
+else
+    disp('Adjacency graph G0 was already computed.');
+end
 
 % create a list of superpixel center locations and pixel lists
 disp('Computing superpixel center locations.');
@@ -363,7 +367,7 @@ for s = 2:S
 %     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
     
-    %keyboard;
+    keyboard;
     %keydown = waitforbuttonpress;
    
 end
