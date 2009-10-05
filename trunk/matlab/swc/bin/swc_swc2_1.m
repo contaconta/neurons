@@ -46,7 +46,8 @@ r = rand(size(q_e));
 Eoff = Elist(r >= q_e);
 
 
-W(Eoff) = 0;
+%AL FIXME
+%W(Eoff) = 0;
 W = max(W,speye(size(W)));   % add a diagonal so all nodes are self-connected
 W = max(W,W');
 
