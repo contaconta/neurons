@@ -1,5 +1,5 @@
 % ========= parameters ==================
-S = 20000;  % number of samples
+S = 30000;  % number of samples
 tic;
 
 % Labels :
@@ -162,20 +162,20 @@ for c = 1:numCw
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
     % using a superpixel and its immediate neighbors
-    if useGroundTruth
-      lpixels = cell2mat(pixelList(members)');
-      LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+    %if useGroundTruth
+    %  lpixels = cell2mat(pixelList(members)');
+    %  LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
       %i2 = zeros(size(IGroundTruth),'uint8');
       %i2(lpixels) = Iraw(lpixels);
       %imshow(i2);
       %keyboard
-    else
-      pixels = Iraw(cell2mat(pixelList(members)'));
-      [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI,rescaleData);    
-      LABELS(members) = find(pb == max(pb),1);
-    end
+    %else
+    %  pixels = Iraw(cell2mat(pixelList(members)'));
+    %  [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI,rescaleData);    
+    %  LABELS(members) = find(pb == max(pb),1);
+    %end
 
-    %LABELS(members) = 1;
+    LABELS(members) = 1;
     
 
     %LABELS(members) = randsample(LabelList,1);
@@ -367,7 +367,7 @@ for s = 2:S
 %     plot(P); grid on;  axis([1 floor(s/100)*100 + 100 min(P(P~=0))  floor(max(P)/100)*100 + 100]);
         
     
-    keyboard;
+    %keyboard;
     %keydown = waitforbuttonpress;
    
 end
