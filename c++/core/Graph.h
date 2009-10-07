@@ -144,7 +144,7 @@ void Graph<P,E>::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-    if(1){
+    if(0){
       VisibleE::draw();
       eset.draw();
       cloud->draw();

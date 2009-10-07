@@ -8,7 +8,7 @@
     they can be accessed from the program.
  */
 
-#define D_MAX_TEXTURE_SIZE      1024
+#define D_MAX_TEXTURE_SIZE      512
 // #define D_TEXTURE_INTERPOLATION GL_LINEAR
 #define D_TEXTURE_INTERPOLATION GL_NEAREST
 

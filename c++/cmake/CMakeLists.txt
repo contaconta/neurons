@@ -237,6 +237,10 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
+target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
+
+
 add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
 target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
 
