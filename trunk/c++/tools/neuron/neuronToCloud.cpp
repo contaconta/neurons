@@ -83,13 +83,19 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'w':
       argments->max_width = atof(arg);
       argments->saveWidth = true;
+      argments->saveOrientation = true;
+      argments->saveType = true;
       break;
     case 'x':
       argments->min_width = atof(arg);
       argments->saveWidth = true;
+      argments->saveOrientation = true;
+      argments->saveType = true;
       break;
     case 'W':
       argments->saveWidth = true;
+      argments->saveOrientation = true;
+      argments->saveType = true;
       break;
     case 'n':
       argments->saveOrientation = true;
@@ -171,7 +177,8 @@ int main(int argc, char** argv)
                                       args.saveOrientation, args.saveType,
                                       cube, args.saveWidth);
 
-  if( (cube!= NULL) && (args.name_cubeTheta!="") ){
+  if( (cube!= NULL) && (args.name_cubeTheta!="") && args.saveOrientation ){
+    printf("Twisting the angles\n");
     vector< float > nmic(3);
     vector< int > idx(3);
     Cube<float, double>*  theta = new Cube<float, double>(args.name_cubeTheta);
@@ -190,10 +197,8 @@ int main(int argc, char** argv)
     }
   }
 
-  cloud->saveToFile(args.name_cloud);
-
   printf("Removing whatever should be removed\n");
-  if(((args.min_width != 0) || (args.max_width!=1e100)) && args.saveWidth){
+  if( ((args.min_width != 0) || (args.max_width!=1e100)) && args.saveWidth){
     for(int i = cloud->points.size()-1; i >= 0; i--){
       printf("%i\n", i);
       Point3Dotw* pt = dynamic_cast<Point3Dotw*>(cloud->points[i]);
