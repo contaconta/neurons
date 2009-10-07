@@ -18,7 +18,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <argp.h>
-#include "utils_neseg.h"
+#include "utils.h"
+#include "Mask.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -90,6 +92,7 @@ int main(int argc, char **argv) {
   // printf("Hermite mask of sigma = %f(%s) and order = %i (%s)\n", sigma,
          // arguments.args[0], order, arguments.args[1]);
 
+  std::cout << std::setprecision(30);
   vector< float > mask = Mask::hermitian_mask(order, sigma, true);
   for(int i = 0; i < mask.size(); i++){
     std::cout << mask[i] << " ";

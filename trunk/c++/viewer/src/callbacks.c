@@ -81,6 +81,19 @@ void addObjectFromString(string name)
     }
     toDraw.push_back(cube);
   }
+  else if (extension == "nfc")  {
+    cube = new Cube_C(name);
+    toDraw.push_back(cube);
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  }
+  else if( extension == "cbt"){
+    cube = new Cube_T(name);
+    cube->v_r = 1.0;
+    cube->v_g = 1.0;
+    cube->v_b = 1.0;
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    toDraw.push_back(cube);
+  }
   else if( (extension == "asc") || (extension == "ASC") ){
     neuron_name = name;
     neuronita = new Neuron(name);
@@ -98,11 +111,6 @@ void addObjectFromString(string name)
   else if ((extension == "jpg") || (extension == "png"))  {
     img = new Image<float>(name);
     toDraw.push_back(img);
-  }
-  else if (extension == "nfc")  {
-    cube = new Cube_C(name);
-    toDraw.push_back(cube);
-    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
 #ifdef WITH_BBP
   else if ((extension == "h5")){
@@ -126,14 +134,6 @@ void addObjectFromString(string name)
       addObjectFromString(s);
     }
     printf("\n");
-  }
-  else if( extension == "cbt"){
-    cube = new Cube_T(name);
-    cube->v_r = 1.0;
-    cube->v_g = 1.0;
-    cube->v_b = 1.0;
-    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
-    toDraw.push_back(cube);
   }
   else{
     printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
@@ -289,7 +289,9 @@ on_cube_col_spin_value_changed         (GtkSpinButton   *spinbutton,
   for(vector< VisibleE* >::iterator itObj = toDraw.begin();
       itObj != toDraw.end(); itObj++)
     {
-      if((*itObj)->className()=="Cube"){
+      if( (*itObj)->className()=="Cube" ||
+          (*itObj)->className()=="Cube_C"||
+          (*itObj)->className()=="Cube_T"){
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         cubeDraw->load_texture_brick(cubeRowToDraw, cubeColToDraw);
       }
@@ -307,7 +309,9 @@ on_cube_row_spin_value_changed         (GtkSpinButton   *spinbutton,
   for(vector< VisibleE* >::iterator itObj = toDraw.begin();
       itObj != toDraw.end(); itObj++)
     {
-      if((*itObj)->className()=="Cube"){
+      if((*itObj)->className()=="Cube" ||
+          (*itObj)->className()=="Cube_C"||
+          (*itObj)->className()=="Cube_T"){
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         cubeDraw->load_texture_brick(cubeRowToDraw, cubeColToDraw);
       }
