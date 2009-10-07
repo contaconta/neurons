@@ -679,8 +679,8 @@ void Image<T>::draw()
   }
 
   if(0){
-    float w_s = 0.2*float(width)/2;
-    float h_s = 0.2*float(height)/2;
+    float w_s = 0.25*float(width)/2;
+    float h_s = 0.25*float(height)/2;
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0,0.0);

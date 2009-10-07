@@ -210,6 +210,9 @@ target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
 add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
 target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
+target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
+
 add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
 target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
 
@@ -237,6 +240,8 @@ target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
 target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
+target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
 
 ################################################################################
 ## image tools
@@ -245,6 +250,12 @@ target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
 
 add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
 target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
+
+add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
+target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
+target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
 
 
 
@@ -282,12 +293,19 @@ target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
 add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
 target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
 
+add_executable(neuronFlat ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFlat.cpp)
+target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
+
 
 ################################################################################
 ## Test examples
 
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
+target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
+
 
 add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
 target_link_libraries(convolutionsFast ${LINK_LIBRARIES_ALL})

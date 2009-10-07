@@ -528,16 +528,278 @@ void Cube_C::draw
 }
 
 
-void Cube_C::draw_layer_tile_XY(float depth, int color)
+void Cube_C::draw_layer_tile_XY(float nLayerToDraw, int color)
 {
+//   draw_orientation_grid();
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
+  GLint max_texture_size = 0;
+  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  int size_texture = max_texture_size;
+
+  if(nLayerToDraw < 0)
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = 0;
+    }
+  if(nLayerToDraw > cubeDepth -1)
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = cubeDepth-1;
+    }
+
+
+  //In object coordinates, we will draw the cube
+  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
+  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
+  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
+
+  GLfloat increment_height =
+    min(float(cubeHeight - nRowToDraw*size_texture), float(size_texture));
+  increment_height = increment_height / size_texture;
+  GLfloat increment_width =
+    min(float(cubeWidth - nColToDraw*size_texture), float(size_texture));
+  increment_width = increment_width / size_texture;
+
+
+//   printf("draw_layer_tile_XY %f %f size texture %i %f %f\n", increment_height, increment_width, size_texture, float(cubeWidth)/size_texture, float(cubeHeight)/size_texture);
+
+  if(color == 0){
+//     glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
+    glBegin(GL_QUADS);
+    glTexCoord3f(0,0,t_max*nLayerToDraw/(cubeDepth-1));
+    glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
+               heightStep - nRowToDraw*size_texture*voxelHeight,
+               -depthStep + nLayerToDraw*voxelDepth);
+
+    glTexCoord3f(r_max,0,t_max*nLayerToDraw/(cubeDepth-1));
+    glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
+               heightStep - nRowToDraw*size_texture*voxelHeight,
+               -depthStep + nLayerToDraw*voxelDepth);
+
+    glTexCoord3f(r_max,
+                 s_max,
+                 t_max*nLayerToDraw/(cubeDepth-1));
+    glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
+               heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
+               -depthStep + nLayerToDraw*voxelDepth);
+
+    glTexCoord3f(0,
+                 s_max,
+                 t_max*nLayerToDraw/(cubeDepth-1));
+    glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
+               heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
+               -depthStep + nLayerToDraw*voxelDepth);
+    glEnd();
+
+  }
+  else
+    glColor3f(0.0,0.0,1.0);
+
+
+  glDisable(GL_TEXTURE_3D);
+//   glColor3f(0.0,0.0,0.7);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
+             heightStep - nRowToDraw*size_texture*voxelHeight,
+             -depthStep + nLayerToDraw*voxelDepth);
+  glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
+             heightStep - nRowToDraw*size_texture*voxelHeight,
+             -depthStep + nLayerToDraw*voxelDepth);
+  glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
+             heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
+             -depthStep + nLayerToDraw*voxelDepth);
+  glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
+             heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
+             -depthStep + nLayerToDraw*voxelDepth);
+  glEnd();
+//   glColor3f(0.0,0.0,1.0);
+  glBegin(GL_LINES);
+
+  glEnd();
+
+  //Draws the coordinates
+
 }
 
-void Cube_C::draw_layer_tile_XZ(float depth, int color)
+void Cube_C::draw_layer_tile_XZ(float nLayerToDraw, int color)
 {
+//   draw_orientation_grid();
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
+  GLint max_texture_size = 0;
+  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  int size_texture = max_texture_size;
+
+  if(nLayerToDraw < 0)
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = 0;
+    }
+  if( (nLayerToDraw > min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture) ) )
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture);
+    }
+
+  //In object coordinates, we will draw the cube
+  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
+  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
+  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
+
+  GLfloat increment_depth =
+    min(float(cubeDepth), float(size_texture));
+  increment_depth = increment_depth / size_texture;
+  GLfloat increment_width =
+    min(float(cubeWidth - nColToDraw*size_texture), float(size_texture));
+  increment_width = increment_width / size_texture;
+
+  float y_max = min(size_texture, (int)cubeHeight - nRowToDraw*size_texture);
+
+  if(color == 0){
+    glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
+    glBegin(GL_QUADS);
+    glTexCoord3f(0, s_max*nLayerToDraw/y_max, 0);
+    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight
+               - nLayerToDraw*voxelHeight,
+               -depthStep);
+    glTexCoord3f(0, s_max*nLayerToDraw/y_max, t_max);
+    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight
+               - nLayerToDraw*voxelHeight,
+               depthStep);
+    glTexCoord3f(r_max, s_max*nLayerToDraw/y_max, t_max);
+    glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight
+               - nLayerToDraw*voxelHeight,
+               depthStep);
+    glTexCoord3f(r_max, s_max*nLayerToDraw/y_max , 0);
+    glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight
+               - nLayerToDraw*voxelHeight,
+               -depthStep);
+    glEnd();
+  }
+  else
+    glColor3f(1.0,0.0,0.0);
+
+
+
+  glDisable(GL_TEXTURE_3D);
+//   glColor3f(0.7,0.0,0.0);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight
+             - nLayerToDraw*voxelHeight,
+             -depthStep);
+  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight
+             - nLayerToDraw*voxelHeight,
+             depthStep);
+  glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight
+             - nLayerToDraw*voxelHeight,
+             depthStep);
+  glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight
+             - nLayerToDraw*voxelHeight,
+             -depthStep);
+  glEnd();
+
 }
 
-void Cube_C::draw_layer_tile_YZ(float depth, int color)
+void Cube_C::draw_layer_tile_YZ(float nLayerToDraw, int color)
 {
+//   draw_orientation_grid();
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
+  GLint max_texture_size = 0;
+  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  int size_texture = max_texture_size;
+
+  if(nLayerToDraw < 0)
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = 0;
+    }
+  if( (nLayerToDraw > min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture) ) )
+    {
+      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
+      nLayerToDraw = min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture);
+    }
+
+  //In object coordinates, we will draw the cube
+  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
+  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
+  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
+
+  GLfloat increment_depth =
+    min(float(cubeDepth), float(size_texture));
+  increment_depth = increment_depth / size_texture;
+  GLfloat increment_height =
+    min(float(cubeHeight - nRowToDraw*size_texture), float(size_texture));
+  increment_height = increment_height / size_texture;
+
+  float x_max = min(size_texture, (int)cubeWidth - nColToDraw*size_texture);
+  GLfloat depth_texture = nLayerToDraw/r_max;
+
+  if(color == 0){
+//     glColor3f(1.0,1.0,1.0);
+    glColor3f(v_r,v_g,v_b);
+    glBegin(GL_QUADS);
+    glTexCoord3f(r_max*nLayerToDraw/x_max, 0, 0);
+    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+               + nLayerToDraw*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight,
+               -depthStep);
+    glTexCoord3f(r_max*nLayerToDraw/x_max, s_max, 0);
+    glVertex3f(-widthStep + nColToDraw *max_texture_size*voxelWidth
+               + nLayerToDraw*voxelWidth,
+               heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
+               -depthStep);
+    glTexCoord3f(r_max*nLayerToDraw/x_max, s_max, t_max);
+    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+               + nLayerToDraw*voxelWidth,
+               heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
+               depthStep);
+    glTexCoord3f(r_max*nLayerToDraw/x_max, 0, t_max);
+    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+               + nLayerToDraw*voxelWidth,
+               heightStep - nRowToDraw*max_texture_size*voxelHeight,
+               depthStep);
+    glEnd();
+  }
+  else
+    glColor3f(0.0,1.0,0.0);
+
+
+  glDisable(GL_TEXTURE_3D);
+//   glColor3f(0.0,0.7,0.0);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+             + nLayerToDraw*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight,
+             -depthStep);
+  glVertex3f(-widthStep + nColToDraw *max_texture_size*voxelWidth
+             + nLayerToDraw*voxelWidth,
+             heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
+             -depthStep);
+  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+             + nLayerToDraw*voxelWidth,
+             heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
+             depthStep);
+  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
+             + nLayerToDraw*voxelWidth,
+             heightStep - nRowToDraw*max_texture_size*voxelHeight,
+             depthStep);
+  glEnd();
+
 }
 
 
