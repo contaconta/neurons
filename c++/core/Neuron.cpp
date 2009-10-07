@@ -2171,10 +2171,10 @@ Cloud_P* Neuron::toCloud(string cloudName,
   int point_number = 0;
   for(int i = 0; i < dendrites.size(); i++)
     toCloud(dendrites[i], cloud, saveOrientation,
-            saveType, cubeLimit);
+            saveType, cubeLimit, saveWidth);
   for(int i = 0; i < axon.size(); i++)
     toCloud(dendrites[i], cloud, saveOrientation,
-            saveType, cubeLimit);
+            saveType, cubeLimit, saveWidth);
   cloud->saveToFile(cloudName);
   return cloud;
 }
