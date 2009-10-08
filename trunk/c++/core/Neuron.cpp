@@ -2249,5 +2249,5 @@ void Neuron::toCloud(NeuronSegment* segment,
 
   for(int i = 0; i < segment->childs.size(); i++)
     toCloud(segment->childs[i], cloud, saveOrientation,
-            saveType, cubeLimit);
+            saveType, cubeLimit, saveWidth);
 }
