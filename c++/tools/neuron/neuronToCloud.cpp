@@ -197,10 +197,10 @@ int main(int argc, char** argv)
     }
   }
 
-  printf("Removing whatever should be removed\n");
+
   if( ((args.min_width != 0) || (args.max_width!=1e100)) && args.saveWidth){
+    printf("Removing whatever should be removed\n");
     for(int i = cloud->points.size()-1; i >= 0; i--){
-      printf("%i\n", i);
       Point3Dotw* pt = dynamic_cast<Point3Dotw*>(cloud->points[i]);
       if( (pt->weight < args.min_width) || (pt->weight > args.max_width)){
          vector<Point*>::iterator itRemove = cloud->points.begin() + i;
