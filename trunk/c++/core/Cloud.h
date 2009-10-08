@@ -30,7 +30,7 @@ public:
 
   vector< double > spread();
 
-  void split(Cloud_P* cl1, Cloud_P* cl2);
+  void split(Cloud_P* &cl1, Cloud_P* &cl2);
 
   virtual void cleanPointsAccordingToWeight(double minWeight, double maxWeight);
 };
@@ -179,7 +179,7 @@ void Cloud<T>::addPoint(float x, float y, float z)
 }
 
 template <class T>
-void Cloud<T>::split(Cloud_P* cl1, Cloud_P* cl2)
+void Cloud<T>::split(Cloud_P* &cl1, Cloud_P* &cl2)
 {
   cl1 = new Cloud<T>();
   cl2 = new Cloud<T>();
