@@ -33,6 +33,15 @@ class Cloud_P : public VisibleE
 
   virtual vector<double> spread() = 0;
 
+  /** Splits the cloud in two clouds, one with the odd points and the other one with the
+      even ones*/
+  virtual void split(Cloud_P* cl1, Cloud_P* cl2) = 0;
+
+  /** If the cloud includes some weight in the points, then elliminates the points out of the range.
+   If the cloud's points do not have type, then do nothing to them.*/
+  virtual void cleanPointsAccordingToWeight(double minWeight, double maxWeight) = 0;
+
+
   // virtual void addPoint(float x, float y, float z) = 0;
 
 };

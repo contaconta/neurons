@@ -1,10 +1,11 @@
 <Cloud Point3D>
-<VisiblE>
+<VisibleE>
 v_r 0
 v_g 0
 v_b 1
 v_radius 1.5
 v_enable_depth_test 0
+v_blend 1
 </VisibleE>
 18 83 1
 18 74 2

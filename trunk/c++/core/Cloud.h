@@ -28,9 +28,11 @@ public:
 
   ~Cloud();
 
-  /** Returns the maximum and minimum coordinates of the cloud. The
-      return vector would be in the form: [xmin, xmax, ymin, ymax, zmin, zmax]*/
   vector< double > spread();
+
+  void split(Cloud_P* cl1, Cloud_P* cl2);
+
+  virtual void cleanPointsAccordingToWeight(double minWeight, double maxWeight);
 };
 
 
@@ -175,5 +177,38 @@ void Cloud<T>::addPoint(float x, float y, float z)
   // else
     points.push_back(new T(x,y,z));
 }
+
+template <class T>
+void Cloud<T>::split(Cloud_P* cl1, Cloud_P* cl2)
+{
+  cl1 = new Cloud<T>();
+  cl2 = new Cloud<T>();
+  for(int i = 0; i < points.size(); i++){
+    if(i%2==0){
+      // Ugly that casting and then direction
+      cl1->points.push_back(new T(*(T*)points[i]));
+    }else{
+      cl2->points.push_back(new T(*(T*)points[i]));
+    }
+  }
+}
+
+template <class T>
+void Cloud<T>::cleanPointsAccordingToWeight(double minWeight, double maxWeight)
+{
+  if(typeid(*this) != typeid(Cloud<Point3Dotw>)){
+    printf("Cloud<T>::cleanPointsAccordingToWeight called on a cloud that is not of type"
+           " Cloud<Point3Dotw>, nothing will be done\n");
+    return;
+  }
+  for(int i = points.size()-1; i >= 0; i--){
+    Point3Dotw* pt = dynamic_cast<Point3Dotw*>(points[i]);
+    if( (pt->weight < minWeight) || (pt->weight > maxWeight)){
+      vector<Point*>::iterator itRemove = points.begin() + i;
+      points.erase(itRemove);
+    }
+  }
+}
+
 
 #endif
