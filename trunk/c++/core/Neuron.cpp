@@ -1019,6 +1019,7 @@ void Neuron::elliminateDuplicatedPoints(NeuronSegment* segment, double threshold
                       NeuronPoint(segment->points[0].coords[0],
                                   segment->points[0].coords[1],
                                   segment->points[0].coords[2],
+                                  segment->points[0].coords[3],
                                   segment->points[0].noSenseNumber,
                                   segment->points[0].pointNumber
                                   ));
@@ -1036,6 +1037,7 @@ void Neuron::elliminateDuplicatedPoints(NeuronSegment* segment, double threshold
                           NeuronPoint(segment->points[i].coords[0],
                                       segment->points[i].coords[1],
                                       segment->points[i].coords[2],
+                                      segment->points[0].coords[3],
                                       segment->points[i].noSenseNumber,
                                       segment->points[i].pointNumber
                                       )
