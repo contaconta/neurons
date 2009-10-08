@@ -327,3 +327,6 @@ target_link_libraries(graphToDisplayList ${LINK_LIBRARIES_ALL})
 add_executable(gslMinimization ${CMAKE_SOURCE_DIR}/../tests/gslMinimization.cpp)
 target_link_libraries(gslMinimization ${LINK_LIBRARIES_ALL})
 
+add_executable(clone ${CMAKE_SOURCE_DIR}/../tests/clone.cpp)
+target_link_libraries(clone ${LINK_LIBRARIES_ALL})
+

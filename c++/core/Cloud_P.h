@@ -35,7 +35,7 @@ class Cloud_P : public VisibleE
 
   /** Splits the cloud in two clouds, one with the odd points and the other one with the
       even ones*/
-  virtual void split(Cloud_P* cl1, Cloud_P* cl2) = 0;
+  virtual void split(Cloud_P* &cl1, Cloud_P* &cl2) = 0;
 
   /** If the cloud includes some weight in the points, then elliminates the points out of the range.
    If the cloud's points do not have type, then do nothing to them.*/
