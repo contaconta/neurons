@@ -14,8 +14,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-#set(CMAKE_BUILD_TYPE release) #debug none release distribution
+#set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 IF(${HOST} STREQUAL bbpsg1)
   set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
