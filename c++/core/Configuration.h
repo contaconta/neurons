@@ -1,8 +1,10 @@
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 
-#include <map.h>
+#include <map>
+#include <sstream>
 #include "Object.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -15,6 +17,7 @@ public:
 
   Configuration(string filename)
   {
+    assert(fileExists(filename));
     this->filename = filename;
     loadFromFile(filename);
   };
@@ -30,9 +33,17 @@ public:
 
   bool load(istream& in){
     string name, attribute;
+    char lineb[1024]; //lines of 1024 chars
     while(in.good()){
-      in >> name;
-      in >> attribute;
+      in.getline(lineb,1024);
+      string line(lineb);
+      stringstream linestream(line);
+      linestream >> name;
+      if(name.length() > 0){
+        if (name[0] == '#')
+          continue;
+      }
+      linestream >> attribute;
       stock[name] = attribute;
     }
     return true;
