@@ -331,6 +331,9 @@ int copyFile(string initialFilePath, string outputFilePath)
   ofstream outputFile (outputFilePath.c_str(),  ios::out|ios::binary);
 
   initialFile.seekg(0, ios::end);
+  outputFile << initialFile.rdbuf();
+
+  /*
   long fileSize = initialFile.tellg();
 
   if(initialFile.is_open() && outputFile.is_open())
@@ -351,7 +354,7 @@ int copyFile(string initialFilePath, string outputFilePath)
       cout<<"I couldn't open "<<initialFilePath<<" for copying!\n";
       return 0;
     }
-
+  */
   initialFile.close();
   outputFile.close();
   return 1;

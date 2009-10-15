@@ -330,3 +330,6 @@ target_link_libraries(gslMinimization ${LINK_LIBRARIES_ALL})
 add_executable(clone ${CMAKE_SOURCE_DIR}/../tests/clone.cpp)
 target_link_libraries(clone ${LINK_LIBRARIES_ALL})
 
+add_executable(configuration ${CMAKE_SOURCE_DIR}/../tests/configuration.cpp)
+target_link_libraries(configuration ${LINK_LIBRARIES_ALL})
+
