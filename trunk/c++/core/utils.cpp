@@ -332,8 +332,10 @@ int copyFile(string initialFilePath, string outputFilePath)
 
   outputFile << initialFile.rdbuf();
 
-
-  initialFile.close();
-  outputFile.close();
+  if(!outputFile){
+    initialFile.close();
+    outputFile.close();
+    return 0;
+  }
   return 1;
 }
