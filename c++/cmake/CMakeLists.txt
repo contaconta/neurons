@@ -336,3 +336,6 @@ target_link_libraries(configuration ${LINK_LIBRARIES_ALL})
 add_executable(openmp ${CMAKE_SOURCE_DIR}/../tests/openmp.cpp)
 target_link_libraries(openmp ${LINK_LIBRARIES_ALL})
 
+add_executable(copyFile ${CMAKE_SOURCE_DIR}/../tests/copyFile.cpp)
+target_link_libraries(copyFile ${LINK_LIBRARIES_ALL})
+
