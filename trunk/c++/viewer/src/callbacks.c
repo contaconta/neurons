@@ -528,3 +528,20 @@ on_videorotationtime_activate          (GtkMenuItem     *menuitem,
 
 }
 
+
+void
+on_open_3d_stack1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  GtkWidget* load3DStackWidget = create_loadImageStack ();
+  gtk_widget_show (load3DStackWidget);
+}
+
+
+void
+on_open_4d_stack1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+

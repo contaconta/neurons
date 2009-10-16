@@ -308,7 +308,7 @@ main (int argc, char *argv[])
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  ascEditor = create_ascEditor ();
+  ascEditor = create_main_window ();
 
   //Adds opengl support to the drawing area
   GdkGLConfig *glconfig;
