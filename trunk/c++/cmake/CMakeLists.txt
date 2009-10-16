@@ -252,6 +252,10 @@ target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
 add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
 target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
 
+add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
+target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
+
+
 add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
 target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
 
