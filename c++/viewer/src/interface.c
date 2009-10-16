@@ -27,17 +27,15 @@
   g_object_set_data (G_OBJECT (component), name, widget)
 
 GtkWidget*
-create_ascEditor (void)
+create_main_window (void)
 {
-  GtkWidget *ascEditor;
+  GtkWidget *main_window;
   GtkWidget *vbox1;
   GtkWidget *menubar1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
-  GtkWidget *New_Neuron;
-  GtkWidget *open_neuron;
-  GtkWidget *save_neuron;
-  GtkWidget *save_as1;
+  GtkWidget *open_3d_stack1;
+  GtkWidget *open_4d_stack1;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit1;
   GtkWidget *menuitem5;
@@ -47,10 +45,6 @@ create_ascEditor (void)
   GtkWidget *videolayers;
   GtkWidget *videorotation;
   GtkWidget *videorotationtime;
-  GtkWidget *cut1;
-  GtkWidget *copy1;
-  GtkWidget *paste1;
-  GtkWidget *delete1;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *_3dmenu;
@@ -58,7 +52,6 @@ create_ascEditor (void)
   GtkWidget *xzmenu;
   GtkWidget *yzmenu;
   GtkWidget *combomenu;
-  GtkWidget *editAsc;
   GtkWidget *menu_plugins;
   GtkWidget *menuitem7;
   GtkWidget *menuitem7_menu;
@@ -71,9 +64,6 @@ create_ascEditor (void)
   GtkObject *layer_XY_spin_adj;
   GtkWidget *layer_XY_spin;
   GtkWidget *view_entry;
-  GtkWidget *cube_transparency;
-  GtkWidget *draw_neuron;
-  GtkWidget *draw_cube_toggle;
   GtkWidget *label6;
   GtkObject *layer_view_adj;
   GtkWidget *layer_view;
@@ -89,19 +79,19 @@ create_ascEditor (void)
   GtkWidget *layerXZ_spin;
   GtkObject *layer_YZ_spin_adj;
   GtkWidget *layer_YZ_spin;
-  GtkWidget *get_matrix_button;
+  GtkWidget *cube_transparency;
   GtkWidget *shaders;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
 
-  ascEditor = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_widget_set_size_request (ascEditor, 1024, 700);
-  gtk_window_set_title (GTK_WINDOW (ascEditor), _("neseg 1.0"));
+  main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request (main_window, 1024, 702);
+  gtk_window_set_title (GTK_WINDOW (main_window), _("VIVA 0.0"));
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (ascEditor), vbox1);
+  gtk_container_add (GTK_CONTAINER (main_window), vbox1);
   GTK_WIDGET_SET_FLAGS (vbox1, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (vbox1, GTK_CAN_DEFAULT);
 
@@ -116,21 +106,13 @@ create_ascEditor (void)
   menuitem4_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menuitem4_menu);
 
-  New_Neuron = gtk_image_menu_item_new_from_stock ("gtk-new", accel_group);
-  gtk_widget_show (New_Neuron);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), New_Neuron);
+  open_3d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 3D stack"));
+  gtk_widget_show (open_3d_stack1);
+  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_3d_stack1);
 
-  open_neuron = gtk_image_menu_item_new_from_stock ("gtk-open", accel_group);
-  gtk_widget_show (open_neuron);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_neuron);
-
-  save_neuron = gtk_image_menu_item_new_from_stock ("gtk-save", accel_group);
-  gtk_widget_show (save_neuron);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), save_neuron);
-
-  save_as1 = gtk_image_menu_item_new_from_stock ("gtk-save-as", accel_group);
-  gtk_widget_show (save_as1);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), save_as1);
+  open_4d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 4D stack"));
+  gtk_widget_show (open_4d_stack1);
+  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_4d_stack1);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
@@ -168,22 +150,6 @@ create_ascEditor (void)
   gtk_widget_show (videorotationtime);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotationtime);
 
-  cut1 = gtk_image_menu_item_new_from_stock ("gtk-cut", accel_group);
-  gtk_widget_show (cut1);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), cut1);
-
-  copy1 = gtk_image_menu_item_new_from_stock ("gtk-copy", accel_group);
-  gtk_widget_show (copy1);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), copy1);
-
-  paste1 = gtk_image_menu_item_new_from_stock ("gtk-paste", accel_group);
-  gtk_widget_show (paste1);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), paste1);
-
-  delete1 = gtk_image_menu_item_new_from_stock ("gtk-delete", accel_group);
-  gtk_widget_show (delete1);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), delete1);
-
   menuitem6 = gtk_menu_item_new_with_mnemonic (_("_View"));
   gtk_widget_show (menuitem6);
   gtk_container_add (GTK_CONTAINER (menubar1), menuitem6);
@@ -210,10 +176,6 @@ create_ascEditor (void)
   combomenu = gtk_menu_item_new_with_mnemonic (_("_combo"));
   gtk_widget_show (combomenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), combomenu);
-
-  editAsc = gtk_menu_item_new_with_mnemonic (_("editAsc"));
-  gtk_widget_show (editAsc);
-  gtk_container_add (GTK_CONTAINER (menuitem6_menu), editAsc);
 
   menu_plugins = gtk_menu_item_new_with_mnemonic (_("_Plugins"));
   gtk_widget_show (menu_plugins);
@@ -281,24 +243,6 @@ create_ascEditor (void)
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
 
-  cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
-  gtk_widget_show (cube_transparency);
-  gtk_table_attach (GTK_TABLE (table1), cube_transparency, 0, 1, 8, 9,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  draw_neuron = gtk_toggle_button_new_with_mnemonic (_("Draw Neuron"));
-  gtk_widget_show (draw_neuron);
-  gtk_table_attach (GTK_TABLE (table1), draw_neuron, 0, 1, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  draw_cube_toggle = gtk_toggle_button_new_with_mnemonic (_("Draw Cube"));
-  gtk_widget_show (draw_cube_toggle);
-  gtk_table_attach (GTK_TABLE (table1), draw_cube_toggle, 1, 2, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   label6 = gtk_label_new (_("LayerSpanViewZ"));
   gtk_widget_show (label6);
   gtk_table_attach (GTK_TABLE (table1), label6, 0, 1, 6, 7,
@@ -365,32 +309,26 @@ create_ascEditor (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  get_matrix_button = gtk_button_new_with_mnemonic (_("Get_Matrix"));
-  gtk_widget_show (get_matrix_button);
-  gtk_table_attach (GTK_TABLE (table1), get_matrix_button, 1, 2, 8, 9,
+  cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
+  gtk_widget_show (cube_transparency);
+  gtk_table_attach (GTK_TABLE (table1), cube_transparency, 0, 1, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   shaders = gtk_button_new_with_mnemonic (_("Shaders"));
   gtk_widget_show (shaders);
-  gtk_table_attach (GTK_TABLE (table1), shaders, 0, 1, 9, 10,
+  gtk_table_attach (GTK_TABLE (table1), shaders, 1, 2, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  g_signal_connect ((gpointer) ascEditor, "destroy",
+  g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
                     NULL);
-  g_signal_connect ((gpointer) New_Neuron, "activate",
-                    G_CALLBACK (on_new_neuron_activate),
+  g_signal_connect ((gpointer) open_3d_stack1, "activate",
+                    G_CALLBACK (on_open_3d_stack1_activate),
                     NULL);
-  g_signal_connect ((gpointer) open_neuron, "activate",
-                    G_CALLBACK (on_open_neuron_activate),
-                    NULL);
-  g_signal_connect ((gpointer) save_neuron, "activate",
-                    G_CALLBACK (on_save_neuron_activate),
-                    NULL);
-  g_signal_connect ((gpointer) save_as1, "activate",
-                    G_CALLBACK (on_save_as1_activate),
+  g_signal_connect ((gpointer) open_4d_stack1, "activate",
+                    G_CALLBACK (on_open_4d_stack1_activate),
                     NULL);
   g_signal_connect ((gpointer) quit1, "activate",
                     G_CALLBACK (on_quit1_activate),
@@ -407,18 +345,6 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) videorotationtime, "activate",
                     G_CALLBACK (on_videorotationtime_activate),
                     NULL);
-  g_signal_connect ((gpointer) cut1, "activate",
-                    G_CALLBACK (on_cut1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) copy1, "activate",
-                    G_CALLBACK (on_copy1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) paste1, "activate",
-                    G_CALLBACK (on_paste1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) delete1, "activate",
-                    G_CALLBACK (on_delete1_activate),
-                    NULL);
   g_signal_connect ((gpointer) _3dmenu, "activate",
                     G_CALLBACK (on_3dmenu_activate),
                     NULL);
@@ -433,9 +359,6 @@ create_ascEditor (void)
                     NULL);
   g_signal_connect ((gpointer) combomenu, "activate",
                     G_CALLBACK (on_combomenu_activate),
-                    NULL);
-  g_signal_connect ((gpointer) editAsc, "activate",
-                    G_CALLBACK (on_editAsc_activate),
                     NULL);
   g_signal_connect ((gpointer) menu_plugins, "activate",
                     G_CALLBACK (on_menu_plugins_activate),
@@ -473,15 +396,6 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) view_entry, "changed",
                     G_CALLBACK (on_view_entry_changed),
                     NULL);
-  g_signal_connect ((gpointer) cube_transparency, "toggled",
-                    G_CALLBACK (on_cube_transparency_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) draw_neuron, "toggled",
-                    G_CALLBACK (on_draw_neuron_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) draw_cube_toggle, "toggled",
-                    G_CALLBACK (on_draw_cube_toggle_toggled),
-                    NULL);
   g_signal_connect ((gpointer) layer_view, "value_changed",
                     G_CALLBACK (on_layer_view_value_changed),
                     NULL);
@@ -497,76 +411,66 @@ create_ascEditor (void)
   g_signal_connect ((gpointer) layer_YZ_spin, "value_changed",
                     G_CALLBACK (on_layer_YZ_spin_value_changed),
                     NULL);
-  g_signal_connect ((gpointer) get_matrix_button, "clicked",
-                    G_CALLBACK (on_get_matrix_button_clicked),
+  g_signal_connect ((gpointer) cube_transparency, "toggled",
+                    G_CALLBACK (on_cube_transparency_toggled),
                     NULL);
   g_signal_connect ((gpointer) shaders, "clicked",
                     G_CALLBACK (on_shaders_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (ascEditor, ascEditor, "ascEditor");
-  GLADE_HOOKUP_OBJECT (ascEditor, vbox1, "vbox1");
-  GLADE_HOOKUP_OBJECT (ascEditor, menubar1, "menubar1");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem4, "menuitem4");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem4_menu, "menuitem4_menu");
-  GLADE_HOOKUP_OBJECT (ascEditor, New_Neuron, "New_Neuron");
-  GLADE_HOOKUP_OBJECT (ascEditor, open_neuron, "open_neuron");
-  GLADE_HOOKUP_OBJECT (ascEditor, save_neuron, "save_neuron");
-  GLADE_HOOKUP_OBJECT (ascEditor, save_as1, "save_as1");
-  GLADE_HOOKUP_OBJECT (ascEditor, separatormenuitem1, "separatormenuitem1");
-  GLADE_HOOKUP_OBJECT (ascEditor, quit1, "quit1");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem5, "menuitem5");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem5_menu, "menuitem5_menu");
-  GLADE_HOOKUP_OBJECT (ascEditor, screenshot, "screenshot");
-  GLADE_HOOKUP_OBJECT (ascEditor, image1, "image1");
-  GLADE_HOOKUP_OBJECT (ascEditor, videolayers, "videolayers");
-  GLADE_HOOKUP_OBJECT (ascEditor, videorotation, "videorotation");
-  GLADE_HOOKUP_OBJECT (ascEditor, videorotationtime, "videorotationtime");
-  GLADE_HOOKUP_OBJECT (ascEditor, cut1, "cut1");
-  GLADE_HOOKUP_OBJECT (ascEditor, copy1, "copy1");
-  GLADE_HOOKUP_OBJECT (ascEditor, paste1, "paste1");
-  GLADE_HOOKUP_OBJECT (ascEditor, delete1, "delete1");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem6, "menuitem6");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem6_menu, "menuitem6_menu");
-  GLADE_HOOKUP_OBJECT (ascEditor, _3dmenu, "_3dmenu");
-  GLADE_HOOKUP_OBJECT (ascEditor, xymenu, "xymenu");
-  GLADE_HOOKUP_OBJECT (ascEditor, xzmenu, "xzmenu");
-  GLADE_HOOKUP_OBJECT (ascEditor, yzmenu, "yzmenu");
-  GLADE_HOOKUP_OBJECT (ascEditor, combomenu, "combomenu");
-  GLADE_HOOKUP_OBJECT (ascEditor, editAsc, "editAsc");
-  GLADE_HOOKUP_OBJECT (ascEditor, menu_plugins, "menu_plugins");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem7, "menuitem7");
-  GLADE_HOOKUP_OBJECT (ascEditor, menuitem7_menu, "menuitem7_menu");
-  GLADE_HOOKUP_OBJECT (ascEditor, about1, "about1");
-  GLADE_HOOKUP_OBJECT (ascEditor, hbox1, "hbox1");
-  GLADE_HOOKUP_OBJECT (ascEditor, drawing3D, "drawing3D");
-  GLADE_HOOKUP_OBJECT (ascEditor, table1, "table1");
-  GLADE_HOOKUP_OBJECT (ascEditor, label2, "label2");
-  GLADE_HOOKUP_OBJECT (ascEditor, label1, "label1");
-  GLADE_HOOKUP_OBJECT (ascEditor, layer_XY_spin, "layer_XY_spin");
-  GLADE_HOOKUP_OBJECT (ascEditor, view_entry, "view_entry");
-  GLADE_HOOKUP_OBJECT (ascEditor, cube_transparency, "cube_transparency");
-  GLADE_HOOKUP_OBJECT (ascEditor, draw_neuron, "draw_neuron");
-  GLADE_HOOKUP_OBJECT (ascEditor, draw_cube_toggle, "draw_cube_toggle");
-  GLADE_HOOKUP_OBJECT (ascEditor, label6, "label6");
-  GLADE_HOOKUP_OBJECT (ascEditor, layer_view, "layer_view");
-  GLADE_HOOKUP_OBJECT (ascEditor, label4, "label4");
-  GLADE_HOOKUP_OBJECT (ascEditor, cube_row_spin, "cube_row_spin");
-  GLADE_HOOKUP_OBJECT (ascEditor, label3, "label3");
-  GLADE_HOOKUP_OBJECT (ascEditor, cube_col_spin, "cube_col_spin");
-  GLADE_HOOKUP_OBJECT (ascEditor, label7, "label7");
-  GLADE_HOOKUP_OBJECT (ascEditor, label8, "label8");
-  GLADE_HOOKUP_OBJECT (ascEditor, layerXZ_spin, "layerXZ_spin");
-  GLADE_HOOKUP_OBJECT (ascEditor, layer_YZ_spin, "layer_YZ_spin");
-  GLADE_HOOKUP_OBJECT (ascEditor, get_matrix_button, "get_matrix_button");
-  GLADE_HOOKUP_OBJECT (ascEditor, shaders, "shaders");
+  GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
+  GLADE_HOOKUP_OBJECT (main_window, vbox1, "vbox1");
+  GLADE_HOOKUP_OBJECT (main_window, menubar1, "menubar1");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem4, "menuitem4");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem4_menu, "menuitem4_menu");
+  GLADE_HOOKUP_OBJECT (main_window, open_3d_stack1, "open_3d_stack1");
+  GLADE_HOOKUP_OBJECT (main_window, open_4d_stack1, "open_4d_stack1");
+  GLADE_HOOKUP_OBJECT (main_window, separatormenuitem1, "separatormenuitem1");
+  GLADE_HOOKUP_OBJECT (main_window, quit1, "quit1");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem5, "menuitem5");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem5_menu, "menuitem5_menu");
+  GLADE_HOOKUP_OBJECT (main_window, screenshot, "screenshot");
+  GLADE_HOOKUP_OBJECT (main_window, image1, "image1");
+  GLADE_HOOKUP_OBJECT (main_window, videolayers, "videolayers");
+  GLADE_HOOKUP_OBJECT (main_window, videorotation, "videorotation");
+  GLADE_HOOKUP_OBJECT (main_window, videorotationtime, "videorotationtime");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem6, "menuitem6");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem6_menu, "menuitem6_menu");
+  GLADE_HOOKUP_OBJECT (main_window, _3dmenu, "_3dmenu");
+  GLADE_HOOKUP_OBJECT (main_window, xymenu, "xymenu");
+  GLADE_HOOKUP_OBJECT (main_window, xzmenu, "xzmenu");
+  GLADE_HOOKUP_OBJECT (main_window, yzmenu, "yzmenu");
+  GLADE_HOOKUP_OBJECT (main_window, combomenu, "combomenu");
+  GLADE_HOOKUP_OBJECT (main_window, menu_plugins, "menu_plugins");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem7, "menuitem7");
+  GLADE_HOOKUP_OBJECT (main_window, menuitem7_menu, "menuitem7_menu");
+  GLADE_HOOKUP_OBJECT (main_window, about1, "about1");
+  GLADE_HOOKUP_OBJECT (main_window, hbox1, "hbox1");
+  GLADE_HOOKUP_OBJECT (main_window, drawing3D, "drawing3D");
+  GLADE_HOOKUP_OBJECT (main_window, table1, "table1");
+  GLADE_HOOKUP_OBJECT (main_window, label2, "label2");
+  GLADE_HOOKUP_OBJECT (main_window, label1, "label1");
+  GLADE_HOOKUP_OBJECT (main_window, layer_XY_spin, "layer_XY_spin");
+  GLADE_HOOKUP_OBJECT (main_window, view_entry, "view_entry");
+  GLADE_HOOKUP_OBJECT (main_window, label6, "label6");
+  GLADE_HOOKUP_OBJECT (main_window, layer_view, "layer_view");
+  GLADE_HOOKUP_OBJECT (main_window, label4, "label4");
+  GLADE_HOOKUP_OBJECT (main_window, cube_row_spin, "cube_row_spin");
+  GLADE_HOOKUP_OBJECT (main_window, label3, "label3");
+  GLADE_HOOKUP_OBJECT (main_window, cube_col_spin, "cube_col_spin");
+  GLADE_HOOKUP_OBJECT (main_window, label7, "label7");
+  GLADE_HOOKUP_OBJECT (main_window, label8, "label8");
+  GLADE_HOOKUP_OBJECT (main_window, layerXZ_spin, "layerXZ_spin");
+  GLADE_HOOKUP_OBJECT (main_window, layer_YZ_spin, "layer_YZ_spin");
+  GLADE_HOOKUP_OBJECT (main_window, cube_transparency, "cube_transparency");
+  GLADE_HOOKUP_OBJECT (main_window, shaders, "shaders");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);
-  gtk_window_add_accel_group (GTK_WINDOW (ascEditor), accel_group);
+  gtk_window_add_accel_group (GTK_WINDOW (main_window), accel_group);
 
-  return ascEditor;
+  return main_window;
 }
 
 GtkWidget*
@@ -1274,5 +1178,290 @@ create_Alpha (void)
   GLADE_HOOKUP_OBJECT (Alpha, cbBlendFunction, "cbBlendFunction");
 
   return Alpha;
+}
+
+GtkWidget*
+create_window1 (void)
+{
+  GtkWidget *window1;
+  GtkWidget *table5;
+  GtkWidget *draw_neuron;
+  GtkWidget *draw_cube_toggle;
+  GtkWidget *get_matrix_button;
+
+  window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window1), _("window1"));
+
+  table5 = gtk_table_new (3, 3, FALSE);
+  gtk_widget_show (table5);
+  gtk_container_add (GTK_CONTAINER (window1), table5);
+
+  draw_neuron = gtk_toggle_button_new_with_mnemonic (_("Draw Neuron"));
+  gtk_widget_show (draw_neuron);
+  gtk_table_attach (GTK_TABLE (table5), draw_neuron, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  draw_cube_toggle = gtk_toggle_button_new_with_mnemonic (_("Draw Cube"));
+  gtk_widget_show (draw_cube_toggle);
+  gtk_table_attach (GTK_TABLE (table5), draw_cube_toggle, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  get_matrix_button = gtk_button_new_with_mnemonic (_("Get_Matrix"));
+  gtk_widget_show (get_matrix_button);
+  gtk_table_attach (GTK_TABLE (table5), get_matrix_button, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  g_signal_connect ((gpointer) draw_neuron, "toggled",
+                    G_CALLBACK (on_draw_neuron_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) draw_cube_toggle, "toggled",
+                    G_CALLBACK (on_draw_cube_toggle_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) get_matrix_button, "clicked",
+                    G_CALLBACK (on_get_matrix_button_clicked),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (window1, window1, "window1");
+  GLADE_HOOKUP_OBJECT (window1, table5, "table5");
+  GLADE_HOOKUP_OBJECT (window1, draw_neuron, "draw_neuron");
+  GLADE_HOOKUP_OBJECT (window1, draw_cube_toggle, "draw_cube_toggle");
+  GLADE_HOOKUP_OBJECT (window1, get_matrix_button, "get_matrix_button");
+
+  return window1;
+}
+
+GtkWidget*
+create_About (void)
+{
+  GtkWidget *About;
+  GtkWidget *label27;
+
+  About = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (About), _("VIVA"));
+
+  label27 = gtk_label_new (_("German Gonzalez <german.gonzalez@epfl.ch>\nKevin Smith < kevin.smith@epfl.ch >\nAurelien Lucchi <aurelien.lucchi@epfl.ch >"));
+  gtk_widget_show (label27);
+  gtk_container_add (GTK_CONTAINER (About), label27);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (About, About, "About");
+  GLADE_HOOKUP_OBJECT (About, label27, "label27");
+
+  return About;
+}
+
+GtkWidget*
+create_loadImageStack (void)
+{
+  GtkWidget *loadImageStack;
+  GtkWidget *vbox3;
+  GtkWidget *hbox3;
+  GtkWidget *label28;
+  GtkWidget *_3DLIS_D;
+  GtkWidget *_3DloadStackChooseDirectory;
+  GtkWidget *image2;
+  GtkWidget *hbox4;
+  GtkWidget *label29;
+  GtkWidget *_3DLIS_FF;
+  GtkWidget *hbox5;
+  GtkWidget *label30;
+  GtkObject *_3DLIS_SBI_adj;
+  GtkWidget *_3DLIS_SBI;
+  GtkWidget *label31;
+  GtkObject *_3DLIS_SE_adj;
+  GtkWidget *_3DLIS_SE;
+  GtkWidget *hbox6;
+  GtkWidget *label32;
+  GtkObject *_3DISL_VW_adj;
+  GtkWidget *_3DISL_VW;
+  GtkWidget *label33;
+  GtkObject *_3DISL_VH_adj;
+  GtkWidget *_3DISL_VH;
+  GtkWidget *label34;
+  GtkObject *_3DISL_VD_adj;
+  GtkWidget *_3DISL_VD;
+  GtkWidget *hbox7;
+  GtkWidget *button4;
+  GtkWidget *button5;
+
+  loadImageStack = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (loadImageStack), _("3D Image Stack"));
+
+  vbox3 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox3);
+  gtk_container_add (GTK_CONTAINER (loadImageStack), vbox3);
+
+  hbox3 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox3);
+  gtk_box_pack_start (GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
+
+  label28 = gtk_label_new (_("Directory:   "));
+  gtk_widget_show (label28);
+  gtk_box_pack_start (GTK_BOX (hbox3), label28, FALSE, FALSE, 0);
+
+  _3DLIS_D = gtk_entry_new ();
+  gtk_widget_show (_3DLIS_D);
+  gtk_box_pack_start (GTK_BOX (hbox3), _3DLIS_D, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (_3DLIS_D), 9679);
+
+  _3DloadStackChooseDirectory = gtk_button_new ();
+  gtk_widget_show (_3DloadStackChooseDirectory);
+  gtk_box_pack_start (GTK_BOX (hbox3), _3DloadStackChooseDirectory, FALSE, FALSE, 0);
+
+  image2 = gtk_image_new_from_stock ("gtk-directory", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image2);
+  gtk_container_add (GTK_CONTAINER (_3DloadStackChooseDirectory), image2);
+
+  hbox4 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox4);
+  gtk_box_pack_start (GTK_BOX (vbox3), hbox4, TRUE, TRUE, 0);
+
+  label29 = gtk_label_new (_("File Format: "));
+  gtk_widget_show (label29);
+  gtk_box_pack_start (GTK_BOX (hbox4), label29, FALSE, FALSE, 0);
+
+  _3DLIS_FF = gtk_entry_new ();
+  gtk_widget_show (_3DLIS_FF);
+  gtk_box_pack_start (GTK_BOX (hbox4), _3DLIS_FF, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (_3DLIS_FF), 9679);
+
+  hbox5 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox5);
+  gtk_box_pack_start (GTK_BOX (vbox3), hbox5, TRUE, TRUE, 0);
+
+  label30 = gtk_label_new (_("Z Init"));
+  gtk_widget_show (label30);
+  gtk_box_pack_start (GTK_BOX (hbox5), label30, FALSE, FALSE, 0);
+
+  _3DLIS_SBI_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DLIS_SBI = gtk_spin_button_new (GTK_ADJUSTMENT (_3DLIS_SBI_adj), 1, 0);
+  gtk_widget_show (_3DLIS_SBI);
+  gtk_box_pack_start (GTK_BOX (hbox5), _3DLIS_SBI, TRUE, TRUE, 0);
+
+  label31 = gtk_label_new (_("Z End"));
+  gtk_widget_show (label31);
+  gtk_box_pack_start (GTK_BOX (hbox5), label31, FALSE, FALSE, 0);
+
+  _3DLIS_SE_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DLIS_SE = gtk_spin_button_new (GTK_ADJUSTMENT (_3DLIS_SE_adj), 1, 0);
+  gtk_widget_show (_3DLIS_SE);
+  gtk_box_pack_start (GTK_BOX (hbox5), _3DLIS_SE, TRUE, TRUE, 0);
+
+  hbox6 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox6);
+  gtk_box_pack_start (GTK_BOX (vbox3), hbox6, TRUE, TRUE, 0);
+
+  label32 = gtk_label_new (_("Voxel\nWidth"));
+  gtk_widget_show (label32);
+  gtk_box_pack_start (GTK_BOX (hbox6), label32, FALSE, FALSE, 0);
+
+  _3DISL_VW_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DISL_VW = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VW_adj), 1, 0);
+  gtk_widget_show (_3DISL_VW);
+  gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VW, TRUE, TRUE, 0);
+
+  label33 = gtk_label_new (_("Voxel\nHeight"));
+  gtk_widget_show (label33);
+  gtk_box_pack_start (GTK_BOX (hbox6), label33, FALSE, FALSE, 0);
+
+  _3DISL_VH_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DISL_VH = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VH_adj), 1, 0);
+  gtk_widget_show (_3DISL_VH);
+  gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VH, TRUE, TRUE, 0);
+
+  label34 = gtk_label_new (_("Voxel\nDepth"));
+  gtk_widget_show (label34);
+  gtk_box_pack_start (GTK_BOX (hbox6), label34, FALSE, FALSE, 0);
+
+  _3DISL_VD_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DISL_VD = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VD_adj), 1, 0);
+  gtk_widget_show (_3DISL_VD);
+  gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VD, TRUE, TRUE, 0);
+
+  hbox7 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_show (hbox7);
+  gtk_box_pack_start (GTK_BOX (vbox3), hbox7, TRUE, TRUE, 0);
+
+  button4 = gtk_button_new_with_mnemonic (_("Ok"));
+  gtk_widget_show (button4);
+  gtk_box_pack_start (GTK_BOX (hbox7), button4, TRUE, TRUE, 0);
+
+  button5 = gtk_button_new_with_mnemonic (_("Cancel"));
+  gtk_widget_show (button5);
+  gtk_box_pack_start (GTK_BOX (hbox7), button5, TRUE, TRUE, 0);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (loadImageStack, loadImageStack, "loadImageStack");
+  GLADE_HOOKUP_OBJECT (loadImageStack, vbox3, "vbox3");
+  GLADE_HOOKUP_OBJECT (loadImageStack, hbox3, "hbox3");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label28, "label28");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_D, "_3DLIS_D");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DloadStackChooseDirectory, "_3DloadStackChooseDirectory");
+  GLADE_HOOKUP_OBJECT (loadImageStack, image2, "image2");
+  GLADE_HOOKUP_OBJECT (loadImageStack, hbox4, "hbox4");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label29, "label29");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_FF, "_3DLIS_FF");
+  GLADE_HOOKUP_OBJECT (loadImageStack, hbox5, "hbox5");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label30, "label30");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_SBI, "_3DLIS_SBI");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label31, "label31");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_SE, "_3DLIS_SE");
+  GLADE_HOOKUP_OBJECT (loadImageStack, hbox6, "hbox6");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label32, "label32");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DISL_VW, "_3DISL_VW");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label33, "label33");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DISL_VH, "_3DISL_VH");
+  GLADE_HOOKUP_OBJECT (loadImageStack, label34, "label34");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DISL_VD, "_3DISL_VD");
+  GLADE_HOOKUP_OBJECT (loadImageStack, hbox7, "hbox7");
+  GLADE_HOOKUP_OBJECT (loadImageStack, button4, "button4");
+  GLADE_HOOKUP_OBJECT (loadImageStack, button5, "button5");
+
+  return loadImageStack;
+}
+
+GtkWidget*
+create_filechooserdialog1 (void)
+{
+  GtkWidget *filechooserdialog1;
+  GtkWidget *dialog_vbox1;
+  GtkWidget *dialog_action_area1;
+  GtkWidget *button1;
+  GtkWidget *button2;
+
+  filechooserdialog1 = gtk_file_chooser_dialog_new ("", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL);
+  gtk_container_set_border_width (GTK_CONTAINER (filechooserdialog1), 5);
+  gtk_window_set_type_hint (GTK_WINDOW (filechooserdialog1), GDK_WINDOW_TYPE_HINT_DIALOG);
+
+  dialog_vbox1 = GTK_DIALOG (filechooserdialog1)->vbox;
+  gtk_widget_show (dialog_vbox1);
+
+  dialog_action_area1 = GTK_DIALOG (filechooserdialog1)->action_area;
+  gtk_widget_show (dialog_action_area1);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1), GTK_BUTTONBOX_END);
+
+  button1 = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_show (button1);
+  gtk_dialog_add_action_widget (GTK_DIALOG (filechooserdialog1), button1, GTK_RESPONSE_CANCEL);
+  GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
+
+  button2 = gtk_button_new_from_stock ("gtk-open");
+  gtk_widget_show (button2);
+  gtk_dialog_add_action_widget (GTK_DIALOG (filechooserdialog1), button2, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (filechooserdialog1, filechooserdialog1, "filechooserdialog1");
+  GLADE_HOOKUP_OBJECT_NO_REF (filechooserdialog1, dialog_vbox1, "dialog_vbox1");
+  GLADE_HOOKUP_OBJECT_NO_REF (filechooserdialog1, dialog_action_area1, "dialog_action_area1");
+  GLADE_HOOKUP_OBJECT (filechooserdialog1, button1, "button1");
+  GLADE_HOOKUP_OBJECT (filechooserdialog1, button2, "button2");
+
+  gtk_widget_grab_default (button2);
+  return filechooserdialog1;
 }
 
