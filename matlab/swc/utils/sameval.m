@@ -1,7 +1,8 @@
-function gplotl(W, xy, LABELS, Iraw)
-%% NEIGHBORS2 finds neighbor elements in a 2D array
-%   
-%   TODO: write documentation
+function r = sameval(x)
+%% SAMEVAL tests to see if the elements of x contain the same value 
+%
+%
+%   See also NLFILTER
 
 %   Copyright © 2009 Computer Vision Lab, 
 %   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
@@ -18,28 +19,9 @@ function gplotl(W, xy, LABELS, Iraw)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+r = 1;
 
-
-
-
-
-% plot the labeled graph
-%figure; 
-imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on;
-% FIXME : white color appears black on screen captures ?
-%colors = bone(max(LABELS(:))+1);
-%colors = colors(1:size(colors,1)-1,:); % remove first color (white)
-%colors = bone(max(LABELS(:)));
-%colors = jet(max(LABELS(:)));
-
-colors = [.25 .25 .25; .3 1 .3];
-
-for l = 1:max(LABELS(:))
-    A = sparse([],[],[], size(W,1), size(W,1),0);
-    members = find(LABELS == l)';
-    for m = members
-       A(m,:) = W(m,:); 
-    end
-    A = max(A,A');
-    gplot2(A, [xy(:,2) xy(:,1)], '.-', 'Color', colors(l,:));
+if ~isempty(find(x(1) ~= x(:), 1)); 
+    r = 0;
 end
+%r = prod( x(1) == x(:));

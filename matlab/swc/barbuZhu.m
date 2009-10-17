@@ -6,14 +6,14 @@ tic;
 % 1 = Background
 % 2 = Boundary
 % 3 = Mitochondria interior
-%LabelList = [1 2 3];
-LabelList = [1 2];
+%labelList = [1 2 3];
+labelList = [1 2];
 
 % Debug parameters
 exportToFileOnly = false;
-createMovie = true;
+createMovie = false;
 report = fopen('report.txt','w');
-displayOn = true;
+displayOn  = false;
 if createMovie
   displayOn = true;
 end
@@ -161,24 +161,24 @@ for c = 1:numCw
     
     % FIXME : The following doesn't work because we pass a set of
     % pixels belonging to a region butthe SVM was trained
-    % using a superpixel and its immediate neighbors
-    %if useGroundTruth
-    %  lpixels = cell2mat(pixelList(members)');
-    %  LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
-      %i2 = zeros(size(IGroundTruth),'uint8');
-      %i2(lpixels) = Iraw(lpixels);
-      %imshow(i2);
-      %keyboard
-    %else
-    %  pixels = Iraw(cell2mat(pixelList(members)'));
-    %  [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI,rescaleData);    
-    %  LABELS(members) = find(pb == max(pb),1);
-    %end
+%     % using a superpixel and its immediate neighbors
+%     if useGroundTruth
+%      lpixels = cell2mat(pixelList(members)');
+%      LABELS(members) = getMostFrequentLabel(lpixels,IGroundTruth);
+%       %i2 = zeros(size(IGroundTruth),'uint8');
+%       %i2(lpixels) = Iraw(lpixels);
+%       %imshow(i2);
+%       %keyboard
+%     else
+%      pixels = Iraw(cell2mat(pixelList(members)'));
+%      [predicted_label, accuracy, pb] = getLikelihood(pixels, model,minI,maxI,rescaleData);    
+%      LABELS(members) = find(pb == max(pb),1);
+%     end
 
     LABELS(members) = 1;
     
 
-    %LABELS(members) = randsample(LabelList,1);
+    %LABELS(members) = randsample(labelList,1);
 %     if rand(1) < .5
 %         LABELS(members) = 1;
 %     else
@@ -236,13 +236,13 @@ for s = 2:S
     c = randsample([neighborColors newColor], 1);
     %c = randsample([neighborColors (max(Cw)+1)], 1);
     if c == max(Cw)+1
-        newL = randsample(LabelList, 1);
+        newL = randsample(labelList, 1);
         type_move = 'Split';
     else
         newL = LABELS(find(Cw == c, 1));
         type_move = 'Merge';
     end
-    %newL = randsample(LabelList, 1);
+    %newL = randsample(labelList, 1);
 
     LABELSp = LABELS;
     LABELSp(V0) = newL;

@@ -29,7 +29,8 @@ if strcmp(varargin{1},'init')
 
         if useGroundTruth
             lpixels = cell2mat(pixelList(nodes)');
-            P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
+            %P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
+            P(v) = max([0.5 (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v))]);
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
             [predicted_label, accuracy, pb] = getLikelihood(pixels, ...
@@ -47,7 +48,8 @@ else
 
         if useGroundTruth
             lpixels = cell2mat(pixelList(nodes)');
-            P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
+            %P(v) = (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v));
+            P(v) = max([0.5 (getMostFrequentLabel(lpixels,IGroundTruth) == LABELS(v))]);
         else
             pixels = Iraw(cell2mat(pixelList(nodes)'));
             [predicted_label, accuracy, pb] = getLikelihood(pixels, ...

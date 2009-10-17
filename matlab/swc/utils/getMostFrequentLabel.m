@@ -9,12 +9,18 @@ for p=1:size(pixelList,1)
     end
 end
 
-if abs(count) < 0.3*size(pixelList,1)
-    label = 2; % boundary
+% if abs(count) < 0.3*size(pixelList,1)
+%     label = 2; % boundary
+% else
+%     if count < 0
+%         label = 1; % background
+%     else
+%         label = 3; % mitochondria interior
+%     end
+% end
+
+if count < 0
+    label = 1; % background
 else
-    if count < 0
-        label = 1; % background
-    else
-        label = 3; % mitochondria interior
-    end
+    label = 2; % mitochondria interior
 end
