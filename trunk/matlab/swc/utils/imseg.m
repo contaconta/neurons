@@ -1,7 +1,7 @@
-function gplotl(W, xy, LABELS, Iraw)
-%% NEIGHBORS2 finds neighbor elements in a 2D array
-%   
-%   TODO: write documentation
+%% IMSEG plots an image with its superpixel segmentation 
+%
+%
+%   See also NLFILTER
 
 %   Copyright © 2009 Computer Vision Lab, 
 %   École Polytechnique Fédérale de Lausanne (EPFL), Switzerland.
@@ -18,28 +18,13 @@ function gplotl(W, xy, LABELS, Iraw)
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+function I = imseg(I, L)
 
+fun = @(x) ~sameval(x(:));
+E = nlfilter(L, [3 3], fun);
+%E = bwmorph(E, 'shrink');
+E = bwmorph(~E, 'thicken', Inf);
+E = bwmorph(~E, 'shrink');
 
+I(E == 1) = 50;
 
-
-
-% plot the labeled graph
-%figure; 
-imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on;
-% FIXME : white color appears black on screen captures ?
-%colors = bone(max(LABELS(:))+1);
-%colors = colors(1:size(colors,1)-1,:); % remove first color (white)
-%colors = bone(max(LABELS(:)));
-%colors = jet(max(LABELS(:)));
-
-colors = [.25 .25 .25; .3 1 .3];
-
-for l = 1:max(LABELS(:))
-    A = sparse([],[],[], size(W,1), size(W,1),0);
-    members = find(LABELS == l)';
-    for m = members
-       A(m,:) = W(m,:); 
-    end
-    A = max(A,A');
-    gplot2(A, [xy(:,2) xy(:,1)], '.-', 'Color', colors(l,:));
-end
