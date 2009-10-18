@@ -205,4 +205,16 @@ enum eBlendFunction{
 };
 eBlendFunction blendFunction = MIN_MAX;
 
+
+// 3D Load Image Stack Variables
+GtkWidget* _3DLIS;
+string _3DLIS_directory;
+string _3DLIS_format;
+int    _3DLIS_layerInit   = 1;
+int    _3DLIS_layerEnd    = 30;
+float  _3DLIS_voxelWidth  = 1.0;
+float  _3DLIS_voxelHeight = 1.0;
+float  _3DLIS_voxelDepth  = 1.0;
+
+
 #endif

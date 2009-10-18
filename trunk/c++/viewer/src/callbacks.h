@@ -353,3 +353,76 @@ on_open_3d_stack1_activate             (GtkMenuItem     *menuitem,
 void
 on_open_4d_stack1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_3DLIS_D_changed                     (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_D_editing_done                (GtkCellEditable *celleditable,
+                                        gpointer         user_data);
+
+gboolean
+on_image2_button_press_event           (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_FF_editing_done               (GtkCellEditable *celleditable,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_FF_changed                    (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_SBI_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_SBI_value_changed             (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_SE_changed                    (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_SE_value_changed              (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data);
+
+void
+on_3DISL_VW_value_changed              (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data);
+
+void
+on_3DISL_VH_value_changed              (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data);
+
+void
+on_3DISL_VD_value_changed              (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data);
+
+void
+on_3DIS_OK_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_C_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_ChooseDirectory_clicked       (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_ChooseDirectory_pressed       (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_CD_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3DLIS_CDir_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);

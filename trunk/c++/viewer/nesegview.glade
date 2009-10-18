@@ -13,6 +13,7 @@
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="icon">icon.png</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
@@ -2412,7 +2413,7 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkEntry" id="3DLIS-D">
+	    <widget class="GtkEntry" id="entry_3DLIS_D">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">True</property>
@@ -2422,6 +2423,7 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	      <property name="has_frame">True</property>
 	      <property name="invisible_char">●</property>
 	      <property name="activates_default">False</property>
+	      <signal name="changed" handler="on_3DLIS_D_changed" last_modification_time="Sun, 18 Oct 2009 16:48:38 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2431,16 +2433,17 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="3DloadStackChooseDirectory">
+	    <widget class="GtkButton" id="3DLIS_CDir">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_3DLIS_CDir_clicked" last_modification_time="Sun, 18 Oct 2009 17:52:07 GMT"/>
 
 	      <child>
-		<widget class="GtkImage" id="image2">
+		<widget class="GtkImage" id="image3">
 		  <property name="visible">True</property>
-		  <property name="stock">gtk-directory</property>
+		  <property name="stock">gtk-open</property>
 		  <property name="icon_size">4</property>
 		  <property name="xalign">0.5</property>
 		  <property name="yalign">0.5</property>
@@ -2505,6 +2508,7 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	      <property name="has_frame">True</property>
 	      <property name="invisible_char">●</property>
 	      <property name="activates_default">False</property>
+	      <signal name="changed" handler="on_3DLIS_FF_changed" last_modification_time="Sun, 18 Oct 2009 16:49:31 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2562,6 +2566,7 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
 	      <property name="adjustment">1 0 100 1 10 10</property>
+	      <signal name="value_changed" handler="on_3DLIS_SBI_value_changed" last_modification_time="Sun, 18 Oct 2009 16:50:07 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2605,7 +2610,8 @@ Aurelien Lucchi &lt;aurelien.lucchi@epfl.ch &gt;</property>
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">1 0 100 1 10 10</property>
+	      <property name="adjustment">30 0 100 1 10 10</property>
+	      <signal name="value_changed" handler="on_3DLIS_SE_value_changed" last_modification_time="Sun, 18 Oct 2009 16:50:15 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2658,12 +2664,13 @@ Width</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
-	      <property name="digits">0</property>
-	      <property name="numeric">False</property>
+	      <property name="digits">2</property>
+	      <property name="numeric">True</property>
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">1 0 100 1 10 10</property>
+	      <property name="adjustment">1 0 100 0.10000000149 1 10</property>
+	      <signal name="value_changed" handler="on_3DISL_VW_value_changed" last_modification_time="Sun, 18 Oct 2009 16:50:22 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2703,12 +2710,13 @@ Height</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
-	      <property name="digits">0</property>
-	      <property name="numeric">False</property>
+	      <property name="digits">2</property>
+	      <property name="numeric">True</property>
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">1 0 100 1 10 10</property>
+	      <property name="adjustment">1 0 100 0.10000000149 1 10</property>
+	      <signal name="value_changed" handler="on_3DISL_VH_value_changed" last_modification_time="Sun, 18 Oct 2009 16:50:28 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2748,12 +2756,13 @@ Depth</property>
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="climb_rate">1</property>
-	      <property name="digits">0</property>
-	      <property name="numeric">False</property>
+	      <property name="digits">2</property>
+	      <property name="numeric">True</property>
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">1 0 100 1 10 10</property>
+	      <property name="adjustment">1 0 100 0.10000000149 10 10</property>
+	      <signal name="value_changed" handler="on_3DISL_VD_value_changed" last_modification_time="Sun, 18 Oct 2009 16:50:34 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2776,13 +2785,14 @@ Depth</property>
 	  <property name="spacing">0</property>
 
 	  <child>
-	    <widget class="GtkButton" id="button4">
+	    <widget class="GtkButton" id="3DIS_OK">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Ok</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_3DIS_OK_clicked" last_modification_time="Sun, 18 Oct 2009 16:51:21 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -2792,13 +2802,14 @@ Depth</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button5">
+	    <widget class="GtkButton" id="3DLIS_C">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Cancel</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_3DLIS_C_clicked" last_modification_time="Sun, 18 Oct 2009 16:51:42 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

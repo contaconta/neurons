@@ -52,7 +52,7 @@ void Cube<T,U>::load_parameters(string filenameParams)
    // if(filenameVoxelData == ""){
      // filenameVoxelData = getNameFromPathWithoutExtension(filenameParams) + ".vl";
      // int size = getFileSize(directory + filenameVoxelData);
-     // if(  size == cubeDepth*cubeHeight*cubeWidth)
+v     // if(  size == cubeDepth*cubeHeight*cubeWidth)
        // type = "uchar";
      // else if ( size == 4*cubeDepth*cubeHeight*cubeWidth)
        // type = "float";

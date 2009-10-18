@@ -150,13 +150,19 @@ void
 on_drawing3D_realize                   (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+  for(int i = 0; i < objectNames.size(); i++)
+    std::cout << objectNames[i] << std::endl;
+}
 
-  /* glutInit(&argc, argv); */
-  /* glutInit(NULL, NULL); */
+
+
+void init_GUI_late()
+{
   std::cout << "on_drawing3D_realize" << std::endl;
 
-  GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
-  GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (widget);
+  GdkGLContext *glcontext   = gtk_widget_get_gl_context  (drawing3D);
+  GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (drawing3D);
+
 
   /*** OpenGL BEGIN ***/
   if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
@@ -177,12 +183,6 @@ on_drawing3D_realize                   (GtkWidget       *widget,
   /* toDraw.push_back(axis); */
   /* objectNames.push_back("Axis"); */
 
-
-  if(cube == NULL){
-    cube = new Cube<uchar, ulong>();
-    cube->dummy = true;
-  }
-
   /** Loads the drawing parameters to the cube.*/
   for(int i = 0; i < toDraw.size(); i++){
     toDraw[i]->v_draw_projection = flag_minMax;
@@ -195,9 +195,8 @@ on_drawing3D_realize                   (GtkWidget       *widget,
  flag_draw_XZ = false;
  flag_draw_YZ = false;
 
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
 }
-
-
 
 
 
@@ -533,8 +532,8 @@ void
 on_open_3d_stack1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  GtkWidget* load3DStackWidget = create_loadImageStack ();
-  gtk_widget_show (load3DStackWidget);
+  _3DLIS = create_loadImageStack();
+  gtk_widget_show (_3DLIS);
 }
 
 
@@ -544,4 +543,8 @@ on_open_4d_stack1_activate             (GtkMenuItem     *menuitem,
 {
 
 }
+
+
+
+
 

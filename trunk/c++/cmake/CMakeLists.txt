@@ -39,18 +39,18 @@ include_directories(${GLUT_INCLUDE_DIR} )
 find_package(GSL REQUIRED )
 include_directories(${GSL_INCLUDE_DIR})
 
-find_package(BBP-SDK)
-IF(${BBP-SDK_FOUND})
-  find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework)      
-  IF(${Boost_FOUND})
-        INCLUDE_DIRECTORIES( ${BBP-SDK_INCLUDE_DIRS})
-        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_BBP")
-        set(Boost_USE_MULTITHREAD OFF)
-  ENDIF(${Boost_FOUND})
-  # message("BBP has been found")
-ELSE(${BBP-SDK_FOUND})
-message("BBP has NOT been found")
-ENDIF(${BBP-SDK_FOUND})
+#find_package(BBP-SDK)
+#IF(${BBP-SDK_FOUND})
+#  find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework)      
+#  IF(${Boost_FOUND})
+#        INCLUDE_DIRECTORIES( ${BBP-SDK_INCLUDE_DIRS})
+#        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_BBP")
+#        set(Boost_USE_MULTITHREAD OFF)
+#  ENDIF(${Boost_FOUND})
+#  # message("BBP has been found")
+#ELSE(${BBP-SDK_FOUND})
+#message("BBP has NOT been found")
+#ENDIF(${BBP-SDK_FOUND})
 
 ## Needed by the viewer and modules
 find_package(GTK2)
@@ -154,6 +154,7 @@ IF(${GLEW_FOUND})
   ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_menu.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_select.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_ui.c
+  ${CMAKE_SOURCE_DIR}/../viewer/src/callbacks_load3DImageStack.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/support.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/interface.c
   ${CMAKE_SOURCE_DIR}/../viewer/src/main.c
