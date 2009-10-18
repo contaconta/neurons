@@ -30,6 +30,7 @@ GtkWidget*
 create_main_window (void)
 {
   GtkWidget *main_window;
+  GdkPixbuf *main_window_icon_pixbuf;
   GtkWidget *vbox1;
   GtkWidget *menubar1;
   GtkWidget *menuitem4;
@@ -88,6 +89,12 @@ create_main_window (void)
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (main_window, 1024, 702);
   gtk_window_set_title (GTK_WINDOW (main_window), _("VIVA 0.0"));
+  main_window_icon_pixbuf = create_pixbuf ("icon.png");
+  if (main_window_icon_pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (main_window), main_window_icon_pixbuf);
+      gdk_pixbuf_unref (main_window_icon_pixbuf);
+    }
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox1);
@@ -1261,9 +1268,9 @@ create_loadImageStack (void)
   GtkWidget *vbox3;
   GtkWidget *hbox3;
   GtkWidget *label28;
-  GtkWidget *_3DLIS_D;
-  GtkWidget *_3DloadStackChooseDirectory;
-  GtkWidget *image2;
+  GtkWidget *entry_3DLIS_D;
+  GtkWidget *_3DLIS_CDir;
+  GtkWidget *image3;
   GtkWidget *hbox4;
   GtkWidget *label29;
   GtkWidget *_3DLIS_FF;
@@ -1285,8 +1292,8 @@ create_loadImageStack (void)
   GtkObject *_3DISL_VD_adj;
   GtkWidget *_3DISL_VD;
   GtkWidget *hbox7;
-  GtkWidget *button4;
-  GtkWidget *button5;
+  GtkWidget *_3DIS_OK;
+  GtkWidget *_3DLIS_C;
 
   loadImageStack = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (loadImageStack), _("3D Image Stack"));
@@ -1303,18 +1310,18 @@ create_loadImageStack (void)
   gtk_widget_show (label28);
   gtk_box_pack_start (GTK_BOX (hbox3), label28, FALSE, FALSE, 0);
 
-  _3DLIS_D = gtk_entry_new ();
-  gtk_widget_show (_3DLIS_D);
-  gtk_box_pack_start (GTK_BOX (hbox3), _3DLIS_D, TRUE, TRUE, 0);
-  gtk_entry_set_invisible_char (GTK_ENTRY (_3DLIS_D), 9679);
+  entry_3DLIS_D = gtk_entry_new ();
+  gtk_widget_show (entry_3DLIS_D);
+  gtk_box_pack_start (GTK_BOX (hbox3), entry_3DLIS_D, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entry_3DLIS_D), 9679);
 
-  _3DloadStackChooseDirectory = gtk_button_new ();
-  gtk_widget_show (_3DloadStackChooseDirectory);
-  gtk_box_pack_start (GTK_BOX (hbox3), _3DloadStackChooseDirectory, FALSE, FALSE, 0);
+  _3DLIS_CDir = gtk_button_new ();
+  gtk_widget_show (_3DLIS_CDir);
+  gtk_box_pack_start (GTK_BOX (hbox3), _3DLIS_CDir, FALSE, FALSE, 0);
 
-  image2 = gtk_image_new_from_stock ("gtk-directory", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image2);
-  gtk_container_add (GTK_CONTAINER (_3DloadStackChooseDirectory), image2);
+  image3 = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image3);
+  gtk_container_add (GTK_CONTAINER (_3DLIS_CDir), image3);
 
   hbox4 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox4);
@@ -1346,7 +1353,7 @@ create_loadImageStack (void)
   gtk_widget_show (label31);
   gtk_box_pack_start (GTK_BOX (hbox5), label31, FALSE, FALSE, 0);
 
-  _3DLIS_SE_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  _3DLIS_SE_adj = gtk_adjustment_new (30, 0, 100, 1, 10, 10);
   _3DLIS_SE = gtk_spin_button_new (GTK_ADJUSTMENT (_3DLIS_SE_adj), 1, 0);
   gtk_widget_show (_3DLIS_SE);
   gtk_box_pack_start (GTK_BOX (hbox5), _3DLIS_SE, TRUE, TRUE, 0);
@@ -1359,49 +1366,83 @@ create_loadImageStack (void)
   gtk_widget_show (label32);
   gtk_box_pack_start (GTK_BOX (hbox6), label32, FALSE, FALSE, 0);
 
-  _3DISL_VW_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  _3DISL_VW = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VW_adj), 1, 0);
+  _3DISL_VW_adj = gtk_adjustment_new (1, 0, 100, 0.10000000149, 1, 10);
+  _3DISL_VW = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VW_adj), 1, 2);
   gtk_widget_show (_3DISL_VW);
   gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VW, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (_3DISL_VW), TRUE);
 
   label33 = gtk_label_new (_("Voxel\nHeight"));
   gtk_widget_show (label33);
   gtk_box_pack_start (GTK_BOX (hbox6), label33, FALSE, FALSE, 0);
 
-  _3DISL_VH_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  _3DISL_VH = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VH_adj), 1, 0);
+  _3DISL_VH_adj = gtk_adjustment_new (1, 0, 100, 0.10000000149, 1, 10);
+  _3DISL_VH = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VH_adj), 1, 2);
   gtk_widget_show (_3DISL_VH);
   gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VH, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (_3DISL_VH), TRUE);
 
   label34 = gtk_label_new (_("Voxel\nDepth"));
   gtk_widget_show (label34);
   gtk_box_pack_start (GTK_BOX (hbox6), label34, FALSE, FALSE, 0);
 
-  _3DISL_VD_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  _3DISL_VD = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VD_adj), 1, 0);
+  _3DISL_VD_adj = gtk_adjustment_new (1, 0, 100, 0.10000000149, 10, 10);
+  _3DISL_VD = gtk_spin_button_new (GTK_ADJUSTMENT (_3DISL_VD_adj), 1, 2);
   gtk_widget_show (_3DISL_VD);
   gtk_box_pack_start (GTK_BOX (hbox6), _3DISL_VD, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (_3DISL_VD), TRUE);
 
   hbox7 = gtk_hbox_new (TRUE, 0);
   gtk_widget_show (hbox7);
   gtk_box_pack_start (GTK_BOX (vbox3), hbox7, TRUE, TRUE, 0);
 
-  button4 = gtk_button_new_with_mnemonic (_("Ok"));
-  gtk_widget_show (button4);
-  gtk_box_pack_start (GTK_BOX (hbox7), button4, TRUE, TRUE, 0);
+  _3DIS_OK = gtk_button_new_with_mnemonic (_("Ok"));
+  gtk_widget_show (_3DIS_OK);
+  gtk_box_pack_start (GTK_BOX (hbox7), _3DIS_OK, TRUE, TRUE, 0);
 
-  button5 = gtk_button_new_with_mnemonic (_("Cancel"));
-  gtk_widget_show (button5);
-  gtk_box_pack_start (GTK_BOX (hbox7), button5, TRUE, TRUE, 0);
+  _3DLIS_C = gtk_button_new_with_mnemonic (_("Cancel"));
+  gtk_widget_show (_3DLIS_C);
+  gtk_box_pack_start (GTK_BOX (hbox7), _3DLIS_C, TRUE, TRUE, 0);
+
+  g_signal_connect ((gpointer) entry_3DLIS_D, "changed",
+                    G_CALLBACK (on_3DLIS_D_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DLIS_CDir, "clicked",
+                    G_CALLBACK (on_3DLIS_CDir_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) _3DLIS_FF, "changed",
+                    G_CALLBACK (on_3DLIS_FF_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DLIS_SBI, "value_changed",
+                    G_CALLBACK (on_3DLIS_SBI_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DLIS_SE, "value_changed",
+                    G_CALLBACK (on_3DLIS_SE_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DISL_VW, "value_changed",
+                    G_CALLBACK (on_3DISL_VW_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DISL_VH, "value_changed",
+                    G_CALLBACK (on_3DISL_VH_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DISL_VD, "value_changed",
+                    G_CALLBACK (on_3DISL_VD_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) _3DIS_OK, "clicked",
+                    G_CALLBACK (on_3DIS_OK_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) _3DLIS_C, "clicked",
+                    G_CALLBACK (on_3DLIS_C_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (loadImageStack, loadImageStack, "loadImageStack");
   GLADE_HOOKUP_OBJECT (loadImageStack, vbox3, "vbox3");
   GLADE_HOOKUP_OBJECT (loadImageStack, hbox3, "hbox3");
   GLADE_HOOKUP_OBJECT (loadImageStack, label28, "label28");
-  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_D, "_3DLIS_D");
-  GLADE_HOOKUP_OBJECT (loadImageStack, _3DloadStackChooseDirectory, "_3DloadStackChooseDirectory");
-  GLADE_HOOKUP_OBJECT (loadImageStack, image2, "image2");
+  GLADE_HOOKUP_OBJECT (loadImageStack, entry_3DLIS_D, "entry_3DLIS_D");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_CDir, "_3DLIS_CDir");
+  GLADE_HOOKUP_OBJECT (loadImageStack, image3, "image3");
   GLADE_HOOKUP_OBJECT (loadImageStack, hbox4, "hbox4");
   GLADE_HOOKUP_OBJECT (loadImageStack, label29, "label29");
   GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_FF, "_3DLIS_FF");
@@ -1418,8 +1459,8 @@ create_loadImageStack (void)
   GLADE_HOOKUP_OBJECT (loadImageStack, label34, "label34");
   GLADE_HOOKUP_OBJECT (loadImageStack, _3DISL_VD, "_3DISL_VD");
   GLADE_HOOKUP_OBJECT (loadImageStack, hbox7, "hbox7");
-  GLADE_HOOKUP_OBJECT (loadImageStack, button4, "button4");
-  GLADE_HOOKUP_OBJECT (loadImageStack, button5, "button5");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DIS_OK, "_3DIS_OK");
+  GLADE_HOOKUP_OBJECT (loadImageStack, _3DLIS_C, "_3DLIS_C");
 
   return loadImageStack;
 }

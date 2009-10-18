@@ -28,6 +28,7 @@
 #include "globalsE.h"
 #include "Cube_P.h"
 #include "utils.h"
+#include "functions.h"
 using namespace std;
 
 
@@ -87,7 +88,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
 
     case ARGP_KEY_END:
       /* Not enough arguments. */
-      if (state->arg_num < 1)
+      if (state->arg_num < 0)
         argp_usage (state);
       break;
 
@@ -107,6 +108,8 @@ void init_GUI()
       GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(selectionEditor),"selection_type"));
       gtk_combo_box_set_active(selection_type,0);
     }
+
+
 }
 
 void
@@ -295,6 +298,7 @@ main (int argc, char *argv[])
   argcp = argc;
   argvp = argv;
 
+  add_pixmap_directory("/home/ggonzale/workspace/viva/assets/");
 
   //Initialization of the arguments
   flag_minMax = 0; //minIntensity
@@ -331,10 +335,18 @@ main (int argc, char *argv[])
                                 TRUE,
                                 GDK_GL_RGBA_TYPE);
 
-  // Initialize glew
+  cube = new Cube<uchar, ulong>();
+  cube->dummy = true;
+
   glutInit(&argcp, argvp);
+  gtk_widget_show (ascEditor);
+  init_GUI();
+  load_plugins();
+
+
+  // Initialize glew
+
 #ifdef WITH_GLEW
-  int win = glutCreateWindow("GLEW Test");
   GLenum err = glewInit();
   if (GLEW_OK != err)
   {
@@ -344,10 +356,9 @@ main (int argc, char *argv[])
   else {
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
   }
-  glutDestroyWindow(win);
 #endif
 
-  gtk_widget_show (ascEditor);
+  init_GUI_late();
 
   if(majorMode & MOD_ASCEDITOR){
     GtkWidget* controlsAsc = create_ascEditControls();
@@ -362,9 +373,7 @@ main (int argc, char *argv[])
     gtk_widget_show (alphaEditor);
   }
 
-  init_GUI();
-  load_plugins();
-
   gtk_main ();
+
   return 0;
 }

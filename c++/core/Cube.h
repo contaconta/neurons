@@ -80,6 +80,8 @@ public:
   Cube(int width, int height, int depth,
        string nameFile,
        float voxelWidth = 1, float voxelHeight = 1, float voxelDepth = 1);
+  Cube(int width, int height, int depth,
+       float voxelWidth = 1, float voxelHeight = 1, float voxelDepth = 1);
   Cube(string filenameParams, bool load_volume_file = true);
   Cube(string filenameParams, string _filenameVoxelData);
   Cube(string filenameParams, string _filenameVoxelData, string filenameIntegralData);
@@ -666,6 +668,27 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
   glGenTextures(1, &wholeTexture);
   glGenTextures(1, &wholeTextureTrue);
 }
+
+template <class T, class U>
+Cube<T,U>::Cube
+(int width, int height, int depth,
+ float voxelWidth, float voxelHeight, float voxelDepth)
+{
+  init();
+  this->cubeWidth   = width;
+  this->cubeHeight  = height;
+  this->cubeDepth   = depth;
+  this->voxelWidth  = voxelWidth;
+  this->voxelHeight = voxelHeight;
+  this->voxelDepth  = voxelDepth;
+  this->x_offset = 0;
+  this->y_offset = 0;
+  this->z_offset = 0;
+  this->filenameVoxelData = "";
+  load_volume_data("", false);
+}
+
+
 
 template <class T, class U>
 void Cube<T,U>::print_size()

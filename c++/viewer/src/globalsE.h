@@ -190,4 +190,16 @@ enum eBlendFunction{
 };
 extern eBlendFunction blendFunction;
 
+// 3D Load Image Stack Variables
+extern GtkWidget* _3DLIS;
+extern string _3DLIS_directory;
+extern string _3DLIS_format;
+extern int    _3DLIS_layerInit;
+extern int    _3DLIS_layerEnd;
+extern float  _3DLIS_voxelWidth;
+extern float  _3DLIS_voxelHeight;
+extern float  _3DLIS_voxelDepth;
+
+
+
 #endif
