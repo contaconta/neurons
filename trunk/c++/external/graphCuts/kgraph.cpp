@@ -26,10 +26,10 @@ template <typename captype, typename tcaptype, typename flowtype>
 	arcs = (arc*) malloc(2*edge_num_max*sizeof(arc));
 	
 	if (!nodes || !arcs) {
-		if (error_function) (*error_function)("Not enough memory!");
-		else
-			printf("Not enough memory!\n");
-		exit(13);
+          if (error_function) (*error_function)((char*)"Not enough memory!");
+          else
+            printf("Not enough memory!\n");
+          exit(13);
 	}
 	printf("Memory allocated\n");
 
@@ -80,7 +80,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 	node_num_max += node_num_max / 2;
 	if (node_num_max < node_num + num) node_num_max = node_num + num;
 	nodes = (node*) realloc(nodes_old, node_num_max*sizeof(node));
-	if (!nodes) { if (error_function) (*error_function)("Not enough memory!"); exit(1); }
+	if (!nodes) { if (error_function) (*error_function)((char*)"Not enough memory!"); exit(1); }
 
 	node_last = nodes + node_num;
 	node_max = nodes + node_num_max;
@@ -104,7 +104,7 @@ template <typename captype, typename tcaptype, typename flowtype>
 
 	arc_num_max += arc_num_max / 2; if (arc_num_max & 1) arc_num_max ++;
 	arcs = (arc*) realloc(arcs_old, arc_num_max*sizeof(arc));
-	if (!arcs) { if (error_function) (*error_function)("Not enough memory!"); exit(1); }
+	if (!arcs) { if (error_function) (*error_function)((char*)"Not enough memory!"); exit(1); }
 
 	arc_last = arcs + arc_num;
 	arc_max = arcs + arc_num_max;
