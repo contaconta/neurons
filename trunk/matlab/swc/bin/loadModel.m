@@ -1,6 +1,17 @@
 function [model,minI,maxI] = loadModel(label, instance, rescaleData, kernelType)
-% Y is a matrix of pixels whose values has to within the range {0,255}.
-% Output : probability of the input set of pixels to belong to a mitochondria
+% - label is a vector containing the labels associated to the instance matrix
+% - instance is a matrix composed of the feature vectors for all the samples used for training
+% - rescaleData is a boolean whose value specifies if feature vectors have to be rescaled
+% - kernelType : set type of kernel function (default 2)
+%	0 -- linear: u'*v
+%	1 -- polynomial: (gamma*u'*v + coef0)^degree
+%	2 -- radial basis function: exp(-gamma*|u-v|^2)
+%	3 -- sigmoid: tanh(gamma*u'*v + coef0)
+%	4 -- precomputed kernel (kernel values in training_set_file)
+% Outputs :
+% - model storing the support vectors used for prediction
+% - minI : vector containing the min value for each element of the feature vectors
+% - maxI : vector containing the min value for each element of the feature vectors
 
 % scale each feature to the range of [0.1]
 if rescaleData
