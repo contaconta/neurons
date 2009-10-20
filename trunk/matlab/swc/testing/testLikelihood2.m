@@ -9,16 +9,25 @@ addpath([pwd '/../utils/']);
 %huttPath = '/osshare/Work/software/huttenlocher_segment/';
 %imPath = [pwd '/../images/'];
 %imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-imPath = '~/usr/share/Data/LabelMe/Images/FIBSLICE/';
-imName = 'FIBSLICE0720'
-feature_vectors = '../temp/Model-0-4200-3-sup/feature_vectors';
+%imPath = '~/usr/share/Data/LabelMe/Images/FIBSLICE/';
+%imName = 'FIBSLICE0720'
+imName = 'FIBSLICE0002'
+
+ % load the image we are working with
+Iraw = imread('../images/FIBSLICE0002.png');
+WINDOW = [1 480 1 640];     % region of the image we will work on [r1 r2 c1 c2]
+
+
+feature_vectors = '../temp/Model-0-1-0-3-Hist-90-45-sup/feature_vectors';
 %labelPath = '../temp/seg_plus_labels/';
 labelPath = '../temp/labels/';
 rescaleData = 1;
 
 [label_vector, instance_matrix] = libsvmread(feature_vectors);
-training_label = label_vector(1:4000,:);
-training_instance = instance_matrix(1:4000,:);
+%training_label = label_vector(1:4000,:);
+%training_instance = instance_matrix(1:4000,:);
+training_label = label_vector;
+training_instance = instance_matrix;
 %testing_label = label_vector(3001:size(label_vector,1),:);
 %testing_instance = instance_matrix(3001:size(instance_matrix,1),:);
 
@@ -30,7 +39,7 @@ end
 disp('Model computed');
 
 % load an image we want to play with
-Iraw = imread([imPath imName '.png']);
+%Iraw = imread([imPath imName '.png']);
 
 % load superpixels or atomic regions as a label matrix, L
 %if ~exist('L')
@@ -44,8 +53,12 @@ size(Iraw,1)
 L = readRKLabel(labelFilenm, [size(Iraw,1) size(Iraw,2)])';
 
 % Only select part of the image (do not rescale before loading L)
-L = L(1:480,1:640);
-Iraw = Iraw(1:480,1:640);
+%L = L(1:480,1:640);
+%Iraw = Iraw(1:480,1:640);
+
+% work on a sub-region of the image to keep things fast
+Iraw = Iraw(WINDOW(1):WINDOW(2), WINDOW(3):WINDOW(4));
+L = L(WINDOW(1):WINDOW(2), WINDOW(3):WINDOW(4));
 outPb = zeros(size(L));
 
 % extract and adjacency matrix and list from L
@@ -84,8 +97,8 @@ for x=x0:size(Iraw,2)
   end
 end
 
-%figure;
-%imagesc(outPb);
+figure;
+imagesc(outPb);
 save outPb
 
 % Prediction
