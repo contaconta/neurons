@@ -215,6 +215,7 @@ int    _3DLIS_layerEnd    = 30;
 float  _3DLIS_voxelWidth  = 1.0;
 float  _3DLIS_voxelHeight = 1.0;
 float  _3DLIS_voxelDepth  = 1.0;
-
+bool   _3DLIS_saveStack = false;
+string _3DLIS_saveName  = "";
 
 #endif

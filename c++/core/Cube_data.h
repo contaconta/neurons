@@ -901,12 +901,17 @@ void Cube<T,U>::histogram(string filename)
   }
   printf("]\n");
 
+  int total =0;
+  for(int i = 0; i < boxes.size(); i++)
+    total += boxes[i];
+
   if(filename == ""){
     int totalToNow = 0;
     for(int i =0; i < boxes.size(); i++){
       totalToNow = totalToNow + boxes[i];
-      printf("[%f %f ] - %i\n", min + i*range/100, min + (i+1)*range/100,  boxes[i],
-             totalToNow);}
+      printf("[%f %f ] - %i ttn-%i tte=%i\n",
+             min + i*range/100, min + (i+1)*range/100,
+             boxes[i], totalToNow, total-totalToNow);}
     printf("\n");
   }
   else{
