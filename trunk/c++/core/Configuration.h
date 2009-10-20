@@ -31,6 +31,25 @@ public:
     stock[nameVariable] = value;
   }
 
+  void add(string nameVariable, float value){
+    char buff[512];
+    sprintf(buff, "%f", value);
+    stock[nameVariable] = string(buff);
+  }
+
+  void add(string nameVariable, double value){
+    char buff[512];
+    sprintf(buff, "%f", value);
+    stock[nameVariable] = string(buff);
+  }
+
+  void add(string nameVariable, int value){
+    char buff[512];
+    sprintf(buff, "%i", value);
+    stock[nameVariable] = string(buff);
+  }
+
+
   bool load(istream& in){
     string name, attribute;
     char lineb[1024]; //lines of 1024 chars

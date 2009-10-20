@@ -426,3 +426,15 @@ on_3DLIS_CD_clicked                    (GtkButton       *button,
 void
 on_3DLIS_CDir_clicked                  (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on__3DLIS_saveStackB_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on__3DLIS_saveStackText_changed        (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
+                                        gpointer         user_data);

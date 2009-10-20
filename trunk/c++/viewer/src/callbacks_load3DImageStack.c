@@ -92,6 +92,51 @@ on_3DLIS_CDir_clicked                  (GtkButton       *button,
 }
 
 
+void
+on__3DLIS_saveStackB_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  _3DLIS_saveStack = !_3DLIS_saveStack;
+}
+
+
+void
+on__3DLIS_saveStackText_changed        (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  gchar* caracteres = gtk_editable_get_chars(editable,0,-1);
+  _3DLIS_saveName     = caracteres;
+}
+
+
+void
+on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog;
+
+  dialog = gtk_file_chooser_dialog_new ("Save Screenshot",
+                                        NULL,
+                                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                        NULL);
+
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+      char *filename;
+
+      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+
+      saveScreenShot(filename);
+    }
+  gtk_widget_destroy (dialog);
+
+}
+
+
+
+
 // All the rest was just preparation for the big hit which is in here.
 void
 on_3DIS_OK_clicked                     (GtkButton       *button,
