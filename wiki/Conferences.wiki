@@ -7,14 +7,14 @@
   * Held on June 13-18
   * San Francisco, California
 
-[http://www.ics.forth.gr/eccv2010/ *IEEE European Conference on Computer Vision*]
+===[http://www.ics.forth.gr/eccv2010/ IEEE European Conference on Computer Vision]===
   * Held 5-11 September, 2010
   * Submission deadline: March 17th, 2010
   * Held in Hersonissos, Heraklion, Crete, Greece
 
 ==Biomedical==
 
-[http://www.miccai2010.org/index.php/announcements/first-call-for-participation *International Conference on Medical Image Computing and Computer Assisted Intervention*]
+===[http://www.miccai2010.org/index.php/announcements/first-call-for-participation International Conference on Medical Image Computing and Computer Assisted Intervention]===
   * Submission deadline not announced, probably in March 2010
   * held from 20th to 24th September 2010
   * China National Convention Center (CNCC) in Beijing, China
@@ -26,7 +26,7 @@ Computational Anatomy (statistics on anatomy)
 Computational Physiology (virtual organs) 
 Innovative Clinical and Biological Applications segmentation
 
-[http://www.biomedicalimaging.org/ IEEE *International Symposium on Biomedical Imaging: From Nano to Micro*]
+===[http://www.biomedicalimaging.org/ IEEE International Symposium on Biomedical Imaging: From Nano to Micro]===
   * Submission Deadline: November 2, 2009
   * Held on 14-17 April, 2010
   * Rotterdam, Netherlands
