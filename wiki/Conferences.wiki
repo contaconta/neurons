@@ -2,7 +2,7 @@
 
 ==Computer Vision==
 
-[http://cvl.umiacs.umd.edu/conferences/cvpr2010/ *IEEE Conference on Computer Vision and Pattern Recognition*]
+===[http://cvl.umiacs.umd.edu/conferences/cvpr2010/ IEEE Conference on Computer Vision and Pattern Recognition]===
   * Submission deadline: November 19, 2009
   * Held on June 13-18
   * San Francisco, California
