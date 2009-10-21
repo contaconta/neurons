@@ -18,14 +18,27 @@ else
 end
 
 
+global minI maxI model G0; %#ok<TLEV>
 
 % traverse either the entire graph, or nodes in R that have changed
 for v = NODES
 
+    
+            % svm
+            nodes = graphtraverse(G0,v, 'depth', 1);
+            pixels = Iraw(cell2mat(pixelList(nodes)'));
+            [predicted_label, accuracy, pb] = getLikelihood(pixels,model,minI,maxI,true);
+            %Plist(v) = pb(LABELS(v));
+            % pb = [bg boundary mitochondria]
+            Plist(v) = pb(LABELS(v));
+    
+    
+    
    % if strcmp(modelCell{1}, 'perfect')          
    %     GT = modelCell{2};
         %Plist(v) = -5 + 6*(GT(v)==LABELS(v));    % Plist(v) = -5 if not match, = 1 if match 
-        Plist(v) = -1 + 1.01*(GT(v)==LABELS(v));    % Plist(v) = -1 if not match, = .01 if match 
+% <<<<< BELOW IS GOOD FOR THE PERFECT GROUND TRUTH >>>>>
+%        Plist(v) = -1 + 1.01*(GT(v)==LABELS(v));    % Plist(v) = -1 if not match, = .01 if match 
    % end
 
 %     if stecmp(modelCell{1}, 'svm')

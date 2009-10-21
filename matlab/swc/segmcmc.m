@@ -21,12 +21,12 @@
 %% =========================== PARAMETERS =================================
 
 S = 30000;                  % number of samples in MCMC
-labelList = [1 2];          % classification labels [1=bg 2=boundary 3=mito interior]
+labelList = [1 3];          % classification labels [1=bg 2=boundary 3=mito interior]
 kernelType = 2;             % RBF kernel
 WINDOW = [1 480 1 640];     % region of the image we will work on [r1 r2 c1 c2]
 T = 1.5;                    % temperature
 
-initFlag = 1;               % performs initialization functions, bypass by setting to 0 
+initFlag = 0;               % performs initialization functions, bypass by setting to 0 
 displayFlag = 1;            % displays what the segmentation is doing
 updateEvery = 100;          % how often should we update the display?
 
@@ -77,6 +77,7 @@ if initFlag
 
     % create the initial fully connected adjacency graph G0
     disp('Extracting adjacency graph G0 from superpixel segmentation image.');
+    global G0; %#ok<TLEV>
     [G0, G0list] = adjacency(L);
     
     
@@ -93,25 +94,15 @@ if initFlag
     % precompute the KL divergences for each edge
     disp('Precomputing the KL divergences.');
     KL = edgeKL(Iraw, pixelList, G0, 1);
-      
-%     % initialize the SVM model
-%     if useGroundTruth==false
-%       if ~exist('model', 'var')
-%         disp('Computing the SVM model.');
-%         feature_vectors = [pwd '/temp/Model-0-4200-3-sup/feature_vectors'];
-%         [label_vector, instance_matrix] = libsvmread(feature_vectors);
-%         training_label = label_vector(1:4000,:);
-%         training_instance = instance_matrix(1:4000,:);
-% 
-%         [model,minI,maxI] = loadModel(training_label,training_instance, ...
-%                                       rescaleData,kernelType);
-%       end
-%     else
-%       disp('No model computed. Ground truth data will be used.');
-%       model = 0;
-%       minI = 0;
-%       maxI = 0;
-%     end
+    
+    % initialize the SVM model
+    disp('Computing the SVM model.');
+    global minI maxI model; %#ok<TLEV>
+    feature_vectors = [pwd '/temp/Model-0-1-0-3-Hist-90-45-sup/feature_vectors'];
+    [label_vector, instance_matrix] = libsvmread(feature_vectors);
+    [model,minI,maxI] = loadModel(label_vector,instance_matrix, true, kernelType);
+    
+    
    
     %create an initial partition of the graph
     disp('Creating a random initial partiton W of the graph.');
@@ -217,10 +208,6 @@ for s = 2:S
     %Pplist = swc_post2(W, LABELSp, modelCell, pixelList, Iraw, R, 'init');
     %Pplist1 = swc_post2(W, LABELSp, GT, pixelList, Iraw, R, 'init');
     Pplist = swc_post2(W, LABELSp, GT, pixelList, Iraw, R, Plist);
-
-%     if ~isempty(find(Pplist ~= Pplist1))
-%         keyboard;
-%     end
     
     % compute posterior terms for previous and proposal
     Pp = sum(Pplist(V0));
