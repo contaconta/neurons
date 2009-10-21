@@ -2,13 +2,15 @@
 
 = Computer Vision =
 
-[http://cvl.umiacs.umd.edu/conferences/cvpr2010/ IEEE Conference on Computer Vision and Pattern Recognition]
+[http://cvl.umiacs.umd.edu/conferences/cvpr2010/ *IEEE Conference on Computer Vision and Pattern Recognition*]
   * Submission deadline: November 19, 2009
   * Held on June 13-18
   * San Francisco, California
 
-*IEEE European Conference on Computer Vision*
-  
+[http://www.ics.forth.gr/eccv2010/ *IEEE European Conference on Computer Vision*]
+  * Held 5-11 September, 2010
+  * Submission deadline: March 17th, 2010
+  * Held in Hersonissos, Heraklion, Crete, Greece
 
 = Biomedical =
 
