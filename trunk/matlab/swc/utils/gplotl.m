@@ -32,7 +32,7 @@ imshow(Iraw); axis image off; set(gca, 'Position', [0 0 1 1]); hold on;
 %colors = bone(max(LABELS(:)));
 %colors = jet(max(LABELS(:)));
 
-colors = [.25 .25 .25; .3 1 .3];
+colors = [.25 .25 .25; 1 .3 .3; .3 1 .3];
 
 for l = 1:max(LABELS(:))
     A = sparse([],[],[], size(W,1), size(W,1),0);

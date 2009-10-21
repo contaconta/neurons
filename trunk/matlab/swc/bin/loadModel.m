@@ -27,8 +27,8 @@ if rescaleData
   maxI = max(instance,[],1);
   T = (instance - repmat(minI,size(instance,1),1))*spdiags(1./(maxI-minI)',0,size(instance,2),size(instance,2));
 
-  T(find(isnan(T)))=0;
-  T(find(isinf(T)))=0;
+  T(isnan(T))=0;
+  T(isinf(T))=0;
   
   %keyboard
   
@@ -54,5 +54,5 @@ if doParamSelection
   end
   model = svmtrain(label, T, ['-b 1 -t ' num2str(kernelType) ' -c ' num2str(bestc) ' -g ' num2str(bestg)]);
 else
-  model = svmtrain(label, T, ['-b 1 -t ' num2str(kernelType) ' -c 8 -g 2']);
+  model = svmtrain(label, T, ['-b 1 -t ' num2str(kernelType) ' -c 8 -g 2']); %#ok<UNRCH>
 end
