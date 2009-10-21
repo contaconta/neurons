@@ -20,18 +20,35 @@
 #include <stdlib.h>
 #include "Cube.h"
 #include "Mask.h"
+#include "Timer.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
+
+  Timer timer;
+  unsigned long timeS, timeE;
+
+
   Cube<uchar, ulong>* cbu =
-    new Cube<uchar, ulong>("/media/neurons/n1/3d/1/N1.nfo");
+    new Cube<uchar, ulong>("/home/ggonzale/n1/3d/1/N1.nfo");
+
+
+  timeS = timer.getMilliseconds();
   Cube<float, double>* tmp =
     new Cube<float, double>(cbu->cubeWidth,  cbu->cubeHeight, cbu->cubeDepth,
-                            "/media/neurons/n1/3d/4/tmp",
+                            "/home/ggonzale/n1/3d/1/tmp",
                             0.1,0.1,0.1);
+  timeE = timer.getMilliseconds();
+  printf("Time to allocate the float:  %u\n", timeE-timeS);
+
   vector< float > mask = Mask::gaussian_mask(2, 4, true);
   printf("Doing the convolution with mask of size %i ...\n", mask.size());
+
+  timeS = timer.getMilliseconds();
   cbu->convolve_horizontally(mask, tmp);
+  timeE = timer.getMilliseconds();
+  printf("Time to do the convolution:  %u\n", timeE-timeS);
+
   printf("Exiting ...\n");
 }

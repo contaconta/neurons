@@ -1326,6 +1326,19 @@ Cube<T,U>*  Cube<T,U>::duplicate_clean(string name)
 }
 
 template <class T, class U>
+Cube<T,U>* Cube<T,U>::duplicate(string name)
+{
+  Cube<T,U>* toReturn = duplicate_clean(name);
+
+  for(int z = 0; z < this->cubeDepth; z++)
+    for(int y = 0; y < this->cubeHeight; y++)
+      for(int x = 0; x < this->cubeWidth; x++)
+        toReturn->put(x,y,z, this->at(x,y,z));
+
+  return toReturn;
+}
+
+template <class T, class U>
 Cube<uchar, ulong>*  Cube<T,U>::duplicate_uchar(string name)
 {
   string vl = ".vl";
