@@ -32,7 +32,7 @@ public:
 
   void split(Cloud_P* &cl1, Cloud_P* &cl2);
 
-  virtual void cleanPointsAccordingToWeight(double minWeight, double maxWeight);
+  void cleanPointsAccordingToWeight(double minWeight, double maxWeight);
 };
 
 

@@ -17,14 +17,14 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 #set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
 set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
-IF(${HOST} STREQUAL bbpsg1)
-  set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
-  set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
-ELSE(${HOST} STREQUAL bbpsg1)
-  set(CMAKE_C_COMPILER "g++")
-  set(CMAKE_CXX_COMPILER "g++")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
-ENDIF(${HOST} STREQUAL bbpsg1)
+#IF(${HOST} STREQUAL bbpsg1)
+#  set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
+#  set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
+#ELSE(${HOST} STREQUAL bbpsg1)
+set(CMAKE_C_COMPILER "g++")
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
+#ENDIF(${HOST} STREQUAL bbpsg1)
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
 
@@ -180,6 +180,9 @@ ENDIF(${GLEW_FOUND})
 
 ################################################################################
 ## cube tools
+
+add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
+target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})

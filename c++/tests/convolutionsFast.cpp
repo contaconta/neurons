@@ -51,7 +51,7 @@ class CubeInMemmoryFloat
     return voxels[z][y][x];
   }
 
-  float put(int x, int y, int z, float value){
+ void put(int x, int y, int z, float value){
     voxels[z][y][x] = value;
   }
 
@@ -95,7 +95,7 @@ class CubeInMemmoryUchar
     return voxels[z][y][x];
   }
 
-  uchar put(int x, int y, int z, uchar value){
+  void put(int x, int y, int z, uchar value){
     voxels[z][y][x] = value;
   }
 
@@ -179,12 +179,13 @@ int main(int argc, char **argv) {
 
   timeS = timer.getMilliseconds();
   CubeInMemmoryUchar* cbimu = new CubeInMemmoryUchar(1536,3584,148);
-  cbimu->loadFromFile("/media/neurons/n1/3d/1/N1.vl");
+  //  cbimu->loadFromFile("/media/neurons/n1/3d/1/N1.vl");
+  cbimu->loadFromFile("/home/ggonzale/n1/3d/1/N1.vl");
 //   cbimu->loadFromFile("/home/ggonzale/mount/cvlabfiler/n1/3d/1/N1.vl");
   timeE = timer.getMilliseconds();
   printf("Time to load the uchar:  %u\n", timeE-timeS);
   fflush(stdout);
-  exit(0);
+  //  exit(0);
   
 
   timeS = timer.getMilliseconds();
@@ -203,7 +204,7 @@ int main(int argc, char **argv) {
   printf("Time to do the convolution:  %u\n", timeE-timeS);
 
   timeS = timer.getMilliseconds();
-  cbimf->saveToFile("/media/neurons/n1/3d/1/out.vl");
+  cbimf->saveToFile("/home/ggonzale/n1/3d/1/out.vl");
   timeE = timer.getMilliseconds();
   printf("Time to save the file:  %u\n", timeE-timeS);
 

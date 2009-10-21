@@ -275,6 +275,8 @@ public:
   /** Duplicates the cube and puts it all in 0.*/
   Cube<T,U>* duplicate_clean(string filename);
 
+  Cube<T,U>* duplicate(string filename);
+
   Cube<uchar, ulong>* duplicate_uchar(string filename);
 
   /** Creates a blank cube with the same dimensions and float type.*/
