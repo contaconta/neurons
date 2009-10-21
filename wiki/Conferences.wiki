@@ -2,7 +2,7 @@
 
 = Computer Vision =
 
-*IEEE Conference on Computer Vision and Pattern Recognition*
+*[IEEE Conference on Computer Vision and Pattern Recognition http://cvl.umiacs.umd.edu/conferences/cvpr2010/]*
   * Submission deadline: November 19, 2009
   * Held on June 13-18
   * San Francisco, California
@@ -12,7 +12,7 @@
 
 = Biomedical =
 
-*International Conference on Medical Image Computing and Computer Assisted Intervention*
+*[International Conference on Medical Image Computing and Computer Assisted Intervention http://www.miccai2010.org/index.php/announcements/first-call-for-participation]*
   * Submission deadline not announced, probably in March 2010
   * held from 20th to 24th September 2010
   * China National Convention Center (CNCC) in Beijing, China
@@ -24,7 +24,7 @@ Computational Anatomy (statistics on anatomy)
 Computational Physiology (virtual organs) 
 Innovative Clinical and Biological Applications segmentation
 
-*IEE International Symposium on Biomedical Imaging: From Nano to Micro*
+*[IEE International Symposium on Biomedical Imaging: From Nano to Micro http://www.biomedicalimaging.org/]*
   * Submission Deadline: November 2, 2009
   * Held on 14-17 April, 2010
   * Rotterdam, Netherlands
