@@ -199,6 +199,8 @@ extern int    _3DLIS_layerEnd;
 extern float  _3DLIS_voxelWidth;
 extern float  _3DLIS_voxelHeight;
 extern float  _3DLIS_voxelDepth;
+extern bool   _3DLIS_saveStack;
+extern string _3DLIS_saveName;
 
 
 

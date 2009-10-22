@@ -128,7 +128,7 @@ on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
 
       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-      saveScreenShot(filename);
+/*       saveScreenShot(filename); */
     }
   gtk_widget_destroy (dialog);
 
