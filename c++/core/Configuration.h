@@ -27,6 +27,14 @@ public:
     return stock[name];
   };
 
+  bool retrieveIfExists(string name, float* ptval){
+    if(stock[name]!=""){
+      *ptval = atof((stock[name]).c_str());
+      return true;
+    }
+    return false;
+  }
+
   void add(string nameVariable, string value){
     stock[nameVariable] = value;
   }
