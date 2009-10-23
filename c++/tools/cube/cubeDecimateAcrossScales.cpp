@@ -173,8 +173,31 @@ int main(int argc, char **argv) {
   Cube<float, double>* c8 = new Cube<float, double>
     ("/media/neurons/n7_svm/8/bf_2_3162.nfo");
 
+  vector<Cube<float, double>*> thetas;
+  vector<Cube<float, double>*> phis;
+  thetas.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/1/aguet_2.00_2.00_theta.nfo"));
+  thetas.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/2/aguet_2.00_2.00_theta.nfo"));
+  thetas.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/4/aguet_2.00_2.00_theta.nfo"));
+  thetas.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/8/aguet_2.00_2.00_theta.nfo"));
+  phis.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/1/aguet_2.00_2.00_phi.nfo"));
+  phis.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/2/aguet_2.00_2.00_phi.nfo"));
+  phis.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/4/aguet_2.00_2.00_phi.nfo"));
+  phis.push_back(new Cube<float, double>
+                   ("/media/neurons/n7_svm/8/aguet_2.00_2.00_phi.nfo"));
+
+
 
   vector< vector < float > > toReturn;
+  vector< int > toReturnScales;
+  vector< float > toReturnThetas;
+  vector< float > toReturnPhis;
   int cubeCardinality = c1->cubeWidth*c1->cubeHeight*c1->cubeDepth;
   bool* visitedPoints = (bool*)malloc(cubeCardinality*sizeof(bool));
   for(int i = 0; i < cubeCardinality; i++)
@@ -349,6 +372,11 @@ int main(int argc, char **argv) {
       vector< float > coords(3);
       c1->indexesToMicrometers3(x_p, y_p, z_p, coords[0], coords[1], coords[2]);
       toReturn.push_back(coords);
+      toReturnScales.push_back(maxIdx);
+      thetas[maxIdx]->micrometersToIndexes3(coords[0], coords[1], coords[2],
+                                            x_p, y_p, z_p);
+      toReturnThetas.push_back(thetas[maxIdx]->at(x_p,y_p,z_p));
+      toReturnPhis.push_back(phis[maxIdx]->at(x_p,y_p,z_p));
       nPointsAdded++;
 //       printf("nEval = %i of %i\n", nPointsEvaluated, nPointsToEvaluate);
     } // while goinf throught the nms
@@ -356,13 +384,45 @@ int main(int argc, char **argv) {
     current_threshold = current_threshold - step_size;
   }// While threshold
 
-  Cloud<Point3D >* cd = new Cloud<Point3D>();
+
+  vector<float> radius(4);
+  radius[0] = 0.4;
+  radius[1] = 0.8;
+  radius[2] = 1.2;
+  radius[3] = 1.6;
+
+  Cloud<Point3D >* cd1 = new Cloud<Point3D>();
+  Cloud<Point3D >* cd2 = new Cloud<Point3D>();
+  Cloud<Point3D >* cd4 = new Cloud<Point3D>();
+  Cloud<Point3D >* cd8 = new Cloud<Point3D>();
+  Cloud<Point3D >* ct  = new Cloud<Point3D>();
+  Cloud<Point3Dotw>* ctw = new Cloud<Point3Dotw>();
+  vector< Cloud< Point3D>*> clouds;
+  clouds.push_back(cd1);   clouds.push_back(cd2);
+  clouds.push_back(cd4);   clouds.push_back(cd8);
+
   for(int i = 0; i < toReturn.size(); i++){
     Point3D* pt = new Point3D( toReturn[i][0],
                                toReturn[i][1],
                                toReturn[i][2]);
-    cd->points.push_back( pt );
+    clouds[toReturnScales[i]]->points.push_back( pt );
+    ct->points.push_back( pt );
+    ctw->points.push_back
+      (new Point3Dotw(toReturn[i][0], toReturn[i][1], toReturn[i][2],
+                      toReturnThetas[i], toReturnPhis[i],
+                      Point3Dot::TrainingPositive,
+                      radius[toReturnScales[i]]));
   }
-  cd->saveToFile("decimation.cl");
+  cd1->v_r = 1;   cd1->v_g = 0;   cd1->v_b = 0;   cd1->v_radius = radius[0];
+  cd2->v_r = 0;   cd2->v_g = 1;   cd2->v_b = 0;   cd2->v_radius = radius[1];
+  cd4->v_r = 0;   cd4->v_g = 0;   cd4->v_b = 1;   cd4->v_radius = radius[2];
+  cd8->v_r = 1;   cd8->v_g = 1;   cd8->v_b = 0;   cd8->v_radius = radius[3];
+
+  cd1->saveToFile("decimation_1.cl");
+  cd2->saveToFile("decimation_2.cl");
+  cd4->saveToFile("decimation_4.cl");
+  cd8->saveToFile("decimation_8.cl");
+  ct->saveToFile("decimated.cl");
+  ctw->saveToFile("decimatedW.cl");
 
 }
