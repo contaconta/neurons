@@ -29,11 +29,36 @@ public:
   }
 
   void draw(float width){
-    if(type == 1)
-      glColor3f(0.0,0.0,1.0);
-    if(type == -1)
+    if(weight == 0.4)
       glColor3f(1.0,0.0,0.0);
-    Point3Do::draw(width);
+    if(weight == 0.8)
+      glColor3f(0.0,1.0,0.0);
+    if(weight == 1.2)
+      glColor3f(0.0,0.0,1.0);
+    if(weight == 1.6)
+      glColor3f(1.0,1.0,0.0);
+
+    glPushMatrix();
+    glTranslatef(coords[0], coords[1], coords[2]);
+    float ox, oy, oz;
+    ox = weight*2*cos(theta)*sin(phi);
+    oy = weight*2*sin(theta)*sin(phi);
+    oz = weight*2*cos(phi);
+    glRotatef(-phi*180/3.1416,oy,-ox,0);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,3);
+    // glVertex3f(ox, oy, oz);
+    glEnd();
+    glScalef(0.5, 0.5, 2);
+    glScalef(weight, weight, weight);
+    glutSolidSphere(1, 10, 10);
+    glPopMatrix();
+
+//     glPushMatrix();
+//     glScalef(weight, weight, weight);
+//     Point3Do::draw(width);
+//     glPopMatrix();
   }
 
   void save(ostream &out){

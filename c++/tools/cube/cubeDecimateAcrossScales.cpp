@@ -353,9 +353,9 @@ int main(int argc, char **argv) {
           maxIdx = i;
         }
       }
-      if(maxIdx==0){ position = (*riterC1).second; riterC1++; windowErase = 5; }
-      if(maxIdx==1){ position = (*riterC2).second; riterC2++; windowErase = 10; }
-      if(maxIdx==2){ position = (*riterC4).second; riterC4++; windowErase = 15; }
+      if(maxIdx==0){ position = (*riterC1).second; riterC1++; windowErase = 10; }
+      if(maxIdx==1){ position = (*riterC2).second; riterC2++; windowErase = 15; }
+      if(maxIdx==2){ position = (*riterC4).second; riterC4++; windowErase = 20; }
       if(maxIdx==3){ position = (*riterC8).second; riterC8++; windowErase = 25; }
 
       if(visitedPoints[position] == true)
@@ -365,10 +365,20 @@ int main(int argc, char **argv) {
       y_p = (position - z_p*c1->cubeWidth*c1->cubeHeight)/c1->cubeWidth;
       x_p =  position - z_p*c1->cubeWidth*c1->cubeHeight - y_p*c1->cubeWidth;
 
+      //To prevent the bug in the images
+      if(x_p<=5) continue;
+      int counter = 0;
       for(int z = max(z_p-windowErase,0); z < min(z_p+windowErase, (int)c1->cubeDepth); z++)
         for(int y = max(y_p-windowErase,0); y < min(y_p+windowErase, (int)c1->cubeHeight); y++)
-          for(int x = max(x_p-windowErase,0); x < min(x_p+windowErase, (int)c1->cubeWidth); x++)
+          for(int x = max(x_p-windowErase,0); x < min(x_p+windowErase, (int)c1->cubeWidth); x++){
+            if(visitedPoints[x + y*c1->cubeWidth + z*c1->cubeWidth*c1->cubeHeight] == true)
+              counter++;
             visitedPoints[x + y*c1->cubeWidth + z*c1->cubeWidth*c1->cubeHeight] = true;
+          }
+      //Only add the point if half of the points arround it have not been visited. Prevents small points to be added
+
+      if(counter > windowErase*windowErase*windowErase*2*2*2/2)
+        continue;
       vector< float > coords(3);
       c1->indexesToMicrometers3(x_p, y_p, z_p, coords[0], coords[1], coords[2]);
       toReturn.push_back(coords);
@@ -406,6 +416,8 @@ int main(int argc, char **argv) {
                                toReturn[i][1],
                                toReturn[i][2]);
     clouds[toReturnScales[i]]->points.push_back( pt );
+
+
     ct->points.push_back( pt );
     ctw->points.push_back
       (new Point3Dotw(toReturn[i][0], toReturn[i][1], toReturn[i][2],

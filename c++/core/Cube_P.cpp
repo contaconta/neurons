@@ -52,7 +52,7 @@ void Cube_P::indexesToMicrometers3(int x, int y, int z, float& mx, float& my, fl
   my = (float)( ((int)cubeHeight)*voxelHeight/2 
 				  - y*voxelHeight);
   mz = (float)(-((int)cubeDepth)*voxelDepth/2   
-                           + z*voxelDepth);
+               + (z+0.5)*voxelDepth);
 }
 
 
