@@ -255,6 +255,10 @@ target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
 add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
 target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
 
+add_executable(cube-log10 ${CMAKE_SOURCE_DIR}/../tools/cube/cube-log10.cpp)
+target_link_libraries(cube-log10 ${LINK_LIBRARIES_ALL})
+
+
 add_executable(cubeFixAguetThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixAguetThreshold.cpp)
 target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 
