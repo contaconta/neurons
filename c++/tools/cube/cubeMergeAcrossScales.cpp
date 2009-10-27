@@ -29,6 +29,11 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
+  if(argc<4){
+    printf("Usage: cubeMergeAcrossScales orig other1 other2 .... out\n");
+    exit(0);
+  }
+
   vector< Cube<float, double>* > cubes;
   for(int i = 2; i < argc-1; i++){
     cubes.push_back(new Cube<float, double>(argv[i]));

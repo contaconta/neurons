@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
   float min, max;
   orig->min_max(&min, &max);
 
-#pragma omp paralel for
+#pragma omp parallel for
   for(int z=0; z < orig->cubeDepth; z++)
     for(int y=0; y < orig->cubeHeight; y++)
       for(int x=0; x < orig->cubeWidth; x++)
