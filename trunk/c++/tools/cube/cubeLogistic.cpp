@@ -25,7 +25,7 @@
 using namespace std;
 
 Cube<float,double>* param;
-Cloud<Point3Dot>* cl;
+Cloud<Point3Dotw>* cl;
 vector<double> t;
 vector<double> xv;
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
   param  = new Cube<float,double>(cubeDataName);
 //     ("/media/neurons/steerableFilters3D/resultVolumes/result-4-e-2-2-groundTruth-1-estimated.nfo");
 
-  cl = new Cloud<Point3Dot>(cloudName);
+  cl = new Cloud<Point3Dotw>(cloudName);
 //     ("/media/neurons/steerableFilters3D/test.cl");
 
   Cube<float,double>* orig  = new Cube<float,double>(cubeName);
@@ -124,20 +124,20 @@ int main(int argc, char **argv) {
 //     ("cuts");
 
 
-  // t.resize(cl->points.size());
-  // xv.resize(cl->points.size());
+  t.resize(cl->points.size());
+  xv.resize(cl->points.size());
 
-  t.resize(5000);
-  xv.resize(5000);
+//   t.resize(5000);
+//   xv.resize(5000);
 
   vector<int>    idx(3);
   vector<float> mic(3);
 
   int nPp = 0;
   int nPn = 0;
-  // for(int i = 0; i<cl->points.size(); i++){
-  for(int i = 0; i<5000; i++){
-    Point3Dot* pp = dynamic_cast<Point3Dot*>(cl->points[i]);
+  for(int i = 0; i<cl->points.size(); i++){
+//   for(int i = 0; i<5000; i++){
+    Point3Dot* pp = dynamic_cast<Point3Dotw*>(cl->points[i]);
     if(pp->type == 1){
       t[i] = 1;
       nPp++;
