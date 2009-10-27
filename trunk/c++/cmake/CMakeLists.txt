@@ -255,6 +255,10 @@ target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
 add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
 target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeFixAguetThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixAguetThreshold.cpp)
+target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
+
+
 ################################################################################
 ## image tools
 add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
@@ -289,6 +293,9 @@ target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
 add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
 target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
+
+add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
+target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
 
 add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
 target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
