@@ -14,6 +14,33 @@ public:
   virtual float distance(int x0, int y0, int z0, int x1, int y1, int z1) = 0;
 };
 
+class DistanceDijkstraLogProb : public DistanceDijkstra {
+public:
+  Cube_P* cube;
+  Cube<uchar, ulong>*  cubeUchar;
+  Cube<float, double>* cubeFloat;
+  int     cubeType; // 0 for uchar, 1 for float, 2 for int - lazy to typedef structs
+  double ratioY, ratioZ;
+
+  DistanceDijkstraLogProb(Cube_P* cube){
+    if (cube->type == "uchar"){
+      this->cubeUchar = dynamic_cast<Cube< uchar, ulong>* >(cube);
+      cubeType = 0;
+    } else if (cube->type == "float"){
+      this->cubeFloat = dynamic_cast<Cube< float, double>* >(cube);
+      cubeType = 1;
+    }
+    ratioZ = cube->voxelDepth/cube->voxelWidth;
+    ratioY = cube->voxelHeight/cube->voxelWidth;
+  }
+  float distance(int x0, int y0, int z0, int x1, int y1, int z1){
+    double dist;
+    dist = sqrt((double) (x0-x1)*(x0-x1) + ratioY*(y0-y1)*(y0-y1) + ratioZ*(z0-z1)*(z0-z1));
+    return -log10(cubeFloat->at(x1,y1,z1)*dist);
+  }
+};
+
+
 class DistanceDijkstraColor : public DistanceDijkstra {
 public:
   Cube_P* cube;
@@ -192,6 +219,7 @@ public:
     return 0.0;
   }
 };
+
 
 
 class DistanceDijkstraColorNegatedEuclideanAnisotropic : public DistanceDijkstra {

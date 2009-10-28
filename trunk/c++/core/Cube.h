@@ -493,6 +493,9 @@ public:
   /** Gets the values of the cube in the points indicated by the cloud.*/
   float integralOverCloud(Cloud_P* cloud);
 
+  /** Gets the product of the cube in the points indicated by the cloud.*/
+  double productOverCloud(Cloud_P* cloud);
+
   /** Creates three new volumes with the eigenvalues ordered.*/
   void order_eigen_values(float sigma_xy, float sigma_z);
 

@@ -221,8 +221,7 @@ CubeLiveWire::findShortestPathG
           (new EdgeW<Point3D>
            (&result->cloud->points, result->cloud->points.size()-1,
             max((int)result->cloud->points.size()-2,0),
-            // 1));
-            1 - distance->distance(xP,yP,zP,xPP,yPP,zPP) ) );
+            distance->distance(xP,yP,zP,xPP,yPP,zPP) ) );
       xPP = xP; yPP = yP; zPP = zP;
       int previousInt = previous[zP][yP][xP];
       toCubeIndex(previous[zP][yP][xP], xP, yP, zP, cube);

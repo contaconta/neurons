@@ -35,6 +35,33 @@
 
 using namespace std;
 
+
+class DMST : public DistanceDijkstra {
+public:
+  Cube<float, double>* cubeFloat;
+  double ratioY, ratioZ;
+
+  DMST(Cube_P* cube){
+    this->cubeFloat = dynamic_cast<Cube< float, double>* >(cube);
+    ratioZ = cube->voxelDepth/cube->voxelWidth;
+    ratioY = cube->voxelHeight/cube->voxelWidth;
+  }
+  float distance(int x0, int y0, int z0, int x1, int y1, int z1){
+    double dist;
+    //    dist = sqrt((double) (x0-x1)*(x0-x1) + ratioY*(y0-y1)*(y0-y1) + ratioZ*(z0-z1)*(z0-z1));
+    //    return 1-cubeFloat->at(x1,y1,z1)/dist;
+    //    return -log(cubeFloat->at(x1,y1,z1)/dist);
+    
+    dist = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+    float p1 = cubeFloat->at(x0,y0,z0);
+    float p2 = cubeFloat->at(x1,y1,z1);
+    //return fabs(dist*((log(p1) * p1 - p1- log(p2) * p2 + p2) / (-p2 + p1)));
+    return -dist*log((p1+p2)/2);
+  }
+};
+
+
+
 int main(int argc, char **argv) {
 
   const gsl_rng_type * T2;
@@ -44,16 +71,16 @@ int main(int argc, char **argv) {
   r = gsl_rng_alloc (T2);
 
   Cloud_P* decimatedCloud = CloudFactory::load
-    ("/home/ggonzale/mount/cvlabfiler/n7_4/cuts.cl");
+    ("/scratch/ggonzale/n7/3d/decimation_248.cl");
   Cloud<Point3D>* seedPointsSelected = new Cloud<Point3D>
     ();
 
-  Neuron* neuronita = new Neuron("/home/ggonzale/mount/cvlabfiler/n7_4/n7_4_fix.asc");
-  vector< double > lengths=  neuronita->getAllEdgesLength();
-  double m_length = 0;
-  double v_length = 0;
-  secondStatistics(lengths,  &m_length, &v_length);
-  printf("The mean is %f and the variance is %f\n", m_length, v_length);
+  //  Neuron* neuronita = new Neuron("/home/ggonzale/mount/cvlabfiler/n7_4/n7_4_fix.asc");
+  //vector< double > lengths=  neuronita->getAllEdgesLength();
+  //double m_length = 0;
+  //double v_length = 0;
+  //secondStatistics(lengths,  &m_length, &v_length);
+  //printf("The mean is %f and the variance is %f\n", m_length, v_length);
 
   Cloud<Point3D>* soma = new Cloud<Point3D>();
   soma->points.push_back(decimatedCloud->points[0]);
@@ -62,7 +89,7 @@ int main(int argc, char **argv) {
   soma->v_b = 0.0;
   soma->v_radius = 1.5;
   soma->saveToFile
-    ("/home/ggonzale/mount/cvlabfiler/n7_4/soma.cl");
+    ("/scratch/ggonzale/n7/3d/tree/soma.cl");
 
 
   // For the multi-threaded implementation
@@ -72,9 +99,9 @@ int main(int argc, char **argv) {
   // Computation of the complete graph
   if(1){
     //Definition of the window where to search for neighbors
-    int windowX = 50;
-    int windowY = 50;
-    int windowZ = 30;
+    int windowX = 100;
+    int windowY = 100;
+    int windowZ = 20;
     // int iROIx,iROIy,iROIz;
 
 
@@ -93,11 +120,11 @@ int main(int argc, char **argv) {
       cptGraphs[j] =
         new Graph<Point3D, EdgeW< Point3D> >();
       for(int i = 0; i < decimatedCloud->points.size(); i++)
-        cptGraphs[j]->cloud->points.push_back(
-                                              new Point3D(decimatedCloud->points[i]->coords[0],
-                                                          decimatedCloud->points[i]->coords[1],
-                                                          decimatedCloud->points[i]->coords[2])
-                                              );
+        cptGraphs[j]->cloud->points.push_back
+          ( new Point3D(decimatedCloud->points[i]->coords[0],
+                        decimatedCloud->points[i]->coords[1],
+                        decimatedCloud->points[i]->coords[2])
+            );
     }
 
 
@@ -106,10 +133,15 @@ int main(int argc, char **argv) {
     cubes.resize(nthreads);
     for(int i = 0; i < nthreads; i++){
       cubes[i] = new Cube<float, double>
-        ("/home/ggonzale/mount/cvlabfiler/n7_4/cuts.nfo");
-      DistanceDijkstraColorNegatedEuclideanAnisotropic* djkc
-        = new DistanceDijkstraColorNegatedEuclideanAnisotropic(cubes[i]);
-      cubeLiveWires[i] = new CubeLiveWire(cubes[i], djkc);;
+        ("/scratch/ggonzale/n7/3d/4/merged_48p.nfo");
+      //      DistanceDijkstraColorNegatedEuclideanAnisotropic* djkc
+      // = new DistanceDijkstraColorNegatedEuclideanAnisotropic(cubes[i]);
+            //DistanceDijkstraLogProb* djkc
+            //= new DistanceDijkstraLogProb(cubes[i]);
+      DMST* djkc
+        = new DMST(cubes[i]);
+
+      cubeLiveWires[i] = new CubeLiveWire(cubes[i], djkc);
     }
 
     int endPoint = decimatedCloud->points.size();
@@ -160,23 +192,27 @@ int main(int argc, char **argv) {
               cubeLiveWires[nth]->findShortestPathG(idxs[0] ,idxs[1] ,idxs[2],
                                                     idxs2[0],idxs2[1],idxs2[2]);
             sprintf(graphName,
-                    "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr", i, j);
-            float cost =
-              cubes[nth]->integralOverCloud(shortestPath->cloud)
-              /shortestPath->cloud->points.size();
+                    "/scratch/ggonzale/n7/3d/tree/paths/path_%04i_%04i.gr", i, j);
+            double cost = 0;
+            for(int nedge=0; nedge < shortestPath->eset.edges.size(); nedge++){
+              EdgeW<Point3D>* edge = dynamic_cast<EdgeW<Point3D>*>
+                (shortestPath->eset.edges[nedge]);
+              cost += edge->w;
+            }
+
             shortestPath->cloud->v_r = cost;
             shortestPath->cloud->v_g = 1-cost;
             shortestPath->cloud->v_b = 0;
-            // shortestPath->cloud->v_b = gsl_rng_uniform(r);
+            shortestPath->cloud->v_b = gsl_rng_uniform(r);
             shortestPath->cloud->v_radius = 0.4;
-            // shortestPath->saveToFile(graphName);
+            shortestPath->saveToFile(graphName);
             double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
                                  (microm2[1]-microm[1])*(microm2[1]-microm[1]) +
                                  (microm2[2]-microm[2])*(microm2[2]-microm[2]) );
-            cptGraphs[nth]->eset.edges.push_back(
-                                                 new EdgeW< Point3D>
-                                                 (&cptGraphs[nth]->cloud->points, i,j,
-                                                  1-cost*exp(-(length-m_length)*(length-m_length)/(2*v_length)) ) );
+            cptGraphs[nth]->eset.edges.push_back
+              (new EdgeW< Point3D>
+               (&cptGraphs[nth]->cloud->points, i,j,
+                cost ) );
           }
       }
     } //End of the loop through all the points in the cloud
@@ -185,28 +221,29 @@ int main(int argc, char **argv) {
     printf("Building the complete graph\n"); fflush(stdout);
     cptGraph = new  Graph<Point3D, EdgeW<Point3D> >();
     for(int i = 0; i < decimatedCloud->points.size(); i++)
-      cptGraph->cloud->points.push_back(
-                                        new Point3D(decimatedCloud->points[i]->coords[0],
-                                                    decimatedCloud->points[i]->coords[1],
-                                                    decimatedCloud->points[i]->coords[2])
-                                        );
+      cptGraph->cloud->points.push_back
+        (new Point3D(decimatedCloud->points[i]->coords[0],
+                     decimatedCloud->points[i]->coords[1],
+                     decimatedCloud->points[i]->coords[2])
+         );
     for(int j = 0; j < nthreads; j++){
       for(int i = 0; i < cptGraphs[j]->eset.edges.size(); i++){
         EdgeW<Point3D>* edgeToAdd =
           dynamic_cast<EdgeW<Point3D>*>(cptGraphs[j]->eset.edges[i]);
-        cptGraph->eset.edges.push_back(new EdgeW< Point3D > ( &cptGraph->cloud->points,
-                                                              edgeToAdd->p0,
-                                                              edgeToAdd->p1,
-                                                              edgeToAdd->w )
-                                       );
+        cptGraph->eset.edges.push_back
+          (new EdgeW< Point3D > ( &cptGraph->cloud->points,
+                                  edgeToAdd->p0,
+                                  edgeToAdd->p1,
+                                  edgeToAdd->w )
+           );
       }
     }
 
 
-    cptGraph->saveToFile("/home/ggonzale/mount/cvlabfiler/n7_4/complete.gr");
+    cptGraph->saveToFile("/scratch/ggonzale/n7/3d/tree/complete.gr");
   } else {
     Graph_P* cptGraphP =
-      GraphFactory::load("/home/ggonzale/mount/cvlabfiler/n7_4/complete.gr");
+      GraphFactory::load("/scratch/ggonzale/n7/3d/tree/complete.gr");
     cptGraph =
       dynamic_cast< Graph<Point3D, EdgeW<Point3D> >* >(cptGraphP);
   }
@@ -216,20 +253,20 @@ int main(int argc, char **argv) {
   Graph<Point3D, EdgeW<Point3D> >* mst =
     cptGraph->primFromThisGraphFast();
   printf("Saving the MST as a graph\n");
-  mst->saveToFile("/home/ggonzale/mount/cvlabfiler/n7_4/mstFromCptGraph.gr");
+  mst->saveToFile("/scratch/ggonzale/n7/3d/tree/mstFromCptGraph.gr");
 
 
   //Saves the MST as a list of paths
-  if(0){
+  if(1){
     printf("Saving the MST as a list\n");
-    std::ofstream out("/home/ggonzale/mount/cvlabfiler/n7_4/mstFromCptGraph.lst");
+    std::ofstream out("/scratch/ggonzale/n7/3d/tree/mstFromCptGraph.lst");
     char buff[1024];
     for(int i =0; i < mst->eset.edges.size(); i++){
       if( (mst->eset.edges[i]->p0 == mst->eset.edges[i]->p1 ) ||
           (mst->eset.edges[i]->p0 == -1) ||
           (mst->eset.edges[i]->p1 == -1) )
         continue;
-      sprintf(buff, "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr",
+      sprintf(buff, "/scratch/ggonzale/n7/3d/tree/paths/path_%04i_%04i.gr",
               mst->eset.edges[i]->p0,
               mst->eset.edges[i]->p1);
       out << buff << std::endl;

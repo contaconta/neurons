@@ -50,8 +50,8 @@ static struct argp_option options[] = {
   {"logscale",   'o',  0, 0, "Do the decimation in a log scale"},
   {"not-cloud",  'c',  0, 0, "save the points as a list of indexes instead of a cloud"},
   {"somaX"   ,   'X',  "float", 0, "X coordinate of the soma"},
-  {"somaX"   ,   'Y',  "float", 0, "Y coordinate of the soma"},
-  {"somaX"   ,   'Z',  "float", 0, "Z coordinate of the soma"},
+  {"somaY"   ,   'Y',  "float", 0, "Y coordinate of the soma"},
+  {"somaZ"   ,   'Z',  "float", 0, "Z coordinate of the soma"},
   { 0 }
 };
 
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
   /* Default values. */
   arguments.flag_min = 0;
   arguments.verbose = 0;
-  arguments.threshold = 0;
+  arguments.threshold = 0.02;
   arguments.windowxy = 8;
   arguments.windowz = 10;
   arguments.flag_layer = 0;
@@ -152,45 +152,46 @@ int main(int argc, char **argv) {
 
   argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
+  string directory(arguments.args[0]);
   float threshold =   arguments.threshold;
 
   printf ("Volume = %s\nFile = %s\n"
           "bool_min = %s\n"
           "threshold = %f \n"
           "saveAsCloud = %i \n",
-          arguments.args[0], arguments.args[1],
+          arguments.args[0], arguments.args[0],
           arguments.flag_min ? "yes" : "no",
           arguments.threshold,
           arguments.saveAsCloud
           );
 
   Cube<float, double>* c1 = new Cube<float, double>
-    ("/media/neurons/n7_svm/1/bf_2_3162.nfo");
+    (directory + "/1/bf_2_3162.nfo");
   Cube<float, double>* c2 = new Cube<float, double>
-    ("/media/neurons/n7_svm/2/bf_2_3162.nfo");
+    (directory + "/2/bf_2_3162.nfo");
   Cube<float, double>* c4 = new Cube<float, double>
-    ("/media/neurons/n7_svm/4/bf_2_3162.nfo");
+    (directory + "/4/bf_2_3162.nfo");
   Cube<float, double>* c8 = new Cube<float, double>
-    ("/media/neurons/n7_svm/8/bf_2_3162.nfo");
+    (directory + "/8/bf_2_3162.nfo");
 
   vector<Cube<float, double>*> thetas;
   vector<Cube<float, double>*> phis;
   thetas.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/1/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/1/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/2/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/2/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/4/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/4/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/8/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/8/aguet_2.00_2.00_theta.nfo"));
   phis.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/1/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/1/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/2/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/2/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/4/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/4/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   ("/media/neurons/n7_svm/8/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/8/aguet_2.00_2.00_phi.nfo"));
 
 
 
@@ -407,6 +408,15 @@ int main(int argc, char **argv) {
   Cloud<Point3D >* cd8 = new Cloud<Point3D>();
   Cloud<Point3D >* ct  = new Cloud<Point3D>();
   Cloud<Point3Dotw>* ctw = new Cloud<Point3Dotw>();
+
+  if(arguments.somaDefined){
+    ct->points.push_back
+      (new Point3D(arguments.somaX, arguments.somaY, arguments.somaZ));
+    ctw->points.push_back
+      (new Point3Dotw(arguments.somaX, arguments.somaY, arguments.somaZ,
+                      Point3Dot::TrainingPositive, 5.0));
+  }
+
   vector< Cloud< Point3D>*> clouds;
   clouds.push_back(cd1);   clouds.push_back(cd2);
   clouds.push_back(cd4);   clouds.push_back(cd8);
@@ -430,11 +440,11 @@ int main(int argc, char **argv) {
   cd4->v_r = 0;   cd4->v_g = 0;   cd4->v_b = 1;   cd4->v_radius = radius[2];
   cd8->v_r = 1;   cd8->v_g = 1;   cd8->v_b = 0;   cd8->v_radius = radius[3];
 
-  cd1->saveToFile("decimation_1.cl");
-  cd2->saveToFile("decimation_2.cl");
-  cd4->saveToFile("decimation_4.cl");
-  cd8->saveToFile("decimation_8.cl");
-  ct->saveToFile("decimated.cl");
-  ctw->saveToFile("decimatedW.cl");
+  cd1->saveToFile(directory + "/decimation_1.cl");
+  cd2->saveToFile(directory + "/decimation_2.cl");
+  cd4->saveToFile(directory + "/decimation_4.cl");
+  cd8->saveToFile(directory + "/decimation_8.cl");
+  ct->saveToFile (directory + "/decimated.cl");
+  ctw->saveToFile(directory + "/decimatedW.cl");
 
 }
