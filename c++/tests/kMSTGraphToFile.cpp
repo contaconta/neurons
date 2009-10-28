@@ -19,34 +19,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Graph.h"
-#include <gsl/gsl_rng.h>
+
 
 using namespace std;
 
 int main(int argc, char **argv) {
 
-  if(argc!=4){
-    printf("Usage: kMSTFileToGraph graphiOrig.gr kMSTFile graphDest.gr\n");
+  if(argc!=3){
+    printf("Usage: kMSTGraphToFile graph.gr file.txt\n");
     exit(0);
   }
 
-  Graph<Point3D, EdgeW<Point3D> >* grOrig
-    = new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
+  Graph<Point3D, EdgeW<Point3D> >* gr =
+    new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
 
-  Graph<Point3D, EdgeW<Point3D> >* grDest
-    = new Graph<Point3D, EdgeW<Point3D> >(grOrig->cloud);
-
-  std::ifstream in(argv[2]);
-  int nPoints, nEdges;
-  int idx0, idx1; double weight;
-  in >> nPoints; in >> nEdges;
-  for(int i = 0; i < nEdges; i++){
-    in >> idx0; in >> idx1; in >> weight;
-    grDest->eset.edges.push_back
-      (new EdgeW<Point3D>
-       (&grDest->cloud->points, idx0-1, idx1-1, weight));
+  std::ofstream out(argv[2]);
+  out << gr->cloud->points.size() << " " << gr->eset.edges.size() << std::endl;
+  // I should add a one to the order of the points
+  for(int i = 0; i < gr->eset.edges.size(); i++){
+    EdgeW<Point3D>* ed = dynamic_cast<EdgeW<Point3D>*>(gr->eset.edges[i]);
+    out << ed->p0 +1 << " " << ed->p1 +1 << " " << ed->w << std::endl;
   }
+  out.close();
 
-
-  grDest->saveToFile(argv[3]);
 }
