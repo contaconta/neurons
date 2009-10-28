@@ -333,6 +333,9 @@ target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
 target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
 
+add_executable(kMSTGraphToFile ${CMAKE_SOURCE_DIR}/../tests/kMSTGraphToFile.cpp)
+target_link_libraries(kMSTGraphToFile ${LINK_LIBRARIES_ALL})
+
 
 add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
 target_link_libraries(convolutionsFast ${LINK_LIBRARIES_ALL})
