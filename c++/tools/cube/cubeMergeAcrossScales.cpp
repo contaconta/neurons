@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
   Cube<float, double>* orig = new Cube<float, double>(argv[1]);
   Cube<float, double>* merged = orig->duplicate(argv[argc-1]);
 
+  printf("Now we are doing the business\n");
 #pragma omp parallel for
   for(int z = 0; z < orig->cubeDepth; z++){
     float mx, my, mz;
@@ -52,8 +53,13 @@ int main(int argc, char **argv) {
         orig->indexesToMicrometers3(x,y,z,mx,my,mz);
         for(int i = 0; i < cubes.size(); i++){
           cubes[i]->micrometersToIndexes3(mx,my,mz,ix,iy,iz);
-          if( cubes[i]->at(ix,iy,iz) > orig->at(x,y,z))
-            merged->put(x,y,z, cubes[i]->at(ix,iy,iz));
+          if( (ix>=0) && (iy>=0) && (iz>=0) &&
+              (ix < cubes[i]->cubeWidth) &&
+              (iy < cubes[i]->cubeHeight) &&
+              (iz < cubes[i]->cubeDepth)){
+            if( cubes[i]->at(ix,iy,iz) > orig->at(x,y,z))
+              merged->put(x,y,z, cubes[i]->at(ix,iy,iz));
+          }
         }//i
       }//X
     }//Y

@@ -67,13 +67,17 @@ void traceBackToSoma(int nPoint, int nEdge, vector<int>& visitedEdges, vector<in
 
 int main(int argc, char **argv) {
 
-  // if(argc!=3){
-    // printf("graphPrune graph.gr graphPruned.gr\n");
-    // exit(0);
-  // }
+  if(argc!=3){
+    printf("graphPrune graph.gr graphPruned.gr\n");
+    exit(0);
+  }
+
+  string graphOrigName(argv[1]);
+  string graphDestName(argv[2]);
+  string directory = getDirectoryFromPath(graphOrigName);
 
   gr = new Graph<Point3D, EdgeW<Point3D> >
-    ("/home/ggonzale/mount/cvlabfiler/n7_4/mstFromCptGraph.gr");
+    (graphOrigName);
 
   printf("Finding the leaves\n");
   vector<int> leaves = gr->findLeaves();
@@ -92,7 +96,7 @@ int main(int argc, char **argv) {
   leavescl->v_g = 1;
   leavescl->v_b = 0;
   leavescl->v_radius = 0.8;
-  leavescl->saveToFile("/home/ggonzale/mount/cvlabfiler/n7_4/leaves.cl");
+  leavescl->saveToFile(directory + "/leaves.cl");
 
 
 
@@ -160,37 +164,41 @@ int main(int argc, char **argv) {
                             gr->eset.edges[i]->p1,
                             gr->eset.edges[i]->w));
   }
-  pruned->saveToFile("/home/ggonzale/mount/cvlabfiler/n7_4/pruned.gr");
-  pruned->saveToFile("pruned.gr");
+  pruned->saveToFile(graphDestName);
+  //  pruned->saveToFile("pruned.gr");
 
 
   if(1){
-    std::ofstream out("/home/ggonzale/mount/cvlabfiler/n7_4/pruned.lst");
-    std::ofstream out2("/home/ggonzale/mount/cvlabfiler/n7_4/pruned_out.lst");
+    std::ofstream out( (directory + "/pruned.lst").c_str());
+    std::ofstream out2((directory + "/pruned_out.lst").c_str());
     char buff[1024];
     for(int i = 0; i < edgesVisited.size(); i++){
       // for(int i = 0; i < 1; i++){
       if(edgesVisited[i] >= 0){
-        sprintf(buff, "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr",
+        sprintf(buff, "%s/paths/path_%04i_%04i.gr",
+                directory.c_str(),
                 gr->eset.edges[i]->p0,
                 gr->eset.edges[i]->p1);
         if(fileExists(buff)){
           out << buff << std::endl;
         }
-        sprintf(buff, "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr",
+        sprintf(buff, "%s/paths/path_%04i_%04i.gr",
+                directory.c_str(),
                 gr->eset.edges[i]->p1,
                 gr->eset.edges[i]->p0);
         if(fileExists(buff)){
           out << buff << std::endl;
         }
       } else {
-        sprintf(buff, "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr",
+        sprintf(buff, "%s/paths/path_%04i_%04i.gr",
+                directory.c_str(),
                 gr->eset.edges[i]->p0,
                 gr->eset.edges[i]->p1);
         if(fileExists(buff)){
           out2 << buff << std::endl;
         }
-        sprintf(buff, "/home/ggonzale/mount/cvlabfiler/n7_4/paths/path_%04i_%04i.gr",
+        sprintf(buff, "%s/paths/path_%04i_%04i.gr",
+                directory.c_str(),
                 gr->eset.edges[i]->p1,
                 gr->eset.edges[i]->p0);
         if(fileExists(buff)){

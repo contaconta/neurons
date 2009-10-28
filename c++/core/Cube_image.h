@@ -2428,3 +2428,21 @@ float Cube<T,U>::integralOverCloud(Cloud_P* cloud)
 
   return toReturn;
 }
+
+template <class T, class U>
+double Cube<T,U>::productOverCloud(Cloud_P* cloud)
+{
+  vector< int > indexes(3);
+  vector< float > micrometers(3);
+  double toReturn = 1;
+
+  for(int i = 0; i < cloud->points.size(); i++){
+    micrometers[0] = cloud->points[i]->coords[0];
+    micrometers[1] = cloud->points[i]->coords[1];
+    micrometers[2] = cloud->points[i]->coords[2];
+    micrometersToIndexes(micrometers, indexes);
+    toReturn = toReturn*at(indexes[0], indexes[1], indexes[2]);
+  }
+
+  return toReturn;
+}

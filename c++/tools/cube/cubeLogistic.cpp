@@ -21,6 +21,7 @@
 #include "Neuron.h"
 #include "utils.h"
 #include <gsl/gsl_multimin.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -241,6 +242,7 @@ int main(int argc, char **argv) {
   double b = gsl_vector_get (s->x, 1);
 
   printf("Copying the values  [");
+#pragma omp parallel for
   for(int z=0; z < orig->cubeDepth; z++){
     for(int y = 0; y < orig->cubeHeight; y++)
       for(int x = 0; x < orig->cubeWidth; x++)
