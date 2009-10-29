@@ -51,7 +51,7 @@ public:
     //    dist = sqrt((double) (x0-x1)*(x0-x1) + ratioY*(y0-y1)*(y0-y1) + ratioZ*(z0-z1)*(z0-z1));
     //    return 1-cubeFloat->at(x1,y1,z1)/dist;
     //    return -log(cubeFloat->at(x1,y1,z1)/dist);
-    
+
     dist = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
     float p1 = cubeFloat->at(x0,y0,z0);
     float p2 = cubeFloat->at(x1,y1,z1);
@@ -64,6 +64,13 @@ public:
 
 int main(int argc, char **argv) {
 
+  if (argc!= 2){
+    printf("Usage: MSTthroughShortestPath directory\n");
+    exit(0);
+  }
+
+  string directory(argv[1]);
+
   const gsl_rng_type * T2;
   gsl_rng * r;
   gsl_rng_env_setup();
@@ -71,7 +78,7 @@ int main(int argc, char **argv) {
   r = gsl_rng_alloc (T2);
 
   Cloud_P* decimatedCloud = CloudFactory::load
-    ("/scratch/ggonzale/n7/3d/decimation_248.cl");
+    (directory + "/decimated.cl");
   Cloud<Point3D>* seedPointsSelected = new Cloud<Point3D>
     ();
 
@@ -89,7 +96,7 @@ int main(int argc, char **argv) {
   soma->v_b = 0.0;
   soma->v_radius = 1.5;
   soma->saveToFile
-    ("/scratch/ggonzale/n7/3d/tree/soma.cl");
+    (directory + "/tree/soma.cl");
 
 
   // For the multi-threaded implementation
@@ -99,9 +106,9 @@ int main(int argc, char **argv) {
   // Computation of the complete graph
   if(1){
     //Definition of the window where to search for neighbors
-    int windowX = 100;
-    int windowY = 100;
-    int windowZ = 20;
+    int windowX = 200;
+    int windowY = 200;
+    int windowZ = 40;
     // int iROIx,iROIy,iROIz;
 
 
@@ -133,7 +140,7 @@ int main(int argc, char **argv) {
     cubes.resize(nthreads);
     for(int i = 0; i < nthreads; i++){
       cubes[i] = new Cube<float, double>
-        ("/scratch/ggonzale/n7/3d/4/merged_48p.nfo");
+        (directory + "/2/merged_248p.nfo");
       //      DistanceDijkstraColorNegatedEuclideanAnisotropic* djkc
       // = new DistanceDijkstraColorNegatedEuclideanAnisotropic(cubes[i]);
             //DistanceDijkstraLogProb* djkc
@@ -192,7 +199,7 @@ int main(int argc, char **argv) {
               cubeLiveWires[nth]->findShortestPathG(idxs[0] ,idxs[1] ,idxs[2],
                                                     idxs2[0],idxs2[1],idxs2[2]);
             sprintf(graphName,
-                    "/scratch/ggonzale/n7/3d/tree/paths/path_%04i_%04i.gr", i, j);
+                    "%s/tree/paths/path_%04i_%04i.gr", directory.c_str(), i, j);
             double cost = 0;
             for(int nedge=0; nedge < shortestPath->eset.edges.size(); nedge++){
               EdgeW<Point3D>* edge = dynamic_cast<EdgeW<Point3D>*>
@@ -240,10 +247,10 @@ int main(int argc, char **argv) {
     }
 
 
-    cptGraph->saveToFile("/scratch/ggonzale/n7/3d/tree/complete.gr");
+    cptGraph->saveToFile(directory + "/tree/complete.gr");
   } else {
     Graph_P* cptGraphP =
-      GraphFactory::load("/scratch/ggonzale/n7/3d/tree/complete.gr");
+      GraphFactory::load(directory + "/tree/complete.gr");
     cptGraph =
       dynamic_cast< Graph<Point3D, EdgeW<Point3D> >* >(cptGraphP);
   }
@@ -253,20 +260,21 @@ int main(int argc, char **argv) {
   Graph<Point3D, EdgeW<Point3D> >* mst =
     cptGraph->primFromThisGraphFast();
   printf("Saving the MST as a graph\n");
-  mst->saveToFile("/scratch/ggonzale/n7/3d/tree/mstFromCptGraph.gr");
+  mst->saveToFile(directory + "/tree/mstFromCptGraph.gr");
 
 
   //Saves the MST as a list of paths
   if(1){
     printf("Saving the MST as a list\n");
-    std::ofstream out("/scratch/ggonzale/n7/3d/tree/mstFromCptGraph.lst");
+    std::ofstream out((directory + "/tree/mstFromCptGraph.lst").c_str());
     char buff[1024];
     for(int i =0; i < mst->eset.edges.size(); i++){
       if( (mst->eset.edges[i]->p0 == mst->eset.edges[i]->p1 ) ||
           (mst->eset.edges[i]->p0 == -1) ||
           (mst->eset.edges[i]->p1 == -1) )
         continue;
-      sprintf(buff, "/scratch/ggonzale/n7/3d/tree/paths/path_%04i_%04i.gr",
+      sprintf(buff, "%s/tree/paths/path_%04i_%04i.gr",
+              directory.c_str(),
               mst->eset.edges[i]->p0,
               mst->eset.edges[i]->p1);
       out << buff << std::endl;

@@ -222,7 +222,7 @@ int main(int argc, char **argv) {
   max_c = max(max_c , max_c4);
   max_c = max(max_c , max_c8);
 
-  double step_size = (max_c - min_c) / 20;
+  double step_size = (max_c - min_c) / 5;
   double current_threshold = max_c - step_size;
 
   int position = 0;
@@ -354,10 +354,10 @@ int main(int argc, char **argv) {
           maxIdx = i;
         }
       }
-      if(maxIdx==0){ position = (*riterC1).second; riterC1++; windowErase = 10; }
-      if(maxIdx==1){ position = (*riterC2).second; riterC2++; windowErase = 15; }
-      if(maxIdx==2){ position = (*riterC4).second; riterC4++; windowErase = 20; }
-      if(maxIdx==3){ position = (*riterC8).second; riterC8++; windowErase = 25; }
+      if(maxIdx==0){ position = (*riterC1).second; riterC1++; windowErase = 30; }
+      if(maxIdx==1){ position = (*riterC2).second; riterC2++; windowErase = 35; }
+      if(maxIdx==2){ position = (*riterC4).second; riterC4++; windowErase = 40; }
+      if(maxIdx==3){ position = (*riterC8).second; riterC8++; windowErase = 40; }
 
       if(visitedPoints[position] == true)
         continue;
@@ -369,7 +369,8 @@ int main(int argc, char **argv) {
       //To prevent the bug in the images
       if(x_p<=5) continue;
       int counter = 0;
-      for(int z = max(z_p-windowErase,0); z < min(z_p+windowErase, (int)c1->cubeDepth); z++)
+      for(int z = max(z_p-windowErase*2/3,0);
+          z < min(z_p+windowErase*2/3, (int)c1->cubeDepth); z++)
         for(int y = max(y_p-windowErase,0); y < min(y_p+windowErase, (int)c1->cubeHeight); y++)
           for(int x = max(x_p-windowErase,0); x < min(x_p+windowErase, (int)c1->cubeWidth); x++){
             if(visitedPoints[x + y*c1->cubeWidth + z*c1->cubeWidth*c1->cubeHeight] == true)

@@ -27,9 +27,8 @@ int main(int argc, char **argv) {
 
   if(argc!=3){
     printf("Usage: cloudToDisplayList <Graph.gr> <display.lst>\n");
+    exit(0);
   }
-
-
 
   std::ofstream out(argv[2]);
   char buff[1024];
@@ -41,7 +40,7 @@ int main(int argc, char **argv) {
       if( gr->eset.edges[i]->p0 ==
           gr->eset.edges[i]->p1 )
         continue;
-    sprintf(buff, "path_%03i_%03i.gr",
+    sprintf(buff, "path_%04i_%04i.gr",
             gr->eset.edges[i]->p0,
             gr->eset.edges[i]->p1);
     out << buff << std::endl;
