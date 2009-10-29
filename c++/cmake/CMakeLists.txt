@@ -289,6 +289,9 @@ target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
+add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
+target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
+
 add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
 target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
 
