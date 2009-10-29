@@ -26,13 +26,14 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  string directory = "/scratch/ggonzale/n2/3d/tree/kmsts/";
+  string directory = "/home/ggonzale/mount/bbpsg1scratch/n2/3d/tree/kmsts/";
   int kInit = 200;
   int kEnd  = 800;
   int kStep = 20;
   char name[2048];
 
   vector< vector< double > > toSave;
+  EdgeW<Point3D>* ed;
 
   for(int k = kInit; k <=kEnd; k+=kStep){
     sprintf(name, "%s/kmst%i.gr", directory.c_str(), k);
@@ -40,8 +41,8 @@ int main(int argc, char **argv) {
     Graph< Point3D, EdgeW<Point3D> >* gr =
       new Graph< Point3D, EdgeW<Point3D> >(name);
     double val = 0;
-    for(int i = 0; i < gr->eset.edges.size(); gr++){
-      EdgeW<Point3D>* ed = dynamic_cast< EdgeW<Point3D>*>( gr->eset.edges[i]);
+    for(int i = 0; i < gr->eset.edges.size(); i++){
+      ed = dynamic_cast< EdgeW<Point3D>*>( gr->eset.edges[i]);
       val += ed->w;
     }
     vector< double > it(2);
