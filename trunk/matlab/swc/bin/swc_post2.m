@@ -32,7 +32,7 @@ for v = NODES
             % pb = [bg boundary mitochondria]
             Plist(v) = pb(LABELS(v));
     
-    
+            
     
    % if strcmp(modelCell{1}, 'perfect')          
    %     GT = modelCell{2};

@@ -1,4 +1,4 @@
-function [FEAT, EDGE] = spedge_dist(I, angle, stride, edge_method)
+function [FEAT, EDGE] = spedge_dist(I, angle, stride, EDGE)
 %SPEDGE_DIST computes a spedge feature in a given direction
 %
 %   FEATURE = spedge_dist(I, ANGLE, STRIDE, EDGE_METHOD)  computes a spedge 
@@ -25,7 +25,7 @@ if angle < 0;  angle = angle + 360; end;
 
 
 % we get our edge map based on the index edge_method
-EDGE = edgemethods(I, edge_method);
+%EDGE = edgemethods(I, edge_method);
 
 % %=========================== NEED TO REWRITE=======================================
 % % we use a zero-crossing laplacian of gaussian to ensure closed contours
