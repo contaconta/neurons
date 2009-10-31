@@ -1,6 +1,6 @@
 
 function v = gradientnorm(v)
-
+v = double(v);
 mag = sqrt(  sum( (v.^2),3));
 v = v ./ repmat(mag, [1 1 2]);
 

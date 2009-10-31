@@ -94,6 +94,7 @@ if initFlag
     % precompute the KL divergences for each edge
     disp('Precomputing the KL divergences.');
     KL = edgeKL(Iraw, pixelList, G0, 1);
+    %KL = .75*G0;
     
     % initialize the SVM model
     disp('Computing the SVM model.');
@@ -122,12 +123,13 @@ if initFlag
         members = find(Cw == c)';   % find the clique members
 
         % do a random assignment to the clique
-        LABELS(members) = randsample(labelList,1);
-        if rand(1) < .5
-            LABELS(members) = 1;
-        else
-            LABELS(members) = 2;
-        end
+        LABELS(members) = 1;
+%         LABELS(members) = randsample(labelList,1);
+%         if rand(1) < .5
+%             LABELS(members) = 1;
+%         else
+%             LABELS(members) = 2;
+%         end
     end
     
     % plot the initial partition
@@ -162,7 +164,7 @@ P(1) = sum(Plist);
 disp('Applying metropolis-hastings with Swendson-Wang cuts.')
 
 
-for s = 2:S
+for s = 8852:S % 2:S
     
     % step 1: select a seed vertex v
     %v = randsample(size(W,1),1);
@@ -210,8 +212,9 @@ for s = 2:S
     Pplist = swc_post2(W, LABELSp, GT, pixelList, Iraw, R, Plist);
     
     % compute posterior terms for previous and proposal
-    Pp = sum(Pplist(V0));
-    Pold = sum(Plist(V0));
+    lambda = 1000000;
+    Pp = sum(Pplist(V0))  + lambda* (1/(1+numel(unique(Cwp))));
+    Pold = sum(Plist(V0)) + lambda* (1/(1+numel(unique(Cw))));
     
     % acceptance ratio
     a = exp( B(s)* (Pp - Pold));

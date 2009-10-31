@@ -11,7 +11,7 @@ addpath([pwd '/../utils/']);
 %imPath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
 %imPath = '~/usr/share/Data/LabelMe/Images/FIBSLICE/';
 %imName = 'FIBSLICE0720'
-imName = 'FIBSLICE0002'
+imName = 'FIBSLICE0002';
 
  % load the image we are working with
 Iraw = imread('../images/FIBSLICE0002.png');
@@ -31,7 +31,7 @@ training_instance = instance_matrix;
 %testing_label = label_vector(3001:size(label_vector,1),:);
 %testing_instance = instance_matrix(3001:size(instance_matrix,1),:);
 
-if ~exist('model')
+if ~exist('model', 'var')
   disp('Computing model...');
   [model,minI,maxI] = loadModel(training_label, training_instance,rescaleData,2);
 end

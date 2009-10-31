@@ -1,6 +1,6 @@
 function W = swc_AdjFromColor(varargin)
-%% SWC_CP forms connected components from G
-%   CP = swc_CP(G, B)
+%% swc_AdjFromColor(varargin)
+%   
 %   TODO: write documentation
 
 %   Copyright © 2009 Computer Vision Lab, 
@@ -54,7 +54,7 @@ elseif nargin == 2
         MASK(members,members) = 1;  % only members rows & columns
         Wc = A.*MASK;               % a small fully connected graph for color c
         W = W + Wc;                 % add for each color to get W
-        disp([ 'completed c=' num2str(c) '/' num2str(length(C(:)))]);
+        %disp([ 'completed c=' num2str(c) '/' num2str(length(C(:)))]);
     end
 
     
