@@ -14,12 +14,12 @@ d = dir([annotationpath '*.png']);
 libsvmFileName = 'feature_vectors';
 
 %% PARAMETERS
-angles = 0:15:345;
+angles = 0:30:330;
 combos = combnk(angles, 2);
 stride = 1;
 eta = 1;
 
-DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
+DEPEND = [1 2; 3 14; 15 26;27 38; 39 104];
 
 
 for f = 1:length(d)
@@ -39,7 +39,7 @@ for f = 1:length(d)
     gh = imfilter(I,fspecial('sobel')' /8,'replicate');
     gv = imfilter(I,fspecial('sobel')/8,'replicate');
     G(:,:,1) = gv;
-    G(:,:,2) = gh;
+    G(:,:,2) = gh;  clear gh gv;
     
     for l = superpixels
         STATS(l).Centroid = round(STATS(l).Centroid);
@@ -49,7 +49,7 @@ for f = 1:length(d)
     end
     
     
-    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles)+2+size(combos,1)]);
+    RAYFEATUREVECTOR = zeros([length(superpixels) 3*length(angles)+2+size(combos,1)]);
 
     for l = superpixels
         RAYFEATUREVECTOR(l, 1) = mean(I(STATS(l).PixelIdxList));
