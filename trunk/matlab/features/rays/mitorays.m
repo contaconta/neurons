@@ -83,8 +83,8 @@ for f = 1:length(d)
             % store the centroid ray in the superpixel
             RAYFEATUREVECTOR(l,i) = R1(STATS(l).Centroid(2), STATS(l).Centroid(1));
             RAYFEATUREVECTOR(l, i+1) =  R1(STATS(l).Centroid(2), STATS(l).Centroid(1));
-            RAYFEATUREVECTOR(l, length(angles) + i+1) = median(STATS(l).Centroid(2), STATS(l).Centroid(1));
-            RAYFEATUREVECTOR(l, 2*length(angles) + i+1) = median(STATS(l).Centroid(2), STATS(l).Centroid(1));
+            RAYFEATUREVECTOR(l, length(angles) + i+1) = R3(STATS(l).Centroid(2), STATS(l).Centroid(1));
+            RAYFEATUREVECTOR(l, 2*length(angles) + i+1) = R4(STATS(l).Centroid(2), STATS(l).Centroid(1));
         end
             
     end

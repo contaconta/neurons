@@ -13,6 +13,7 @@ if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
 TRAIN_LENGTH = 4000;        % the total # of features in training set
+DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
 
 
 for k = 1:5
