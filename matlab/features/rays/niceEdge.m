@@ -9,7 +9,8 @@ E = canny(I, CANNYSIGMA);
 
 E2 = E > CANNYTHRESH;
 %L = bwlabel(E > CANNYTHRESH);
-STATS = regionprops(logical(E2), 'PixelIdxList', 'Area');
+%STATS = regionprops(logical(E2), 'PixelIdxList', 'Area');
+STATS = regionprops(bwlabel(logical(E2)), 'PixelIdxList', 'Area');
 
 for l = 1:length(STATS)
 if STATS(l).Area < MINAREA;
