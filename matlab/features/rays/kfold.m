@@ -1,9 +1,11 @@
 %% 5 K-fold training
 
+featureName = 'rays30Median';
+
 
 % set folders and paths
+featureFolder = ['/osshare/Work/neurons/matlab/features/rays/featurevectors/' featureName '/'];
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/')
-featureFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/rays30MedianInvariant/';
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
 destinationFolder = '/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/rays30MedianInvariant/';
@@ -13,7 +15,7 @@ if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
 TRAIN_LENGTH = 4000;        % the total # of features in training set
-DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
+
 
 
 for k = 1:5
@@ -42,9 +44,7 @@ for k = 1:5
         load([featureFolder d(i).name]);        
         featureVector = RAYFEATUREVECTOR; clear RAYFEATUREVECTOR;
         labels = mito; clear mito;
-%         fileRoot = regexp(d(i).name, '(\w*)[^\.]', 'match');
-%         I = imread([imgpath fileRoot '.png']);
-        
+       
         pos = find(labels == 1);
         neg = find(labels == 0);
         plist = randsample(pos, N)';
@@ -54,18 +54,16 @@ for k = 1:5
         TRAIN_L = [TRAIN_L; 2*ones(size(plist)); zeros(size(nlist))]; %#ok<AGROW>
     end
     
-    % rescale the data
-    limits1 = [min(min(TRAIN(:,1))) max(max(TRAIN(:,1)))];
-    limits2 = [min(min(TRAIN(:,2:13))) max(max(TRAIN(:,2:13)))];
-    limits14 = [min(min(TRAIN(:,14:25))) max(max(TRAIN(:,14:25)))];
-    limits26 = [min(min(TRAIN(:,26:37))) max(max(TRAIN(:,26:37)))];
-    limits38 = [min(min(TRAIN(:,38:103))) max(max(TRAIN(:,38:103)))];
-    TRAIN(:,1) = mat2gray(TRAIN(:,1), limits1);
-    TRAIN(:,2:13) = mat2gray(TRAIN(:,2:13), limits2);
-    TRAIN(:,14:25) = mat2gray(TRAIN(:,14:25), limits14);
-    TRAIN(:,26:37) = mat2gray(TRAIN(:,26:37), limits26);
-    TRAIN(:,38:103) = mat2gray(TRAIN(:,38:103), limits38);
+    %DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
+    DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
     
+    
+    % rescale the data
+    T1 = TRAIN; limits = zeros(size(DEPEND));
+    for x = 1:size(DEPEND,1)
+        limits(x,:) = [min(min(TRAIN(:,DEPEND(x,1):DEPEND(x,2)))) max(max(TRAIN(:,DEPEND(x,1):DEPEND(x,2))))];
+        T1(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(TRAIN(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
+    end
     
 
     %% select parameters for the SVM
@@ -101,12 +99,13 @@ for k = 1:5
         fileRoot = fileRoot{1};
         I = imread([imgpath fileRoot '.png']);
         
+     	%DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
+        DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
+        
         % normalize the data 
-        featureVector(:,1) = mat2gray(featureVector(:,1), limits1);
-        featureVector(:,2:13) = mat2gray(featureVector(:,2:13), limits2);
-        featureVector(:,14:25) = mat2gray(featureVector(:,14:25), limits14);
-        featureVector(:,26:37) = mat2gray(featureVector(:,26:37), limits26);
-        featureVector(:,38:103) = mat2gray(featureVector(:,38:103), limits38);
+        for x = 1:size(DEPEND,1)
+            featureVector(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(featureVector(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
+        end
         
         % perform the SVM prediction
         cmd = '-b 1';
