@@ -19,7 +19,7 @@ combos = combnk(angles, 2);
 stride = 1;
 eta = 1;
 
-
+DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
 
 
 for f = 1:length(d)
@@ -49,7 +49,7 @@ for f = 1:length(d)
     end
     
     
-    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles) + size(combos,1) +2]);
+    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles)+size(combos,1)+2]);
 
     for l = superpixels
         RAYFEATUREVECTOR(l, 1) = mean(I(STATS(l).PixelIdxList));
@@ -128,7 +128,7 @@ for f = 1:length(d)
         end
     end
 
-    save([localresultpath FILEROOT '.mat'], 'RAYFEATUREVECTOR', 'L', 'superpixels', 'mito');
+    save([localresultpath FILEROOT '.mat'], 'RAYFEATUREVECTOR', 'L', 'superpixels', 'mito', 'DEPEND');
     
     %% Write to a LIBSVM file a random sampling of the feature vector
 %     N = 200;
