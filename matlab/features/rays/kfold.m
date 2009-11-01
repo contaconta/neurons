@@ -14,7 +14,7 @@ if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 1000;        % the total # of features in training set
+TRAIN_LENGTH = 4000;        % the total # of features in training set
 
 
 
