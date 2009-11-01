@@ -18,7 +18,7 @@ DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
 
 for k = 1:5
     % determine our training and testing set for this k-fold
-    if k == 1; k1 = 1; else; k1 = (k-1)*K; end; %#ok<NOSEM>
+    if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
     testImgs = imgs( k1:min(k1+5-1, max(imgs)));
     trainImgs = setdiff(imgs, testImgs);
     disp(['Testing: ' num2str(testImgs)]);
