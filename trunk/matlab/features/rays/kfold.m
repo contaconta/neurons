@@ -8,7 +8,7 @@ featureFolder = ['./featurevectors/' featureName '/'];
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/')
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-destinationFolder = '/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/temp/';
+destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' featureName '/'];
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 
 % k-folds parameters
@@ -86,7 +86,7 @@ for k = 1:5
     model = svmtrain(TRAIN_L, TRAIN, cmd);
     
     %% save the SVM model
-    save([destinationFolder 'svm_model' num2str(testImgs) '.mat'], 'model', 'limits1', 'limits2', 'limits14', 'limits26', 'limits38');
+    save([destinationFolder 'svm_model' num2str(testImgs) '.mat'], 'model', 'limits', 'DEPEND');
     
     
     %% loop through the test images and do prediction
