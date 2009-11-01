@@ -4,7 +4,7 @@ featureName = 'rays30Median';
 
 
 % set folders and paths
-featureFolder = ['/osshare/Work/neurons/matlab/features/rays/featurevectors/' featureName '/'];
+featureFolder = ['./featurevectors/' featureName '/'];
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/')
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
