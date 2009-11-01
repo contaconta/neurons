@@ -1,5 +1,5 @@
 %% PATH INFO
-EXPNAME = 'rays15CentroidInvariant';
+EXPNAME = 'rays15MedianInvariant';
 
 addpath('/osshare/Work/neurons/matlab/features/spedges/');
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
