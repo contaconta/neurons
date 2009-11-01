@@ -5,9 +5,9 @@ addpath('/osshare/Work/neurons/matlab/features/spedges/');
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
 superpixelpath = '/osshare/DropBox/Dropbox/aurelien/superpixels/labels/';
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
-dropboxresultpath = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' EXPNAME '/'];
+%dropboxresultpath = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' EXPNAME '/'];
 localresultpath = ['./featurevectors/' EXPNAME '/'];
-if ~isdir(dropboxresultpath);mkdir(dropboxresultpath);end
+%if ~isdir(dropboxresultpath);mkdir(dropboxresultpath);end
 if ~isdir(localresultpath);mkdir(localresultpath);end
 
 d = dir([annotationpath '*.png']);
@@ -61,7 +61,7 @@ for f = 1:length(d)
     RAY3 = zeros([size(I) length(angles)]);
     RAY4 = zeros([size(I) length(angles)]);
 
-    EDGE = niceEdge(I);  if f == 1; imwrite(imoverlay(I, EDGE), [dropboxresultpath FILEROOT '.png'], 'PNG'); end; 
+    EDGE = niceEdge(I);  if f == 1; imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG'); end; 
 
     
     for i = 1:length(angles)
