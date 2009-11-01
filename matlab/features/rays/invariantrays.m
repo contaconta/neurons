@@ -1,5 +1,5 @@
 %% PATH INFO
-EXPNAME = 'rays30MedianInvariant';
+EXPNAME = 'rays15CentroidInvariant';
 
 addpath('/osshare/Work/neurons/matlab/features/spedges/');
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
@@ -14,7 +14,7 @@ d = dir([annotationpath '*.png']);
 libsvmFileName = 'feature_vectors';
 
 %% PARAMETERS
-angles = 0:30:345;
+angles = 0:15:345;
 combos = combnk(angles, 2);
 stride = 1;
 eta = 1;
@@ -49,10 +49,11 @@ for f = 1:length(d)
     end
     
     
-    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles) + size(combos,1) +1]);
+    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles) + size(combos,1) +2]);
 
     for l = superpixels
         RAYFEATUREVECTOR(l, 1) = mean(I(STATS(l).PixelIdxList));
+        RAYFEATUREVECTOR(l, 2) = var(double(I(STATS(l).PixelIdxList)));
     end
 
     % RAY 1 is the basic ray, the distance RAY
@@ -95,11 +96,13 @@ for f = 1:length(d)
         for l = superpixels
             
             % store the median ray in the superpixel
-            RAYFEATUREVECTOR(l, i+1) =  median(R1(STATS(l).PixelIdxList));
-            RAYFEATUREVECTOR(l, length(angles) + i+1) = median(R3(STATS(l).PixelIdxList));
-            RAYFEATUREVECTOR(l, 2*length(angles) + i+1) = median(R4(STATS(l).PixelIdxList));
-            % store the centroid ray in the superpixel
-            %RAYFEATUREVECTOR(l,i) = R1(STATS(l).Centroid(2), STATS(l).Centroid(1));
+            RAYFEATUREVECTOR(l, i+2) =  median(R1(STATS(l).PixelIdxList));
+            RAYFEATUREVECTOR(l, length(angles) + i+2) = median(R3(STATS(l).PixelIdxList));
+            RAYFEATUREVECTOR(l, 2*length(angles) + i+2) = median(R4(STATS(l).PixelIdxList));
+%             % store the centroid ray in the superpixel
+%             RAYFEATUREVECTOR(l, i+2) = R1(STATS(l).Centroid(2), STATS(l).Centroid(1));
+%             RAYFEATUREVECTOR(l, length(angles) + i+2) = R3(STATS(l).Centroid(2), STATS(l).Centroid(1));
+%             RAYFEATUREVECTOR(l, 2*length(angles) + i+2) = R4(STATS(l).Centroid(2), STATS(l).Centroid(1));
         end
     end
             
@@ -119,9 +122,9 @@ for f = 1:length(d)
         
         for l = superpixels           
             % store the median ray in the superpixel
-            RAYFEATUREVECTOR(l, 3*length(angles) + c+1) = median(RAY2(STATS(l).PixelIdxList));
-            % store the centroid ray in the superpixel
-            %RAYFEATUREVECTOR(l,length(angles) + c) = RAY2(STATS(l).Centroid(2), STATS(l).Centroid(1));
+            RAYFEATUREVECTOR(l, 3*length(angles) + c+2) = median(RAY2(STATS(l).PixelIdxList));
+%             % store the centroid ray in the superpixel
+%             RAYFEATUREVECTOR(l, 3*length(angles) + c+2) = RAY2(STATS(l).Centroid(2), STATS(l).Centroid(1));
         end
     end
 
