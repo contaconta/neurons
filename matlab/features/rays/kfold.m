@@ -1,6 +1,6 @@
 %% 5 K-fold training
 
-featureName = 'rays30Median';
+featureName = 'rays15MedianInvariant';
 
 
 % set folders and paths
@@ -55,7 +55,7 @@ for k = 1:5
     end
     
     %DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
-    DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
+    %DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
     %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
     
     % rescale the data
@@ -100,7 +100,7 @@ for k = 1:5
         I = imread([imgpath fileRoot '.png']);
         
      	%DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
-        DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
+        %DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
         %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
         
         % normalize the data 
