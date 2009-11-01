@@ -8,13 +8,13 @@ featureFolder = ['./featurevectors/' featureName '/'];
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/')
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-destinationFolder = '/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/rays30MedianInvariant/';
+destinationFolder = '/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/temp/';
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 4000;        % the total # of features in training set
+TRAIN_LENGTH = 1000;        % the total # of features in training set
 
 
 
@@ -56,13 +56,13 @@ for k = 1:5
     
     %DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
     DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
-    
+    %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
     
     % rescale the data
     T1 = TRAIN; limits = zeros(size(DEPEND));
     for x = 1:size(DEPEND,1)
         limits(x,:) = [min(min(TRAIN(:,DEPEND(x,1):DEPEND(x,2)))) max(max(TRAIN(:,DEPEND(x,1):DEPEND(x,2))))];
-        T1(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(TRAIN(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
+        TRAIN(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(TRAIN(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
     end
     
 
@@ -101,6 +101,7 @@ for k = 1:5
         
      	%DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
         DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
+        %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
         
         % normalize the data 
         for x = 1:size(DEPEND,1)
