@@ -1,5 +1,5 @@
 %% PATH INFO
-EXPNAME = 'rays15MedianInvariant';
+EXPNAME = 'rays30MedianInvariantE2';
 
 addpath('/osshare/Work/neurons/matlab/features/spedges/');
 imgpath = '/osshare/Work/Data/LabelMe/Images/fibsem/';
@@ -11,15 +11,15 @@ localresultpath = ['./featurevectors/' EXPNAME '/'];
 if ~isdir(localresultpath);mkdir(localresultpath);end
 
 d = dir([annotationpath '*.png']);
-libsvmFileName = 'feature_vectors';
 
 %% PARAMETERS
-angles = 0:15:345;
+angles = 0:30:330;
 combos = combnk(angles, 2);
 stride = 1;
 eta = 1;
 
-DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
+%DEPEND = [1 1; 2 2; 3 26; 27 50; 51 74; 75 302];
+DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
 
 
 for f = 1:length(d)
@@ -49,7 +49,7 @@ for f = 1:length(d)
     end
     
     
-    RAYFEATUREVECTOR = zeros([length(superpixels) length(angles)+size(combos,1)+2]);
+    RAYFEATUREVECTOR = zeros(length(superpixels), 3*length(angles) + size(combos,1) + 2);
 
     for l = superpixels
         RAYFEATUREVECTOR(l, 1) = mean(I(STATS(l).PixelIdxList));
@@ -61,7 +61,7 @@ for f = 1:length(d)
     RAY3 = zeros([size(I) length(angles)]);
     RAY4 = zeros([size(I) length(angles)]);
 
-    EDGE = niceEdge(I);  if f == 1; imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG'); end; 
+    EDGE = niceEdge2(I);  if f == 1; imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG'); end; 
 
     
     for i = 1:length(angles)
