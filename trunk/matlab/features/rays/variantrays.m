@@ -19,7 +19,7 @@ combos = combnk(angles, 2);
 stride = 1;
 eta = 1;
 
-DEPEND = [1 2; 3 14; 15 26;27 38; 39 104];
+DEPEND = [1 1; 2 2; 3 14; 15 26;27 38; 39 104];
 
 
 for f = 1:length(d)
