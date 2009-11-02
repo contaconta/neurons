@@ -39,6 +39,8 @@ for f = 1:length(d)
         STATS(l).Centroid = round(STATS(l).Centroid);
         if sum(A(STATS(l).PixelIdxList)) >= 0.5* STATS(l).Area
             mito(l) = 1;
+        else
+            mito(l) = 0;
         end
     end
     

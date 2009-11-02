@@ -95,6 +95,7 @@ for k = 1:5
         disp(['Predicting for ' d(i).name]);
         load([featureFolder d(i).name]);       
         featureVector = RAYFEATUREVECTOR; clear RAYFEATUREVECTOR;
+        mito(length(mito):size(featureVector,1),1) = 0;  %<<<<<< TEMPORARY FIX FOR BAD MITO
         labels = mito(:); clear mito;
         fileRoot = regexp(d(i).name, '(\w*)[^\.]', 'match');
         fileRoot = fileRoot{1};
