@@ -1,6 +1,6 @@
 %% 5 K-fold training
 
-featureName = 'rays15MedianInvariant';
+featureName = 'shapeContextRmax400T12';
 
 
 % set folders and paths
@@ -57,6 +57,7 @@ for k = 1:5
     %DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
     %DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
     %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
+    DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 50; 51 62];
     
     % rescale the data
     T1 = TRAIN; limits = zeros(size(DEPEND));
@@ -102,6 +103,7 @@ for k = 1:5
      	%DEPEND = [1 2; 3 26; 27 50; 51 74; 75 302];
         %DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104];
         %DEPEND = [1 1; 2 13; 14 25; 26 37; 38 103];
+        DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 50; 51 62];
         
         % normalize the data 
         for x = 1:size(DEPEND,1)
