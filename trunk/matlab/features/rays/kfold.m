@@ -14,7 +14,7 @@ if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 4000;        % the total # of features in training set
+TRAIN_LENGTH = 4000;        % the total # of examples per class in training set
 
 
 
@@ -60,7 +60,7 @@ for k = 1:5
     DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 50; 51 62];
     
     % rescale the data
-    T1 = TRAIN; limits = zeros(size(DEPEND));
+    limits = zeros(size(DEPEND));
     for x = 1:size(DEPEND,1)
         limits(x,:) = [min(min(TRAIN(:,DEPEND(x,1):DEPEND(x,2)))) max(max(TRAIN(:,DEPEND(x,1):DEPEND(x,2))))];
         TRAIN(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(TRAIN(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
