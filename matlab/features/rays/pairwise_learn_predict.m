@@ -1,5 +1,5 @@
 
-resultname = 'pairwiseTEST';
+resultname = 'pairwiseTEST2';
 
 raysFolderName = 'rays30MedianInvariantE2';
 
@@ -115,8 +115,7 @@ for k = 1:5
         % to mitochondria, and mitochondria interior
         
         % split the samples between the two cases
-        N1 = round(N/3);
-        
+        N1 = round(N/2);
         % fill in the boundary/mitochondria negative examples
         bnd = find(labels == 1);
         plist = randsample(bnd, N1)';
@@ -137,8 +136,8 @@ for k = 1:5
             c = c + 1;
         end
         
-        N2 = round(N/3);
-        % fill in the mitochondria examples
+        N2 = round(N/2);
+        % fill in the mitochondria/mitochondria examples
         mt = find(labels == 2);
         nlist = randsample(mt, N2)';
         
@@ -156,12 +155,30 @@ for k = 1:5
             c = c + 1;
         end
         
+        N3 = round(N/2);
+        % fill in the boundary/boundary examples
+        bd = find(labels == 1);
+        nlist = randsample(bd, N3)';
         
-        N3 = 2*N - c + 1;
+        for n = nlist
+            neighbors = find(A(n,:));
+            bds = find(labels(neighbors)==2);
+            if length(bds) > 1
+                bd = neighbors(randsample(bds,1));
+            elseif ~isempty(bds == 1)
+                bd = neighbors(bds);
+            else 
+                continue;
+            end
+            featureVector(c,:) = [RAYFEATUREVECTOR(n,:) H(n,:)  RAYFEATUREVECTOR(bd,:) H(bd,:)];
+            c = c + 1;
+        end
+        
+        N4 = 2*N - c + 1;
         
         % fill in the background examples
         bg = find(labels == 0);
-        nlist = randsample(bg, N3)';
+        nlist = randsample(bg, N4)';
         
         for n = nlist
             neighbors = find(A(n,:));
@@ -192,9 +209,10 @@ for k = 1:5
 
     %% select parameters for the SVM
     disp('Selecting parameters for the SVM');
-    bestcv = 0;
-    for log2c = -1:3,
-      for log2g = -4:1,
+    bestcv = 0;  %CMIN = -1; CMAX = 3;  GMIN = -4; GMAX = 1;
+    CMIN = -1; CMAX = 3;  GMIN = -3; GMAX = -3;
+    for log2c = -CMIN:CMAX,
+      for log2g = -GMIN:GMAX,
         cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g) ' -m 500'];
         cv = svmtrain(TRAIN_L, TRAIN, cmd);
         if (cv >= bestcv),
@@ -317,7 +335,7 @@ for k = 1:5
         
         % write predictions to a text file
      	predL = probsCUT > THRESH;
-        writePairwisePrediction(destinationFolder, [fileRoot '.txt'], probs, predL, model.Label);
+        writePairwisePrediction(destinationFolder, [fileRoot '.txt'], r, c, probs, predL, model.Label);
        
         
         
