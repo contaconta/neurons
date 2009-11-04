@@ -1,5 +1,5 @@
 
-resultname = 'pairwiseTESTSEARCH2';
+resultname = 'pairwise1';
 
 raysFolderName = 'rays30MedianInvariantE2';
 
@@ -40,12 +40,12 @@ DMAX = 248;
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 3000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 9000;        % the total # of examples per class in training set
 BOUNDARY_LABEL = 1;
 
 
 
-for k = 1
+for k = 1:5
     % determine our training and testing images for this k-fold
     if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
     testImgs = imgs( k1:min(k1+5-1, max(imgs)));
@@ -179,17 +179,16 @@ for k = 1
         end
         
         N4 = round(NNEG/5);
-        % fill in the boundary/boundary examples
+        % fill in the blue examples
         im = find(bootstrap == 1);
         nlist = randsample(im, N4)';
         for n = nlist
             neighbors = find(A(n,:));
-            ims = find(bootstrap(neighbors)==1);
-            if length(ims) > 1
-                im = neighbors(randsample(ims,1));
-            elseif ~isempty(ims == 1)
-                im = neighbors(ims);
-            else 
+            if length(neighbors) > 1
+                im = randsample(neighbors, 1);
+            elseif length(neighbors) == 1
+                im = neighbors(1);
+            else
                 continue;
             end
             featureVector(c,:) = [RAYFEATUREVECTOR(n,:) H(n,:)  RAYFEATUREVECTOR(im,:) H(im,:)];
