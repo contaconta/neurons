@@ -1,5 +1,5 @@
 
-resultname = 'UnaryTerm2';
+resultname = 'UnaryTerm3';
 
 raysName = 'rays30MedianInvariantE2';
 
@@ -18,7 +18,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 10000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 6000;        % the total # of examples per class in training set
 MITO_LABEL = 2;             % label used for mito
 
 %----------------------------------------------------------------------
@@ -39,8 +39,8 @@ for k = 1:5
     
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
-    NPOS = round(.5*N);
-    NNEG = round(.5*N);
+    NPOS = round(.4*N);
+    NNEG = round(.6*N);
     
     % intialize the training vectors
     TRAIN = [];
