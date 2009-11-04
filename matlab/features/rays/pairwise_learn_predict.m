@@ -115,7 +115,7 @@ for k = 1:5
         % to mitochondria, and mitochondria interior
         
         % split the samples between the two cases
-        N1 = round(N/2);
+        N1 = round(N/5);
         % fill in the boundary/mitochondria negative examples
         bnd = find(labels == 1);
         plist = randsample(bnd, N1)';
@@ -136,7 +136,7 @@ for k = 1:5
             c = c + 1;
         end
         
-        N2 = round(N/2);
+        N2 = round(N/5);
         % fill in the mitochondria/mitochondria examples
         mt = find(labels == 2);
         nlist = randsample(mt, N2)';
@@ -155,7 +155,7 @@ for k = 1:5
             c = c + 1;
         end
         
-        N3 = round(N/2);
+        N3 = round(N/5);
         % fill in the boundary/boundary examples
         bd = find(labels == 1);
         nlist = randsample(bd, N3)';
