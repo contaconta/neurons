@@ -211,8 +211,8 @@ for k = 1:5
     disp('Selecting parameters for the SVM');
     bestcv = 0;  %CMIN = -1; CMAX = 3;  GMIN = -4; GMAX = 1;
     CMIN = -1; CMAX = 3;  GMIN = -3; GMAX = -3;
-    for log2c = -CMIN:CMAX,
-      for log2g = -GMIN:GMAX,
+    for log2c = CMIN:CMAX,
+      for log2g = GMIN:GMAX,
         cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g) ' -m 500'];
         cv = svmtrain(TRAIN_L, TRAIN, cmd);
         if (cv >= bestcv),
