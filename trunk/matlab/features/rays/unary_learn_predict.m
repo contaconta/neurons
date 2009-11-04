@@ -1,5 +1,5 @@
 
-resultname = 'Rays30MedInvE2+Hist';
+resultname = 'UnaryTerm2';
 
 raysName = 'rays30MedianInvariantE2';
 
@@ -18,9 +18,15 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 4000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 10000;        % the total # of examples per class in training set
+MITO_LABEL = 2;             % label used for mito
 
-
+%----------------------------------------------------------------------
+D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
+for x = 105:124
+    D(size(D,1)+1,:) = [x x]; % Intensity
+end
+%----------------------------------------------------------------------
 
 
 for k = 1:5
@@ -33,6 +39,8 @@ for k = 1:5
     
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
+    NPOS = round(.5*N);
+    NNEG = round(.5*N);
     
     % intialize the training vectors
     TRAIN = [];
@@ -51,40 +59,50 @@ for k = 1:5
         labels = mito; clear mito;
         % load the Hist features
         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
+        H = full(H);
+        % load the normal annotation
+        Q = imread([annotationFolder fileRoot '.png']); QR = Q(:,:,1) > 200; QG = Q(:,:,2) > 200; QB = Q(:,:,3) > 200;
+        Q = (QR | QB ) .* ~QG ;
+        
+        
+        STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
+        bootstrap = zeros(size(STATS));
+        for l=1:length(STATS)
+            bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
+        end
         
         % construct the featureVector we train with!
-        featureVector = full([RAYFEATUREVECTOR H]);
+        featureVector = [RAYFEATUREVECTOR H];
         clear RAYFEATUREVECTOR H;
         
         pos = find(labels == 1);
-        neg = find(labels == 0);
-        plist = randsample(pos, N)';
-        nlist = randsample(neg, N)';
+        neg0 = find(labels == 0);
+        negQ = find(bootstrap == 1);  N0 = round(.6*NNEG);  NQ = NNEG - N0;
         
-        TRAIN = [TRAIN; featureVector(plist,:) ; featureVector(nlist,:)]; %#ok<AGROW>
-        TRAIN_L = [TRAIN_L; 2*ones(size(plist)); zeros(size(nlist))]; %#ok<AGROW>
+        % sample the lists
+        plist = randsample(pos, NPOS)';
+        nlist0 = randsample(neg0, N0)';
+        nlistQ = randsample(negQ, NQ)';
+        
+        TRAIN = [TRAIN; featureVector(plist,:); featureVector(nlist0,:); featureVector(nlistQ,:)]; %#ok<AGROW>
+        TRAIN_L = [TRAIN_L; MITO_LABEL*ones(NPOS,1); zeros(NNEG,1)]; %#ok<AGROW>
     end
     
-    %----------------------------------------------------------------------
-    DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
-    for x = 105:124
-        DEPEND(size(DEPEND,1)+1,:) = [x x]; % Intensity
-    end
-    %----------------------------------------------------------------------
+    
     
     % rescale the data
-    T1 = TRAIN; limits = zeros(size(DEPEND));
-    for x = 1:size(DEPEND,1)
-        limits(x,:) = [min(min(TRAIN(:,DEPEND(x,1):DEPEND(x,2)))) max(max(TRAIN(:,DEPEND(x,1):DEPEND(x,2))))];
-        TRAIN(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(TRAIN(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
+    T1 = TRAIN; limits = zeros(size(D));
+    for x = 1:size(D,1)
+        limits(x,:) = [min(min(TRAIN(:,D(x,1):D(x,2)))) max(max(TRAIN(:,D(x,1):D(x,2))))];
+        TRAIN(:,D(x,1):D(x,2)) = mat2gray(TRAIN(:,D(x,1):D(x,2)), limits(x,:));
     end
     
-    
-    %% select parameters for the SVM
+    %% =========== select parameters for the SVM =========================
     disp('Selecting parameters for the SVM');
-    bestcv = 0;
-    for log2c = -1:3,
-      for log2g = -4:1,
+    bestcv = 0;  
+    CMIN = -1; CMAX = 3;  GMIN = -4; GMAX = 1;
+    for log2c = CMIN:CMAX,
+      for log2g = GMIN:GMAX,
         cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g) ' -m 500'];
         cv = svmtrain(TRAIN_L, TRAIN, cmd);
         if (cv >= bestcv),
@@ -95,17 +113,17 @@ for k = 1:5
     end
     
     
-    %% train the SVM
+    %% ============= train the SVM =======================================
     disp('Training the best SVM');
     cmd = ['-b 1 -c ' num2str(bestc) ' -g ' num2str(bestg) ' -m 500'];
     model = svmtrain(TRAIN_L, TRAIN, cmd);
     
     %% save the SVM model
-    save([destinationFolder 'svm_model' num2str(testImgs) '.mat'], 'model', 'limits', 'DEPEND');
+    save([destinationFolder 'svm_model' num2str(testImgs) '.mat'], 'model', 'limits', 'D');
+
     
     
-    
-    %% loop through the test images and do prediction
+    %% ============== loop through the test images and do prediction ======
     for i = testImgs
         disp(['Predicting for ' d(i).name]);
         fileRoot = regexp(d(i).name, '(\w*)[^\.]', 'match');
@@ -114,9 +132,9 @@ for k = 1:5
         load([featureFolder d(i).name]); 
         % load the Hist features
         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
-        
+        H = full(H);
         % construct the featureVector we train with!
-        featureVector = full([RAYFEATUREVECTOR H]);
+        featureVector = [RAYFEATUREVECTOR H];
         clear RAYFEATUREVECTOR H;
         
         % get the labels
@@ -127,16 +145,9 @@ for k = 1:5
         
         I = imread([imgFolder fileRoot '.png']);
         
-        %------------------------------------------------------------------
-        DEPEND = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
-        for x = 105:124
-            DEPEND(size(DEPEND,1)+1,:) = [x x]; % Intensity
-        end
-        %------------------------------------------------------------------
-
         % normalize the data 
-        for x = 1:size(DEPEND,1)
-            featureVector(:,DEPEND(x,1):DEPEND(x,2)) = mat2gray(featureVector(:,DEPEND(x,1):DEPEND(x,2)), limits(x,:));
+        for x = 1:size(D,1)
+            featureVector(:,D(x,1):D(x,2)) = mat2gray(featureVector(:,D(x,1):D(x,2)), limits(x,:));
         end
     
         % perform the SVM prediction

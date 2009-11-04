@@ -1,5 +1,5 @@
 
-resultname = 'pairwiseTEST2';
+resultname = 'pairwiseTESTSEARCH2';
 
 raysFolderName = 'rays30MedianInvariantE2';
 
@@ -40,12 +40,12 @@ DMAX = 248;
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 4000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 3000;        % the total # of examples per class in training set
 BOUNDARY_LABEL = 1;
 
 
 
-for k = 1:5
+for k = 1
     % determine our training and testing images for this k-fold
     if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
     testImgs = imgs( k1:min(k1+5-1, max(imgs)));
@@ -55,6 +55,8 @@ for k = 1:5
     
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
+    NPOS = round(.4*N);
+    NNEG = round(.6*N);
     
     % intialize the training vectors
     TRAIN = [];
@@ -70,30 +72,32 @@ for k = 1:5
         fileRoot = fileRoot{1};
         % load the RAY features and the labels
         load([featureFolder d(i).name]); 
-        %labels = mito; clear mito;
         % load the Hist features
         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
         H = full(H);
         % load the 3-class annotation
         C = readLabel([boundaryFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
+        % load the normal annotation
+        Q = imread([annotationFolder fileRoot '.png']); QR = Q(:,:,1) > 200; QG = Q(:,:,2) > 200; QB = Q(:,:,3) > 200;
+        Q = (QR | QB ) .* ~QG ;
         % load the Adjacency
         load([adjacencyFolder fileRoot '.mat']);
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
         
         
-        labels = zeros(size(STATS));
+        labels = zeros(size(STATS));  bootstrap = zeros(size(STATS));
         for l=1:length(STATS)
             labels(l) = mode( C(STATS(l).PixelIdxList) );
+            bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
         end
-        
 
-        disp(['generating ' num2str(2*N) ' pairwise samples for ' d(i).name]);
+        disp(['generating ' num2str(NPOS + NNEG) ' pairwise samples for ' d(i).name]);
         
-        featureVector = zeros(2*N, DMAX);
+        featureVector = zeros(NPOS + NNEG, DMAX);
         
         %% construct the positive examples - boundaries next to background
         bnd = find(labels == 1);
-        plist = randsample(bnd, N)';
+        plist = randsample(bnd, NPOS)';
         
         c = 1;
         for p = plist
@@ -115,7 +119,7 @@ for k = 1:5
         % to mitochondria, and mitochondria interior
         
         % split the samples between the two cases
-        N1 = round(N/5);
+        N1 = round(NNEG/5);
         % fill in the boundary/mitochondria negative examples
         bnd = find(labels == 1);
         plist = randsample(bnd, N1)';
@@ -136,7 +140,7 @@ for k = 1:5
             c = c + 1;
         end
         
-        N2 = round(N/5);
+        N2 = round(NNEG/5);
         % fill in the mitochondria/mitochondria examples
         mt = find(labels == 2);
         nlist = randsample(mt, N2)';
@@ -155,7 +159,7 @@ for k = 1:5
             c = c + 1;
         end
         
-        N3 = round(N/5);
+        N3 = round(NNEG/5);
         % fill in the boundary/boundary examples
         bd = find(labels == 1);
         nlist = randsample(bd, N3)';
@@ -174,11 +178,31 @@ for k = 1:5
             c = c + 1;
         end
         
-        N4 = 2*N - c + 1;
+        N4 = round(NNEG/5);
+        % fill in the boundary/boundary examples
+        im = find(bootstrap == 1);
+        nlist = randsample(im, N4)';
+        for n = nlist
+            neighbors = find(A(n,:));
+            ims = find(bootstrap(neighbors)==1);
+            if length(ims) > 1
+                im = neighbors(randsample(ims,1));
+            elseif ~isempty(ims == 1)
+                im = neighbors(ims);
+            else 
+                continue;
+            end
+            featureVector(c,:) = [RAYFEATUREVECTOR(n,:) H(n,:)  RAYFEATUREVECTOR(im,:) H(im,:)];
+            c = c + 1;
+        end
+        
+        
+        % the remaining are normal bg samples
+        N5 = NPOS+NNEG - c + 1;
         
         % fill in the background examples
         bg = find(labels == 0);
-        nlist = randsample(bg, N4)';
+        nlist = randsample(bg, N5)';
         
         for n = nlist
             neighbors = find(A(n,:));
@@ -195,7 +219,7 @@ for k = 1:5
         clear RAYFEATUREVECTOR H;
 
         TRAIN = [TRAIN; featureVector;]; %#ok<AGROW>
-        TRAIN_L = [TRAIN_L; BOUNDARY_LABEL*ones(N,1); zeros(N,1)]; %#ok<AGROW>
+        TRAIN_L = [TRAIN_L; BOUNDARY_LABEL*ones(NPOS,1); zeros(NNEG,1)]; %#ok<AGROW>
     end
     
     disp([' rescaling the data for ' d(i).name]);
@@ -210,8 +234,8 @@ for k = 1:5
     %% =========== select parameters for the SVM =========================
     disp('Selecting parameters for the SVM');
     bestcv = 0;  
-    CMIN = -1; CMAX = 3;  GMIN = -4; GMAX = 1;
-    %CMIN = -1; CMAX = 3;  GMIN = -3; GMAX = -3;
+    %CMIN = -1; CMAX = 3;  GMIN = -4; GMAX = 1;
+    CMIN = -1; CMAX = 3;  GMIN = -3; GMAX = -3;
     for log2c = CMIN:CMAX,
       for log2g = GMIN:GMAX,
         cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g) ' -m 500'];
@@ -328,14 +352,16 @@ for k = 1:5
         P = max(P,P');
 
         % create and write the image
-        THRESH = .5;
+        THRESHL = .5;    THRESHH = .85;
         hold off; figure(1); cla; imshow(I); hold on;
-        gplot2(P > THRESH ,locs, 'r-');
+        gplot2(P > THRESHL ,locs, 'y-');
+        gplot2(P > THRESHH, locs, 'r-');
         print(gcf, '-dpng', '-r150', [destinationFolder fileRoot '.png']);
         drawnow;  pause(0.01);
         
         % write predictions to a text file
-     	predL = probsCUT > THRESH;
+     	predL = probsCUT > THRESHL;
+        predH = probsCUT > THRESHH;
         writePairwisePrediction(destinationFolder, [fileRoot '.txt'], r, c, probs, predL, model.Label);
        
         
@@ -344,7 +370,10 @@ for k = 1:5
         gt = max(L1,L2);
         ACC = rocstats(predL, gt, 'ACC');
         disp([num2str(ACC*100) '% accuracy on ' fileRoot]);
+        ACC2 = rocstats(predH, gt, 'ACC');
+        disp([num2str(ACC2*100) '% accuracy on ' fileRoot '  using >' num2str(THRESHH) ' probability']);
         fid = fopen([destinationFolder 'results.txt'], 'a'); fprintf(fid, '%g accuracy on %s\n', ACC*100, fileRoot); fclose(fid);
+        fid = fopen([destinationFolder 'results.txt'], 'a'); fprintf(fid, '%g accuracy on %s when using >%g probability\n', ACC2*100, fileRoot, THRESHH); fclose(fid);
 
         
     end
