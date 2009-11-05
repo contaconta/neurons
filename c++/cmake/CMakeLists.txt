@@ -187,6 +187,10 @@ target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
 add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
+target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
+
+
 add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
 target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 

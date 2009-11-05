@@ -34,11 +34,11 @@ int main(int argc, char **argv) {
     exit(0);
   }
 
-  printf("Not general for any type of cloud, only for Point3Dot\n");
+  printf("Not general for any type of cloud, only for Point2Dot\n");
 
-  Cloud<Point3Dot>* orig = new Cloud<Point3Dot>(argv[1]);
-  Cloud<Point3Dot>* dest1 = new Cloud<Point3Dot>();
-  Cloud<Point3Dot>* dest2 = new Cloud<Point3Dot>();
+  Cloud<Point2Dot>* orig = new Cloud<Point2Dot>(argv[1]);
+  Cloud<Point2Dot>* dest1 = new Cloud<Point2Dot>();
+  Cloud<Point2Dot>* dest2 = new Cloud<Point2Dot>();
 
   for(int i = 0; i < orig->points.size(); i++){
     if(i%2==0)

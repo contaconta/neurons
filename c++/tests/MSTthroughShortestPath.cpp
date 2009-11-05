@@ -52,7 +52,9 @@ public:
     //    return 1-cubeFloat->at(x1,y1,z1)/dist;
     //    return -log(cubeFloat->at(x1,y1,z1)/dist);
 
-    dist = sqrt((double) (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1) + (z0-z1)*(z0-z1));
+    dist = sqrt((double) (x0-x1)*(x0-x1) +
+                ratioY*ratioY*(y0-y1)*(y0-y1) +
+                ratioZ*ratioZ*(z0-z1)*(z0-z1));
     float p1 = cubeFloat->at(x0,y0,z0);
     float p2 = cubeFloat->at(x1,y1,z1);
     //return fabs(dist*((log(p1) * p1 - p1- log(p2) * p2 + p2) / (-p2 + p1)));
