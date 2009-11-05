@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
 #include <fstream>
+#include "SWF.h"
 
 using namespace std;
 int tick = 0;
@@ -106,6 +107,10 @@ void addObjectFromString(string name)
     toDraw.push_back(gr);
   } else if (extension == "cl"){
     Cloud_P* cd = CloudFactory::load(name);
+    toDraw.push_back(cd);
+  }
+  else if (extension == "swc"){
+    SWF* cd = new SWF(name);
     toDraw.push_back(cd);
   }
   else if ((extension == "jpg") || (extension == "png"))  {

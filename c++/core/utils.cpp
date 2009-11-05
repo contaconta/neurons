@@ -110,6 +110,10 @@ vector< vector< double > > loadMatrix(istream &file){
   int matrix_width = 0;
   while(getline(file,s))
     {
+      //Ignores files with a #
+      size_t found = s.find("#");
+      if(found!=string::npos)
+        continue;
       vector< double > vd;
       stringstream ss(s);
       double d;
