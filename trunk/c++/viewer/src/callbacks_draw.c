@@ -288,7 +288,7 @@ void draw_objects()
         {
           Image<float>* img = (Image<float>*)*itObj;
           glPushMatrix();
-          glTranslatef(-img->width/2,-img->height/2,0);
+          //          glTranslatef(-img->width/2,-img->height/2,0);
           img->draw();
           glPopMatrix();
         }

@@ -6,15 +6,18 @@
 
 class SWF : public VisibleE
 {
-  public;
+public:
 
   Cloud<Point3D>* cloud;
 
   SWF(string filename){
+//     printf("Here I am loading %s\n", filename.c_str());
+    cloud = new Cloud<Point3D>();
     vector< vector< double > > orig = loadMatrix(filename);
     for(int i = 0; i < orig.size(); i++){
-      cloud->points.puh_back
-        (new Point3D(orig[i][2], orig[i][3]. orig[i][4]));
+//       printf("adding %i : %f, %f, %f\n", i, orig[i][2], orig[i][3], orig[i][4]);
+      cloud->points.push_back
+        (new Point3D(orig[i][2]/10, orig[i][3]/10, orig[i][4]/10) );
     }
   }
 

@@ -658,7 +658,7 @@ void Image<T>::draw()
                    GL_UNSIGNED_BYTE, texels);
     texture_loaded = true;
     delete[] texels;
-  }
+  } //!texture_loaded
 
   glColor3f(1.0,1.0,1.0);
 
