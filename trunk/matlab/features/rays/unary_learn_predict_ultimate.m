@@ -4,7 +4,7 @@ resultname = 'UnaryUltimate2class';
 raysName = 'rays30MedianInvariantE2';
 
 histFolder =  '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/';
-steerableFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/steerable_featureVectors/';
+steerableFolder = './featurevectors/steerable_featureVectors/';
 featureFolder = ['./featurevectors/' raysName '/'];
 annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgFolder = '/osshare/Work/Data/LabelMe/Images/fibsem/';
