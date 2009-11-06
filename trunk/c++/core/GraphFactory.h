@@ -44,7 +44,7 @@ public:
         return NULL;
       }
     }
-    if(pointType == "Point3Dt"){
+    else if(pointType == "Point3Dt"){
       if(edgeType == "Edge"){
         printf("GraphFactory:: returning Graph<Point3Dt,Edge<Point3Dt> >\n");
         return new Graph<Point3Dt,Edge<Point3Dt> >();
@@ -56,6 +56,25 @@ public:
       else if(edgeType == "Edge2W"){
         printf("GraphFactory:: returning Graph<Point3Dt,Edge2W<Point3Dt> >\n");
         return new Graph<Point3Dt,Edge2W<Point3Dt> >();
+      }
+      else{
+        printf("GraphFactory::graphFromTypes error: no idea what kind of edge it is %s\n",
+               edgeType.c_str());
+        return NULL;
+      }
+    }
+    else if(pointType == "Point3Dw"){
+      if(edgeType == "Edge"){
+        printf("GraphFactory:: returning Graph<Point3Dw,Edge<Point3Dw> >\n");
+        return new Graph<Point3Dw,Edge<Point3Dw> >();
+      }
+      else if(edgeType == "EdgeW"){
+        printf("GraphFactory:: returning Graph<Point3Dw,EdgeW<Point3Dw> >\n");
+        return new Graph<Point3Dw,EdgeW<Point3Dw> >();
+      }
+      else if(edgeType == "Edge2W"){
+        printf("GraphFactory:: returning Graph<Point3Dw,Edge2W<Point3Dw> >\n");
+        return new Graph<Point3Dw,Edge2W<Point3Dw> >();
       }
       else{
         printf("GraphFactory::graphFromTypes error: no idea what kind of edge it is %s\n",
