@@ -78,7 +78,6 @@ for k = 1:5
         
         % construct the featureVector we train with!
         featureVector = [H];
-        clear RAYFEATUREVECTOR H;
         
         cls2 = find(labels == 2);
         cls1 = find(labels == 1);
@@ -86,6 +85,8 @@ for k = 1:5
         negBH = find(   (labels' == 0) & (RAYFEATUREVECTOR(:,1) > 150) );
         negBL = find(   (labels' == 0) & (RAYFEATUREVECTOR(:,1) <= 150) );
         negQ = find(bootstrap == 1);  NBH = round(.4*N0); NBL = round(.4*N0);  NQ = N0 - NBH - NBL;
+        
+        clear RAYFEATUREVECTOR H;
         
         % sample the lists
         c2list = randsample(cls2, N2)';
