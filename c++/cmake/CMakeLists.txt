@@ -343,6 +343,12 @@ target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
 add_executable(kMSTanalyzeDir ${CMAKE_SOURCE_DIR}/../tests/kMSTanalyzeDir.cpp)
 target_link_libraries(kMSTanalyzeDir ${LINK_LIBRARIES_ALL})
 
+add_executable(kMSTevaluateDir ${CMAKE_SOURCE_DIR}/../tests/kMSTevaluateDir.cpp)
+target_link_libraries(kMSTevaluateDir ${LINK_LIBRARIES_ALL})
+
+add_executable(kMSTgraphAddScale ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphAddScale.cpp)
+target_link_libraries(kMSTgraphAddScale ${LINK_LIBRARIES_ALL})
+
 add_executable(kMSTGraphToFile ${CMAKE_SOURCE_DIR}/../tests/kMSTGraphToFile.cpp)
 target_link_libraries(kMSTGraphToFile ${LINK_LIBRARIES_ALL})
 
