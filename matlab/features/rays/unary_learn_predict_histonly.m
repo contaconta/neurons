@@ -1,9 +1,9 @@
 
-resultname = 'UnaryTermRays3class';
+resultname = 'UnaryHistOnly';
 
 raysName = 'rays30MedianInvariantE2';
 
-boundaryFolder = '/osshare/DropBox/Dropbox/aurelien/superpixels/annotations/';
+
 histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/';
 featureFolder = ['./featurevectors/' raysName '/'];
 annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
@@ -18,13 +18,13 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 9000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 6000;        % the total # of examples per class in training set
 MITO_LABEL = 2;             % label used for mito
-BND_LABEL = 1;              % boundary label
 
 %----------------------------------------------------------------------
-D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
-for x = 105:124
+%D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
+D = [];
+for x = 1:20
     D(size(D,1)+1,:) = [x x]; % Intensity
 end
 %----------------------------------------------------------------------
@@ -40,9 +40,8 @@ for k = 1:5
     
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
-    N2 = round(.30*N);
-    N1 = round(.20*N);
-    N0 = round(.5*N);
+    NPOS = round(.4*N);
+    NNEG = round(.6*N);
     
     % intialize the training vectors
     TRAIN = [];
@@ -65,48 +64,32 @@ for k = 1:5
         % load the normal annotation
         Q = imread([annotationFolder fileRoot '.png']); QR = Q(:,:,1) > 200; QG = Q(:,:,2) > 200; QB = Q(:,:,3) > 200;
         Q = (QR | QB ) .* ~QG ;
-        % load the 3-class annotation
-        C = readLabel([boundaryFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
+        
         
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
-        bootstrap = zeros(size(STATS)); clear labels;
+        bootstrap = zeros(size(STATS));
         for l=1:length(STATS)
             bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
-            labels(l) = mode(C(STATS(l).PixelIdxList) );
         end
         
         % construct the featureVector we train with!
-        featureVector = [RAYFEATUREVECTOR H];
-        clear RAYFEATUREVECTOR H;
+        featureVector = [H];
+        clear H;
         
-        
-        cls2 = find(labels == 2);
-        cls1 = find(labels == 1);
-        negB = find(labels == 0);
-        negQ = find(bootstrap == 1);  NB = round(.6*N0);  NQ = N0 - NB;
+        pos = find(labels == 1);
+        neg0 = find(labels == 0);
+        negQ = find(bootstrap == 1);  N0 = round(.6*NNEG);  NQ = NNEG - N0;
         
         % sample the lists
-        c2list = randsample(cls2, N2)';
-        c1list = randsample(cls1, N1)';
-        nlistB = randsample(negB, NB)';
+        plist = randsample(pos, NPOS)';
+        nlist0 = randsample(neg0, N0)';
         nlistQ = randsample(negQ, NQ)';
         
-        TRAIN = [TRAIN; ...
-                 featureVector(c2list,:); ...
-                 featureVector(c1list,:);
-                 featureVector(nlistB,:); ...
-                 featureVector(nlistQ,:)]; %#ok<AGROW>
-        TRAIN_L = [TRAIN_L; ...
-                   MITO_LABEL*ones(N2,1); ...
-                   BND_LABEL*ones(N1,1); ...
-                   zeros(N0,1)]; %#ok<AGROW>
-        
-        
-%         TRAIN = [TRAIN; featureVector(plist,:); featureVector(nlistB,:); featureVector(nlistQ,:)]; %#ok<AGROW>
-%         TRAIN_L = [TRAIN_L; MITO_LABEL*ones(NPOS,1); zeros(NNEG,1)]; %#ok<AGROW>
+        TRAIN = [TRAIN; featureVector(plist,:); featureVector(nlist0,:); featureVector(nlistQ,:)]; %#ok<AGROW>
+        TRAIN_L = [TRAIN_L; MITO_LABEL*ones(NPOS,1); zeros(NNEG,1)]; %#ok<AGROW>
     end
     
-    
+    %keyboard;
     
     % rescale the data
     T1 = TRAIN; limits = zeros(size(D));
@@ -114,6 +97,8 @@ for k = 1:5
         limits(x,:) = [min(min(TRAIN(:,D(x,1):D(x,2)))) max(max(TRAIN(:,D(x,1):D(x,2))))];
         TRAIN(:,D(x,1):D(x,2)) = mat2gray(TRAIN(:,D(x,1):D(x,2)), limits(x,:));
     end
+    
+   % keyboard;
     
     %% =========== select parameters for the SVM =========================
     disp('Selecting parameters for the SVM');
@@ -152,18 +137,14 @@ for k = 1:5
         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
         H = full(H);
         % construct the featureVector we train with!
-        featureVector = [RAYFEATUREVECTOR H];
-        clear RAYFEATUREVECTOR H;
-        % load the 3-class annotation
-        C = readLabel([boundaryFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
+        featureVector = [H];
+        clear H;
         
-        STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
-        bootstrap = zeros(size(STATS)); clear labels;
-        for l=1:length(STATS)
-            bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
-            labels(l) = mode(C(STATS(l).PixelIdxList) );
+        % get the labels
+        if length(mito) ~= size(featureVector,1)
+            mito(length(mito):size(featureVector,1),1) = 0;  %<<<<<< TEMPORARY FIX FOR BAD MITO
         end
-        labels = labels(:); clear mito;
+        labels = mito; labels = labels(:); clear mito;
         
         I = imread([imgFolder fileRoot '.png']);
         
@@ -179,16 +160,16 @@ for k = 1:5
         % display the image
         disp('writing the prediction image');
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
-        mito_label_index = find(model.Label == 2); P = zeros(size(I)); bnd_label_index = find(model.Label == 1);
+        mito_label_index = find(model.Label == 2); P = zeros(size(I));
         for s = superpixels
-            P(STATS(s).PixelIdxList) = max(probs(s,mito_label_index),probs(s,bnd_label_index));
+            P(STATS(s).PixelIdxList) = probs(s,mito_label_index);
         end
         resultIM = imlincomb(.70, mat2gray(gray2rgb(I)), .30, mat2gray(mat2rgb(P)));
         imwrite(resultIM,  [destinationFolder fileRoot '.png'], 'PNG');
         
         % write the predictions to a text file
         disp('writing the prediction text file');
-        writePrediction3class(destinationFolder, [fileRoot '.txt'], probs, pre_L, model.Label);
+        writePrediction(destinationFolder, [fileRoot '.txt'], probs, pre_L, model.Label);
         
         % check segmentation result with annotation
         P1 = P(:) > .5;
