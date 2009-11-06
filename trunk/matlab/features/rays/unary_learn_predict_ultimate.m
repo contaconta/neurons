@@ -18,7 +18,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 3000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 9000;        % the total # of examples per class in training set
 MITO_LABEL = 2;             % label used for mito
 
 %----------------------------------------------------------------------
