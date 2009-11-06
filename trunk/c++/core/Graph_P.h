@@ -8,6 +8,7 @@
 #include "Point.h"
 #include "Point2D.h"
 #include "Point3D.h"
+#include "Point3Dw.h"
 #include "utils.h"
 #include "Object.h"
 #include "VisibleE.h"
