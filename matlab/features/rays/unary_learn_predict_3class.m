@@ -8,7 +8,7 @@ histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/';
 featureFolder = ['./featurevectors/' raysName '/'];
 annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgFolder = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/unary' resultname '/'];
+destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/unary/' resultname '/'];
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
@@ -30,7 +30,7 @@ end
 %----------------------------------------------------------------------
 
 
-for k = 1:5
+for k = 2:5
     % determine our training and testing images for this k-fold
     if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
     testImgs = imgs( k1:min(k1+5-1, max(imgs)));
