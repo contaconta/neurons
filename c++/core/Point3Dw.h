@@ -71,7 +71,7 @@ public:
   double distanceTo(Point* p){return 0.0;}
 
   virtual string className(){
-    return "Point3Dt";
+    return "Point3Dw";
   }
 };
 
