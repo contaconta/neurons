@@ -83,8 +83,8 @@ for k = 1:5
         cls2 = find(labels == 2);
         cls1 = find(labels == 1);
         negB = find(labels == 0);
-        negBH = find(   (labels' == 0) & (featureVector(:,1) > 150) );
-        negBL = find(   (labels' == 0) & (featureVector(:,1) <= 150) );
+        negBH = find(   (labels' == 0) & (RAYFEATUREVECTOR(:,1) > 150) );
+        negBL = find(   (labels' == 0) & (RAYFEATUREVECTOR(:,1) <= 150) );
         negQ = find(bootstrap == 1);  NBH = round(.4*N0); NBL = round(.4*N0);  NQ = N0 - NBH - NBL;
         
         % sample the lists
