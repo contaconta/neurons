@@ -1,10 +1,11 @@
 
-resultname = 'UnaryTermRays3class';
+resultname = '3classRays+Hist';
 
 raysName = 'rays30MedianInvariantE2';
 
 boundaryFolder = '/osshare/DropBox/Dropbox/aurelien/superpixels/annotations/';
 histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/';
+steerableFolder = './featurevectors/steerable_featureVectors/';
 featureFolder = ['./featurevectors/' raysName '/'];
 annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgFolder = '/osshare/Work/Data/LabelMe/Images/fibsem/';
@@ -18,7 +19,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 9000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 8000;        % the total # of examples per class in training set
 MITO_LABEL = 2;             % label used for mito
 BND_LABEL = 1;              % boundary label
 
@@ -40,9 +41,9 @@ for k = 1:5
     
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
-    N2 = round(.30*N);
-    N1 = round(.20*N);
-    N0 = round(.5*N);
+    N2 = round(.33*N);
+    N1 = round(.33*N);
+    N0 = round(.33*N);
     
     % intialize the training vectors
     TRAIN = [];
@@ -79,31 +80,30 @@ for k = 1:5
         featureVector = [RAYFEATUREVECTOR H];
         clear RAYFEATUREVECTOR H;
         
-        
         cls2 = find(labels == 2);
         cls1 = find(labels == 1);
         negB = find(labels == 0);
-        negQ = find(bootstrap == 1);  NB = round(.6*N0);  NQ = N0 - NB;
+        negBH = find(   (labels' == 0) & (featureVector(:,1) > 150) );
+        negBL = find(   (labels' == 0) & (featureVector(:,1) <= 150) );
+        negQ = find(bootstrap == 1);  NBH = round(.4*N0); NBL = round(.4*N0);  NQ = N0 - NBH - NBL;
         
         % sample the lists
         c2list = randsample(cls2, N2)';
         c1list = randsample(cls1, N1)';
-        nlistB = randsample(negB, NB)';
+        nlistBH = randsample(negBH, NBH)';
+        nlistBL = randsample(negBL, NBL)';
         nlistQ = randsample(negQ, NQ)';
         
         TRAIN = [TRAIN; ...
                  featureVector(c2list,:); ...
                  featureVector(c1list,:);
-                 featureVector(nlistB,:); ...
+                 featureVector(nlistBH,:); ...
+                 featureVector(nlistBL,:); ...
                  featureVector(nlistQ,:)]; %#ok<AGROW>
         TRAIN_L = [TRAIN_L; ...
                    MITO_LABEL*ones(N2,1); ...
                    BND_LABEL*ones(N1,1); ...
                    zeros(N0,1)]; %#ok<AGROW>
-        
-        
-%         TRAIN = [TRAIN; featureVector(plist,:); featureVector(nlistB,:); featureVector(nlistQ,:)]; %#ok<AGROW>
-%         TRAIN_L = [TRAIN_L; MITO_LABEL*ones(NPOS,1); zeros(NNEG,1)]; %#ok<AGROW>
     end
     
     
@@ -114,6 +114,9 @@ for k = 1:5
         limits(x,:) = [min(min(TRAIN(:,D(x,1):D(x,2)))) max(max(TRAIN(:,D(x,1):D(x,2))))];
         TRAIN(:,D(x,1):D(x,2)) = mat2gray(TRAIN(:,D(x,1):D(x,2)), limits(x,:));
     end
+    
+     %       keyboard;
+    
     
     %% =========== select parameters for the SVM =========================
     disp('Selecting parameters for the SVM');
@@ -179,21 +182,30 @@ for k = 1:5
         % display the image
         disp('writing the prediction image');
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
-        mito_label_index = find(model.Label == 2); P = zeros(size(I)); bnd_label_index = find(model.Label == 1);
+        mito_label_index = find(model.Label == 2); P2 = zeros(size(I)); P1 = P2; P0=P1; Pv=P1; bnd_label_index = find(model.Label == 1); bg_label_index = find(model.Label == 0);
         for s = superpixels
-            P(STATS(s).PixelIdxList) = max(probs(s,mito_label_index),probs(s,bnd_label_index));
+            P2(STATS(s).PixelIdxList) = probs(s,mito_label_index);
+            P1(STATS(s).PixelIdxList) = probs(s,bnd_label_index);
+            P0(STATS(s).PixelIdxList) = probs(s,bg_label_index);
+            [y maxind] = max(probs(s,:));
+            Pv(STATS(s).PixelIdxList) = maxind;
         end
-        resultIM = imlincomb(.70, mat2gray(gray2rgb(I)), .30, mat2gray(mat2rgb(P)));
-        imwrite(resultIM,  [destinationFolder fileRoot '.png'], 'PNG');
+        resultIM2 = imlincomb(.70, mat2gray(gray2rgb(I)), .30, mat2gray(mat2rgb(P2)));
+        imwrite(resultIM2,  [destinationFolder fileRoot '_c2.png'], 'PNG');
+        resultIM1 = imlincomb(.70, mat2gray(gray2rgb(I)), .30, mat2gray(mat2rgb(P1)));
+        imwrite(resultIM1,  [destinationFolder fileRoot '_c1.png'], 'PNG');
+        resultIM0 = imlincomb(.70, mat2gray(gray2rgb(I)), .30, mat2gray(mat2rgb(P0)));
+        imwrite(resultIM0,  [destinationFolder fileRoot '_c0.png'], 'PNG');
         
         % write the predictions to a text file
         disp('writing the prediction text file');
         writePrediction3class(destinationFolder, [fileRoot '.txt'], probs, pre_L, model.Label);
         
         % check segmentation result with annotation
-        P1 = P(:) > .5;
+        %Pv = (P2(:) > .5) || (P1(:) > .5);
+        Pv = Pv ~=0;
         A = imread([annotationFolder fileRoot '.png']); A = A(:,:,2) > 200;
-        ACC = rocstats(P1, A(:), 'ACC');
+        ACC = rocstats(Pv, A(:), 'ACC');
         disp([num2str(ACC*100) '% accuracy on ' fileRoot]);
         fid = fopen([destinationFolder 'results.txt'], 'a'); fprintf(fid, '%g accuracy on %s\n', ACC*100, fileRoot); fclose(fid);
     end

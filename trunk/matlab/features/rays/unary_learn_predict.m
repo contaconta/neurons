@@ -1,14 +1,13 @@
 
-resultname = 'UnaryTerm3';
+resultname = 'UnaryTermXX';
 
 raysName = 'rays30MedianInvariantE2';
 
-
-histFolder = '/osshare/DropBox/Dropbox/aurelien/histogramFeatureVectors/';
+histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/';
 featureFolder = ['./featurevectors/' raysName '/'];
 annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
 imgFolder = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' resultname '/'];
+destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/unary/' resultname '/'];
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
 
 addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
@@ -96,6 +95,8 @@ for k = 1:5
         limits(x,:) = [min(min(TRAIN(:,D(x,1):D(x,2)))) max(max(TRAIN(:,D(x,1):D(x,2))))];
         TRAIN(:,D(x,1):D(x,2)) = mat2gray(TRAIN(:,D(x,1):D(x,2)), limits(x,:));
     end
+    
+    keyboard;
     
     %% =========== select parameters for the SVM =========================
     disp('Selecting parameters for the SVM');
