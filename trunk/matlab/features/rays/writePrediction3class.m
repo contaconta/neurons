@@ -4,7 +4,7 @@ function writePrediction3class(path, filenm, predictions, L, label_types)
 
 fid = fopen([path filenm], 'w');
 
-fprintf(fid, 'labels %d %d\n', label_types(1), label_types(2), label_types(3));
+fprintf(fid, 'labels %d %d %d\n', label_types(1), label_types(2), label_types(3));
 
 
 for s = 1:size(predictions,1)    
