@@ -60,9 +60,9 @@ for k = 1:5
         % load the RAY features and the labels
         load([featureFolder d(i).name]); 
         labels = mito; clear mito;
-%         % load the Hist features
-%         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
-%         H = full(H);
+        % load the Hist features
+        [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
+        H = full(H);
         % load the Steerable features
         [lab S] = libsvmread([steerableFolder fileRoot '_u0_all_feature_vectors']);
         S = full(S);
@@ -155,9 +155,9 @@ for k = 1:5
         fileRoot = fileRoot{1};
         % load the RAY features and the labels
         load([featureFolder d(i).name]); 
-%         % load the Hist features
-%         [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
-%         H = full(H);
+        % load the Hist features
+        [lab H] = libsvmread([histFolder fileRoot '_u0_all_feature_vectors']);
+        H = full(H);
         % load the Steerable features
         [lab S] = libsvmread([steerableFolder fileRoot '_u0_all_feature_vectors']);
         S = full(S);
