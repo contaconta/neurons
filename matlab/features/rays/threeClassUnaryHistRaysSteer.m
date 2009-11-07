@@ -1,4 +1,4 @@
-resultname = '3classSteer';
+resultname = '3classHistRaysSteer';
 
 raysName = 'rays30MedianInvariantE2';
 
