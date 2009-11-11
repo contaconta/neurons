@@ -38,7 +38,7 @@ DMAX = 208;
 % k-folds parameters
 imgs = 1:23;                % list of image indexes
 K = 5;                      % the # of folds in k-fold training
-TRAIN_LENGTH = 8000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 7000;        % the total # of examples per class in training set
 BOUNDARY_LABEL = 1;
 
 
