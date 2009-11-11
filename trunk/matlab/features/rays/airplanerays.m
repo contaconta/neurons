@@ -1,10 +1,11 @@
 %% PATH INFO
-EXPNAME = 'airplaneTest';
+EXPNAME = 'airplanePerfectEdge2';
 
 addpath('/osshare/Work/neurons/matlab/features/spedges/');
 imgpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/imgs/';
 superpixelpath = '/osshare/airplanes/Superpixel_airplanes/labels/';
 annotationpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
+annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
 %dropboxresultpath = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' EXPNAME '/'];
 localresultpath = ['./featurevectors/' EXPNAME '/'];
 %if ~isdir(dropboxresultpath);mkdir(dropboxresultpath);end
@@ -34,7 +35,8 @@ for f = 1:length(d)
     superpixels = unique(L(:))';
     STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
     labels = zeros(size(superpixels));
-    
+    C = imread([annotationFolder FILEROOT '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
+        
     I = rgb2gray(I);
 %     keyboard; EDGE = edge(I, 'canny', .1, 2);
     
@@ -57,7 +59,10 @@ for f = 1:length(d)
     RAY3 = zeros([size(I) length(angles)]);
     RAY4 = zeros([size(I) length(angles)]);
 
-    EDGE = edge(I, 'canny', .1, 2);  if f == 1; imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG'); end; 
+    EDGE = niceEdge5(I,C);  
+    %if f == 1; 
+        imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG');
+    %end; 
 
     
     for i = 1:length(angles)

@@ -1,7 +1,7 @@
 
-resultname = 'airplaneTest2';
+resultname = 'airplanePerfectMonday';
 
-raysName = 'airplaneTest';
+raysName = 'airplanePerfectEdge2';
 
 boundaryFolder = '/osshare/DropBox/Dropbox/aurelien/superpixels/annotations/';
 histFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/airplaneHist/';
@@ -17,7 +17,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 
 
 % k-folds parameters
-imgs = 1:8;                % list of image indexes
+imgs = 4:8;                % list of image indexes
 K = 2;                      % the # examples per fold
 TRAIN_LENGTH = 5000;        % the total # of examples per class in training set
 MITO_LABEL = 2;             % label used for mito
@@ -33,7 +33,7 @@ end
 
 for k = 1:4
     if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
-    testImgs = imgs( k1:min(k1+2-1, max(imgs)));
+    testImgs = imgs( k1:min(k1+K-1, max(imgs)));
     trainImgs = setdiff(imgs, testImgs);
 %     testImgs = [1];
 %     trainImgs = [2];
@@ -52,8 +52,6 @@ for k = 1:4
     % intialize the training vectors
     TRAIN = [];
     TRAIN_L = [];
-    
-    keyboard;
     
     % index of the feature data
     d = dir([featureFolder '*.mat']);
@@ -124,8 +122,7 @@ for k = 1:4
         limits(x,:) = [min(min(TRAIN(:,D(x,1):D(x,2)))) max(max(TRAIN(:,D(x,1):D(x,2))))];
         TRAIN(:,D(x,1):D(x,2)) = mat2gray(TRAIN(:,D(x,1):D(x,2)), limits(x,:));
     end
-    
-   	keyboard;
+
     
     
     %% =========== select parameters for the SVM =========================
@@ -155,7 +152,7 @@ for k = 1:4
     save([destinationFolder 'svm_model' num2str(testImgs) '.mat'], 'model', 'limits', 'D');
 
     
-    keyboard;
+
     
     %% ============== loop through the test images and do prediction ======
     for i = testImgs
@@ -224,4 +221,7 @@ for k = 1:4
         disp([num2str(ACC*100) '% accuracy on ' fileRoot]);
         fid = fopen([destinationFolder 'results.txt'], 'a'); fprintf(fid, '%g accuracy on %s\n', ACC*100, fileRoot); fclose(fid);
     end
+    
+    
+    %keyboard;
 end
