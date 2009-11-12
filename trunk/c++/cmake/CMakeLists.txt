@@ -203,6 +203,11 @@ target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
 target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
+target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
+
+
+
 add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
 target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
 
@@ -269,8 +274,15 @@ target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 
 ################################################################################
 ## image tools
+add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
+target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
+
+
 add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
 target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
+
+add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
+target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
 
 add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
 target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
@@ -292,6 +304,9 @@ target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
 
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
+
+add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
+target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
 
 add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
 target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})

@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
   for(int z=0; z < orig->cubeDepth; z++){
     for(int y = 0; y < orig->cubeHeight; y++)
       for(int x = 0; x < orig->cubeWidth; x++)
-        flts->put(x,y,z,1.0/(1+exp(-orig->at(x,y,z)*a -b)) );
+        flts->put(x,y,z,0.1 + 0.8/(1+exp(-orig->at(x,y,z)*a -b)) );
     printf("#");fflush(stdout);
   }
   printf("]\n");

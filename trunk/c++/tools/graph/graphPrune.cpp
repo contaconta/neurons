@@ -126,8 +126,10 @@ int main(int argc, char **argv) {
     // for(vector<int>::iterator it = edgesTraced.end();
     // it != edgesTraced.begin(); it--){
     for(int it = edgesTraced.size() -1; it >= 0; it--){
-      integral = integral  + log( (1-gr->eset.edges[edgesTraced[it]]->w)
-                                /(gr->eset.edges[edgesTraced[it]]->w) );
+      double pr = pow(10,-gr->eset.edges[edgesTraced[it]]->w);
+      integral += log10( (1-pr)/pr);
+      //      integral = integral  + log( (1-gr->eset.edges[edgesTraced[it]]->w)
+      //                          /(gr->eset.edges[edgesTraced[it]]->w) );
       if(integral < threshold){
         split = it;
         integral = threshold;

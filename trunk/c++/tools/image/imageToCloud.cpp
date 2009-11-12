@@ -409,7 +409,7 @@ int main(int argc, char **argv) {
             if(args.save_index)
               cloud->points.push_back(
                         new Point2Do(indexes[0],indexes[1]
-                                     , ors->at(x,y)));
+                                     , ors->at(x,y) ));
             else
               cloud->points.push_back(
                         new Point2Do(micrometers[0],micrometers[1]
@@ -427,6 +427,7 @@ int main(int argc, char **argv) {
           }
         }
       }
+      cloud->v_radius = 0.1;
       cloud->saveToFile(args.name_cloud);
     }
 

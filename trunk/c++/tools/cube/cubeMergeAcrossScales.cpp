@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
               (ix < cubes[i]->cubeWidth) &&
               (iy < cubes[i]->cubeHeight) &&
               (iz < cubes[i]->cubeDepth)){
-            if( cubes[i]->at(ix,iy,iz) > orig->at(x,y,z))
+            if( cubes[i]->at(ix,iy,iz) > merged->at(x,y,z))
               merged->put(x,y,z, cubes[i]->at(ix,iy,iz));
           }
         }//i

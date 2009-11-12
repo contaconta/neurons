@@ -799,18 +799,21 @@ void Image<T>::computeHessian
       gsl_eigen_symmv (&M.matrix, eign, evec, w2);
       l1_t = gsl_vector_get (eign, 0);
       l2_t = gsl_vector_get (eign, 1);
+      int idx = 0;
       if(l1_t > l2_t){
         l1->put(x,y,l1_t);
         l2->put(x,y,l2_t);
+        idx = 1;
       }
       else{
+        idx = 0;
         l1->put(x,y,l2_t);
         l2->put(x,y,l1_t);
       }
       if(saveOrientation){
-        v_x = gsl_matrix_get(&M.matrix, 0,0);
-        v_y = gsl_matrix_get(&M.matrix, 0,1);
-        orientation->put(x,y,atan2(v_y, v_x));
+        v_x = gsl_matrix_get(evec, 0, idx);
+        v_y = gsl_matrix_get(evec, 1, idx);
+        orientation->put(x,y,atan2(-v_y, v_x));
       }
     }
 
