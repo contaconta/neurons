@@ -1,13 +1,13 @@
-function M = postprocessing(M, I)
+function M = postprocessing(M, I, Icoeff)
 
 M = bwmorph(M, 'majority');
 M = bwmorph(M, 'fill', Inf);
 
-MINSIZE = 75;
+MINSIZE = 50;
 
 L = bwlabel(M);
 
-SMOOTHINGWINDOW = 30;  %25
+SMOOTHINGWINDOW = 25;  %25
 LOWESSSPAN = .1;
 
 
@@ -41,11 +41,23 @@ end
 
 M2 = M2 > 0;
 
-figure(2); imshow(I); hold on;
+if Icoeff ~= 1
+    idx=find(L~=0);
+    I2=I;        
+    I2(idx)=I2(idx)*Icoeff;
+    figure(2); imshow(I2); hold on;
+else
+    figure(2); imshow(I); hold on;
+end
+
+outercolor = [.2039 .2824 .5765];
+innercolor = [.3529 .4902 1];
+
+set(gca, 'Position', [0 0 1 1]);
 for k = 1:length(G)
     boundary = G{k};
-    plot(boundary(:,2), boundary(:,1), 'Color', [0 .8 0], 'LineWidth', 2.5);
-    plot(boundary(:,2), boundary(:,1), 'Color', [.3 .9 .3], 'LineStyle', '-', 'LineWidth', 1);
+    plot(boundary(:,2), boundary(:,1), 'Color', outercolor, 'LineWidth', 2);
+    plot(boundary(:,2), boundary(:,1), 'Color', innercolor, 'LineStyle', '-', 'LineWidth', .7);
 end
 
 hold off;

@@ -12,7 +12,7 @@ else
 end
 
 [E O] = canny(I, CANNYSIGMA);
-N = nonmaxsup(E,O,1.25);
+N = nonmaxsup(E,O,4);
 E2 = bwmorph( N > THRESH, 'dilate', 1);
 
 
