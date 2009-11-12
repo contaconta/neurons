@@ -1,14 +1,16 @@
+resultname = 'heathrowPerfect';
 
-raysFolderName = 'rays30MedianInvariantE2';
+raysName = 'heathrowEdge7';
 
-annotationFolder = '/osshare/DropBox/Dropbox/aurelien/mitoAnnotations/';
-boundaryFolder = '/osshare/DropBox/Dropbox/aurelien/superpixels/annotations/';
-imgFolder = '/osshare/Work/Data/LabelMe/Images/fibsem/';
-adjacencyFolder =  '/osshare/DropBox/Dropbox/aurelien/superpixels/neighbors/';
-featureFolder = ['./featurevectors/' raysFolderName '/'];
-
-destinationFolder = '/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/perfectpairwise/';
+histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/heathrow/';
+steerableFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/heathrowSteerable/';
+featureFolder = ['./featurevectors/' raysName '/'];
+annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrowAnnotations/';
+imgFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrow/';
+adjacencyFolder =  '/osshare/DropBox/Dropbox/aurelien/airplanes/neighbors/';
+destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/pairwise/' resultname '/'];
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
+
 
 d = dir([annotationFolder '*.png']);
 
@@ -20,10 +22,12 @@ for f = 1:length(d)
     fileRoot = regexp(d(f).name, '(\w*)[^\.]', 'match');
  	fileRoot = fileRoot{1};
     
-    I = imread([imgFolder fileRoot '.png']);
+    I = imread([imgFolder fileRoot '.jpg']);
     load([featureFolder fileRoot '.mat']); 
     
-    C = readLabel([boundaryFolder fileRoot '.label' ], [size(I,1) size(I,2)])';
+    %C = readLabel([boundaryFolder fileRoot '.label' ], [size(I,1) size(I,2)])';
+    C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
+        
     % load the Adjacency
     load([adjacencyFolder fileRoot '.mat']);
     STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
@@ -47,12 +51,12 @@ for f = 1:length(d)
     SIGMA2 = 0.1;
 
     for x = 1:length(r)
-       if (labels(r(x)) == 1) && (labels(c(x)) == 0)
+       if (labels(r(x)) ~= 0) && (labels(c(x)) == 0)
             LA(x) = 1;  % a boundary exists here
             F = 1+ SIGMA1*randn(1,1);  F(F >1) = 2 - F( F > 1);
             probs(x,1) = F;
             probs(x,2) = 1 - probs(x,1);
-        elseif (labels(c(x)) == 1) && (labels(r(x)) == 0)
+        elseif (labels(c(x)) ~= 0) && (labels(r(x)) == 0)
             LA(x) = 1;  % a boundary exists here
             F = 1+ SIGMA1*randn(1,1);  F(F >1) = 2 - F( F > 1);
             probs(x,1) = F;
@@ -65,6 +69,27 @@ for f = 1:length(d)
             probs(x,1) = 1 - probs(x,2);
         end
     end
+    
+    
+%      for x = 1:length(r)
+%        if (labels(r(x)) == 1) && (labels(c(x)) == 0)
+%             LA(x) = 1;  % a boundary exists here
+%             F = 1+ SIGMA1*randn(1,1);  F(F >1) = 2 - F( F > 1);
+%             probs(x,1) = F;
+%             probs(x,2) = 1 - probs(x,1);
+%         elseif (labels(c(x)) == 1) && (labels(r(x)) == 0)
+%             LA(x) = 1;  % a boundary exists here
+%             F = 1+ SIGMA1*randn(1,1);  F(F >1) = 2 - F( F > 1);
+%             probs(x,1) = F;
+%             probs(x,2) = 1 - probs(x,1);
+%         else
+%             LA(x) = 0;
+%             F = 1 + SIGMA2*randn(1,1);  F(F >1) = 2 - F( F > 1);
+%             %F = .2*randn(1,1); F(F<0) = -F(F < 0);
+%             probs(x,2) = F;
+%             probs(x,1) = 1 - probs(x,2);
+%         end
+%     end
     
     locs = zeros(length(superpixels), 2);
         for s = superpixels

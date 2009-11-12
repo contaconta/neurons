@@ -1,17 +1,19 @@
 %% PATH INFO
-EXPNAME = 'airplanePerfectEdge2';
+EXPNAME = 'heathrowEdge7';
 
 addpath('/osshare/Work/neurons/matlab/features/spedges/');
-imgpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/imgs/';
-superpixelpath = '/osshare/airplanes/Superpixel_airplanes/labels/';
-annotationpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
-annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
+imgpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrow/';
+superpixelpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/labels/';
+% superpixelpath = '/osshare/airplanes/Superpixel_airplanes/labels/';
+annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrowAnnotations/';
+% annotationpath = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
+% annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/annotations/';
 %dropboxresultpath = ['/osshare/DropBox/Dropbox/aurelien/shapeFeatureVectors/' EXPNAME '/'];
 localresultpath = ['./featurevectors/' EXPNAME '/'];
 %if ~isdir(dropboxresultpath);mkdir(dropboxresultpath);end
 if ~isdir(localresultpath);mkdir(localresultpath);end
 
-d = dir([annotationpath '*.png']);
+d = dir([annotationFolder '*.png']);
 libsvmFileName = 'feature_vectors';
 
 %% PARAMETERS
@@ -22,13 +24,13 @@ eta = 1;
 
 
 for f = 1:length(d)
-    clear RAY1 RAY2 RAY3 RAY4;
+    clear RAY1 RAY2 RAY3 RAY4 G;
     
     FILEROOT = regexp(d(f).name, '(\w*)[^\.]', 'match');
     FILEROOT = FILEROOT{1};
     disp(['reading ' FILEROOT]);
     I = imread([imgpath FILEROOT '.jpg']);
-    A = imread([annotationpath FILEROOT '.png']); A = A(:,:,2) > 200;
+    A = imread([annotationFolder FILEROOT '.png']); A = A(:,:,2) > 200;
     disp('getting the superpixel labels');
     L = readRKLabel([superpixelpath FILEROOT '.dat'], [size(I,1) size(I,2)]);
  	L = L';
@@ -59,7 +61,8 @@ for f = 1:length(d)
     RAY3 = zeros([size(I) length(angles)]);
     RAY4 = zeros([size(I) length(angles)]);
 
-    EDGE = niceEdge5(I,C);  
+
+    EDGE = niceEdge7(I);  
     %if f == 1; 
         imwrite(imoverlay(I, EDGE), [localresultpath FILEROOT '.png'], 'PNG');
     %end; 
