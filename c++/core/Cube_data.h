@@ -1003,13 +1003,27 @@ void Cube<T,U>::apply_mask(string mask_nfo, string mask_vl, string output_nfo, s
   delete output;
 }
 
+template <class T, class U>
+double Cube<T,U>::integral_between
+(int x0, int y0, int z0, int x1, int y1, int z1){
+  int length;
+  double valueToReturn;
+  integral_between(x0,y0,z0,x1,y1,z1,valueToReturn,length);
+  return valueToReturn/length;
+}
+
+
+
 /** The dimensions are on the voxels of the cube*/
 template <class T, class U>
-double Cube<T,U>::integral_between(int x0, int y0, int z0, int x1, int y1, int z1)
+void Cube<T,U>::integral_between
+(int x0, int y0, int z0, int x1, int y1, int z1,
+ double &value_to_return, int& length)
 {
   // First step is to calculate in which dimension we have the greatest distance.
 
-  double value_to_return = 0;
+  value_to_return = 0;
+  length = 0;
 
   //Case it is in the x
   if ( (abs(x1-x0) >= abs(y1-y0)) &&
@@ -1038,7 +1052,7 @@ double Cube<T,U>::integral_between(int x0, int y0, int z0, int x1, int y1, int z
         y += my;
         z += mz;
       }
-    value_to_return = value_to_return / (abs(x1-x0)+1);
+    length = (abs(x1-x0)+1);
   }
 
   //Case it is in the y
@@ -1068,7 +1082,7 @@ double Cube<T,U>::integral_between(int x0, int y0, int z0, int x1, int y1, int z
         x += mx;
         z += mz;
       }
-    value_to_return = value_to_return / (abs(y1-y0)+1);
+    length = (abs(y1-y0)+1);
   }
 
   //Case it is in the z
@@ -1099,11 +1113,8 @@ double Cube<T,U>::integral_between(int x0, int y0, int z0, int x1, int y1, int z
         y += my;
         x += mx;
       }
-    value_to_return = value_to_return / (abs(z1-z0)+1);
+    length = (abs(z1-z0)+1);
   }
-
-  return value_to_return;
-
 }
 
 

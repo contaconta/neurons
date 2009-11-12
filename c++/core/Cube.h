@@ -243,6 +243,12 @@ public:
   /** Calculates the integral allong the line betwewn  the indexes.*/
   double integral_between(int x0, int y0, int z0, int x1, int y1, int z1);
 
+  /** Calculates the integral allong the line betwewn  the indexes.*/
+  void integral_between(int x0, int y0, int z0,
+                        int x1, int y1, int z1,
+                        double& value, int& length);
+
+
   /** Puts the given value in the line between the points */
   void put_value_in_line(T value, int x0, int y0, int z0, int x1, int y1, int z1);
 

@@ -23,35 +23,18 @@
 
 using namespace std;
 
-
-int main(int argc, char **argv) {
-
-  if(argc!=3){
-    printf("Usage: kMSTgraphAddScale graph directory\n");
-    exit(0);
-  }
-
-  string directory(argv[2]);
-  string graphName(argv[1]);
-
-  Graph<Point3D, EdgeW<Point3D> >* orig =
-    new Graph<Point3D, EdgeW<Point3D> >(graphName);
-  vector<Cube<float, double>*> detections(4);
-  detections[0] = new Cube<float, double>(directory + "/1/bf_2_3162_f.nfo");
-  detections[1] = new Cube<float, double>(directory + "/2/bf_2_3162_f.nfo");
-  detections[2] = new Cube<float, double>(directory + "/4/bf_2_3162_f.nfo");
-  detections[3] = new Cube<float, double>(directory + "/8/bf_2_3162_f.nfo");
-
+Graph<Point3Dw, EdgeW<Point3Dw> >*
+addWidthToGraph
+(vector<Cube<float,double>* >& detections,
+ Graph<Point3D, EdgeW<Point3D> >* orig)
+{
+  Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
+    new Graph<Point3Dw, EdgeW<Point3Dw> >();
   vector<double> scales(4);
   scales[0] = 0.5;
   scales[1] = 1.0;
-  scales[2] = 2.0;
-  scales[3] = 3.0;
-
-  string outGraph = getDirectoryFromPath(graphName) + "/" +
-    getNameFromPathWithoutExtension(graphName) + "w.gr";
-  Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
-    new Graph<Point3Dw, EdgeW<Point3Dw> >();
+  scales[2] = 1.5;
+  scales[3] = 2.5;
 
   //Add the points
   int ix, iy, iz;
@@ -80,6 +63,84 @@ int main(int argc, char **argv) {
       (new EdgeW<Point3Dw>(&dest->cloud->points, e->p0, e->p1, e->w) );
   }
 
-  dest->saveToFile(outGraph);
+  return dest;
+}
+
+
+
+
+int main(int argc, char **argv) {
+
+  if(argc!=2){
+    printf("Usage: kMSTgraphAddScale directory\n");
+    exit(0);
+  }
+
+  string directory(argv[1]);
+
+  vector<Cube<float, double>*> detections(4);
+  detections[0] = new Cube<float, double>(directory + "/1/bf_2_3162_f.nfo");
+  detections[1] = new Cube<float, double>(directory + "/2/bf_2_3162_f.nfo");
+  detections[2] = new Cube<float, double>(directory + "/4/bf_2_3162_f.nfo");
+  detections[3] = new Cube<float, double>(directory + "/8/bf_2_3162_f.nfo");
+  char origName[2024];
+  char destName[2024];
+
+
+  //Tree the kmsts
+  if(0){
+#pragma omp parallel for
+    for(int i = 1; i <= 969; i++){
+      sprintf(origName, "%s/tree/kmsts/kmst%i.gr",  directory.c_str(), i);
+      sprintf(destName, "%s/tree/kmsts/kmst%iw.gr", directory.c_str(), i);
+      printf("%s\n", destName);
+      Graph<Point3D, EdgeW<Point3D> >* orig =
+        new Graph<Point3D, EdgeW<Point3D> >(origName);
+      Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
+        addWidthToGraph(detections, orig);
+      dest->saveToFile(destName);
+    }
+  }
+
+  if(0){
+#pragma omp parallel for
+    for(int i = 1; i <= 969; i++){
+      for(int j = 1; j <= 969; j++){
+        sprintf(origName, "%s/tree/paths/path_%04i_%04i.gr",  directory.c_str(), i, j);
+        if(fileExists(origName)){
+          sprintf(destName, "%s/tree/paths/path_%04i_%04iw.gr", directory.c_str(), i,j);
+          printf("%s\n", destName);
+          Graph<Point3D, EdgeW<Point3D> >* orig =
+            new Graph<Point3D, EdgeW<Point3D> >(origName);
+          Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
+            addWidthToGraph(detections, orig);
+          dest->saveToFile(destName);
+        }
+      }
+    }
+  }
+
+  //And now for the MST
+  if(0){
+    sprintf(origName, "%s/tree/mst/mstFromCptGraph.gr",  directory.c_str());
+    sprintf(destName, "%s/tree/mst/mstFromCptGraph.gr",  directory.c_str());
+    Graph<Point3D, EdgeW<Point3D> >* orig =
+      new Graph<Point3D, EdgeW<Point3D> >(origName);
+    Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
+      addWidthToGraph(detections, orig);
+    dest->saveToFile(destName);
+  }
+
+  //And now for the pruned
+  if(1){
+    sprintf(origName, "%s/tree/mst/mstFromCptGraphPruned.gr",  directory.c_str());
+    sprintf(destName, "%s/tree/mst/mstFromCptGraphPrunedw.gr",  directory.c_str());
+    Graph<Point3D, EdgeW<Point3D> >* orig =
+      new Graph<Point3D, EdgeW<Point3D> >(origName);
+    Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
+      addWidthToGraph(detections, orig);
+    dest->saveToFile(destName);
+  }
+
 
 }

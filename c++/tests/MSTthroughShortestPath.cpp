@@ -57,8 +57,11 @@ public:
                 ratioZ*ratioZ*(z0-z1)*(z0-z1));
     float p1 = cubeFloat->at(x0,y0,z0);
     float p2 = cubeFloat->at(x1,y1,z1);
-    //return fabs(dist*((log(p1) * p1 - p1- log(p2) * p2 + p2) / (-p2 + p1)));
-    return -dist*log((p1+p2)/2);
+    if(fabs(p1-p2) < 1e-4) return -dist*log10(p1);
+    return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
+
+    //Standard cost that works
+    //return -dist*log10((p1+p2)/2);
   }
 };
 
