@@ -191,7 +191,7 @@ for k =  1:13  % 1:4
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
         bootstrap = zeros(size(STATS)); clear labels; labels = zeros(size(bootstrap));
         for l=1:length(STATS)
-            bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
+            %bootstrap(l) = mode(Q(STATS(l).PixelIdxList) );
             labels(l) = mode(C(STATS(l).PixelIdxList) );
         end
         labels = labels(:); clear mito;
