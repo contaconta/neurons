@@ -1,13 +1,14 @@
-resultname = 'heathrowHist';
+resultname = 'heathrowBNDRayHistSteer2';
 
 raysName = 'heathrowEdge6';
 
 %boundaryFolder = '/osshare/DropBox/Dropbox/aurelien/superpixels/annotations/';
 %histFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/airplaneHist/';
 histFolder = '/osshare/DropBox/Dropbox/aurelien/FeatureVectors/histogram/heathrow/';
-steerableFolder = '/osshare/Work/neurons/matlab/features/rays/featurevectors/heathrowSteerable/';
+steerableFolder = './featurevectors/heathrowSteerable/';
 featureFolder = ['./featurevectors/' raysName '/'];
-annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrowAnnotations/';
+%annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrowAnnotations/';
+annotationFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrowAnnotations/superpixelAnnotations/';
 imgFolder = '/osshare/DropBox/Dropbox/aurelien/airplanes/heathrow/';
 destinationFolder = ['/osshare/DropBox/Dropbox/aurelien/unary/' resultname '/'];
 if ~isdir(destinationFolder); mkdir(destinationFolder); end;
@@ -19,14 +20,15 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:13;                % list of image indexes
 K = 3;                      % the # examples per fold
-TRAIN_LENGTH = 6000;        % the total # of examples per class in training set
-WING_LABEL = 2;             % label used for mito
-FUSELAGE_LABEL = 1;              % boundary label
+TRAIN_LENGTH = 8000;        % the total # of examples per class in training set
+AIRPLANE_LABEL = 2;             % label used for mito
+BND_LABEL = 1;              % boundary label
 BOOTSTRAP_LABEL = 3;
 
+
 %----------------------------------------------------------------------
-D = [];
-for x = 1:20
+D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
+for x = 105:204
     D(size(D,1)+1,:) = [x x]; % Intensity
 end
 %----------------------------------------------------------------------
@@ -46,9 +48,9 @@ for k =  1:13  % 1:4
     % number of samples per class (N +, N-)
     N = round( TRAIN_LENGTH / length(trainImgs));
    	%N3 = round(.20*N);
-    N2 = round(.33*N);
-    N1 = round(.33*N);
-    N0 = round(.33*N);
+    N2 = round(.30*N);
+    N1 = round(.30*N);
+    N0 = round(.40*N);
 %     N2 = round(.33*N);
 %     N1 = round(.33*N);
 %     N0 = round(.33*N);
@@ -77,7 +79,8 @@ for k =  1:13  % 1:4
         %Q = (QR | QB ) .* ~QG ;
         Q = QG .* ~(QR | QB);
         % load the 3-class annotation
-        C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
+        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
+        %C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
         
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
         bootstrap = zeros(size(STATS)); clear labels;  labels = zeros(size(bootstrap));
@@ -89,7 +92,7 @@ for k =  1:13  % 1:4
         %keyboard;
         
         % construct the featureVector we train with!
-        featureVector = [H];
+        featureVector = [RAYFEATUREVECTOR H S];
         
         
         INTENSITY_THRESH = 132;
@@ -118,12 +121,12 @@ for k =  1:13  % 1:4
                  featureVector(c2list,:); ...
                  featureVector(c1list,:);...
                  featureVector(nlistBH,:); ...
-                 featureVector(nlistBL,:)];
+                 featureVector(nlistBL,:)]; %#ok<AGROW>
                  %featureVector(c3list,:)]; %#ok<AGROW>
         TRAIN_L = [TRAIN_L; ...
-                   WING_LABEL*ones(N2,1); ...
-                   FUSELAGE_LABEL*ones(N1,1); ...
-                   zeros(N0,1)];
+                   AIRPLANE_LABEL*ones(N2,1); ...
+                   BND_LABEL*ones(N1,1); ...
+                   zeros(N0,1)]; %#ok<AGROW>
                    %BOOTSTRAP_LABEL*ones(N3,1)]; %#ok<AGROW>
     end
    
@@ -180,12 +183,13 @@ for k =  1:13  % 1:4
         S = full(S);
         
         % construct the featureVector we train with!
-        featureVector = [ H ];
+        featureVector = [ RAYFEATUREVECTOR H S ];
         clear RAYFEATUREVECTOR H S;
         
         % load the 3-class annotation
         %C = readLabel([boundaryFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
-        C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
+        %C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
+        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
         
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
         bootstrap = zeros(size(STATS)); clear labels; labels = zeros(size(bootstrap));

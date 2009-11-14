@@ -39,9 +39,9 @@ BOUNDARY_LABEL = 1;
 
 
 
-for k = 1:13
+for k = 2:13
     % determine our training and testing images for this k-fold
-    if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
+  %  if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
 %     testImgs = imgs( k1:min(k1+5-1, max(imgs)));
 %     trainImgs = setdiff(imgs, testImgs);
     testImgs = k;
