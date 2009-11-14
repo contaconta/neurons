@@ -237,7 +237,7 @@ for k =  2:13  % 1:4
         
         % write the predictions to a text file
         disp('writing the prediction text file');
-        writePrediction3class(destinationFolder, [fileRoot '.txt'], probs, pre_L, model.Label);
+        writePrediction2class(destinationFolder, [fileRoot '.txt'], probs, pre_L, model.Label);
         
         % check segmentation result with annotation
         %Pv = (P2(:) > .5) || (P1(:) > .5);
