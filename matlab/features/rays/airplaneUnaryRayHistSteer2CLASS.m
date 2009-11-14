@@ -79,7 +79,7 @@ for k =  1:13  % 1:4
         %Q = (QR | QB ) .* ~QG ;
         Q = QG .* ~(QR | QB);
         % load the 3-class annotation
-        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])'; C = C > 1;
+        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])'; C = double(C > 0);
         %C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
         
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
@@ -188,7 +188,7 @@ for k =  1:13  % 1:4
         % load the 3-class annotation
         %C = readLabel([boundaryFolder fileRoot '.label' ], [size(L,1) size(L,2)])';
         %C = imread([annotationFolder fileRoot '.png' ]); C0 = C(:,:,3) < 200; C1 = C(:,:,1) > 200; C2 = (C(:,:,1) <200 & C(:,:,3) >200); C = zeros(size(C0)) + C1 + 2.*C2;
-        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])';  C = C > 1;
+        C = readLabel([annotationFolder fileRoot '.label' ], [size(L,1) size(L,2)])'; C = double(C > 0);
         
         STATS = regionprops(L, 'PixelIdxlist', 'Centroid', 'Area');
         bootstrap = zeros(size(STATS)); clear labels; labels = zeros(size(bootstrap));
