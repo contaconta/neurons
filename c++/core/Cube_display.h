@@ -8,10 +8,10 @@
     they can be accessed from the program.
  */
 
-#define D_MAX_TEXTURE_SIZE      1024
-// #define D_MAX_TEXTURE_SIZE      2048
-//#define D_TEXTURE_INTERPOLATION GL_LINEAR
-#define D_TEXTURE_INTERPOLATION GL_NEAREST
+// #define D_MAX_TEXTURE_SIZE      1024
+#define D_MAX_TEXTURE_SIZE      2048
+#define D_TEXTURE_INTERPOLATION GL_LINEAR
+// #define D_TEXTURE_INTERPOLATION GL_NEAREST
 
 
 template <class T, class U>
@@ -120,9 +120,9 @@ void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, fl
   int texture_size_z = (int) pow(2.0, ceil(log((double)limit_z)/log(2.0)) );
 
   //Limit od the textures. They are object variables
-  r_max = (double)limit_x/texture_size_x;
-  s_max = (double)limit_y/texture_size_y;
-  t_max = (double)limit_z/texture_size_z;
+  r_max = (double)(limit_x-1)/texture_size_x;
+  s_max = (double)(limit_y-1)/texture_size_y;
+  t_max = (double)(limit_z-1)/texture_size_z;
 
   printf("Load_texture_brick: texture size %i, limit_x = %i, limit_y = %i limit_z = %i\n               texture_size: x=%i y=%i z=%i, r_max=%f, s_max=%f, t_max=%f\n",
          max_texture_size, limit_x, limit_y, limit_z,
@@ -765,543 +765,6 @@ void Cube<T,U>::draw(){
 //   draw_layers_parallel();
 }
 
-template <class T, class U>
-void Cube<T,U>::draw
-(float rotx, float roty, float nPlanes,
- int min_max, int microm_voxels)
-{
-  //Parches one bug with the matrices
-  int nMatrices = 0;
-
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = D_MAX_TEXTURE_SIZE;
-
-  draw_orientation_grid(false, min_max);
-
-  //In object coordinates, we will draw the cube
-  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
-  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
-  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
-
-  int nColTotal = nColToDraw;
-  int nRowTotal = nRowToDraw;
-
-  int end_x = min((nColTotal+1)*max_texture_size, (int)cubeWidth);
-  int end_y = min((nRowTotal+1)*max_texture_size, (int)cubeHeight);
-
-  GLfloat pModelViewMatrix[16];
-  glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
-
-  GLfloat** cubePoints = (GLfloat**)malloc(8*sizeof(GLfloat*));;
-
-  if(microm_voxels == 0){
-    cubePoints[0] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelHeight, -depthStep, 1.0f);
-    cubePoints[1] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelHeight,  depthStep, 1.0f);
-    cubePoints[2] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelHeight,  depthStep, 1.0f);
-    cubePoints[3] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelHeight, -depthStep, 1.0f);
-    cubePoints[4] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - end_y*voxelHeight,
-       -depthStep, 1.0f);
-    cubePoints[5] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - end_y*voxelHeight,  depthStep, 1.0f);
-    cubePoints[6] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - end_y*voxelHeight,  depthStep, 1.0f);
-    cubePoints[7] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - end_y*voxelHeight, -depthStep, 1.0f);
-  } else {
-    widthStep = float(cubeWidth)*voxelWidth/2;
-    heightStep = float(cubeHeight)*voxelWidth/2;
-    depthStep = float(cubeDepth)*voxelWidth/2;
-
-    cubePoints[0] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelWidth, -depthStep, 1.0f);
-    cubePoints[1] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelWidth,  depthStep, 1.0f);
-    cubePoints[2] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelWidth,  depthStep, 1.0f);
-    cubePoints[3] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - nRowTotal*max_texture_size*voxelWidth, -depthStep, 1.0f);
-    cubePoints[4] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - end_y*voxelWidth,
-       -depthStep, 1.0f);
-    cubePoints[5] = create_vector
-      (-widthStep + nColTotal*max_texture_size*voxelWidth,
-       heightStep - end_y*voxelWidth,  depthStep, 1.0f);
-    cubePoints[6] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - end_y*voxelWidth,  depthStep, 1.0f);
-    cubePoints[7] = create_vector
-      (-widthStep + end_x*voxelWidth,
-       heightStep - end_y*voxelWidth, -depthStep, 1.0f);
-  }
-
-  // We will get the coordinates of the vertex of the cube in the modelview coordinates
-  glLoadIdentity();
-//   GLfloat* cubePoints_c[8];
-  GLfloat** cubePoints_c = (GLfloat**) malloc(8*sizeof(GLfloat*));
-  // glColor3f(0,0,0);
-  for(int i=0; i < 8; i++)
-    cubePoints_c[i] = matrix_vector_product(pModelViewMatrix, cubePoints[i]);
-
-  //Draws the points numbers and the coordinates of the textures
-  if(0){
-    for(int i=0; i < 8; i++)
-      {
-        glColor3f(0.0,1.0,0.0);
-        glPushMatrix();
-        nMatrices++;
-        glTranslatef(cubePoints_c[i][0], cubePoints_c[i][1], cubePoints_c[i][2]);
-        render_string("%i",i);
-        glPopMatrix();
-        nMatrices--;
-      }
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(cubePoints_c[0][0], cubePoints_c[0][1], cubePoints_c[0][2]);
-    glRotatef(rotx, 1.0,0,0);
-    glRotatef(roty, 0,1.0,0);
-    //Draw The Z axis
-    glColor3f(0.0, 0.0, 1.0);
-    glutSolidCone(1.0, 10, 20, 20);
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(0,0,10);
-    render_string("T");
-    glPopMatrix();
-    nMatrices--;
-    //Draw the x axis
-    glColor3f(1.0, 0.0, 0.0);
-    glRotatef(90, 0.0, 1.0, 0.0);
-    glutSolidCone(1.0, 10, 20, 20);
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(0,0,10);
-    render_string("R");
-    glPopMatrix();
-    nMatrices--;
-    //Draw the y axis
-    glColor3f(0.0, 1.0, 0.0);
-    glRotatef(90, 1.0, 0.0, 0.0);
-    glutSolidCone(1.0, 10, 20, 20);
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(0,0,10);
-    render_string("S");
-    glPopMatrix();
-    nMatrices--;
-    glPopMatrix();
-    nMatrices--;
-    glColor3f(1.0, 1.0, 1.0);
-  }
-
-  //Find the closest and furthest vertex of the square
-  float closest_distance = 1e9;
-  float furthest_distance= 0;
-  int closest_point_idx = 0;
-  int furthest_point_idx = 0;
-  for(int i = 0; i < 8; i++)
-    {
-      float dist = cubePoints_c[i][0]*cubePoints_c[i][0] + cubePoints_c[i][1]*cubePoints_c[i][1] + cubePoints_c[i][2]*cubePoints_c[i][2];
-      if(dist < closest_distance)
-        {
-          closest_distance = dist;
-          closest_point_idx = i;
-        }
-      if(dist > furthest_distance)
-        {
-          furthest_distance = dist;
-          furthest_point_idx = i;
-        }
-    }
-
-  //Draws a sphere in the furthest and closest point of the cube
-  if(0){
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(cubePoints_c[closest_point_idx][0], cubePoints_c[closest_point_idx][1], cubePoints_c[closest_point_idx][2]);
-    glColor3f(0.0,1.0,0.0);
-    glutWireSphere(5,10,10);
-    glPopMatrix();
-    nMatrices--;
-
-    glPushMatrix();
-    nMatrices++;
-    glTranslatef(cubePoints_c[furthest_point_idx][0], cubePoints_c[furthest_point_idx][1], cubePoints_c[furthest_point_idx][2]);
-    glColor3f(0.0,0.0,1.0);
-    glutWireSphere(5,10,10);
-    glPopMatrix();
-    nMatrices--;
-  }
-
-//   printf("%f\n", cubePoints_c[furthest_point_idx][2] - cubePoints_c[closest_point_idx][2]);
-  //Draws the cube
-  for(float depth = 0/nPlanes; depth <= 1.0; depth+=1.0/nPlanes)
-    {
-      float z_plane = (cubePoints_c[furthest_point_idx][2]*(1-depth) + depth*cubePoints_c[closest_point_idx][2]);
-      //Find the lines that intersect with the plane. For that we will define the lines and find the intersection of the line with the point
-      GLfloat lambda_lines[12];
-      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
-          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
-            lambda_lines[0] = -1;
-            else
-            lambda_lines[0 ] = (z_plane - cubePoints_c[1][2]) / (cubePoints_c[0][2] - cubePoints_c[1][2]); //0-1
-
-      if( ((cubePoints_c[3][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
-          ((cubePoints_c[3][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
-            lambda_lines[1] = -1;
-            else
-            lambda_lines[1 ] = (z_plane - cubePoints_c[3][2]) / (cubePoints_c[0][2] - cubePoints_c[3][2]); //0-3
-
-      if( ((cubePoints_c[4][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
-          ((cubePoints_c[4][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
-            lambda_lines[2] = -1;
-            else
-            lambda_lines[2 ] = (z_plane - cubePoints_c[4][2]) / (cubePoints_c[0][2] - cubePoints_c[4][2]); //0-4
-
-      if( ((cubePoints_c[7][2] > z_plane) && (cubePoints_c[4][2] > z_plane)) ||
-          ((cubePoints_c[7][2] < z_plane) && (cubePoints_c[4][2] < z_plane)))
-            lambda_lines[3] = -1;
-            else
-            lambda_lines[3 ] = (z_plane - cubePoints_c[7][2]) / (cubePoints_c[4][2] - cubePoints_c[7][2]); //4-7
-
-      if( ((cubePoints_c[5][2] > z_plane) && (cubePoints_c[4][2] > z_plane)) ||
-          ((cubePoints_c[5][2] < z_plane) && (cubePoints_c[4][2] < z_plane)))
-            lambda_lines[4] = -1;
-            else
-            lambda_lines[4 ] = (z_plane - cubePoints_c[5][2]) / (cubePoints_c[4][2] - cubePoints_c[5][2]); //4-5
-
-      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[2][2] > z_plane)) ||
-          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[2][2] < z_plane)))
-            lambda_lines[5] = -1;
-            else
-            lambda_lines[5 ] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[1][2] - cubePoints_c[2][2]); //1-2
-
-      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[5][2] > z_plane)) ||
-          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[5][2] < z_plane)))
-            lambda_lines[6] = -1;
-            else
-            lambda_lines[6 ] = (z_plane - cubePoints_c[5][2]) / (cubePoints_c[1][2] - cubePoints_c[5][2]); //1-5
-
-      if( ((cubePoints_c[6][2] > z_plane) && (cubePoints_c[5][2] > z_plane)) ||
-          ((cubePoints_c[6][2] < z_plane) && (cubePoints_c[5][2] < z_plane)))
-            lambda_lines[7] = -1;
-            else
-            lambda_lines[7 ] = (z_plane - cubePoints_c[6][2]) / (cubePoints_c[5][2] - cubePoints_c[6][2]); //5-6
-
-      if( ((cubePoints_c[2][2] > z_plane) && (cubePoints_c[3][2] > z_plane)) ||
-          ((cubePoints_c[2][2] < z_plane) && (cubePoints_c[3][2] < z_plane)))
-            lambda_lines[8] = -1;
-            else
-            lambda_lines[8 ] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[3][2] - cubePoints_c[2][2]); //3-2
-
-      if( ((cubePoints_c[7][2] > z_plane) && (cubePoints_c[3][2] > z_plane)) ||
-          ((cubePoints_c[7][2] < z_plane) && (cubePoints_c[3][2] < z_plane)))
-            lambda_lines[9] = -1;
-            else
-            lambda_lines[9 ] = (z_plane - cubePoints_c[7][2]) / (cubePoints_c[3][2] - cubePoints_c[7][2]); //3-7
-
-      if( ((cubePoints_c[6][2] > z_plane) && (cubePoints_c[7][2] > z_plane)) ||
-          ((cubePoints_c[6][2] < z_plane) && (cubePoints_c[7][2] < z_plane)))
-            lambda_lines[10] = -1;
-            else
-            lambda_lines[10] = (z_plane - cubePoints_c[6][2]) / (cubePoints_c[7][2] - cubePoints_c[6][2]); //7-6
-
-      if( ((cubePoints_c[2][2] > z_plane) && (cubePoints_c[6][2] > z_plane)) ||
-          ((cubePoints_c[2][2] < z_plane) && (cubePoints_c[6][2] < z_plane)))
-            lambda_lines[11] = -1;
-            else
-            lambda_lines[11] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[6][2] - cubePoints_c[2][2]); //6-2
-
-      // We will store the point and texture coordinates of the points that we will draw afterwards
-      //There is at maximum five intersections -> therefore we will define an array of five points
-      GLfloat intersectionPoints[5][6];
-      int intersectionPointsIdx = 0;
-      for(int i = 0; i < 12; i++)
-        {
-          if( (lambda_lines[i] > 0) && (lambda_lines[i] < 1))
-            {
-              float x_point = 0;
-              float y_point = 0;
-              float z_point = 0;
-              float r_point = 0;
-              float s_point = 0;
-              float t_point = 0;
-              switch(i)
-                {
-                case 0: //0-1
-                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[1][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[1][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[1][2]*(1-lambda_lines[i]);
-                  r_point = 0;
-                  s_point = 0;
-                  t_point = (1-lambda_lines[i])*t_max;
-                  break;
-                case 1: //0-3
-                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[3][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[3][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[3][2]*(1-lambda_lines[i]);
-                  r_point = (1-lambda_lines[i])*r_max;
-                  s_point = 0;
-                  t_point = 0;
-                  break;
-                case 2: //0-4
-                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[4][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[4][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[4][2]*(1-lambda_lines[i]);
-                  r_point = 0;
-                  s_point = (1-lambda_lines[i])*s_max;
-                  t_point = 0;
-                  break;
-                case 3: //4-7
-                  x_point = cubePoints_c[4][0]*lambda_lines[i] + cubePoints_c[7][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[4][1]*lambda_lines[i] + cubePoints_c[7][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[4][2]*lambda_lines[i] + cubePoints_c[7][2]*(1-lambda_lines[i]);
-                  r_point = (1-lambda_lines[i])*r_max;
-                  s_point = s_max;
-                  t_point = 0;
-                  break;
-                case 4: //4-5
-                  x_point = cubePoints_c[4][0]*lambda_lines[i] + cubePoints_c[5][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[4][1]*lambda_lines[i] + cubePoints_c[5][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[4][2]*lambda_lines[i] + cubePoints_c[5][2]*(1-lambda_lines[i]);
-                  r_point = 0;
-                  s_point = s_max;
-                  t_point = (1-lambda_lines[i])*t_max;
-                  break;
-                case 5: //1-2
-                  x_point = cubePoints_c[1][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[1][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[1][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
-                  r_point = (1-lambda_lines[i])*r_max;
-                  s_point = 0;
-                  t_point = t_max;
-                  break;
-                case 6: //1-5
-                  x_point = cubePoints_c[1][0]*lambda_lines[i] + cubePoints_c[5][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[1][1]*lambda_lines[i] + cubePoints_c[5][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[1][2]*lambda_lines[i] + cubePoints_c[5][2]*(1-lambda_lines[i]);
-                  r_point = 0;
-                  s_point = (1-lambda_lines[i])*s_max;
-                  t_point = t_max;
-                  break;
-                case 7: //5-6
-                  x_point = cubePoints_c[5][0]*lambda_lines[i] + cubePoints_c[6][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[5][1]*lambda_lines[i] + cubePoints_c[6][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[5][2]*lambda_lines[i] + cubePoints_c[6][2]*(1-lambda_lines[i]);
-                  r_point = (1-lambda_lines[i])*r_max;
-                  s_point = s_max;
-                  t_point = t_max;
-                  break;
-                case 8: //3-2
-                  x_point = cubePoints_c[3][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[3][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[3][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
-                  r_point = r_max;
-                  s_point = 0;
-                  t_point = (1-lambda_lines[i])*t_max;
-                  break;
-                case 9: //3-7
-                  x_point = cubePoints_c[3][0]*lambda_lines[i] + cubePoints_c[7][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[3][1]*lambda_lines[i] + cubePoints_c[7][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[3][2]*lambda_lines[i] + cubePoints_c[7][2]*(1-lambda_lines[i]);
-                  r_point = r_max;
-                  s_point = (1-lambda_lines[i])*s_max;
-                  t_point = 0;
-                  break;
-                case 10: //7-6
-                  x_point = cubePoints_c[7][0]*lambda_lines[i] + cubePoints_c[6][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[7][1]*lambda_lines[i] + cubePoints_c[6][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[7][2]*lambda_lines[i] + cubePoints_c[6][2]*(1-lambda_lines[i]);
-                  r_point = r_max;
-                  s_point = s_max;
-                  t_point = (1-lambda_lines[i])*t_max;
-                  break;
-                case 11: //6-2
-                  x_point = cubePoints_c[6][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
-                  y_point = cubePoints_c[6][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
-                  z_point = cubePoints_c[6][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
-                  r_point = r_max;
-                  s_point = lambda_lines[i]*s_max;
-                  t_point = t_max;
-                  break;
-                }
-              intersectionPoints[intersectionPointsIdx][0] = x_point;
-              intersectionPoints[intersectionPointsIdx][1] = y_point;
-              intersectionPoints[intersectionPointsIdx][2] = z_point;
-              intersectionPoints[intersectionPointsIdx][3] = r_point;
-              intersectionPoints[intersectionPointsIdx][4] = s_point;
-              intersectionPoints[intersectionPointsIdx][5] = t_point;
-              intersectionPointsIdx++;
-
-              //Draws spheres in the intersection points
-              if(0){
-                glPushMatrix();
-                nMatrices++;
-                glTranslatef(x_point, y_point, z_point);
-                glutWireSphere(5,10,10);
-                glPopMatrix();
-                nMatrices--;
-              }
-            }
-        }
-
-      //Find the average of the position
-      GLfloat x_average = 0;
-      GLfloat y_average = 0;
-      for(int i = 0; i < intersectionPointsIdx; i++)
-        {
-          x_average += intersectionPoints[i][0];
-          y_average += intersectionPoints[i][1];
-        }
-      x_average = x_average / intersectionPointsIdx;
-      y_average = y_average / intersectionPointsIdx;
-
-      //Rank the points according to their angle (to display them in order)
-      GLfloat points_angles[intersectionPointsIdx];
-      for(int i = 0; i < intersectionPointsIdx; i++)
-        {
-          points_angles[i] = atan2(intersectionPoints[i][1]-y_average,
-                                   intersectionPoints[i][0]-x_average);
-          if(points_angles[i] < 0)
-            points_angles[i] = points_angles[i] + 2*3.14159;
-        }
-      int indexes[intersectionPointsIdx];
-      for(int i = 0; i < intersectionPointsIdx; i++)
-        {
-          GLfloat min_angle = 1e3;
-          int min_index = 15;
-          for(int j = 0; j < intersectionPointsIdx; j++)
-            {
-              if(points_angles[j] < min_angle)
-                {
-                  min_angle = points_angles[j];
-                  min_index = j;
-                }
-            }
-          indexes[i] = min_index;
-          points_angles[min_index] = 1e3;
-        }
-
-//       if(min_max==0)
-      glColor3f(v_r,v_g,v_b);
-//       if(min_max==1)
-//         glColor3f(1.0,0.0,0.0);
-//       if(min_max==2)
-//         glColor3f(0.0,1.0,0.0);
-//       if(min_max==3)
-//         glColor3f(0.0,0.0,1.0);
-//       if(min_max==4)
-//         glColor3f(1.0,1.0,1.0);
-
-      if(blendFunction == MIN_MAX)
-        {
-          glEnable(GL_BLEND);
-          if(min_max == 0)
-            glBlendEquation(GL_MIN);
-          else
-            glBlendEquation(GL_MAX);
-        }
-      else
-        {
-          glEnable(GL_ALPHA_TEST);
-          //glAlphaFunc(GL_GEQUAL, min_alpha);
-          glAlphaFunc(GL_GREATER, min_alpha);
-          //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-          //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-
-      //glEnable(GL_STENCIL_TEST);
-      //glStencilFunc(GL_GREATER,1.0f,~0);
-      //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-      glEnable(GL_TEXTURE_3D);
-      glBindTexture(GL_TEXTURE_3D, wholeTexture);
-
-      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-      //All the previous was preparation, here with draw the polygon
-      glBegin(GL_POLYGON);
-      for(int i = 0; i < intersectionPointsIdx; i++)
-        {
-          glTexCoord3f(intersectionPoints[indexes[i]][3],
-                       intersectionPoints[indexes[i]][4],
-                       intersectionPoints[indexes[i]][5]);
-          glVertex3f(intersectionPoints[indexes[i]][0],
-                     intersectionPoints[indexes[i]][1],
-                     intersectionPoints[indexes[i]][2]);
-        }
-      glEnd();
-
-      glDisable(GL_TEXTURE_3D);
-      glDisable(GL_BLEND);
-      glDisable(GL_ALPHA_TEST); // Test AL
-      //glDisable(GL_STENCIL_TEST);
-
-      //Draws an sphere on all the intersection points
-      if(0)
-        {
-          glColor3f(0.0,1.0,1.0);
-          for(int i = 0; i < intersectionPointsIdx; i++)
-            {
-              glPushMatrix();
-              nMatrices++;
-              glTranslatef(intersectionPoints[indexes[i]][0],
-                           intersectionPoints[indexes[i]][1],
-                           intersectionPoints[indexes[i]][2]);
-              glutSolidSphere(1,5,5);
-              glPopMatrix();
-              nMatrices--;
-            }
-        }
-
-      //Draws the texture coordinates of the intersection points - NOT WORKING
-      if(0)
-        {
-          glColor3f(0.0,0.0,0.0);
-          for(int i = 0; i < intersectionPointsIdx; i++)
-            {
-              glPushMatrix();
-              nMatrices++;
-              glTranslatef(intersectionPoints[indexes[i]][0],
-                           intersectionPoints[indexes[i]][1],
-                           intersectionPoints[indexes[i]][2]);
-              render_string("(%.2f %.2f %.2f)",
-                            intersectionPoints[indexes[i]][3],
-                            intersectionPoints[indexes[i]][4],
-                            intersectionPoints[indexes[i]][5]);
-              glPopMatrix();
-              nMatrices--;
-            }
-          glColor3f(1.0,1.0,1.0);
-         }
-    } //depth loop
-
-  if(nMatrices!=0)
-    printf("nMatrices = %i\n", nMatrices);
-
-  //Put back the modelView matrix
-  glLoadIdentity();
-  glMultMatrixf(pModelViewMatrix);
-}
-
 
 
 
@@ -1850,7 +1313,7 @@ void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
              -depthStep + nLayerToDraw*voxelDepth);
   glEnd();
 //   glColor3f(0.0,0.0,1.0);
-  glBegin(GL_LINES);
+//  glBegin(GL_LINES);
 
   glEnd();
 
@@ -2039,6 +1502,7 @@ void Cube<T,U>::draw_layer_tile_YZ(float nLayerToDraw,int color)
 template <class T, class U>
 void Cube<T,U>::draw_orientation_grid(bool include_split, bool min_max)
 {
+
   GLint max_texture_size = 0;
   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
@@ -2096,13 +1560,14 @@ void Cube<T,U>::draw_orientation_grid(bool include_split, bool min_max)
         }
       glPopMatrix();
       glColor3f(1.0, 1.0, 1.0);
-    }
+    } //if include_split
 
   glMatrixMode(GL_MODELVIEW);
   if(min_max)
     glColor3f(1.0,1.0,1.0);
   else
     glColor3f(0.0,0.0,0.0);
+
 
   glBegin(GL_LINE_STRIP);
   glVertex3f(-widthStep,  heightStep, -depthStep); //0
@@ -2206,3 +1671,545 @@ void Cube<T,U>::delete_alphas(int ni, int nj, int nk)
     }
   alphas=0;
 }
+
+
+
+template <class T, class U>
+void Cube<T,U>::draw
+(float rotx, float roty, float nPlanes,
+ int min_max, int microm_voxels)
+{
+  //Parches one bug with the matrices
+  int nMatrices = 0;
+
+  GLint max_texture_size = 0;
+  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+
+  //  draw_orientation_grid(false, min_max);
+
+  //In object coordinates, we will draw the cube
+  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
+  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
+  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
+
+  int nColTotal = nColToDraw;
+  int nRowTotal = nRowToDraw;
+
+  int end_x = min((nColTotal+1)*max_texture_size, (int)cubeWidth);
+  int end_y = min((nRowTotal+1)*max_texture_size, (int)cubeHeight);
+
+  GLfloat pModelViewMatrix[16];
+  glGetFloatv(GL_MODELVIEW_MATRIX, pModelViewMatrix);
+
+  GLfloat** cubePoints = (GLfloat**)malloc(8*sizeof(GLfloat*));;
+
+  if(microm_voxels == 0){
+    cubePoints[0] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelHeight, -depthStep, 1.0f);
+    cubePoints[1] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelHeight,  depthStep, 1.0f);
+    cubePoints[2] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelHeight,  depthStep, 1.0f);
+    cubePoints[3] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelHeight, -depthStep, 1.0f);
+    cubePoints[4] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - end_y*voxelHeight,
+       -depthStep, 1.0f);
+    cubePoints[5] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - end_y*voxelHeight,  depthStep, 1.0f);
+    cubePoints[6] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - end_y*voxelHeight,  depthStep, 1.0f);
+    cubePoints[7] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - end_y*voxelHeight, -depthStep, 1.0f);
+  } else {
+    widthStep = float(cubeWidth)*voxelWidth/2;
+    heightStep = float(cubeHeight)*voxelWidth/2;
+    depthStep = float(cubeDepth)*voxelWidth/2;
+
+    cubePoints[0] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelWidth, -depthStep, 1.0f);
+    cubePoints[1] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelWidth,  depthStep, 1.0f);
+    cubePoints[2] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelWidth,  depthStep, 1.0f);
+    cubePoints[3] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - nRowTotal*max_texture_size*voxelWidth, -depthStep, 1.0f);
+    cubePoints[4] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - end_y*voxelWidth,
+       -depthStep, 1.0f);
+    cubePoints[5] = create_vector
+      (-widthStep + nColTotal*max_texture_size*voxelWidth,
+       heightStep - end_y*voxelWidth,  depthStep, 1.0f);
+    cubePoints[6] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - end_y*voxelWidth,  depthStep, 1.0f);
+    cubePoints[7] = create_vector
+      (-widthStep + end_x*voxelWidth,
+       heightStep - end_y*voxelWidth, -depthStep, 1.0f);
+  }
+
+  // We will get the coordinates of the vertex of the cube in the modelview coordinates
+  glLoadIdentity();
+//   GLfloat* cubePoints_c[8];
+  GLfloat** cubePoints_c = (GLfloat**) malloc(8*sizeof(GLfloat*));
+  // glColor3f(0,0,0);
+  for(int i=0; i < 8; i++)
+    cubePoints_c[i] = matrix_vector_product(pModelViewMatrix, cubePoints[i]);
+
+  //Draws the points numbers and the coordinates of the textures
+  if(0){
+    for(int i=0; i < 8; i++)
+      {
+        glColor3f(0.0,1.0,0.0);
+        glPushMatrix();
+        nMatrices++;
+        glTranslatef(cubePoints_c[i][0], cubePoints_c[i][1], cubePoints_c[i][2]);
+        render_string("%i",i);
+        glPopMatrix();
+        nMatrices--;
+      }
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(cubePoints_c[0][0], cubePoints_c[0][1], cubePoints_c[0][2]);
+    glRotatef(rotx, 1.0,0,0);
+    glRotatef(roty, 0,1.0,0);
+    //Draw The Z axis
+    glColor3f(0.0, 0.0, 1.0);
+    glutSolidCone(1.0, 10, 20, 20);
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(0,0,10);
+    render_string("T");
+    glPopMatrix();
+    nMatrices--;
+    //Draw the x axis
+    glColor3f(1.0, 0.0, 0.0);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glutSolidCone(1.0, 10, 20, 20);
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(0,0,10);
+    render_string("R");
+    glPopMatrix();
+    nMatrices--;
+    //Draw the y axis
+    glColor3f(0.0, 1.0, 0.0);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    glutSolidCone(1.0, 10, 20, 20);
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(0,0,10);
+    render_string("S");
+    glPopMatrix();
+    nMatrices--;
+    glPopMatrix();
+    nMatrices--;
+    glColor3f(1.0, 1.0, 1.0);
+  }
+
+  //Find the closest and furthest vertex of the square
+  float closest_distance = 1e9;
+  float furthest_distance= 0;
+  int closest_point_idx = 0;
+  int furthest_point_idx = 0;
+  for(int i = 0; i < 8; i++)
+    {
+      float dist = cubePoints_c[i][0]*cubePoints_c[i][0] + cubePoints_c[i][1]*cubePoints_c[i][1] + cubePoints_c[i][2]*cubePoints_c[i][2];
+      if(dist < closest_distance)
+        {
+          closest_distance = dist;
+          closest_point_idx = i;
+        }
+      if(dist > furthest_distance)
+        {
+          furthest_distance = dist;
+          furthest_point_idx = i;
+        }
+    }
+
+  //Draws a sphere in the furthest and closest point of the cube
+  if(0){
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(cubePoints_c[closest_point_idx][0], cubePoints_c[closest_point_idx][1], cubePoints_c[closest_point_idx][2]);
+    glColor3f(0.0,1.0,0.0);
+    glutWireSphere(5,10,10);
+    glPopMatrix();
+    nMatrices--;
+
+    glPushMatrix();
+    nMatrices++;
+    glTranslatef(cubePoints_c[furthest_point_idx][0], cubePoints_c[furthest_point_idx][1], cubePoints_c[furthest_point_idx][2]);
+    glColor3f(0.0,0.0,1.0);
+    glutWireSphere(5,10,10);
+    glPopMatrix();
+    nMatrices--;
+  }
+
+//   printf("%f\n", cubePoints_c[furthest_point_idx][2] - cubePoints_c[closest_point_idx][2]);
+  //Draws the cube
+  for(float depth = 0/nPlanes; depth <= 1.0; depth+=1.0/nPlanes)
+    {
+      float z_plane = (cubePoints_c[furthest_point_idx][2]*(1-depth) + depth*cubePoints_c[closest_point_idx][2]);
+      //Find the lines that intersect with the plane. For that we will define the lines and find the intersection of the line with the point
+      GLfloat lambda_lines[12];
+      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
+          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
+            lambda_lines[0] = -1;
+            else
+            lambda_lines[0 ] = (z_plane - cubePoints_c[1][2]) / (cubePoints_c[0][2] - cubePoints_c[1][2]); //0-1
+
+      if( ((cubePoints_c[3][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
+          ((cubePoints_c[3][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
+            lambda_lines[1] = -1;
+            else
+            lambda_lines[1 ] = (z_plane - cubePoints_c[3][2]) / (cubePoints_c[0][2] - cubePoints_c[3][2]); //0-3
+
+      if( ((cubePoints_c[4][2] > z_plane) && (cubePoints_c[0][2] > z_plane)) ||
+          ((cubePoints_c[4][2] < z_plane) && (cubePoints_c[0][2] < z_plane)) )
+            lambda_lines[2] = -1;
+            else
+            lambda_lines[2 ] = (z_plane - cubePoints_c[4][2]) / (cubePoints_c[0][2] - cubePoints_c[4][2]); //0-4
+
+      if( ((cubePoints_c[7][2] > z_plane) && (cubePoints_c[4][2] > z_plane)) ||
+          ((cubePoints_c[7][2] < z_plane) && (cubePoints_c[4][2] < z_plane)))
+            lambda_lines[3] = -1;
+            else
+            lambda_lines[3 ] = (z_plane - cubePoints_c[7][2]) / (cubePoints_c[4][2] - cubePoints_c[7][2]); //4-7
+
+      if( ((cubePoints_c[5][2] > z_plane) && (cubePoints_c[4][2] > z_plane)) ||
+          ((cubePoints_c[5][2] < z_plane) && (cubePoints_c[4][2] < z_plane)))
+            lambda_lines[4] = -1;
+            else
+            lambda_lines[4 ] = (z_plane - cubePoints_c[5][2]) / (cubePoints_c[4][2] - cubePoints_c[5][2]); //4-5
+
+      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[2][2] > z_plane)) ||
+          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[2][2] < z_plane)))
+            lambda_lines[5] = -1;
+            else
+            lambda_lines[5 ] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[1][2] - cubePoints_c[2][2]); //1-2
+
+      if( ((cubePoints_c[1][2] > z_plane) && (cubePoints_c[5][2] > z_plane)) ||
+          ((cubePoints_c[1][2] < z_plane) && (cubePoints_c[5][2] < z_plane)))
+            lambda_lines[6] = -1;
+            else
+            lambda_lines[6 ] = (z_plane - cubePoints_c[5][2]) / (cubePoints_c[1][2] - cubePoints_c[5][2]); //1-5
+
+      if( ((cubePoints_c[6][2] > z_plane) && (cubePoints_c[5][2] > z_plane)) ||
+          ((cubePoints_c[6][2] < z_plane) && (cubePoints_c[5][2] < z_plane)))
+            lambda_lines[7] = -1;
+            else
+            lambda_lines[7 ] = (z_plane - cubePoints_c[6][2]) / (cubePoints_c[5][2] - cubePoints_c[6][2]); //5-6
+
+      if( ((cubePoints_c[2][2] > z_plane) && (cubePoints_c[3][2] > z_plane)) ||
+          ((cubePoints_c[2][2] < z_plane) && (cubePoints_c[3][2] < z_plane)))
+            lambda_lines[8] = -1;
+            else
+            lambda_lines[8 ] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[3][2] - cubePoints_c[2][2]); //3-2
+
+      if( ((cubePoints_c[7][2] > z_plane) && (cubePoints_c[3][2] > z_plane)) ||
+          ((cubePoints_c[7][2] < z_plane) && (cubePoints_c[3][2] < z_plane)))
+            lambda_lines[9] = -1;
+            else
+            lambda_lines[9 ] = (z_plane - cubePoints_c[7][2]) / (cubePoints_c[3][2] - cubePoints_c[7][2]); //3-7
+
+      if( ((cubePoints_c[6][2] > z_plane) && (cubePoints_c[7][2] > z_plane)) ||
+          ((cubePoints_c[6][2] < z_plane) && (cubePoints_c[7][2] < z_plane)))
+            lambda_lines[10] = -1;
+            else
+            lambda_lines[10] = (z_plane - cubePoints_c[6][2]) / (cubePoints_c[7][2] - cubePoints_c[6][2]); //7-6
+
+      if( ((cubePoints_c[2][2] > z_plane) && (cubePoints_c[6][2] > z_plane)) ||
+          ((cubePoints_c[2][2] < z_plane) && (cubePoints_c[6][2] < z_plane)))
+            lambda_lines[11] = -1;
+            else
+            lambda_lines[11] = (z_plane - cubePoints_c[2][2]) / (cubePoints_c[6][2] - cubePoints_c[2][2]); //6-2
+
+      // We will store the point and texture coordinates of the points that we will draw afterwards
+      //There is at maximum five intersections -> therefore we will define an array of five points
+      GLfloat intersectionPoints[6][6];
+      int intersectionPointsIdx = 0;
+      for(int i = 0; i < 12; i++)
+        {
+          if( (lambda_lines[i] > 0) && (lambda_lines[i] < 1))
+            {
+              float x_point = 0;
+              float y_point = 0;
+              float z_point = 0;
+              float r_point = 0;
+              float s_point = 0;
+              float t_point = 0;
+              switch(i)
+                {
+                case 0: //0-1
+                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[1][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[1][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[1][2]*(1-lambda_lines[i]);
+                  r_point = 0;
+                  s_point = 0;
+                  t_point = (1-lambda_lines[i])*t_max;
+                  break;
+                case 1: //0-3
+                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[3][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[3][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[3][2]*(1-lambda_lines[i]);
+                  r_point = (1-lambda_lines[i])*r_max;
+                  s_point = 0;
+                  t_point = 0;
+                  break;
+                case 2: //0-4
+                  x_point = cubePoints_c[0][0]*lambda_lines[i] + cubePoints_c[4][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[0][1]*lambda_lines[i] + cubePoints_c[4][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[0][2]*lambda_lines[i] + cubePoints_c[4][2]*(1-lambda_lines[i]);
+                  r_point = 0;
+                  s_point = (1-lambda_lines[i])*s_max;
+                  t_point = 0;
+                  break;
+                case 3: //4-7
+                  x_point = cubePoints_c[4][0]*lambda_lines[i] + cubePoints_c[7][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[4][1]*lambda_lines[i] + cubePoints_c[7][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[4][2]*lambda_lines[i] + cubePoints_c[7][2]*(1-lambda_lines[i]);
+                  r_point = (1-lambda_lines[i])*r_max;
+                  s_point = s_max;
+                  t_point = 0;
+                  break;
+                case 4: //4-5
+                  x_point = cubePoints_c[4][0]*lambda_lines[i] + cubePoints_c[5][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[4][1]*lambda_lines[i] + cubePoints_c[5][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[4][2]*lambda_lines[i] + cubePoints_c[5][2]*(1-lambda_lines[i]);
+                  r_point = 0;
+                  s_point = s_max;
+                  t_point = (1-lambda_lines[i])*t_max;
+                  break;
+                case 5: //1-2
+                  x_point = cubePoints_c[1][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[1][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[1][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
+                  r_point = (1-lambda_lines[i])*r_max;
+                  s_point = 0;
+                  t_point = t_max;
+                  break;
+                case 6: //1-5
+                  x_point = cubePoints_c[1][0]*lambda_lines[i] + cubePoints_c[5][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[1][1]*lambda_lines[i] + cubePoints_c[5][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[1][2]*lambda_lines[i] + cubePoints_c[5][2]*(1-lambda_lines[i]);
+                  r_point = 0;
+                  s_point = (1-lambda_lines[i])*s_max;
+                  t_point = t_max;
+                  break;
+                case 7: //5-6
+                  x_point = cubePoints_c[5][0]*lambda_lines[i] + cubePoints_c[6][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[5][1]*lambda_lines[i] + cubePoints_c[6][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[5][2]*lambda_lines[i] + cubePoints_c[6][2]*(1-lambda_lines[i]);
+                  r_point = (1-lambda_lines[i])*r_max;
+                  s_point = s_max;
+                  t_point = t_max;
+                  break;
+                case 8: //3-2
+                  x_point = cubePoints_c[3][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[3][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[3][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
+                  r_point = r_max;
+                  s_point = 0;
+                  t_point = (1-lambda_lines[i])*t_max;
+                  break;
+                case 9: //3-7
+                  x_point = cubePoints_c[3][0]*lambda_lines[i] + cubePoints_c[7][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[3][1]*lambda_lines[i] + cubePoints_c[7][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[3][2]*lambda_lines[i] + cubePoints_c[7][2]*(1-lambda_lines[i]);
+                  r_point = r_max;
+                  s_point = (1-lambda_lines[i])*s_max;
+                  t_point = 0;
+                  break;
+                case 10: //7-6
+                  x_point = cubePoints_c[7][0]*lambda_lines[i] + cubePoints_c[6][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[7][1]*lambda_lines[i] + cubePoints_c[6][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[7][2]*lambda_lines[i] + cubePoints_c[6][2]*(1-lambda_lines[i]);
+                  r_point = r_max;
+                  s_point = s_max;
+                  t_point = (1-lambda_lines[i])*t_max;
+                  break;
+                case 11: //6-2
+                  x_point = cubePoints_c[6][0]*lambda_lines[i] + cubePoints_c[2][0]*(1-lambda_lines[i]);
+                  y_point = cubePoints_c[6][1]*lambda_lines[i] + cubePoints_c[2][1]*(1-lambda_lines[i]);
+                  z_point = cubePoints_c[6][2]*lambda_lines[i] + cubePoints_c[2][2]*(1-lambda_lines[i]);
+                  r_point = r_max;
+                  s_point = lambda_lines[i]*s_max;
+                  t_point = t_max;
+                  break;
+                }
+              intersectionPoints[intersectionPointsIdx][0] = x_point;
+              intersectionPoints[intersectionPointsIdx][1] = y_point;
+              intersectionPoints[intersectionPointsIdx][2] = z_point;
+              intersectionPoints[intersectionPointsIdx][3] = r_point;
+              intersectionPoints[intersectionPointsIdx][4] = s_point;
+              intersectionPoints[intersectionPointsIdx][5] = t_point;
+              intersectionPointsIdx++;
+
+              //Draws spheres in the intersection points
+              if(0){
+                glPushMatrix();
+                nMatrices++;
+                glTranslatef(x_point, y_point, z_point);
+                glutWireSphere(5,10,10);
+                glPopMatrix();
+                nMatrices--;
+              }
+            }
+        }
+
+      //Find the average of the position
+      GLfloat x_average = 0;
+      GLfloat y_average = 0;
+      for(int i = 0; i < intersectionPointsIdx; i++)
+        {
+          x_average += intersectionPoints[i][0];
+          y_average += intersectionPoints[i][1];
+        }
+      x_average = x_average / intersectionPointsIdx;
+      y_average = y_average / intersectionPointsIdx;
+
+      //Rank the points according to their angle (to display them in order)
+      GLfloat points_angles[intersectionPointsIdx];
+      for(int i = 0; i < intersectionPointsIdx; i++)
+        {
+          points_angles[i] = atan2(intersectionPoints[i][1]-y_average,
+                                   intersectionPoints[i][0]-x_average);
+          if(points_angles[i] < 0)
+            points_angles[i] = points_angles[i] + 2*3.14159;
+        }
+      int indexes[intersectionPointsIdx];
+      for(int i = 0; i < intersectionPointsIdx; i++)
+        {
+          GLfloat min_angle = 1e3;
+          int min_index = 15;
+          for(int j = 0; j < intersectionPointsIdx; j++)
+            {
+              if(points_angles[j] < min_angle)
+                {
+                  min_angle = points_angles[j];
+                  min_index = j;
+                }
+            }
+          indexes[i] = min_index;
+          points_angles[min_index] = 1e3;
+        }
+
+//       if(min_max==0)
+      glColor3f(v_r,v_g,v_b);
+//       if(min_max==1)
+//         glColor3f(1.0,0.0,0.0);
+//       if(min_max==2)
+//         glColor3f(0.0,1.0,0.0);
+//       if(min_max==3)
+//         glColor3f(0.0,0.0,1.0);
+//       if(min_max==4)
+//         glColor3f(1.0,1.0,1.0);
+
+      glEnable(GL_BLEND);
+      if(blendFunction == MIN_MAX)
+        {
+          if(min_max == 0)
+            glBlendEquation(GL_MIN);
+          else
+            glBlendEquation(GL_MAX);
+        }
+      else
+        {
+          glEnable(GL_ALPHA_TEST);
+          //glAlphaFunc(GL_GEQUAL, min_alpha);
+          glAlphaFunc(GL_GREATER, min_alpha);
+          //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+          //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+      
+      //glEnable(GL_STENCIL_TEST);
+      //glStencilFunc(GL_GREATER,1.0f,~0);
+      //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+      glEnable(GL_TEXTURE_3D);
+      glBindTexture(GL_TEXTURE_3D, wholeTexture);
+
+      glEdgeFlag(GL_FALSE);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+      //All the previous was preparation, here with draw the polygon
+      glBegin(GL_POLYGON);
+      for(int i = 0; i < intersectionPointsIdx; i++)
+        {
+          glTexCoord3f(intersectionPoints[indexes[i]][3],
+                       intersectionPoints[indexes[i]][4],
+                       intersectionPoints[indexes[i]][5]);
+          glVertex3f(intersectionPoints[indexes[i]][0],
+                     intersectionPoints[indexes[i]][1],
+                     intersectionPoints[indexes[i]][2]);
+        }
+      glEnd();
+
+      glDisable(GL_TEXTURE_3D);
+      glDisable(GL_BLEND);
+      glDisable(GL_ALPHA_TEST); // Test AL
+      //glDisable(GL_STENCIL_TEST);
+
+      //Draws an sphere on all the intersection points
+      if(0)
+        {
+          glColor3f(0.0,1.0,1.0);
+          for(int i = 0; i < intersectionPointsIdx; i++)
+            {
+              glPushMatrix();
+              nMatrices++;
+              glTranslatef(intersectionPoints[indexes[i]][0],
+                           intersectionPoints[indexes[i]][1],
+                           intersectionPoints[indexes[i]][2]);
+              glutSolidSphere(1,5,5);
+              glPopMatrix();
+              nMatrices--;
+            }
+        }
+
+      //Draws the texture coordinates of the intersection points - NOT WORKING
+      if(0)
+        {
+          glColor3f(0.0,0.0,0.0);
+          for(int i = 0; i < intersectionPointsIdx; i++)
+            {
+              glPushMatrix();
+              nMatrices++;
+              glTranslatef(intersectionPoints[indexes[i]][0],
+                           intersectionPoints[indexes[i]][1],
+                           intersectionPoints[indexes[i]][2]);
+              render_string("(%.2f %.2f %.2f)",
+                            intersectionPoints[indexes[i]][3],
+                            intersectionPoints[indexes[i]][4],
+                            intersectionPoints[indexes[i]][5]);
+              glPopMatrix();
+              nMatrices--;
+            }
+          glColor3f(1.0,1.0,1.0);
+         }
+    } //depth loop
+
+  if(nMatrices!=0)
+    printf("nMatrices = %i\n", nMatrices);
+
+  //Put back the modelView matrix
+  glLoadIdentity();
+  glMultMatrixf(pModelViewMatrix);
+}
+//End of drwa

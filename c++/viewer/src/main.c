@@ -29,6 +29,7 @@
 #include "Cube_P.h"
 #include "utils.h"
 #include "functions.h"
+#include <glib.h>
 using namespace std;
 
 
@@ -53,6 +54,13 @@ static struct argp_option options[] = {
   {"ascEditor",   'e', 0, 0, "Turns the ascEditor mode on"},
   {"selectEditor",   's', 0, 0, "Turns the selectEditor mode on"},
   {"alphaEditor",   'a', 0, 0, "Turns the alphaEditor mode on"},
+  {"disp3DX",   'x', "value", 0, "Tells the X stage position"},
+  {"disp3DY",   'y', "value", 0, "Tells the Y stage position"},
+  {"disp3DZ",   'z', "value", 0, "Tells the Z stage position"},
+  {"rot3DX",    'X', "value", 0, "Tells the X rotation"},
+  {"rot3DY",    'Y', "value", 0, "Tells the Y rotation"},
+  {"fullscreen",'f', 0, 0, "Turns full screen on"},
+  {"screenshot",'S', "output_image", 0, "Takes an screenshot of the scene and exits"},
   { 0 }
 };
 
@@ -81,7 +89,28 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'a':
       majorMode |= MOD_ALPHA_EDITOR;
       break;
-
+    case 'x':
+      disp3DX = atof(arg);
+      break;
+    case 'y':
+      disp3DY = atof(arg);
+      break;
+    case 'z':
+      disp3DZ = atof(arg);
+      break;
+    case 'X':
+      rot3DX = atof(arg);
+      break;
+    case 'Y':
+      rot3DY = atof(arg);
+      break;
+    case 'f':
+      flag_windowMaximize = true;
+      break;
+    case 'S':
+      screenShotName = arg;
+      majorMode = MOD_SCREENSHOT;
+      break;
     case ARGP_KEY_ARG:
       objectNames.push_back(arg);
       break;
@@ -291,6 +320,18 @@ void load_plugins()
 /* Our argp parser. */
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
+gboolean screenShotTimeOutExpited(gpointer data)
+{
+  if(majorMode != MOD_SCREENSHOT){
+    return false;
+  }
+  if(screenShot_waitedEnough){
+    saveScreenShot((char*)screenShotName.c_str());
+    exit(0);
+  }
+  return true;
+}
+
 
 int
 main (int argc, char *argv[])
@@ -339,6 +380,8 @@ main (int argc, char *argv[])
   cube->dummy = true;
 
   glutInit(&argcp, argvp);
+  if(flag_windowMaximize)
+    gtk_window_maximize((GtkWindow*)ascEditor);
   gtk_widget_show (ascEditor);
   init_GUI();
   load_plugins();
@@ -372,6 +415,8 @@ main (int argc, char *argv[])
     alphaEditor = create_Alpha();
     gtk_widget_show (alphaEditor);
   }
+
+  g_timeout_add(250, screenShotTimeOutExpited, NULL);
 
   gtk_main ();
 

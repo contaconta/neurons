@@ -47,7 +47,7 @@ void EdgeW< P >::draw(){
 
   glGetFloatv(GL_CURRENT_COLOR, currCol);
 
-  glColor3f(1-wth,
+  glColor3f(1.0,
             0,
             0);
 
@@ -61,13 +61,20 @@ void EdgeW< P >::draw(){
   if(0){
     vector< double > pt(3);
     glColor3f(0,0,0);
-    pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
-    pt[1] = ((*this->points)[this->p0]->coords[1] +  (*this->points)[this->p1]->coords[1])/2;
-    pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
+    if(this->p0>this->p1){
+      pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
+      pt[1] = ((*this->points)[this->p0]->coords[1] +  (*this->points)[this->p1]->coords[1])/2;
+      pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
+    }
+    else{
+      pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
+      pt[1] = ((*this->points)[this->p0]->coords[1] + 1 + (*this->points)[this->p1]->coords[1])/2;
+      pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
+    }
     glPushMatrix();
     // glLoadIdentity();
     glTranslatef(pt[0], pt[1], pt[2]);
-    renderString("%.02f", 1-w);
+    renderString("%.02f", w);
     glPopMatrix();
     glColor3f(currCol[0],
               currCol[1],

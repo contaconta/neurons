@@ -13,17 +13,17 @@
 #include "Cube_T.h"
 #include "Cube_C.h"
 // #include "GraphCut.h"
-
+#include <pthread.h>
 #include "plugin_info.h"
 
 //Camera parameters
 double fovy3D = 60;
 double aspect3D = 1;
 double zNear3D = 1;
-double zFar3D = 5000;
+double zFar3D =  5000;
 double disp3DX = 0;
 double disp3DY = 0;
-double disp3DZ = 200;
+double disp3DZ = 300;
 double rot3DX = 0;
 double rot3DY = 0;
 
@@ -35,6 +35,7 @@ GtkWidget* selectionEditor;
 GtkWidget* alphaEditor;
 double widgetWidth = 0;
 double widgetHeight = 0;
+bool   flag_windowMaximize = false;
 
 //Cube variables
 Cube_P* cube;
@@ -104,9 +105,15 @@ MOD_SELECT_EDITOR - select tool
 enum MayorMode { MOD_VIEWER = 0x0,
                  MOD_ASCEDITOR = 0x10,
                  MOD_SELECT_EDITOR = 0x100,
-                 MOD_ALPHA_EDITOR = 0x1000};
+                 MOD_ALPHA_EDITOR = 0x1000,
+                 MOD_SCREENSHOT   = 0x01};
 
 int majorMode = MOD_VIEWER;
+
+/** Globals related to MOD_SCREENSHOT.*/
+string screenShotName;
+pthread_t   screenShotThread;
+bool screenShot_waitedEnough = false;
 
 /** Globals related to MOD_VIEWER*/
 bool flag_draw_3D = true;
@@ -118,9 +125,10 @@ bool flag_draw_dual = false;
 bool flag_draw_neuron = true;
 int layerSpanViewZ = 1;
 bool drawCube_flag = true;
+bool drawOnlyCube_flag = false;
 bool flag_minMax   = false;
 bool flag_verbose = false;
-bool flag_cube_transparency = false;
+bool flag_cube_transparency = true;
 
 
 bool flag_save_neuron_coordinate = false;

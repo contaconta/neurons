@@ -453,7 +453,10 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
       disp3DY -= 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
-
+  if(event->keyval == '?'){
+    printf("Drawing parameters=\n  position = [%f,%f,%f]\n rotation=[%f,%f]\n",
+           disp3DX,disp3DY,disp3DZ,rot3DX,rot3DY);
+  }
 
   if(event->keyval == 'n')
     {

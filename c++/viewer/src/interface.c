@@ -82,6 +82,7 @@ create_main_window (void)
   GtkWidget *layer_YZ_spin;
   GtkWidget *cube_transparency;
   GtkWidget *shaders;
+  GtkWidget *buttonViewOnlyCube;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -328,6 +329,12 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  buttonViewOnlyCube = gtk_toggle_button_new_with_mnemonic (_("OnlyCube"));
+  gtk_widget_show (buttonViewOnlyCube);
+  gtk_table_attach (GTK_TABLE (table1), buttonViewOnlyCube, 0, 1, 8, 9,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
                     NULL);
@@ -424,6 +431,9 @@ create_main_window (void)
   g_signal_connect ((gpointer) shaders, "clicked",
                     G_CALLBACK (on_shaders_clicked),
                     NULL);
+  g_signal_connect ((gpointer) buttonViewOnlyCube, "toggled",
+                    G_CALLBACK (on_buttonViewOnlyCube_toggled),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
@@ -472,6 +482,7 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, layer_YZ_spin, "layer_YZ_spin");
   GLADE_HOOKUP_OBJECT (main_window, cube_transparency, "cube_transparency");
   GLADE_HOOKUP_OBJECT (main_window, shaders, "shaders");
+  GLADE_HOOKUP_OBJECT (main_window, buttonViewOnlyCube, "buttonViewOnlyCube");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);

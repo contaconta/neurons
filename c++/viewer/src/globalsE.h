@@ -11,8 +11,8 @@
 // the plugin function signatures
 #include "plugin_info.h"
 
-#define D_MAX_TEXTURE_SIZE      1024
-// #define D_MAX_TEXTURE_SIZE      2048
+// #define D_MAX_TEXTURE_SIZE      1024
+#define D_MAX_TEXTURE_SIZE      2048
 
 //Camera parameters
 extern double fovy3D;
@@ -25,6 +25,11 @@ extern double disp3DZ;
 extern double rot3DX;
 extern double rot3DY;
 
+/** Globals related to MOD_SCREENSHOT.*/
+extern string screenShotName;
+extern pthread_t   screenShotThread;
+extern bool screenShot_waitedEnough;
+
 // Drawing controls
 extern bool flag_draw_3D;
 extern bool flag_draw_XY;
@@ -35,6 +40,7 @@ extern bool flag_draw_dual;
 extern bool flag_draw_neuron;
 extern int layerSpanViewZ;
 extern bool drawCube_flag;
+extern bool drawOnlyCube_flag;
 extern bool flag_minMax;
 extern bool flag_cube_transparency;
 
@@ -49,6 +55,7 @@ extern GtkWidget* selectionEditor;
 extern GtkWidget* alphaEditor;
 extern double widgetWidth;
 extern double widgetHeight;
+extern bool flag_windowMaximize;
 
 //Cube variables
 extern Cube_P* cube;
@@ -109,7 +116,8 @@ MOD_ALPHA_EDITOR - alpha editor
 enum MayorMode { MOD_VIEWER = 0x0,
                  MOD_ASCEDITOR = 0x10,
                  MOD_SELECT_EDITOR = 0x100,
-                 MOD_ALPHA_EDITOR = 0x1000};
+                 MOD_ALPHA_EDITOR = 0x1000,
+                 MOD_SCREENSHOT = 0x01};
 
 extern int majorMode;
 
