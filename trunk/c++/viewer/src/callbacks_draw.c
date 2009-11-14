@@ -296,6 +296,8 @@ void draw_objects()
                ((*itObj)->className()=="Cube_T") ||
                ((*itObj)->className()=="Cube_P")
                ){
+        //If we are not supposed to draw the cube, ignore it
+        if(!drawCube_flag) continue;
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         if(flag_draw_3D){
           cubeDraw->draw();
@@ -308,8 +310,10 @@ void draw_objects()
         else if (flag_draw_YZ)
           cubeDraw->draw_layer_tile_YZ(layerToDrawYZ);
       }
-      else
-        (*itObj)->draw();
+      else{
+        //If we do not want to draw only the cube
+        if(!drawOnlyCube_flag) (*itObj)->draw();
+      }
     }
 
   draw_last_point();
@@ -545,5 +549,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
   else
     glFlush ();
   gdk_gl_drawable_gl_end (gldrawable);
+
+
   return TRUE;
 }

@@ -26,23 +26,35 @@
 #include <gtk/gtkgl.h>
 #include <fstream>
 #include "SWF.h"
+#include <pthread.h>
 
 using namespace std;
 int tick = 0;
 
+static void* saveScreenShotThreadF(void* vptr_args)
+{
+
+  sleep(1);
+  screenShot_waitedEnough = true;
+}
+
 void
 saveScreenShot (char* filename)
 {
-  IplImage* toSave = cvCreateImage(cvSize((int)widgetWidth,(int)widgetHeight),
-                                       IPL_DEPTH_32F, 3);
-  glReadPixels( 0, 0,
-                (int)widgetWidth,
-                (int)widgetHeight,
-                GL_BGR,
-                GL_FLOAT, toSave->imageData );
-  toSave->origin = 1;
-  cvSaveImage(filename, toSave);
-  cvReleaseImage(&toSave);
+    IplImage* toSave = cvCreateImage(cvSize((int)widgetWidth,(int)widgetHeight),
+                                     IPL_DEPTH_32F, 3);
+    printf("A\n");
+    glReadPixels( 0, 0,
+                  (int)widgetWidth,
+                  (int)widgetHeight,
+                  GL_BGR,
+                  GL_FLOAT, toSave->imageData );
+    printf("B\n");
+    toSave->origin = 1;
+    printf("C\n");
+    cvSaveImage(filename, toSave);
+    printf("D\n");
+    cvReleaseImage(&toSave);
 }
 
 void addObjectFromString(string name)
@@ -146,6 +158,11 @@ void addObjectFromString(string name)
     exit(0);
   }
 
+ on_drawing3D_expose_event(drawing3D,NULL, NULL);
+
+  if(majorMode == MOD_SCREENSHOT){
+    pthread_create(&screenShotThread, NULL, saveScreenShotThreadF, NULL);
+  }
 
 
 }
@@ -274,6 +291,15 @@ on_draw_cube_toggle_toggled            (GtkToggleButton *togglebutton,
   drawCube_flag = !drawCube_flag;
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
+
+void
+on_buttonViewOnlyCube_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  drawOnlyCube_flag = !drawOnlyCube_flag;
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
+}
+
 
 
 void
@@ -548,6 +574,7 @@ on_open_4d_stack1_activate             (GtkMenuItem     *menuitem,
 {
 
 }
+
 
 
 

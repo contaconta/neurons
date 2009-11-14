@@ -150,6 +150,7 @@ void Graph<P,E>::draw(){
       cloud->draw();
     }
     else {
+      eset.v_radius = 2.0;
       eset.draw();
       vector<int> pointsWithEdges(cloud->points.size());
       for(int i = 0; i < eset.edges.size(); i++){
@@ -160,8 +161,10 @@ void Graph<P,E>::draw(){
       }
       for(int i = 0; i < pointsWithEdges.size(); i++){
         if(pointsWithEdges[i] == 1){
-          glColor3f(1.0,0.0,0.0);
-          cloud->points[i]->draw();
+//           glColor3f(cloud->v_r,cloud->v_g,cloud->v_b);
+//           cloud->points[i]->draw(cloud->v_radius);
+          glColor3f(0.2,0.8,0.0);
+          cloud->points[i]->draw(1.5);
         }
       }
     }

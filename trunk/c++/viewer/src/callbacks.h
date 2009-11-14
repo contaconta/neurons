@@ -438,3 +438,7 @@ on__3DLIS_saveStackText_changed        (GtkEditable     *editable,
 void
 on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_buttonViewOnlyCube_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

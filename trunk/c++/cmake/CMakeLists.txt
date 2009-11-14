@@ -354,6 +354,10 @@ target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 
+add_executable(checkNonMaxSup ${CMAKE_SOURCE_DIR}/../tests/checkNonMaxSup.cpp)
+target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
+
+
 add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
 target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
 
