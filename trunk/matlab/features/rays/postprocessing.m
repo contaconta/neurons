@@ -1,4 +1,4 @@
-function M = postprocessing(M, I, Icoeff)
+function M2 = postprocessing(M, I, Icoeff)
 
 M = bwmorph(M, 'majority');
 M = bwmorph(M, 'fill', Inf);
