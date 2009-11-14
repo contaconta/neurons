@@ -287,6 +287,8 @@ target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
 add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
 target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
 
+add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
+target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
 
 add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
 target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
