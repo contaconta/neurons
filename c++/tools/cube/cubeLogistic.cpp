@@ -253,6 +253,4 @@ int main(int argc, char **argv) {
 
   gsl_multimin_fdfminimizer_free (s);
   gsl_vector_free (x);
-
-
 }
