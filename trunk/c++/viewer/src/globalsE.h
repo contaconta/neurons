@@ -6,6 +6,7 @@
 #include "DoubleSet.h"
 #include "Cube_P.h"
 #include "Cube_C.h"
+#include "Configuration.h"
 // #include "GraphCut.h"
 
 // the plugin function signatures
@@ -31,6 +32,19 @@ extern pthread_t   screenShotThread;
 extern bool screenShot_waitedEnough;
 
 // Drawing controls
+enum MOD_DISPLAY{
+  MOD_DISPLAY_3D,
+  MOD_DISPLAY_XY,
+  MOD_DISPLAY_XZ,
+  MOD_DISPLAY_YZ,
+  MOD_DISPLAY_COMBO,
+  MOD_DISPLAY_DUAL
+};
+extern int  mod_display;
+extern bool flag_drawing_combo;
+
+extern bool flag_initializing_GUI;
+
 extern bool flag_draw_3D;
 extern bool flag_draw_XY;
 extern bool flag_draw_XZ;
@@ -56,6 +70,8 @@ extern GtkWidget* alphaEditor;
 extern double widgetWidth;
 extern double widgetHeight;
 extern bool flag_windowMaximize;
+extern string configurationFile;
+extern Configuration* configuration;
 
 //Cube variables
 extern Cube_P* cube;

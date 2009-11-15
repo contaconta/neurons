@@ -12,6 +12,7 @@
 #include "DoubleSet.h"
 #include "Cube_T.h"
 #include "Cube_C.h"
+#include "Configuration.h"
 // #include "GraphCut.h"
 #include <pthread.h>
 #include "plugin_info.h"
@@ -36,6 +37,8 @@ GtkWidget* alphaEditor;
 double widgetWidth = 0;
 double widgetHeight = 0;
 bool   flag_windowMaximize = false;
+string configurationFile = "";
+Configuration* configuration;
 
 //Cube variables
 Cube_P* cube;
@@ -116,6 +119,20 @@ pthread_t   screenShotThread;
 bool screenShot_waitedEnough = false;
 
 /** Globals related to MOD_VIEWER*/
+enum MOD_DISPLAY{
+  MOD_DISPLAY_3D,
+  MOD_DISPLAY_XY,
+  MOD_DISPLAY_XZ,
+  MOD_DISPLAY_YZ,
+  MOD_DISPLAY_COMBO,
+  MOD_DISPLAY_DUAL
+};
+
+int  mod_display = MOD_DISPLAY_3D;
+bool flag_drawing_combo = false;
+
+bool flag_initializing_GUI = true;
+
 bool flag_draw_3D = true;
 bool flag_draw_XY = false;
 bool flag_draw_XZ = false;

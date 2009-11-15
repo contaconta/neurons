@@ -35,6 +35,23 @@ public:
     return false;
   }
 
+  bool retrieveIfExists(string name, double* ptval){
+    if(stock[name]!=""){
+      *ptval = atof((stock[name]).c_str());
+      return true;
+    }
+    return false;
+  }
+
+  bool retrieveIfExists(string name, string* ptval){
+    if(stock[name]!=""){
+      *ptval =stock[name];
+      return true;
+    }
+    return false;
+  }
+
+
   void add(string nameVariable, string value){
     stock[nameVariable] = value;
   }

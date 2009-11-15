@@ -35,13 +35,13 @@ void get_world_coordinates(double &wx, double &wy, double &wz, int x, int y, int
   GLdouble mvmatrix[16], projmatrix[16];
   GLdouble nx,ny,nz;
 
-  if(flag_draw_XY)
+  if(mod_display == MOD_DISPLAY_XY)
     setUpMatricesXY(layerSpanViewZ);
-  if(flag_draw_XZ)
+  if(mod_display == MOD_DISPLAY_XZ)
     setUpMatricesXZ(layerSpanViewZ);
-  if(flag_draw_YZ)
+  if(mod_display == MOD_DISPLAY_YZ)
     setUpMatricesYZ(layerSpanViewZ);
-  if(flag_draw_combo){
+  if(mod_display == MOD_DISPLAY_COMBO){
     //If the click is on the XY corner
     if( (window_x > widgetWidth/2) && (window_y > widgetHeight/2) ){
       setUpMatricesXY(layerSpanViewZ);
@@ -110,13 +110,13 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
   GLdouble mvmatrix[16], projmatrix[16];
   GLdouble nx,ny,nz;
 
-  if(flag_draw_XY)
+  if(mod_display == MOD_DISPLAY_XY)
     setUpMatricesXY(layerSpanViewZ);
-  if(flag_draw_XZ)
+  if(mod_display == MOD_DISPLAY_XZ)
     setUpMatricesXZ(layerSpanViewZ);
-  if(flag_draw_YZ)
+  if(mod_display == MOD_DISPLAY_YZ)
     setUpMatricesYZ(layerSpanViewZ);
-  if(flag_draw_combo){
+  if(mod_display == MOD_DISPLAY_COMBO){
     //If the click is on the XY corner
     if( (window_x > widgetWidth/2) && (window_y > widgetHeight/2) ){
       setUpMatricesXY(layerSpanViewZ);
@@ -167,7 +167,7 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
   world[2] = wz;
   cube->micrometersToIndexes(world, indexes);
 
-  if(flag_draw_combo && change_layers){
+  if( (mod_display == MOD_DISPLAY_COMBO) && change_layers){
     //If the click is on the XY corner
     if( (window_x > widgetWidth/2) && (window_y > widgetHeight/2) ){
       layerToDrawXZ = indexes[1]%D_MAX_TEXTURE_SIZE;
@@ -307,7 +307,7 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
           on_drawing3D_expose_event(widget, NULL, user_data);
         }
 
-  if( flag_draw_combo &&
+  if( (mod_display == MOD_DISPLAY_COMBO) &&
       !((mouse_last_x < widgetWidth/2) && (mouse_last_y > widgetHeight/2))
       ){
     get_world_coordinates(wx, wy, wz, false); //Nasty global variables
@@ -391,65 +391,65 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
 {
   if(event->keyval == 'a')
     {
-      if(flag_draw_3D)
+      if(mod_display == MOD_DISPLAY_3D)
         disp3DZ -= 10;
-      else if(flag_draw_XY)
+      else if(mod_display == MOD_DISPLAY_XY)
         layerToDrawXY++;
-      else if(flag_draw_XZ)
+      else if(mod_display == MOD_DISPLAY_XZ)
         layerToDrawXZ++;
-      else if(flag_draw_YZ)
+      else if(mod_display == MOD_DISPLAY_YZ)
         layerToDrawYZ++;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
   if(event->keyval == 's')
     {
-      if(flag_draw_3D)
+      if(mod_display == MOD_DISPLAY_3D)
         disp3DZ += 10;
-      else if(flag_draw_XY)
+      else if(mod_display == MOD_DISPLAY_XY)
         layerToDrawXY--;
-      else if(flag_draw_XZ)
+      else if(mod_display == MOD_DISPLAY_XZ)
         layerToDrawXZ--;
-      else if(flag_draw_YZ)
+      else if(mod_display == MOD_DISPLAY_YZ)
         layerToDrawYZ--;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
   if(event->keyval == 'j'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       rot3DY -= 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'l'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       rot3DY += 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'i'){
-    if(flag_draw_3D)
+    if( mod_display == MOD_DISPLAY_3D)
       rot3DX -= 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'k'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       rot3DX += 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'J'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       disp3DX -= 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'L'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       disp3DX += 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'I'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       disp3DY += 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
   if(event->keyval == 'K'){
-    if(flag_draw_3D)
+    if(mod_display == MOD_DISPLAY_3D)
       disp3DY -= 5;
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }

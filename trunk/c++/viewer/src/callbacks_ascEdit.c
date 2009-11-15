@@ -273,16 +273,16 @@ void unProjectMouseAsc(int mouse_lsat_x, int mouse_last_y)
   realy = (GLint)widgetHeight - 1 - mouse_last_y;
   int window_x = mouse_last_x;
   int window_y = realy;
-  if(flag_draw_3D){
+  if(mod_display == MOD_DISPLAY_3D){
     setUpVolumeMatrices();
   }
-  if(flag_draw_XY)
+  if(mod_display == MOD_DISPLAY_XY)
     setUpMatricesXY(layerSpanViewZ);
-  if(flag_draw_XZ)
+  if(mod_display == MOD_DISPLAY_XZ)
     setUpMatricesXZ(layerSpanViewZ);
-  if(flag_draw_YZ)
+  if(mod_display == MOD_DISPLAY_YZ)
     setUpMatricesYZ(layerSpanViewZ);
-  if(flag_draw_combo){
+  if(mod_display == MOD_DISPLAY_COMBO){
     //If the click is on the XY corner
     if( (window_x > widgetWidth/2) && (window_y > widgetHeight/2) ){
       setUpMatricesXY(layerSpanViewZ);
