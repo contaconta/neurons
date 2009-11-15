@@ -25,16 +25,16 @@ AIRPLANE_LABEL = 1;             % label used for mito
 %BND_LABEL = 1;              % boundary label
 
 
-
 %----------------------------------------------------------------------
-D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
-for x = 105:204
+%D = [1 1; 2 2; 3 14; 15 26; 27 38; 39 104;];  % Rays30
+D = [];
+for x = 1:20
     D(size(D,1)+1,:) = [x x]; % Intensity
 end
 %----------------------------------------------------------------------
 
 
-for k =  2:13  % 1:4
+for k =  1:13  % 1:4
     if k == 1; k1 = 1; else; k1 = (k-1)*K +1; end; %#ok<NOSEM>
 %     testImgs = imgs( k1:min(k1+K-1, max(imgs)));
 %     trainImgs = setdiff(imgs, testImgs);
