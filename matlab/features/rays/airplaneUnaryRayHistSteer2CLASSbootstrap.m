@@ -1,4 +1,4 @@
-resultname = 'heathrowRayHistSteer2CLASSboot';
+resultname = 'heathrowRayHistSteer2CLASSboot2';
 
 raysName = 'heathrowEdge6';
 
@@ -20,7 +20,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:13;                % list of image indexes
 K = 3;                      % the # examples per fold
-TRAIN_LENGTH = 8000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 7000;        % the total # of examples per class in training set
 AIRPLANE_LABEL = 1;             % label used for mito
 %BND_LABEL = 1;              % boundary label
 
@@ -49,8 +49,8 @@ for k =  1:13  % 1:4
     N = round( TRAIN_LENGTH / length(trainImgs));
    	%N3 = round(.20*N);
     %N2 = round(.30*N);
-    N1 = round(.40*N);
-    N0 = round(.60*N);
+    N1 = round(.50*N);
+    N0 = round(.50*N);
 %     N2 = round(.33*N);
 %     N1 = round(.33*N);
 %     N0 = round(.33*N);
@@ -95,7 +95,7 @@ for k =  1:13  % 1:4
         featureVector = [RAYFEATUREVECTOR H S];
         
         
-        INTENSITY_THRESH = median(RAYFEATUREVECTOR(:,1));
+        INTENSITY_THRESH = 132;  %median(RAYFEATUREVECTOR(:,1));
         
         %cls2 = find(labels == 2);
         cls1 = find(labels == 1);
@@ -110,8 +110,8 @@ for k =  1:13  % 1:4
         
         % sample the lists  
         N1 = min(N1, length(cls1));  %N2 = min(N2, length(cls2)); 
-        NBL = min(length(negBL), round(.4*N0));  
-        NBH = min(length(negBH), round(.4*N0));
+        NBL = min(length(negBL), round(.30*N0));  
+        NBH = min(length(negBH), round(.30*N0));
         NBOOT = N0 - NBL - NBH;
        
         c1list = randsample(cls1, N1)';
