@@ -17,6 +17,7 @@
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
+#include "SWC.h"
 #ifdef WITH_BBP
 #include "BBP_Morphology.h"
 #endif
@@ -43,17 +44,16 @@ saveScreenShot (char* filename)
 {
     IplImage* toSave = cvCreateImage(cvSize((int)widgetWidth,(int)widgetHeight),
                                      IPL_DEPTH_32F, 3);
-    printf("A\n");
+    printf("Smileeeeee\n");
     glReadPixels( 0, 0,
                   (int)widgetWidth,
                   (int)widgetHeight,
                   GL_BGR,
                   GL_FLOAT, toSave->imageData );
-    printf("B\n");
+    printf("... cheeseee\n");
     toSave->origin = 1;
-    printf("C\n");
     cvSaveImage(filename, toSave);
-    printf("D\n");
+    printf(" .. you are beautiful! -> %s\n", filename);
     cvReleaseImage(&toSave);
 }
 
@@ -98,6 +98,9 @@ void addObjectFromString(string name)
     cube = new Cube_C(name);
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  }
+  else if ((extension == "swc") || (extension == "SWC"))  {
+    toDraw.push_back(new SWC(name));
   }
   else if( extension == "cbt"){
     cube = new Cube_T(name);
@@ -212,12 +215,9 @@ void init_GUI_late()
   gdk_gl_drawable_gl_end (gldrawable);
   /*** OpenGL END*/
 
- flag_draw_3D = true;
- flag_draw_XY = false;
- flag_draw_XZ = false;
- flag_draw_YZ = false;
-
+ flag_initializing_GUI = false;
  on_drawing3D_expose_event(drawing3D,NULL, NULL);
+
 }
 
 
@@ -242,35 +242,32 @@ void
 on_view_entry_changed                  (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-  flag_draw_3D = false;
-  flag_draw_XY = false;
-  flag_draw_XZ = false;
-  flag_draw_YZ = false;
-  flag_draw_combo = false;
-  flag_draw_dual = false;
   gint active = gtk_combo_box_get_active(combobox);
-  switch(active)
+  printf("The entry has been changed!\n");
+  if(!flag_initializing_GUI)
     {
-    case 0:
-      flag_draw_3D = true;
-      break;
-    case 1:
-      flag_draw_XY = true;
-      break;
-    case 2:
-      flag_draw_XZ = true;
-      break;
-    case 3:
-      flag_draw_YZ = true;
-      break;
-    case 4:
-      flag_draw_combo = true;
-      break;
-    case 5:
-      flag_draw_dual = true;
-      break;
-  }
-
+      switch(active)
+        {
+        case 0:
+          mod_display = MOD_DISPLAY_3D;
+          break;
+        case 1:
+          mod_display = MOD_DISPLAY_XY;
+          break;
+        case 2:
+          mod_display = MOD_DISPLAY_XZ;
+          break;
+        case 3:
+          mod_display = MOD_DISPLAY_YZ;
+          break;
+        case 4:
+          mod_display = MOD_DISPLAY_COMBO;
+          break;
+        case 5:
+          mod_display = MOD_DISPLAY_DUAL;
+          break;
+        }
+    }
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 
@@ -455,12 +452,13 @@ on_videolayers_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   if(cube!=NULL){
-     flag_draw_3D = false;
-     flag_draw_XY = true;
-     flag_draw_XZ = false;
-     flag_draw_YZ = false;
-     flag_draw_combo = false;
-     flag_draw_dual = false;
+     /* flag_draw_3D = false; */
+     /* flag_draw_XY = true; */
+     /* flag_draw_XZ = false; */
+     /* flag_draw_YZ = false; */
+     /* flag_draw_combo = false; */
+     /* flag_draw_dual = false; */
+      mod_display = MOD_DISPLAY_3D;
      on_drawing3D_expose_event(drawing3D,NULL, user_data);
      char imageName[1024];
      int error = system("rm -rf /tmp/img*.jpg");
@@ -483,13 +481,14 @@ on_videorotation_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   if(cube!=NULL){
-     flag_draw_3D = true;
-     flag_draw_XY = false;
-     flag_draw_XZ = false;
-     flag_draw_YZ = false;
-     flag_draw_combo = false;
-     flag_draw_dual = false;
-     on_drawing3D_expose_event(drawing3D,NULL, user_data);
+     /* flag_draw_3D = true; */
+     /* flag_draw_XY = false; */
+     /* flag_draw_XZ = false; */
+     /* flag_draw_YZ = false; */
+     /* flag_draw_combo = false; */
+     /* flag_draw_dual = false; */
+      mod_display = MOD_DISPLAY_3D;
+      on_drawing3D_expose_event(drawing3D,NULL, user_data);
      int error = system("rm -rf /tmp/img*.jpg");
      char imageName[1024];
      for(int i = 0; i < 360; i+=5){
@@ -529,12 +528,13 @@ on_videorotationtime_activate          (GtkMenuItem     *menuitem,
     }
 
   if(cb!=NULL){
-     flag_draw_3D = true;
-     flag_draw_XY = false;
-     flag_draw_XZ = false;
-     flag_draw_YZ = false;
-     flag_draw_combo = false;
-     flag_draw_dual = false;
+     /* flag_draw_3D = true; */
+     /* flag_draw_XY = false; */
+     /* flag_draw_XZ = false; */
+     /* flag_draw_YZ = false; */
+     /* flag_draw_combo = false; */
+     /* flag_draw_dual = false; */
+    mod_display = MOD_DISPLAY_3D;
      on_drawing3D_expose_event(drawing3D,NULL, user_data);
      int error = system("rm -rf /tmp/img*.jpg");
      char imageName[1024];

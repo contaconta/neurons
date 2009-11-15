@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "functions.h"
 #include <glib.h>
+#include "Configuration.h"
 using namespace std;
 
 
@@ -61,6 +62,7 @@ static struct argp_option options[] = {
   {"rot3DY",    'Y', "value", 0, "Tells the Y rotation"},
   {"fullscreen",'f', 0, 0, "Turns full screen on"},
   {"screenshot",'S', "output_image", 0, "Takes an screenshot of the scene and exits"},
+  {"configuration",'c', "scene.txt", 0, "reads the configuration file to set up the scene"},
   { 0 }
 };
 
@@ -74,6 +76,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
 
   switch (key)
     {
+    case 'c':
+      configurationFile = arg;
+      break;
     case 'v':
       flag_verbose = 1;
       break;
@@ -112,7 +117,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
       majorMode = MOD_SCREENSHOT;
       break;
     case ARGP_KEY_ARG:
-      objectNames.push_back(arg);
+      /* objectNames.push_back(arg); */
       break;
 
     case ARGP_KEY_END:
@@ -333,6 +338,47 @@ gboolean screenShotTimeOutExpited(gpointer data)
 }
 
 
+void loadConfiguration(Configuration* conf)
+{
+  printf("Loading the configuration from %s\n", conf->filename.c_str());
+
+  string directoryConf = getDirectoryFromPath(conf->filename);
+  conf->retrieveIfExists("disp3DX", &disp3DX);
+  conf->retrieveIfExists("disp3DY", &disp3DY);
+  conf->retrieveIfExists("disp3DZ", &disp3DZ);
+  conf->retrieveIfExists("rot3DX", &rot3DX);
+  conf->retrieveIfExists("rot3DY", &rot3DY);
+  for(int i = 1; i < 10000; i++){
+    bool success;
+    string objectName;
+    char buff[64];
+    sprintf(buff, "obj%i", i);
+    success = conf->retrieveIfExists(string(buff), &objectName);
+    if(!success) break;
+    else{
+      printf("  adding key %s of object %s\n", buff, objectName.c_str());
+      if(fileExists(objectName)){
+        objectNames.push_back(objectName);
+      }
+      else if(fileExists(directoryConf+objectName))
+        objectNames.push_back(directoryConf+objectName);
+      else
+        printf("I do not know anything about the file %s\n", objectName.c_str());
+    }
+  }
+  string mod_display_string;
+  conf->retrieveIfExists("mod_display", &mod_display_string);
+  if(mod_display_string == "MOD_DISPLAY_3D")         mod_display = MOD_DISPLAY_3D;
+  else if(mod_display_string == "MOD_DISPLAY_XY")    mod_display = MOD_DISPLAY_XY;
+  else if(mod_display_string == "MOD_DISPLAY_XZ")    mod_display = MOD_DISPLAY_XZ;
+  else if(mod_display_string == "MOD_DISPLAY_YZ")    mod_display = MOD_DISPLAY_YZ;
+  else if(mod_display_string == "MOD_DISPLAY_COMBO") mod_display = MOD_DISPLAY_COMBO;
+  else if(mod_display_string == "MOD_DISPLAY_DUAL")  mod_display = MOD_DISPLAY_DUAL;
+  printf("  mod_display_string == %s\n", mod_display_string.c_str());
+}
+
+
+
 int
 main (int argc, char *argv[])
 {
@@ -382,10 +428,15 @@ main (int argc, char *argv[])
   glutInit(&argcp, argvp);
   if(flag_windowMaximize)
     gtk_window_maximize((GtkWindow*)ascEditor);
+  if(configurationFile!=""){
+    configuration = new Configuration(configurationFile);
+    loadConfiguration(configuration);
+  }
+
+
   gtk_widget_show (ascEditor);
   init_GUI();
   load_plugins();
-
 
   // Initialize glew
 

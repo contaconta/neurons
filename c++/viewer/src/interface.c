@@ -250,6 +250,7 @@ create_main_window (void)
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("YZ"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
+  g_object_set (view_entry, "has_frame", FALSE, NULL);
 
   label6 = gtk_label_new (_("LayerSpanViewZ"));
   gtk_widget_show (label6);

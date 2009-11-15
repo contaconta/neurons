@@ -61,7 +61,7 @@ void setUpVolumeMatrices()
   glRotatef(rot3DX,1,0,0);
   glRotatef(rot3DY,0,1,0);
 
-  if(!flag_draw_combo)
+  if(!flag_drawing_combo)
     glViewport ((GLsizei)0,(GLsizei)0,
                 (GLsizei)widgetWidth, (GLsizei)widgetHeight);
 }
@@ -95,9 +95,9 @@ void setUpMatricesXY(int layerSpan)
               glLoadIdentity();
               //glTranslatef(0,0,depthStep);
 
-              /*if(!flag_draw_combo)
+              if(!flag_drawing_combo)
                 glViewport ((GLsizei)0,(GLsizei)0,
-                (GLsizei)widgetWidth, (GLsizei)widgetHeight);*/
+                (GLsizei)widgetWidth, (GLsizei)widgetHeight);
 
               break;
             }
@@ -141,7 +141,7 @@ void setUpMatricesXY(int layerSpan)
       //float tileWidth = min(float(cube->cubeWidth - max_texture_size*cubeColToDraw), float(max_texture_size));
       //float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowTDraw), float(max_texture_size));
 
-      if(!flag_draw_combo)
+      if(!flag_drawing_combo)
         glViewport ((GLsizei)0,(GLsizei)0,
                     (GLsizei)widgetWidth, (GLsizei)widgetHeight);
     }
@@ -185,7 +185,7 @@ void setUpMatricesYZ(int layerSpan)
 /*   glTranslatef(widthStep,0,0); */
   glColor3f(1.0,1.0,1.0);
 
-  if(!flag_draw_combo)
+  if(!flag_drawing_combo)
     glViewport ((GLsizei)0,(GLsizei)0,
                 (GLsizei)widgetWidth, (GLsizei)widgetHeight);
 
@@ -227,7 +227,7 @@ void setUpMatricesXZ(int layerSpan)
 /*   glTranslatef(0,-heightStep,0); */
   glColor3f(1.0,1.0,1.0);
 
-  if(!flag_draw_combo)
+  if(!flag_drawing_combo)
     glViewport ((GLsizei)0,(GLsizei)0,
                 (GLsizei)widgetWidth, (GLsizei)widgetHeight);
 
@@ -248,19 +248,19 @@ void draw_selection()
       int z = -1;
       //float wx,wy,wz;
 
-      if(flag_draw_XY)
+      if(mod_display == MOD_DISPLAY_XY)
         {
           GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
           z = gtk_spin_button_get_value_as_int(layer_XY_spin);
         }
       else
-        if(flag_draw_XZ)
+        if(mod_display == MOD_DISPLAY_XZ)
           {
             GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
             y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
           }
         else
-          if(flag_draw_YZ)
+          if(mod_display == MOD_DISPLAY_YZ)
             {
               GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
               x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
@@ -299,15 +299,16 @@ void draw_objects()
         //If we are not supposed to draw the cube, ignore it
         if(!drawCube_flag) continue;
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
-        if(flag_draw_3D){
+        if((mod_display == MOD_DISPLAY_3D) ||
+           (mod_display == MOD_DISPLAY_COMBO) ){
           cubeDraw->draw();
           setUpVolumeMatrices();
         }
-        else if (flag_draw_XY)
+        else if (mod_display == MOD_DISPLAY_XY)
           cubeDraw->draw_layer_tile_XY(layerToDrawXY);
-        else if (flag_draw_XZ)
+        else if (mod_display == MOD_DISPLAY_XZ)
           cubeDraw->draw_layer_tile_XZ(layerToDrawXZ);
-        else if (flag_draw_YZ)
+        else if (mod_display == MOD_DISPLAY_YZ)
           cubeDraw->draw_layer_tile_YZ(layerToDrawYZ);
       }
       else{
@@ -342,7 +343,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glClearColor(0.0,0.0,0.0,0.0);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(flag_draw_3D)
+  if(mod_display == MOD_DISPLAY_3D)
     {
       setUpVolumeMatrices();
       /* cube->draw(); */
@@ -364,7 +365,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     }
 
   //Draws the XY view
-  if(flag_draw_XY)
+  if(mod_display == MOD_DISPLAY_XY)
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesXY(layerSpanViewZ);
@@ -376,7 +377,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glDisable(GL_DEPTH_TEST);
     }
 
-  if(flag_draw_XZ)
+  if(mod_display == MOD_DISPLAY_XZ)
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesXZ(layerSpanViewZ);
@@ -388,7 +389,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glDisable(GL_DEPTH_TEST);
     }
 
-  if(flag_draw_YZ)
+  if(mod_display == MOD_DISPLAY_YZ)
     {
       glEnable(GL_DEPTH_TEST);
       setUpMatricesYZ(layerSpanViewZ);
@@ -400,7 +401,7 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       glDisable(GL_DEPTH_TEST);
     }
 
-  if(flag_draw_dual){
+  if(mod_display == MOD_DISPLAY_DUAL){
     if( toDraw.size() == 3)
       {
         // The first objects in the toDraw list are the 2 images passed in arguments.
@@ -436,15 +437,16 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
       }
   }
 
-  if(flag_draw_combo){
+  if(mod_display == MOD_DISPLAY_COMBO){
+    flag_drawing_combo = true;
     setUpVolumeMatrices();
     glViewport ((GLsizei)0,(GLsizei)0,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
     if(drawCube_flag){
       //to make the method draw_objects draw the cube
-      flag_draw_3D = true;
+      /* flag_draw_3D = true; */
       draw_objects();
-      flag_draw_3D = false;
+      /* flag_draw_3D = false; */
       glEnable(GL_BLEND);
       setUpVolumeMatrices();
       cube->draw_layer_tile_XY(layerToDrawXY,1);
@@ -467,12 +469,10 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glViewport ((GLsizei)0,(GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
     cube->draw_layer_tile_XY(layerToDrawXY,1);
-    /* cube->draw_layer_tile_XZ(layerToDrawXZ,0); */
+    cube->draw_layer_tile_XZ(layerToDrawXZ,0);
     cube->draw_layer_tile_YZ(layerToDrawYZ,1);
     setUpMatricesXZ(layerSpanViewZ);
-    flag_draw_XZ = true;
     draw_objects();
-    flag_draw_XZ = false;
     glDisable(GL_DEPTH_TEST);
     draw_last_point();
     glDisable(GL_DEPTH_TEST);
@@ -484,11 +484,9 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     setUpMatricesYZ(1000000);
     cube->draw_layer_tile_XY(layerToDrawXY,1);
     cube->draw_layer_tile_XZ(layerToDrawXZ,1);
-    /* cube->draw_layer_tile_YZ(layerToDrawYZ,0); */
+    cube->draw_layer_tile_YZ(layerToDrawYZ,0);
     setUpMatricesYZ(layerSpanViewZ);
-    flag_draw_YZ = true;
     draw_objects();
-    flag_draw_YZ = false;
     glDisable(GL_DEPTH_TEST);
     draw_last_point();
     glDisable(GL_DEPTH_TEST);
@@ -498,17 +496,17 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     glViewport ((GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2,
                 (GLsizei)widgetWidth/2, (GLsizei)widgetHeight/2);
     setUpMatricesXY(100000000);
-    /* cube->draw_layer_tile_XY(layerToDrawXY,0); */
+    cube->draw_layer_tile_XY(layerToDrawXY,0);
     cube->draw_layer_tile_XZ(layerToDrawXZ,1);
     cube->draw_layer_tile_YZ(layerToDrawYZ,1);
     setUpMatricesXY(layerSpanViewZ);
-    flag_draw_XY = true;
     draw_objects();
-    flag_draw_XY = false;
     glDisable(GL_DEPTH_TEST);
     draw_last_point();
     glDisable(GL_DEPTH_TEST);
-  }
+
+    flag_drawing_combo = false;
+  }//draw_combo
 
 
   if(majorMode & MOD_ASCEDITOR){
@@ -520,19 +518,19 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     aPoint3d.y = -1;
     aPoint3d.z = -1;
 
-    if(flag_draw_XY)
+    if(mod_display == MOD_DISPLAY_XY)
       {
         GtkSpinButton* layer_XY_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XY_spin"));
         aPoint3d.z = gtk_spin_button_get_value_as_int(layer_XY_spin);
       }
     else
-      if(flag_draw_XZ)
+      if(mod_display == MOD_DISPLAY_XZ)
         {
           GtkSpinButton* layer_XZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_XZ_spin"));
           aPoint3d.y = gtk_spin_button_get_value_as_int(layer_XZ_spin);
         }
       else
-        if(flag_draw_YZ)
+        if(mod_display == MOD_DISPLAY_YZ)
           {
             GtkSpinButton* layer_YZ_spin=GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(ascEditor),"layer_YZ_spin"));
             aPoint3d.x = gtk_spin_button_get_value_as_int(layer_YZ_spin);
