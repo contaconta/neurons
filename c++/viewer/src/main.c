@@ -117,7 +117,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
       majorMode = MOD_SCREENSHOT;
       break;
     case ARGP_KEY_ARG:
-      /* objectNames.push_back(arg); */
+      objectNames.push_back(arg);
       break;
 
     case ARGP_KEY_END:
