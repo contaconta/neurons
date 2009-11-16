@@ -17,7 +17,6 @@
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
-#include "SWC.h"
 #ifdef WITH_BBP
 #include "BBP_Morphology.h"
 #endif
@@ -99,8 +98,8 @@ void addObjectFromString(string name)
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
-  else if ((extension == "swc") || (extension == "SWC"))  {
-    toDraw.push_back(new SWC(name));
+  else if ((extension == "swf") || (extension == "SWF"))  {
+    toDraw.push_back(new SWF(name));
   }
   else if( extension == "cbt"){
     cube = new Cube_T(name);
