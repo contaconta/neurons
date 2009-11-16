@@ -1,4 +1,4 @@
-resultname = 'heathrowRayHistSteer2CLASSboot2';
+resultname = 'heathrowRayHistSteer2CLASSboot4';
 
 raysName = 'heathrowEdge6';
 
@@ -20,7 +20,7 @@ addpath('/home/smith/bin/libsvm-2.89/libsvm-mat-2.89-3/');
 % k-folds parameters
 imgs = 1:13;                % list of image indexes
 K = 3;                      % the # examples per fold
-TRAIN_LENGTH = 7000;        % the total # of examples per class in training set
+TRAIN_LENGTH = 6000;        % the total # of examples per class in training set
 AIRPLANE_LABEL = 1;             % label used for mito
 %BND_LABEL = 1;              % boundary label
 
@@ -41,7 +41,8 @@ for k =  1:13  % 1:4
 %     testImgs = 1:13;
 %     trainImgs = 1:13;
     testImgs = k;
-    trainImgs = setdiff(1:13,k);
+    trainImgs = 1:13;
+    %trainImgs = setdiff(1:13,k);
     disp(['Testing: ' num2str(testImgs)]);
     disp(['Training: ' num2str(trainImgs)]);
     
@@ -49,8 +50,8 @@ for k =  1:13  % 1:4
     N = round( TRAIN_LENGTH / length(trainImgs));
    	%N3 = round(.20*N);
     %N2 = round(.30*N);
-    N1 = round(.50*N);
-    N0 = round(.50*N);
+    N1 = round(.40*N);
+    N0 = round(.60*N);
 %     N2 = round(.33*N);
 %     N1 = round(.33*N);
 %     N0 = round(.33*N);
