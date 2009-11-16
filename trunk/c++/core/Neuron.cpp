@@ -904,8 +904,10 @@ void Neuron::printStatistics()
   double minZ = 0;
   int nSegments = 0;
 
-  getMaxPoint(axon[0], &maxX, &maxY, &maxZ, &minX, &minY, &minZ, &nSegments);
-  printf("Axon has   %i  segments\n", nSegments);
+  if(axon.size()>0){
+    getMaxPoint(axon[0], &maxX, &maxY, &maxZ, &minX, &minY, &minZ, &nSegments);
+    printf("Axon has   %i  segments\n", nSegments);
+  }
   printf("Neuron has %i  dendrites\n", (int)dendrites.size());
 
 
