@@ -433,7 +433,7 @@ int main(int argc, char **argv) {
 
   // In case we want to save the orientation and the type
   if( (args.name_scale == "") &&
-      //(args.name_orientation != "") &&
+      //      (args.name_orientation != "") &&
       args.save_type
       )
     {

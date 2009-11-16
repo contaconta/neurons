@@ -790,10 +790,10 @@ void Image<T>::computeHessian
 
   for(int x = 0; x < width; x++)
     for(int y = 0; y < height; y++){
-      data[0] = gxx->at(x,y);
-      data[1] = gxy->at(x,y);
+      data[0] = -gxx->at(x,y);
+      data[1] = -gxy->at(x,y);
       data[2] = data[1];
-      data[3] = gyy->at(x,y);
+      data[3] = -gyy->at(x,y);
       gsl_matrix_view M
         = gsl_matrix_view_array (data, 2, 2);
       gsl_eigen_symmv (&M.matrix, eign, evec, w2);

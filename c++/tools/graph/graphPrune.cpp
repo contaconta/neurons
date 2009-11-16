@@ -127,7 +127,8 @@ int main(int argc, char **argv) {
     // it != edgesTraced.begin(); it--){
     for(int it = edgesTraced.size() -1; it >= 0; it--){
       double pr = pow(10,-gr->eset.edges[edgesTraced[it]]->w);
-      integral += log10( (1-pr)/pr);
+      //      integral += log10( (1-pr)/pr);
+      integral += log10( pr/(1-pr));
       //      integral = integral  + log( (1-gr->eset.edges[edgesTraced[it]]->w)
       //                          /(gr->eset.edges[edgesTraced[it]]->w) );
       if(integral < threshold){
