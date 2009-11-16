@@ -1,7 +1,8 @@
 function M2 = postprocessing(M, I, Icoeff)
 
 M = bwmorph(M, 'majority');
-M = bwmorph(M, 'fill', Inf);
+%M = bwmorph(M, 'fill', Inf);
+M = M + imfill(M, 'holes');
 
 MINSIZE = 50;
 
