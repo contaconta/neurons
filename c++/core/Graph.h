@@ -168,7 +168,7 @@ void Graph<P,E>::draw(){
 //           glColor3f(cloud->v_r,cloud->v_g,cloud->v_b);
 //           cloud->points[i]->draw(cloud->v_radius);
           glColor3f(0.2,0.8,0.0);
-          cloud->points[i]->draw(1.5);
+          cloud->points[i]->draw(0.2);
         }
       }
     }
