@@ -47,9 +47,9 @@ void EdgeW< P >::draw(){
 
   glGetFloatv(GL_CURRENT_COLOR, currCol);
 
-  glColor3f(1.0,
+  glColor3f(w,
             0,
-            0);
+            1-w);
 
   Edge<P>::draw();
 

@@ -63,16 +63,19 @@ int main(int argc, char **argv) {
     a0 = mst->eset.edges[ne]->p0;
     a1 = mst->eset.edges[ne]->p1;
     //Find the path
-    sprintf(buff, "%s/tree/paths_%04i_%04i.gr", directory,c_str(), a0, a1);
+    sprintf(buff, "%s/tree/paths/path_%04i_%04i.gr", directory.c_str(), a0, a1);
     if(fileExists(buff)){
       path = new Graph< Point3D, EdgeW< Point3D > >(buff);
       printf("processing %s\n", buff);
     } else {
-      sprintf(buff, "%s/tree/paths_%04i_%04i.gr", directory.c_str(), a1, a0);
+      sprintf(buff, "%s/tree/paths/path_%04i_%04i.gr", directory.c_str(), a1, a0);
       if(fileExists(buff)){
         path = new Graph< Point3D, EdgeW< Point3D > >(buff);
         printf("processing %s\n", buff);
-      }else continue;
+      }else{
+        printf("file %s does not exists\n", buff);
+        continue;
+      }
     }
 
     // Here comes the fun
