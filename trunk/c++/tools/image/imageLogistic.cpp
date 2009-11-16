@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
   printf("Copying the values  [");
   for(int y = 0; y < orig->height; y++)
     for(int x = 0; x < orig->width; x++)
-      flts->put(x,y, 1.0/(1+exp(-orig->at(x,y)*a -b)) );
+      flts->put(x,y, 1.0-1.0/(1+exp(-orig->at(x,y)*a -b)) );
   printf("#");fflush(stdout);
   flts->save();
   printf("]\n");

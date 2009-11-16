@@ -277,6 +277,11 @@ target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
 target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 
+add_executable(imageGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/image/imageGaussianPyramid.cpp)
+target_link_libraries(imageGaussianPyramid ${LINK_LIBRARIES_ALL})
+
+add_executable(imageMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/image/imageMergeAcrossScales.cpp)
+target_link_libraries(imageMergeAcrossScales ${LINK_LIBRARIES_ALL})
 
 add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
 target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
@@ -360,6 +365,9 @@ target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
 
 add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
 target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
+
+add_executable(kMSTgraphToHighResgraph ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphToHighResgraph.cpp)
+target_link_libraries(kMSTgraphToHighResgraph ${LINK_LIBRARIES_ALL})
 
 add_executable(kMSTanalyzeDir ${CMAKE_SOURCE_DIR}/../tests/kMSTanalyzeDir.cpp)
 target_link_libraries(kMSTanalyzeDir ${LINK_LIBRARIES_ALL})
