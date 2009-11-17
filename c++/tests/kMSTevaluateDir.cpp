@@ -187,6 +187,15 @@ int main(int argc, char **argv) {
   double fp = 0;
   double fn = 0;
 
+  if(1){
+    Cube<uchar, ulong>* rendered = mask->duplicate_clean("rendered");
+    sprintf(nameGraph, "%s/tree/kmsts/kmst%iw.gr", directory.c_str(), 725);
+    printf("%s\n", nameGraph);
+    Graph< Point3Dw, EdgeW<Point3Dw> >* gr =
+      new Graph< Point3Dw, EdgeW<Point3Dw> >(nameGraph);
+    evaluateGraph(directory, mask, rendered, gtNeuron, gr, tp, fp, fn);
+  }
+
   if(0){
     for(int k = kInit; k <=kEnd; k+=kStep){
       tp = 0; fp = 0; fn = 0;
@@ -220,7 +229,7 @@ int main(int argc, char **argv) {
     saveMatrix(toSave, directory + "/tree/mst/mstFromCptGraphwE.txt");
   }
 
-  if(1){
+  if(0){
     toSave.resize(0);
     sprintf(nameGraph, "%s/tree/mst/mstFromCptGraphPrunedw.gr", directory.c_str());
     printf("Evaluating the graph: %s\n", nameGraph);

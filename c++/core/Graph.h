@@ -160,15 +160,15 @@ void Graph<P,E>::draw(){
         }
       }
       for(int i = 0; i < pointsWithEdges.size(); i++){
-        if(i==0){
-          glColor3f(1.0,1.0,0.0);
-          cloud->points[i]->draw(3.5);
-        }
+        //        if(i==0){
+        //  glColor3f(1.0,1.0,0.0);
+        //  cloud->points[i]->draw(3.5);
+        //}
         if(pointsWithEdges[i] == 1){
 //           glColor3f(cloud->v_r,cloud->v_g,cloud->v_b);
 //           cloud->points[i]->draw(cloud->v_radius);
           glColor3f(0.2,0.8,0.0);
-          cloud->points[i]->draw(0.2);
+          cloud->points[i]->draw(0.01);
         }
       }
     }
