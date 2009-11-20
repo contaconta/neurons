@@ -200,13 +200,14 @@ CubeLiveWire::findShortestPathG
   vector< int > indexes(3);
   vector< float > micrometers(3);
 
+  int xP = x1, yP = y1, zP = z1;
+  int xPP = x1; int yPP = y1; int zPP = z1;
+
   if( (z1 >= 0) && (y1>=0) && (x1>=0) &&
       (z1 < cube->cubeDepth) && (y1 < cube->cubeHeight) && (x1 < cube->cubeWidth) &&
       (z0 >= 0) && (y0>=0) && (z0>=0) &&
       (z0 < cube->cubeDepth) && (y0 < cube->cubeHeight) && (x0 < cube->cubeWidth)
       && visited[z1][y1][x1]){
-    int xP = x1, yP = y1, zP = z1;
-    int xPP = x1; int yPP = y1; int zPP = z1;
     while(!( (xP==x0) && (yP==y0)&& (zP==z0) )){
       indexes[0] = xP;
       indexes[1] = yP;
@@ -236,7 +237,11 @@ CubeLiveWire::findShortestPathG
 
   result->cloud->points.push_back
     (new Point3D(micrometers[0], micrometers[1], micrometers[2]));
-
+  result->eset.edges.push_back
+    (new EdgeW<Point3D>
+     (&result->cloud->points, result->cloud->points.size()-1,
+      max((int)result->cloud->points.size()-2,0),
+      distance->distance(xP,yP,zP,xPP,yPP,zPP) ) );
 
   return result;
 }

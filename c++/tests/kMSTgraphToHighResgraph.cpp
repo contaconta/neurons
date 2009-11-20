@@ -25,21 +25,26 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  if(argc!=3){
-    printf("Usage: kMSTgraphToHighResgraph directory output\n");
+  if(argc!=4){
+    printf("Usage: kMSTgraphToHighResgraph directory graph output\n");
     exit(0);
   }
 
   string directory(argv[1]);
-  string outGraph (argv[2]);
+  string outGraph (argv[3]);
 
   Cube<float, double>* px = new Cube<float,double>(directory + "/2/merged_248p.nfo");
   Graph<Point3D, EdgeW<Point3D> >* highRes =
     new Graph<Point3D, EdgeW<Point3D> >();
 
   Graph<Point3D, EdgeW<Point3D> >* mst =
-    new Graph<Point3D, EdgeW<Point3D> >(directory+"/tree/mstFromCptGraph.gr");
+    new Graph<Point3D, EdgeW<Point3D> >(argv[2]);
 
+  int mstCardinality = mst->cloud->points.size();
+  int connections[mstCardinality][mstCardinality];
+  for(int i = 0; i < mstCardinality; i++)
+    for(int j = 0; j < mstCardinality; j++)
+      connections[i][j] = -1;
 
   Cube<int, double>* idx = new Cube<int, double>(px->cubeWidth, px->cubeHeight,
                                                  px->cubeDepth, 1, 1, 1);
@@ -82,6 +87,8 @@ int main(int argc, char **argv) {
     for(int nep = 0; nep < path->eset.edges.size(); nep++){
       e0 = path->eset.edges[nep]->p0;
       e1 = path->eset.edges[nep]->p1;
+      connections[e0][e1] = nep;
+      connections[e1][e0] = nep;
       px->micrometersToIndexes3(path->cloud->points[e0]->coords[0],
                                 path->cloud->points[e0]->coords[1],
                                 path->cloud->points[e0]->coords[2],
@@ -125,10 +132,9 @@ int main(int argc, char **argv) {
           probEdge)
          );
     } // edges in the path
-
-
-
   } //All the edges
+
+
   highRes->saveToFile(outGraph);
 
 }

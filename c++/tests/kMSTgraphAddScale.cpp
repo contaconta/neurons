@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
   //Tree the kmsts
   if(0){
-#pragma omp parallel for
+    //#pragma omp parallel for
     for(int i = 1; i <= 969; i++){
       sprintf(origName, "%s/tree/kmsts/kmst%i.gr",  directory.c_str(), i);
       sprintf(destName, "%s/tree/kmsts/kmst%iw.gr", directory.c_str(), i);
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
   }
 
   if(0){
-#pragma omp parallel for
+    //#pragma omp parallel for
     for(int i = 1; i <= 969; i++){
       for(int j = 1; j <= 969; j++){
         sprintf(origName, "%s/tree/paths/path_%04i_%04i.gr",  directory.c_str(), i, j);
@@ -121,9 +121,9 @@ int main(int argc, char **argv) {
   }
 
   //And now for the MST
-  if(0){
-    sprintf(origName, "%s/tree/mst/mstFromCptGraph.gr",  directory.c_str());
-    sprintf(destName, "%s/tree/mst/mstFromCptGraph.gr",  directory.c_str());
+  if(1){
+    sprintf(origName, "%s/tree/mstFromCptGraph.gr",  directory.c_str());
+    sprintf(destName, "%s/tree/mstFromCptGraphw.gr",  directory.c_str());
     Graph<Point3D, EdgeW<Point3D> >* orig =
       new Graph<Point3D, EdgeW<Point3D> >(origName);
     Graph<Point3Dw, EdgeW<Point3Dw> >* dest =
@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
   }
 
   //And now for the pruned
-  if(1){
+  if(0){
     sprintf(origName, "%s/tree/mst/mstFromCptGraphPruned.gr",  directory.c_str());
     sprintf(destName, "%s/tree/mst/mstFromCptGraphPrunedw.gr",  directory.c_str());
     Graph<Point3D, EdgeW<Point3D> >* orig =
