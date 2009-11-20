@@ -85,6 +85,7 @@ Graph<P,E>::~Graph()
 template< class P, class E>
 Graph<P,E>::Graph(string filename) : Graph_P(){
   v_saveVisibleAttributes = true;
+  printf("Loading the graph %s\n", filename.c_str());
   cloud = new Cloud<P>();
   loadFromFile(filename);
 }

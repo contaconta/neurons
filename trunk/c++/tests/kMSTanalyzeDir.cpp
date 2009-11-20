@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
 
   for(int k = kInit; k <=kEnd; k+=kStep){
     sprintf(nameGraph, "%s/tree/kmsts/kmst%i.gr", directory.c_str(), k);
+    if(!fileExists(nameGraph))
+      continue;
     printf("%s\n", nameGraph);
     Graph< Point3D, EdgeW<Point3D> >* gr =
       new Graph< Point3D, EdgeW<Point3D> >(nameGraph);
