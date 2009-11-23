@@ -9,7 +9,10 @@ class GraphFactory
 public:
 
   static Graph_P* load(string filename){
-    assert(fileExists(filename));
+//     assert(fileExists(filename));
+    if(!fileExists(filename)){
+      return new Graph<Point3Dw, EdgeW<Point3Dw> >();
+    }
     ifstream pp(filename.c_str());
     string s1, s2;
     pp >> s1;
