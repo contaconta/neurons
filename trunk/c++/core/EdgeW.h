@@ -50,11 +50,33 @@ void EdgeW< P >::draw(){
 //   glColor3f(w,
 //             0,
 //             1-w);
+  glEnable(GL_LINE_SMOOTH);
+  if(0){
+    glColor3f(140.0/255,40.0/255,40.0/255);
+    glLineWidth(12.0);
+    Edge<P>::draw();
 
-  glColor3f(255.0/255,100.0/255,200.0/255);
+    glColor3f(225.0/255,155.0/255,1.0);
+    glLineWidth(4.0);
+    Edge<P>::draw();
 
+    glLineWidth(1.0);
+  }
 
-  Edge<P>::draw();
+  if(1){
+    glColor3f(140.0/255,40.0/255,40.0/255);
+    glLineWidth(6.0);
+    Edge<P>::draw();
+
+    glColor3f(225.0/255,155.0/255,1.0);
+    glLineWidth(3.0);
+    Edge<P>::draw();
+
+    glLineWidth(1.0);
+//     glColor3f(140.0/255,40.0/255,40.0/255);
+//     Edge<P>::draw();
+  }
+
 
   glColor3f(currCol[0],
             currCol[1],

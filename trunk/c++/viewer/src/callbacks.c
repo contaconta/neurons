@@ -188,12 +188,9 @@ void init_GUI_late()
   GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (drawing3D);
 
 
-  /*** OpenGL BEGIN ***/
-  if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
-  {
-    printf("Realize event: there is no gdk_gl_drawable\n");
-    return;
-  }
+  /* Axis* axis = new Axis(); */
+  /* toDraw.push_back(axis); */
+  /* objectNames.push_back("Axis"); */
 
   //Create the objects
   nCubes = 0;
@@ -203,9 +200,13 @@ void init_GUI_late()
     addObjectFromString(objectNames[i]);
   }
 
-  /* Axis* axis = new Axis(); */
-  /* toDraw.push_back(axis); */
-  /* objectNames.push_back("Axis"); */
+
+  /*** OpenGL BEGIN ***/
+  if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
+  {
+    printf("Realize event: there is no gdk_gl_drawable\n");
+    return;
+  }
 
   /** Loads the drawing parameters to the cube.*/
   for(int i = 0; i < toDraw.size(); i++){

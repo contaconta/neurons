@@ -11,6 +11,8 @@ void setUpMatricesXZ(int layerSpan);
 
 void saveScreenShot(char* filename);
 
+void addObjectFromString(string name);
+
 void init_GUI_late();
 
 void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layers = false, int z = -1);
