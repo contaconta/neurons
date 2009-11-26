@@ -27,6 +27,8 @@ Stage::Stage(QWidget* parent) : QGLWidget(parent)
 
   actors.push_back(new Axis());
 
+  setFocus();
+
   faceColors[0] = Qt::red;
   faceColors[1] = Qt::green;
   faceColors[2] = Qt::blue;
@@ -45,7 +47,7 @@ void Stage::initializeGL()
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
   }
 
-  Cube_P* cube = CubeFactory::load("/media/neurons/tests2/cut.nfo");
+  Cube_P* cube = CubeFactory::load("/media/neurons/n7/3d/4/N7_4.nfo");
   cube->load_texture_brick(0,0);
   actors.push_back(cube);
 
@@ -74,6 +76,7 @@ void Stage::paintGL()
 void Stage::mousePressEvent(QMouseEvent *event)
 {
   lastPos = event->pos();
+  setFocus();
 }
 
 void Stage::mouseMoveEvent(QMouseEvent *event)
@@ -82,15 +85,15 @@ void Stage::mouseMoveEvent(QMouseEvent *event)
   GLfloat dy = GLfloat(event->y() - lastPos.y()) / height();
 
   if (event->buttons() & Qt::LeftButton) {
-    rotationX += 100 * dy;
-    rotationY += 100 * dx;
+    rotationX += 200 * dy;
+    rotationY += 200 * dx;
     updateGL();
   } else if (event->buttons() & Qt::RightButton) {
-    disp3DZ += 50 * dx;
+    disp3DZ += 150 * dx;
     updateGL();
   } else if (event->buttons() & Qt::MidButton) {
-    disp3DX += 20 * dx;
-    disp3DY -= 20 * dy;
+    disp3DX += 60 * dx;
+    disp3DY -= 60 * dy;
     updateGL();
   }
   lastPos = event->pos();
@@ -112,3 +115,66 @@ void Stage::draw()
   for(int i = 0; i < actors.size(); i++)
     actors[i]->draw();
 }
+
+void Stage::keyPressEvent(QKeyEvent *event)
+{
+  float angleStep   = 2;
+  float dispStepXY  = 2;
+  float dispStepZ   = 5;
+  switch(event->key())
+    {
+    case Qt::Key_Left:
+      switch(event->modifiers()){
+      case Qt::NoModifier:
+        rotationY -= angleStep;
+        break;
+      case Qt::ShiftModifier:
+        disp3DX -= dispStepXY;
+        break;
+      }
+      break;
+    case Qt::Key_Right:
+      switch(event->modifiers()){
+      case Qt::NoModifier:
+        rotationY += angleStep;
+        break;
+      case Qt::ShiftModifier:
+        disp3DX += dispStepXY;
+        break;
+      }
+      break;
+    case Qt::Key_Up:
+      switch(event->modifiers()){
+      case Qt::NoModifier:
+        rotationX -= angleStep;
+        break;
+      case Qt::ShiftModifier:
+        disp3DY += dispStepXY;
+        break;
+      case Qt::ControlModifier:
+        disp3DZ += dispStepZ;
+        break;
+      }
+      break;
+    case Qt::Key_Down:
+      switch(event->modifiers()){
+      case Qt::NoModifier:
+        rotationX += angleStep;
+        break;
+      case Qt::ShiftModifier:
+        disp3DY -= dispStepXY;
+        break;
+      case Qt::ControlModifier:
+        disp3DZ -= dispStepZ;
+        break;
+      }
+      break;
+    case Qt::Key_Escape:
+      printf("No exit in here has been pressed\n");
+      break;
+    default:
+      QGLWidget::keyPressEvent(event);
+    }
+  updateGL();
+}
+

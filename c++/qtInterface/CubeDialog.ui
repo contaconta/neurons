@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CubeDialog</class>
- <widget class="QWidget" name="CubeDialog" >
-  <property name="geometry" >
+ <widget class="QWidget" name="CubeDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,11 +10,11 @@
     <height>733</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Cube</string>
   </property>
-  <widget class="QGroupBox" name="groupBox" >
-   <property name="geometry" >
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>10</y>
@@ -21,11 +22,11 @@
      <height>51</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Projection</string>
    </property>
-   <widget class="QRadioButton" name="radioButtonMaximum" >
-    <property name="geometry" >
+   <widget class="QRadioButton" name="radioButtonMaximum">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
@@ -33,41 +34,56 @@
       <height>24</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Max IP</string>
     </property>
-    <property name="checked" >
+    <property name="checked">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButtonMinimum" >
-    <property name="geometry" >
-     <rect>
-      <x>70</x>
-      <y>20</y>
-      <width>92</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Min IP</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButtonNotDraw" >
-    <property name="geometry" >
-     <rect>
-      <x>130</x>
-      <y>20</y>
-      <width>92</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Do not draw</string>
-    </property>
-   </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>92</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PushButton</string>
+   </property>
+  </widget>
+  <widget class="QCommandLinkButton" name="commandLinkButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>179</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CommandLinkButton</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>113</width>
+     <height>26</height>
+    </rect>
+   </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>radioButtonMaximum</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>commandLinkButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

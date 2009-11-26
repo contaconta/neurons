@@ -1,7 +1,7 @@
 #ifndef STAGE_H_
 #define STAGE_H_
-#include <glew.h>
 
+#include <glew.h>
 #include <QGLWidget>
 #include "Axis.h"
 #include "CubeFactory.h"
@@ -21,6 +21,7 @@ protected:
   void mousePressEvent(QMouseEvent *event);
   void mouseMoveEvent(QMouseEvent *event);
   void mouseDoubleClickEvent(QMouseEvent *event);
+  void keyPressEvent(QKeyEvent *event);
 
 private:
   void draw();
