@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include "rays.h"
 
+#define PI 3.1415926536
+
 /* function [RAY1 RAY3 RAY4] = rays(E, G, angle, stride)
  * RAYS computes RAY features
  *   Example:
@@ -106,6 +108,11 @@ void computeRays(const char *pImageName, double sigma, double angle)
   if (angle < 0)
     angle += 360;
   
+  // get a scamline in direction angle
+  list<int> xs;
+  list<int> ys;
+  linepoints(E,angle,xs,ys);
+
   printf("Releasing\n");
   cvReleaseImage(&img);
   cvReleaseImage(&gx);
@@ -117,7 +124,7 @@ void computeRays(const char *pImageName, double sigma, double angle)
 /*
  * defines the points in a line in an image at an arbitrary angle
  */
-void linepoints(E,double angle,vector<double> Sr, vector<double> Sc)
+void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys)
 {
   /*
   // flip the sign of the angle (matlab y axis points down for images) and
@@ -130,29 +137,56 @@ else
 end
   */
 
+  // convert to radians
+  angle = angle * PI/180.0;
+
+  /*
 % format the angle so it is between 0 and less than pi/2
 if angle > pi; angle = angle - pi; end
 if angle == pi; angle = 0; end
+  */
 
+  // find where the line intercepts the edge of the image.  draw a line to
+  // this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
+  // from the upper left corner down.  linex and liney contain the points of 
+  // the line
+  int start_x;
+  int start_y;
+  int A_bottom_intercept[2][2];
+  int A_right_intercept[2][2];
+  int B_bottom_intercept[2];
+  int B_right_intercept[2];
+  if ((angle >= 0 ) && (angle <= pi/2))
+    {
+      start_x = 1;
+      start_y = 1;
+      A_bottom_intercept[0] = -tan(angle);
+      A_bottom_intercept[1] = 1;
+      A_bottom_intercept[2] = 0;
+      A_bottom_intercept[3] = 1;
+      B_bottom_intercept[0] = 0;
+      B_bottom_intercept[1] = img_width-1;
 
-% find where the line intercepts the edge of the image.  draw a line to
-% this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
-% from the upper left corner down.  linex and liney contain the points of 
-% the line
-if (angle >= 0 ) && (angle <= pi/2)
-    START = [1 1]; 
-    A_bottom_intercept = [-tan(angle) 1; 0 1];  B_bottom_intercept = [0; size(E,1)-1];
-    A_right_intercept  = [-tan(angle) 1; 1 0];  B_right_intercept  = [0; size(E,2)-1];
+      A_right_intercept[0] = -tan(angle);
+      A_right_intercept[1] = 1;
+      A_right_intercept[2] = 1; //[0][1]
+      A_right_intercept[3] = 0;
+
+      B_right_intercept[0] = 0;
+      B_right_intercept[1] = img_height-1;
+
     bottom_intercept = round(A_bottom_intercept\B_bottom_intercept);
     right_intercept  = round(A_right_intercept\B_right_intercept);
 
-    if right_intercept(2) <= size(E,1)-1
+    if right_intercept(2) < img_width
         END = right_intercept + [1; 1];
     else
         END = bottom_intercept + [1; 1];
     end
-    [linex,liney] = intline(START(1), END(1), START(2), END(2));
-else
+    [linex,liney] = intline(start_x, endx_x, start_y, end_y);
+    }
+  else
+    {
     START = [1, size(E,1)];
     A_top_intercept = [tan(pi - angle) 1; 0 1];  B_top_intercept = [size(E,1); 1];
     A_right_intercept  = [tan(pi - angle) 1; 1 0];  B_right_intercept  = [size(E,1); size(E,2)-1];
@@ -165,7 +199,7 @@ else
         END = top_intercept + [1; 0];
     end
     [linex,liney] = intline(START(1), END(1), START(2), END(2));
-end
+    }
 
 Sr = round(liney); Sc = round(linex);
 
@@ -191,7 +225,7 @@ end
 %   INTLINE(X1, X2, Y1, Y2) produces the same results as
 %   FLIPUD(INTLINE(X2, X1, Y2, Y1)).
  */
-void intline(int x1, int x2, int y1, int y2, list<int> xs, list<int> ys)
+void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys)
 {
 
   int dx = abs(x2 - x1);
