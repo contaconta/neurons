@@ -1668,7 +1668,7 @@ void Cube<T,U>::create_gaussian_pyramid_2D()
 }
 
 
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::apply_affine_transform
 (gsl_matrix* transform,
@@ -1703,8 +1703,9 @@ void Cube<T,U>::apply_affine_transform
   gsl_vector_free(c_o);
   gsl_vector_free(c_d);
 }
+#endif
 
-
+#ifdef WITH_GSL
 template <class T, class U>
 double Cube<T,U>::cross_correlate
 ( gsl_matrix* trns_init,
@@ -1857,7 +1858,9 @@ double Cube<T,U>::cross_correlate
 
   return n_cc;
 }
+#endif
 
+#ifdef WITH_GSL
 template <class T, class U>
 gsl_matrix* Cube<T,U>::find_affine_transform_from_correlation
 ( gsl_matrix* trns_init,
@@ -1935,8 +1938,9 @@ gsl_matrix* Cube<T,U>::find_affine_transform_from_correlation
   return trns_final;
 
 }
+#endif
 
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::create_cube_from_directory_matrix_with_affine_transformation
 (
@@ -2124,7 +2128,7 @@ void Cube<T,U>::create_cube_from_directory_matrix_with_affine_transformation
 
   cvSaveImage(buff,result);
 }
-
+#endif
 
 template <class T, class U>
 void Cube<T,U>::create_cube_from_float_images

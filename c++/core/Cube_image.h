@@ -753,7 +753,7 @@ void Cube<T,U>::calculate_second_derivates_memory(float sigma_xy, float sigma_z)
 }
 
 
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_eigen_values
 (float sigma_xy, float sigma_z, bool calculate_eigne_vectors)
@@ -912,7 +912,7 @@ void Cube<T,U>::calculate_eigen_values
 
 //   gsl_eigen_symmv_free(w);
 }
-
+#endif
 
 
 //Implements the f-measure as described in "multiscale vessel enhancement filtering", by Alejandro F. Frangi
@@ -1028,7 +1028,7 @@ void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
   printf("]\n");
 }
 
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
 {
@@ -1194,7 +1194,9 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
   }
   printf("]\n");
 }
+#endif
 
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_hessian(float sigma_xy, float sigma_z)
 {
@@ -1310,9 +1312,9 @@ void Cube<T,U>::calculate_hessian(float sigma_xy, float sigma_z)
   }
   printf("]\n");
 }
+#endif
 
-
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
 {
@@ -1593,11 +1595,11 @@ void Cube<T,U>::calculate_aguet_f_(float sigma_xy, float sigma_z)
   }
   printf("]\n");
 }
+#endif
 
 
 
-
-
+#ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_aguet_flat(float sigma_xy, float sigma_z)
 {
@@ -1749,7 +1751,7 @@ void Cube<T,U>::calculate_aguet_flat(float sigma_xy, float sigma_z)
   }
   printf("]\n");
 }
-
+#endif
 
 
 template <class T, class U>
