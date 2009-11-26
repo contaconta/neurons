@@ -20,8 +20,9 @@ then
     MEXPATH='/usr/local/matlab/extern/include/'
 else
     echo 'Error : please set the MEXPATH variable manually'
-    exit -1
+    #exit -1
 fi
+MEXPATH='/home/alboot/usr/bin/extern/include/'
 
 make
 #GCC=/usr/bin/c++
