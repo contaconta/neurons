@@ -65,35 +65,41 @@ void computeRays(const char *pImageName, double sigma, double angle)
     }
 
 
-  printf("%d\n",img->width);
+  //printf("%d %d\n",img->width, img->nChannels);
   
-  IplImage* gx = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
-  IplImage* gy = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+  IplImage* gx = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
+  IplImage* gy = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
+  //IplImage* g = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32F, 1);
   IplImage* g = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
-  cvSobel(img, gx, 1, 0, 7);
-  cvSobel(img, gy, 0, 1, 7);
-  cvSaveImage("gx.png",gx);
-  cvSaveImage("gy.png",gy);
+  cvSobel(img, gx, 1, 0, 3);
+  cvSobel(img, gy, 0, 1, 3);
+  //cvSaveImage("gx.png",gx);
+  //cvSaveImage("gy.png",gy);
 
   // compute the gradient norm GN
   int nx = 0;
   int ny = 0;
   int i = 0;
-  unsigned char* ptrImg;
-  for(int x=0;x<=img->width;x++)
-    for(int y=0;y<=img->height;y++)
+  uchar* ptrImg;
+  for(int y=0;y<img->height;y++)
+    for(int x=0;x<img->width;x++)
       {
-        nx = (int)((gx->imageData + gx->widthStep*y))[x*gx->nChannels];
+        nx = ((short*)(gx->imageData + gx->widthStep*y))[x*gx->nChannels];
         nx *= nx;
-        ny = ((gy->imageData + gy->widthStep*y))[x*gy->nChannels];
+        ny = ((short*)(gy->imageData + gy->widthStep*y))[x*gy->nChannels];
         ny *= ny;
         //ptrImg = (short*)&((short*)(g->imageData + g->widthStep*y))[x*g->nChannels];
-        ptrImg = (unsigned char*)&((g->imageData + g->widthStep*y))[x*g->nChannels];
-        *ptrImg = 'a';
-        //*ptrImg = (unsigned char)sqrt(nx+ny);
+        //ptrImg = &(((((float*)g->imageData) + g->widthStep*y)))[x*g->nChannels];
+        //*ptrImg = 'a';
+        ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x*g->nChannels;
+        //printf("%d %x\n",i++,ptrImg);
+        //*ptrImg = 1;
+        //*ptrImg = (uchar)(abs(nx)/4.0);
+        *ptrImg = (uchar)(sqrt(nx+ny)/4.0f/1.5f);
       }
-
+  printf("Saving\n");
   cvSaveImage("g.png",g);
+  printf("Done\n");
 
   // ensure good angles
   angle = fmod(angle,360.0);
@@ -109,6 +115,143 @@ void computeRays(const char *pImageName, double sigma, double angle)
 }
 
 /*
+ * defines the points in a line in an image at an arbitrary angle
+ */
+void linepoints(E,double angle,vector<double> Sr, vector<double> Sc)
+{
+  /*
+  // flip the sign of the angle (matlab y axis points down for images) and
+  // convert to radians
+if Angle ~= 0
+    %angle = deg2rad(Angle);
+    angle = deg2rad(360 - Angle);
+else
+    angle = Angle;
+end
+  */
+
+% format the angle so it is between 0 and less than pi/2
+if angle > pi; angle = angle - pi; end
+if angle == pi; angle = 0; end
+
+
+% find where the line intercepts the edge of the image.  draw a line to
+% this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
+% from the upper left corner down.  linex and liney contain the points of 
+% the line
+if (angle >= 0 ) && (angle <= pi/2)
+    START = [1 1]; 
+    A_bottom_intercept = [-tan(angle) 1; 0 1];  B_bottom_intercept = [0; size(E,1)-1];
+    A_right_intercept  = [-tan(angle) 1; 1 0];  B_right_intercept  = [0; size(E,2)-1];
+    bottom_intercept = round(A_bottom_intercept\B_bottom_intercept);
+    right_intercept  = round(A_right_intercept\B_right_intercept);
+
+    if right_intercept(2) <= size(E,1)-1
+        END = right_intercept + [1; 1];
+    else
+        END = bottom_intercept + [1; 1];
+    end
+    [linex,liney] = intline(START(1), END(1), START(2), END(2));
+else
+    START = [1, size(E,1)];
+    A_top_intercept = [tan(pi - angle) 1; 0 1];  B_top_intercept = [size(E,1); 1];
+    A_right_intercept  = [tan(pi - angle) 1; 1 0];  B_right_intercept  = [size(E,1); size(E,2)-1];
+    top_intercept = round(A_top_intercept\B_top_intercept);
+    right_intercept  = round(A_right_intercept\B_right_intercept);
+
+    if (right_intercept(2) < size(E,1)-1) && (right_intercept(2) >= 1)
+        END = right_intercept + [1; 0];
+    else
+        END = top_intercept + [1; 0];
+    end
+    [linex,liney] = intline(START(1), END(1), START(2), END(2));
+end
+
+Sr = round(liney); Sc = round(linex);
+
+% if the angle points to quadrant 2 or 3, we need to re-sort the elements 
+% of Sr and Sc so they increase in the direction of the angle
+
+if (270 <= Angle) || (Angle < 90)
+    reverse_inds = length(Sr):-1:1;
+    Sr = Sr(reverse_inds);
+    Sc = Sc(reverse_inds);
+end
+
+}
+
+
+/*
+% intline creates a line between two points
+%INTLINE Integer-coordinate line drawing algorithm.
+%   [X, Y] = INTLINE(X1, X2, Y1, Y2) computes an
+%   approximation to the line segment joining (X1, Y1) and
+%   (X2, Y2) with integer coordinates.  X1, X2, Y1, and Y2
+%   should be integers.  INTLINE is reversible; that is,
+%   INTLINE(X1, X2, Y1, Y2) produces the same results as
+%   FLIPUD(INTLINE(X2, X1, Y2, Y1)).
+ */
+void intline(int x1, int x2, int y1, int y2, list<int> xs, list<int> ys)
+{
+
+  int dx = abs(x2 - x1);
+  int dy = abs(y2 - y1);
+
+  // Check for degenerate case.
+  if ((dx == 0) && (dy == 0))
+    {
+      x = x1;
+      y = y1;
+      return;
+    }
+
+  bool flip = false;
+  if (dx >= dy)
+    {
+      if (x1 > x2)
+        {
+          // Always "draw" from left to right.
+          t = x1; x1 = x2; x2 = t;
+          t = y1; y1 = y2; y2 = t;
+          flip = true;
+        }
+
+      double m = (y2 - y1)/(x2 - x1);
+      int y;
+      for(int x = x1;x<=x2;x++)
+        {
+          xs.push_back(x);
+          y = round(y1 + m*(x - x1));
+          ys.push_back(y);
+        }
+    }
+  else
+    {
+      if (y1 > y2)
+        {
+          // Always "draw" from bottom to top.
+          t = x1; x1 = x2; x2 = t;
+          t = y1; y1 = y2; y2 = t;
+          flip = true;
+        }
+      double m = (x2 - x1)/(y2 - y1);
+      int x;
+      for(int y = y1;y<=y2;y++)
+        {
+          ys.push_back(y);
+          x = round(x1 + m*(y - y1));
+          xs.push_back(x);
+        }
+    }
+  
+  if (flip)
+    {
+      xs.reverse();
+      ys.reverse();
+    }
+}
+
+/*
 
     // compute the gradient norm GN
     MatrixN G(pGradient);
@@ -116,7 +259,9 @@ void computeRays(const char *pImageName, double sigma, double angle)
 
 % convert the Gradient G into unit vectors
 G = gradientnorm(G);
-
+v = double(v); eta = .00000001;
+mag = sqrt(  sum( (v.^2),3)) + eta;
+v = v ./ repmat(mag, [1 1 2]);
 
 
 % get a scanline in direction angle
@@ -257,121 +402,7 @@ end
 
 
 
-function [Sr, Sc] = linepoints(E,Angle)
-% defines the points in a line in an image at an arbitrary angle
-%
-%
-%
-%
 
-
-% flip the sign of the angle (matlab y axis points down for images) and
-% convert to radians
-if Angle ~= 0
-    %angle = deg2rad(Angle);
-    angle = deg2rad(360 - Angle);
-else
-    angle = Angle;
-end
-
-% format the angle so it is between 0 and less than pi/2
-if angle > pi; angle = angle - pi; end
-if angle == pi; angle = 0; end
-
-
-% find where the line intercepts the edge of the image.  draw a line to
-% this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
-% from the upper left corner down.  linex and liney contain the points of 
-% the line
-if (angle >= 0 ) && (angle <= pi/2)
-    START = [1 1]; 
-    A_bottom_intercept = [-tan(angle) 1; 0 1];  B_bottom_intercept = [0; size(E,1)-1];
-    A_right_intercept  = [-tan(angle) 1; 1 0];  B_right_intercept  = [0; size(E,2)-1];
-    bottom_intercept = round(A_bottom_intercept\B_bottom_intercept);
-    right_intercept  = round(A_right_intercept\B_right_intercept);
-
-    if right_intercept(2) <= size(E,1)-1
-        END = right_intercept + [1; 1];
-    else
-        END = bottom_intercept + [1; 1];
-    end
-    [linex,liney] = intline(START(1), END(1), START(2), END(2));
-else
-    START = [1, size(E,1)];
-    A_top_intercept = [tan(pi - angle) 1; 0 1];  B_top_intercept = [size(E,1); 1];
-    A_right_intercept  = [tan(pi - angle) 1; 1 0];  B_right_intercept  = [size(E,1); size(E,2)-1];
-    top_intercept = round(A_top_intercept\B_top_intercept);
-    right_intercept  = round(A_right_intercept\B_right_intercept);
-
-    if (right_intercept(2) < size(E,1)-1) && (right_intercept(2) >= 1)
-        END = right_intercept + [1; 0];
-    else
-        END = top_intercept + [1; 0];
-    end
-    [linex,liney] = intline(START(1), END(1), START(2), END(2));
-end
-
-Sr = round(liney); Sc = round(linex);
-
-% if the angle points to quadrant 2 or 3, we need to re-sort the elements 
-% of Sr and Sc so they increase in the direction of the angle
-
-if (270 <= Angle) || (Angle < 90)
-    reverse_inds = length(Sr):-1:1;
-    Sr = Sr(reverse_inds);
-    Sc = Sc(reverse_inds);
-end
-
-
-
-
-function [x,y] = intline(x1, x2, y1, y2)
-% intline creates a line between two points
-%INTLINE Integer-coordinate line drawing algorithm.
-%   [X, Y] = INTLINE(X1, X2, Y1, Y2) computes an
-%   approximation to the line segment joining (X1, Y1) and
-%   (X2, Y2) with integer coordinates.  X1, X2, Y1, and Y2
-%   should be integers.  INTLINE is reversible; that is,
-%   INTLINE(X1, X2, Y1, Y2) produces the same results as
-%   FLIPUD(INTLINE(X2, X1, Y2, Y1)).
-
-dx = abs(x2 - x1);
-dy = abs(y2 - y1);
-
-% Check for degenerate case.
-if ((dx == 0) && (dy == 0))
-  x = x1;
-  y = y1;
-  return;
-end
-
-flip = 0;
-if (dx >= dy)
-  if (x1 > x2)
-    % Always "draw" from left to right.
-    t = x1; x1 = x2; x2 = t;
-    t = y1; y1 = y2; y2 = t;
-    flip = 1;
-  end
-  m = (y2 - y1)/(x2 - x1);
-  x = (x1:x2).';
-  y = round(y1 + m*(x - x1));
-else
-  if (y1 > y2)
-    % Always "draw" from bottom to top.
-    t = x1; x1 = x2; x2 = t;
-    t = y1; y1 = y2; y2 = t;
-    flip = 1;
-  end
-  m = (x2 - x1)/(y2 - y1);
-  y = (y1:y2).';
-  x = round(x1 + m*(y - y1));
-end
-  
-if (flip)
-  x = flipud(x);
-  y = flipud(y);
-end
 
 
 function v = gradientnorm(v)

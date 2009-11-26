@@ -22,7 +22,8 @@ else
     echo 'Error : please set the MEXPATH variable manually'
     #exit -1
 fi
-MEXPATH='/usr/bin/MATLAB79/extern/include/'
+#MEXPATH='/usr/bin/MATLAB79/extern/include/'
+MEXPATH='/usr/local/MATLAB79/extern/include/'
 export MEXPATH
 
 make
