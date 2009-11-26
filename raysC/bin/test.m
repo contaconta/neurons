@@ -1,2 +1,2 @@
 img_name = {'mitochondria2.png'};
-rays(img_name,20,2);
+rays(img_name,20,40);
