@@ -17,5 +17,5 @@ SOURCES += main.cpp Stage.cpp CubeDialog.cpp
 
 
 # External libraries
-LIBS += -L../lib/ -lneseg -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml -lpthread -lgomp
+LIBS += -L../lib/ -lviva -lglut -lGLEW -lgsl -lgslcblas -lm -lcxcore -lcv -lhighgui -lcvaux -lml -lpthread -lgomp
 INCLUDEPATH = ../core /usr/include /usr/include/opencv /usr/include/GL

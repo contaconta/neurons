@@ -12,8 +12,9 @@
 // the plugin function signatures
 #include "plugin_info.h"
 
+#define D_MAX_TEXTURE_SIZE      512
 // #define D_MAX_TEXTURE_SIZE      1024
-#define D_MAX_TEXTURE_SIZE      2048
+// #define D_MAX_TEXTURE_SIZE      2048
 
 //Camera parameters
 extern double fovy3D;
