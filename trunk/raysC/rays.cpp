@@ -111,7 +111,17 @@ void computeRays(const char *pImageName, double sigma, double angle)
   // get a scamline in direction angle
   list<int> xs;
   list<int> ys;
-  linepoints(E,angle,xs,ys);
+  linepoints(img->width,img->height,angle,xs,ys);
+
+  //for(int i = 0;i< xs.size(); i++)
+  list<int>::iterator ix = xs.begin();
+  list<int>::iterator iy = ys.begin();
+  for(;ix != xs.end(); ix++,iy++)
+    {
+      printf("%d %d\n",*ix,*iy);
+      cvSet2D(img,*iy,*ix,cvScalar(0));
+    }
+  cvSaveImage("img.png",img);
 
   printf("Releasing\n");
   cvReleaseImage(&img);
@@ -124,7 +134,7 @@ void computeRays(const char *pImageName, double sigma, double angle)
 /*
  * defines the points in a line in an image at an arbitrary angle
  */
-void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys)
+void linepoints(int img_width, int img_height, double angle, list<int>& xs, list<int>& ys)
 {
   /*
   // flip the sign of the angle (matlab y axis points down for images) and
@@ -138,7 +148,7 @@ end
   */
 
   // convert to radians
-  angle = angle * PI/180.0;
+  angle = angle * (PI/180.0);
 
   /*
 % format the angle so it is between 0 and less than pi/2
@@ -152,66 +162,44 @@ if angle == pi; angle = 0; end
   // the line
   int start_x;
   int start_y;
+  int end_x;
+  int end_y;
+  /*
   int A_bottom_intercept[2][2];
   int A_right_intercept[2][2];
   int B_bottom_intercept[2];
   int B_right_intercept[2];
-  if ((angle >= 0 ) && (angle <= pi/2))
+  */
+  if ((angle >= 0 ) && (angle <= PI/2.0))
     {
-      start_x = 1;
-      start_y = 1;
-      A_bottom_intercept[0] = -tan(angle);
-      A_bottom_intercept[1] = 1;
-      A_bottom_intercept[2] = 0;
-      A_bottom_intercept[3] = 1;
-      B_bottom_intercept[0] = 0;
-      B_bottom_intercept[1] = img_width-1;
+      start_x = 0;
+      start_y = 0;
+      end_x = img_width-1;
+      end_y = img_width*tan(angle)-1;
 
-      A_right_intercept[0] = -tan(angle);
-      A_right_intercept[1] = 1;
-      A_right_intercept[2] = 1; //[0][1]
-      A_right_intercept[3] = 0;
-
-      B_right_intercept[0] = 0;
-      B_right_intercept[1] = img_height-1;
-
-    bottom_intercept = round(A_bottom_intercept\B_bottom_intercept);
-    right_intercept  = round(A_right_intercept\B_right_intercept);
-
-    if right_intercept(2) < img_width
-        END = right_intercept + [1; 1];
-    else
-        END = bottom_intercept + [1; 1];
-    end
-    [linex,liney] = intline(start_x, endx_x, start_y, end_y);
+      intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
     }
   else
     {
-    START = [1, size(E,1)];
-    A_top_intercept = [tan(pi - angle) 1; 0 1];  B_top_intercept = [size(E,1); 1];
-    A_right_intercept  = [tan(pi - angle) 1; 1 0];  B_right_intercept  = [size(E,1); size(E,2)-1];
-    top_intercept = round(A_top_intercept\B_top_intercept);
-    right_intercept  = round(A_right_intercept\B_right_intercept);
+      start_x = 0;
+      start_y = img_height-1;
+      end_x = img_width-1;
+      end_y = img_height*tan(angle)-1;
 
-    if (right_intercept(2) < size(E,1)-1) && (right_intercept(2) >= 1)
-        END = right_intercept + [1; 0];
-    else
-        END = top_intercept + [1; 0];
-    end
-    [linex,liney] = intline(START(1), END(1), START(2), END(2));
+      intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
     }
 
-Sr = round(liney); Sc = round(linex);
+  printf("xy %f %d %d %d %d\n",angle,start_x, end_x, start_y, end_y);
 
-% if the angle points to quadrant 2 or 3, we need to re-sort the elements 
-% of Sr and Sc so they increase in the direction of the angle
-
+  // if the angle points to quadrant 2 or 3, we need to re-sort the elements 
+  // of Sr and Sc so they increase in the direction of the angle
+  /*
 if (270 <= Angle) || (Angle < 90)
     reverse_inds = length(Sr):-1:1;
     Sr = Sr(reverse_inds);
     Sc = Sc(reverse_inds);
 end
-
+  */
 }
 
 
@@ -225,17 +213,17 @@ end
 %   INTLINE(X1, X2, Y1, Y2) produces the same results as
 %   FLIPUD(INTLINE(X2, X1, Y2, Y1)).
  */
-void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys)
+void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int img_width, int img_height)
 {
-
+  int x,y,t;
   int dx = abs(x2 - x1);
   int dy = abs(y2 - y1);
 
   // Check for degenerate case.
   if ((dx == 0) && (dy == 0))
     {
-      x = x1;
-      y = y1;
+      xs.push_back(x1);
+      ys.push_back(y1);
       return;
     }
 
@@ -250,12 +238,15 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys)
           flip = true;
         }
 
-      double m = (y2 - y1)/(x2 - x1);
+      double m = (y2 - y1)/(double)(x2 - x1);
+      printf("m %f\n",m);
       int y;
       for(int x = x1;x<=x2;x++)
         {
-          xs.push_back(x);
           y = round(y1 + m*(x - x1));
+          if(x>=img_width || y >= img_height)
+            break;
+          xs.push_back(x);
           ys.push_back(y);
         }
     }
@@ -268,13 +259,16 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys)
           t = y1; y1 = y2; y2 = t;
           flip = true;
         }
-      double m = (x2 - x1)/(y2 - y1);
+      double m = (x2 - x1)/(double)(y2 - y1);
+      printf("m %f\n",m);
       int x;
       for(int y = y1;y<=y2;y++)
         {
-          ys.push_back(y);
           x = round(x1 + m*(y - y1));
+          if(x>=img_width || y >= img_height)
+            break;
           xs.push_back(x);
+          ys.push_back(y);
         }
     }
   
