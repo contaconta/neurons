@@ -13,13 +13,13 @@
 # for comments & bug reports                                          #
 #######################################################################
 
-PROJECT(IntegralImages)
+PROJECT(librays)
 INCLUDE_REGULAR_EXPRESSION("^.*$")
 
 SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_C_COMPILER gcc-4.2)
 SET(CMAKE_CXX_COMPILER g++-4.2)
-SET(EXECUTABLE_OUTPUT_PATH ../bin/
+SET(EXECUTABLE_OUTPUT_PATH ./bin/
     CACHE PATH "Single output directory for building all executables.")
 
 #INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})

@@ -89,7 +89,8 @@ void computeRays(const char *pImageName, double sigma, double angle)
         ny *= ny;
         //ptrImg = (short*)&((short*)(g->imageData + g->widthStep*y))[x*g->nChannels];
         ptrImg = (unsigned char*)&((g->imageData + g->widthStep*y))[x*g->nChannels];
-        *ptrImg = (unsigned char)sqrt(nx+ny);
+        *ptrImg = 'a';
+        //*ptrImg = (unsigned char)sqrt(nx+ny);
       }
 
   cvSaveImage("g.png",g);
@@ -99,10 +100,12 @@ void computeRays(const char *pImageName, double sigma, double angle)
   if (angle < 0)
     angle += 360;
   
-  //cvReleaseImage(&img);
+  printf("Releasing\n");
+  cvReleaseImage(&img);
   cvReleaseImage(&gx);
   cvReleaseImage(&gy);
   cvReleaseImage(&g);
+  printf("End release\n");
 }
 
 /*
