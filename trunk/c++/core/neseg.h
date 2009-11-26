@@ -37,11 +37,13 @@
 #include <typeinfo>
 
 //For some math stuff
+#ifdef WITH_GSL
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
+#endif
 
 //Error checking
 #include <assert.h>

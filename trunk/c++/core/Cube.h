@@ -144,6 +144,7 @@ public:
    );
 
   /** Creates a cube from a directory matrix calculating affine transforms between the images of the matrix. The transforms are calculated only in 2D using the MIP's.*/
+#ifdef WITH_GSL
   void create_cube_from_directory_matrix_with_affine_transformation
   (
    string directory, string format,
@@ -153,6 +154,7 @@ public:
    float voxelWidth, float voxelHeight, float voxelDepth,
    string name = "volume"
    );
+#endif
 
   /** Creates a float cube from a set of images calculated with the "image.h" class.*/
   void create_cube_from_float_images
@@ -173,14 +175,17 @@ public:
 
 
   /** Auxiliary method used by the create_cube_from_directory_matrix_with_affine_transformation. Calculates an affine transformation of orig, stores the result in dest and puts to 1 the values of mask.*/
+#ifdef WITH_GSL
   void apply_affine_transform
   (gsl_matrix* transform,
    IplImage*   orig,
    IplImage*   dest,
    vector< vector< int > >* mask
    );
+#endif
 
   /** Auxiliary method used by the create_cube_from_directory_matrix_with_affine_transformation. Calculates the cross correlation of the stitched image and the img, using mask to know where are valid pixels. It applies the ey and ex offsets.*/
+#ifdef WITH_GSL
   double cross_correlate
   ( gsl_matrix* trns_init,
     IplImage* stitched,
@@ -190,8 +195,10 @@ public:
     int ex,
     WhereToCorrelate where
     );
+#endif
 
   /** Auxiliary method used by the create_cube_from_directory_matrix_with_affine_transformation. Calculates the registration of one image with the stitched one using cross correlation over the left, up or both margins..*/
+#ifdef WITH_GSL
   gsl_matrix* find_affine_transform_from_correlation
   ( gsl_matrix* trns_init,
     IplImage* stitched,
@@ -199,7 +206,7 @@ public:
     IplImage* img,
     WhereToCorrelate where
     );
-
+#endif
 
   /** Creates the MIP projections of the images on the matrix directory.*/
   void create_directory_matrix_MIP

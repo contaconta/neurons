@@ -17,27 +17,23 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 #set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
 set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
-#IF(${HOST} STREQUAL bbpsg1)
-#  set(CMAKE_C_COMPILER /opt/intel/cc/10.0.023/bin/icc)
-#  set(CMAKE_CXX_COMPILER /opt/intel/cc/10.0.023/bin/icc)
-#ELSE(${HOST} STREQUAL bbpsg1)
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
-#ENDIF(${HOST} STREQUAL bbpsg1)
+
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
 
 ################################################################################
 ## External Libraries and Linking Command
 ################################################################################
-find_package(OpenCV REQUIRED )
-include_directories( ${OPENCV_INCLUDE_DIR})
+
+## REQUIRED
+find_package(OpenCV REQUIRED)
+include_directories(${OPENCV_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR} )
-find_package(GSL REQUIRED )
-include_directories(${GSL_INCLUDE_DIR})
 
 #find_package(BBP-SDK)
 #IF(${BBP-SDK_FOUND})
@@ -52,13 +48,22 @@ include_directories(${GSL_INCLUDE_DIR})
 #message("BBP has NOT been found")
 #ENDIF(${BBP-SDK_FOUND})
 
-## Needed by the viewer and modules
+## OPTIONAL
+# For the computation of eigenvalues / vectors
+find_package(GSL)
+IF(${GSL_FOUND})
+  include_directories(${GSL_INCLUDE_DIR})
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_GSL")
+ENDIF(${GSL_FOUND})
+
+# For the gtk interface
 find_package(GTK2)
 IF(${GTK2_FOUND})
   INCLUDE_DIRECTORIES( ${GTK2_INCLUDE_DIRS})
 ENDIF(${GTK2_FOUND})
 find_package(GtkGLExt)
 INCLUDE_DIRECTORIES( ${GTKGLEXT_INCLUDE_DIRS} )
+
 find_package(GLEW)
 message("GLEW has been found: ${GLEW_FOUND}")
 IF(${GLEW_FOUND})
@@ -181,6 +186,16 @@ ENDIF(${GLEW_FOUND})
 ################################################################################
 ## cube tools
 
+IF(${GLEW_FOUND})
+add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
+target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
+add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
+target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
+add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
+target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
+
+ENDIF(${GLEW_FOUND})
+
 add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
 target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
 
@@ -206,8 +221,6 @@ target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
 target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
 
-
-
 add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
 target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
 
@@ -217,20 +230,15 @@ target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
 add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
 target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
-target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
-
 add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
 target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
 target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
-target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
-target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
+# add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
+# target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
 target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
@@ -248,15 +256,11 @@ target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
 add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
 target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
-target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
-
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
 target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
-
 
 add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
 target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
@@ -289,20 +293,20 @@ target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
 add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
 target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
 
+IF(${GLEW_FOUND})
 add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
 target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
-
-add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
-target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
-
-add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
-target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
-
-add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
-target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
-
 add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
 target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
+add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
+target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
+target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
+add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
+target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
+ENDIF(${GLEW_FOUND})
+
+
 
 
 

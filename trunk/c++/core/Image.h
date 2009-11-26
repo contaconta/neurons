@@ -104,9 +104,11 @@ public:
   void histogram(int nbins, vector<int>& n_points, vector<float>& range, bool ignoreLowerValue = false);
 
   /** Calculate Hessian. Computes the hessian of the image at a given scale and saves the eigenvalues in an image */
+#ifdef WITH_GSL
   void computeHessian(float sigma, string eigenValueH = "l1.jpg",
                       string eigenValueL = "l2.jpg", bool saveOrientation = false,
                       string orientationFile = "theta.jpg");
+#endif
 
   double getMean();
 
@@ -747,6 +749,7 @@ void Image<T>::histogram(int nbins, vector<int>& boxes, vector<float>& rangev, b
   // }
 }
 
+#ifdef WITH_GSL
 template< class T>
 void Image<T>::computeHessian
 (float sigma, string eigenValueH,
@@ -822,7 +825,7 @@ void Image<T>::computeHessian
   if(saveOrientation)
     orientation->save();
 }
-
+#endif
 
 
 
