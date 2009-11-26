@@ -11,7 +11,13 @@ function [RAY1 RAY3 RAY4] = rays(E, G, angle, stride)
 %   Example:
 %   -------------------------
 %   I = imread('cameraman.tif');
-%   SPEDGE = spedge_dist(I,30,2, 11);
+%   gh = imfilter(I,fspecial('sobel')' /8,'replicate');
+%   gv = imfilter(I,fspecial('sobel')/8,'replicate');
+%   G(:,:,1) = gv;
+%   G(:,:,2) = gh;
+%   angle = 30;
+%   E = bwmorph(edge(I), 'diag');
+%   [Rdist Rori Rnorm] = rays(E, G, angle, 2);
 %   imagesc(SPEDGE);  axis image;
 %
 %   Copyright © 2008 Kevin Smith
@@ -183,7 +189,6 @@ function [Sr, Sc] = linepoints(E,Angle)
 % flip the sign of the angle (matlab y axis points down for images) and
 % convert to radians
 if Angle ~= 0
-    %angle = deg2rad(Angle);
     angle = deg2rad(360 - Angle);
 else
     angle = Angle;
@@ -198,6 +203,8 @@ if angle == pi; angle = 0; end
 % this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
 % from the upper left corner down.  linex and liney contain the points of 
 % the line
+
+%keyboard;
 if (angle >= 0 ) && (angle <= pi/2)
     START = [1 1]; 
     A_bottom_intercept = [-tan(angle) 1; 0 1];  B_bottom_intercept = [0; size(E,1)-1];
@@ -228,13 +235,15 @@ end
 
 Sr = round(liney); Sc = round(linex);
 
-% if the angle points to quadrant 2 or 3, we need to re-sort the elements 
+% if the angle points to quadrant 1 or 4, we need to re-sort the elements 
 % of Sr and Sc so they increase in the direction of the angle
 
 if (270 <= Angle) || (Angle < 90)
-    reverse_inds = length(Sr):-1:1;
-    Sr = Sr(reverse_inds);
-    Sc = Sc(reverse_inds);
+    %reverse_inds = length(Sr):-1:1;
+    %Sr = Sr(reverse_inds);
+    %Sc = Sc(reverse_inds);
+    Sr = flipud(Sr);
+    Sc = flipud(Sc);
 end
 
 
