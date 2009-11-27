@@ -12,17 +12,17 @@ then
 fi
 
 # Set the include path for mex
-if [ -d /usr/local/extern/include/ ]
+if [ -d /usr/bin/MATLAB79/extern/include/ ]
 then
-    MEXPATH='/usr/local/extern/include/'
-elif [ -d /usr/local/matlab/extern/include/ ]
+    MEXPATH='/usr/bin/MATLAB79/extern/include/'
+elif [ -d /usr/local/MATLAB79/extern/include/ ]
 then
-    MEXPATH='/usr/local/matlab/extern/include/'
+    MEXPATH='/usr/local/MATLAB79/extern/include/'
 else
     echo 'Error : please set the MEXPATH variable manually'
     #exit -1
 fi
-MEXPATH='/usr/bin/MATLAB79/extern/include/'
+#MEXPATH='/usr/bin/MATLAB79/extern/include/'
 #MEXPATH='/usr/local/MATLAB79/extern/include/'
 export MEXPATH
 
