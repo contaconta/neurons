@@ -13,6 +13,8 @@
 # for comments & bug reports                                          #
 #######################################################################
 
+cmake_minimum_required(VERSION 2.4)
+
 PROJECT(librays)
 INCLUDE_REGULAR_EXPRESSION("^.*$")
 
