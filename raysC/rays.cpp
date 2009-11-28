@@ -404,7 +404,7 @@ end
       start_x = 0;
       start_y = img_height-1;
       end_x = img_width-1;
-      end_y = img_height*tan(angle)-1;
+      end_y = img_height*tan(PI - angle)-1;
 
       intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
     }
