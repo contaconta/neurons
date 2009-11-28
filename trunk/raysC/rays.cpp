@@ -93,7 +93,7 @@ void computeRays(const char *pImageName, double sigma, double angle)
         //ptrImg = (short*)&((short*)(g->imageData + g->widthStep*y))[x*g->nChannels];
         //ptrImg = &(((((float*)g->imageData) + g->widthStep*y)))[x*g->nChannels];
         //*ptrImg = 'a';
-        ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x*g->nChannels;
+        ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x; //x*g->nChannels;
         //printf("%d %x\n",i++,ptrImg);
         //*ptrImg = 1;
         //*ptrImg = (uchar)(abs(nx)/4.0);
@@ -118,12 +118,236 @@ void computeRays(const char *pImageName, double sigma, double angle)
   list<int>::iterator iy = ys.begin();
   for(;ix != xs.end(); ix++,iy++)
     {
-      printf("%d %d\n",*ix,*iy);
+      if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
+        printf("%d %d\n",*ix,*iy);
       cvSet2D(img,*iy,*ix,cvScalar(0));
     }
   cvSaveImage("img.png",img);
 
+  // initialize the output matrices
+  IplImage* ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+  //IplImage* ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+  //IplImage* ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+
+  // determine the unit vector in the direction of the Ray
+  //rayVector = unitvector(angle);
+
+  list<int> xj;
+  list<int> yj;
+  int x,y;
+  int t;
+  int steps_since_edge = 0;  // the border of the image serves as an edge
+  uchar* ptrImgRay1;
+  // if S touches the top & bottom of the image
+  if (((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315)))
+    {
+      // scan to the left
+      int x_ofs = 0;
+
+      do
+        {
+          //for(int i = 0;i < ys.size();i++)
+          //for(;ix != xs.end(); ix++,iy++)
+
+          xj.clear();
+          yj.clear();
+          ix = xs.begin();
+          iy = ys.begin();
+          for(;ix != xs.end(); ix++,iy++)
+            {
+              t = *ix + x_ofs;
+              //if(t < 0)
+              //  break;
+              if(t>=0)
+                {
+                  yj.push_back(*iy);
+                  xj.push_back(t);
+                }
+            }
+
+          //for(int i = 0;i < yj.size();i++)
+          ix = xj.begin();
+          iy = yj.begin();
+          for(;ix != xj.end(); ix++,iy++)
+            {
+              x = *ix;
+              y = *iy;
+
+              //if(x < 0 || y < 0)
+              if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
+                printf("l %d %d\n",x,y);
+
+              ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
+              //if(*ptrImg != 0)
+              if(*ptrImg > 10) // threshold edge map
+                steps_since_edge = 0;
+
+              ptrImgRay1 = ((uchar*)(ray1->imageData + ray1->widthStep*y)) + x;
+              *ptrImgRay1 = (uchar)steps_since_edge;
+
+              steps_since_edge++;
+            }
+
+          x_ofs--;
+        }
+      while(yj.size() > 0);
+
+      // scan to the right
+      x_ofs = 1;
+
+      do
+        {
+          //for(int i = 0;i < ys.size();i++)
+          //for(;ix != xs.end(); ix++,iy++)
+          xj.clear();
+          yj.clear();
+          ix = xs.begin();
+          iy = ys.begin();
+          for(;ix != xs.end(); ix++,iy++)
+            {
+              t = *ix + x_ofs;
+              if(t >= img->width)
+                break;
+              yj.push_back(*iy);
+              xj.push_back(t);
+            }
+
+          //for(int i = 0;i < yj.size();i++)
+          ix = xj.begin();
+          iy = yj.begin();
+          for(;ix != xj.end(); ix++,iy++)
+            {
+              x = *ix;
+              y = *iy;
+
+              //if(x < 0 || y < 0)
+              if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
+                printf("r %d %d\n",x,y);
+
+              ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
+              //if(*ptrImg != 0)
+              if(*ptrImg > 10) // threshold edge map
+                steps_since_edge = 0;
+
+              ptrImgRay1 = ((uchar*)(ray1->imageData + ray1->widthStep*y)) + x;
+              *ptrImgRay1 = (uchar)steps_since_edge;
+
+              steps_since_edge++;
+            }
+
+          x_ofs++;
+        }
+      while(yj.size() > 0);
+    }
+  else
+    {
+      // scan to the bottom
+      int y_ofs = 0;
+
+      do
+        {
+          //for(int i = 0;i < ys.size();i++)
+          //for(;ix != xs.end(); ix++,iy++)
+
+          xj.clear();
+          yj.clear();
+          ix = xs.begin();
+          iy = ys.begin();
+          for(;iy != ys.end(); ix++,iy++)
+            {
+              t = *iy + y_ofs;
+              //if(t < 0)
+              //  break;
+              if(t>=0)
+                {
+                  yj.push_back(t);
+                  xj.push_back(*ix);
+                }
+            }
+
+          //for(int i = 0;i < yj.size();i++)
+          ix = xj.begin();
+          iy = yj.begin();
+          for(;ix != xj.end(); ix++,iy++)
+            {
+              x = *ix;
+              y = *iy;
+
+              //if(x < 0 || y < 0)
+              if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
+                printf("b %d %d\n",x,y);
+
+              ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
+              //if(*ptrImg != 0)
+              if(*ptrImg > 10) // threshold edge map
+                steps_since_edge = 0;
+
+              ptrImgRay1 = ((uchar*)(ray1->imageData + ray1->widthStep*y)) + x;
+              *ptrImgRay1 = (uchar)steps_since_edge;
+
+              steps_since_edge++;
+            }
+
+          y_ofs--;
+        }
+      while(yj.size() > 0);
+
+      // scan to the top
+      y_ofs = 1;
+
+      do
+        {
+          //for(int i = 0;i < ys.size();i++)
+          //for(;ix != xs.end(); ix++,iy++)
+          xj.clear();
+          yj.clear();
+          ix = xs.begin();
+          iy = ys.begin();
+          for(;iy != ys.end(); ix++,iy++)
+            {
+              t = *iy + y_ofs;
+              //if(t >= img->height)
+                //break;
+              if(t < img->height)
+                {
+                  yj.push_back(t);
+                  xj.push_back(*ix);
+                }
+            }
+
+          //for(int i = 0;i < yj.size();i++)
+          ix = xj.begin();
+          iy = yj.begin();
+          for(;ix != xj.end(); ix++,iy++)
+            {
+              x = *ix;
+              y = *iy;
+
+              //if(x < 0 || y < 0)
+              if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
+                printf("t %d %d\n",x,y);
+
+              ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
+              //if(*ptrImg != 0)
+              if(*ptrImg > 10) // threshold edge map
+                steps_since_edge = 0;
+
+              ptrImgRay1 = ((uchar*)(ray1->imageData + ray1->widthStep*y)) + x;
+              *ptrImgRay1 = (uchar)steps_since_edge;
+
+              steps_since_edge++;
+            }
+
+          y_ofs++;
+        }
+      while(yj.size() > 0);
+    }
+
+  printf("Saving ray1\n");
+  cvSaveImage("ray1.png",ray1);
+
   printf("Releasing\n");
+  cvReleaseImage(&ray1);
   cvReleaseImage(&img);
   cvReleaseImage(&gx);
   cvReleaseImage(&gy);
@@ -150,11 +374,13 @@ end
   // convert to radians
   angle = angle * (PI/180.0);
 
-  /*
-% format the angle so it is between 0 and less than pi/2
-if angle > pi; angle = angle - pi; end
-if angle == pi; angle = 0; end
-  */
+  // format the angle so it is between 0 and less than pi/2
+  const float EPS = 0.001f;
+  if((angle > PI-EPS) && (angle < PI+EPS))
+    angle = 0;
+  else
+    if (angle > PI)
+      angle -= PI;
 
   // find where the line intercepts the edge of the image.  draw a line to
   // this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
@@ -164,12 +390,6 @@ if angle == pi; angle = 0; end
   int start_y;
   int end_x;
   int end_y;
-  /*
-  int A_bottom_intercept[2][2];
-  int A_right_intercept[2][2];
-  int B_bottom_intercept[2];
-  int B_right_intercept[2];
-  */
   if ((angle >= 0 ) && (angle <= PI/2.0))
     {
       start_x = 0;
@@ -191,6 +411,7 @@ if angle == pi; angle = 0; end
 
   printf("xy %f %d %d %d %d\n",angle,start_x, end_x, start_y, end_y);
 
+  // TODO : Ask Kevin
   // if the angle points to quadrant 2 or 3, we need to re-sort the elements 
   // of Sr and Sc so they increase in the direction of the angle
   /*
@@ -244,7 +465,7 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
       for(int x = x1;x<=x2;x++)
         {
           y = round(y1 + m*(x - x1));
-          if(x>=img_width || y >= img_height)
+          if(x< 0 || x>=img_width || y < 0 || y >= img_height)
             break;
           xs.push_back(x);
           ys.push_back(y);
@@ -265,7 +486,7 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
       for(int y = y1;y<=y2;y++)
         {
           x = round(x1 + m*(y - y1));
-          if(x>=img_width || y >= img_height)
+          if(x< 0 || x>=img_width || y < 0 || y >= img_height)
             break;
           xs.push_back(x);
           ys.push_back(y);
