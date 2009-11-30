@@ -1,11 +1,12 @@
 function [RAY1 RAY3 RAY4] = rays(E, gv, gh, angle, varargin)
-%RAYS extracts RAY features [dist, orientation, norm]
+%RAYS extracts Ray features [dist, orientation, norm]
 %
-%   [RAY1 RAY3 RAY4] = rays(E, GV, GH, angle) computes ray features in the
+%   [Rdist Rori Rnorm] = rays(E, GV, GH, angle) computes ray features in the
 %   direction given by ANGLE, given an input edge map E and the horizontal 
-%   gradient GH and vertical gradient GV. Outputs RAY1 contains type 1 Ray
-%   distance features, RAY3 contains type 3 orientation features, and RAY4
-%   contains type 4 norm features.  
+%   gradient GH and vertical gradient GV. Outputs Rdist contains type 1 Ray
+%   distance features, Rori contains type 3 orientation features, and Rnorm
+%   contains type 4 norm features. Type 2 Ray difference features can be
+%   computed from type 1 features.  See example below.
 %
 %   Example (compute Rays at 30 degrees):
 %   -------------------------------------
