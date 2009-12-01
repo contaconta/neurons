@@ -18,6 +18,9 @@ then
 elif [ -d /usr/local/MATLAB79/extern/include/ ]
 then
     MEXPATH='/usr/local/MATLAB79/extern/include/'
+elif [ -d /usr/local/matlab/extern/include/ ]
+then
+    MEXPATH='/usr/local/matlab/extern/include/'
 else
     echo 'Error : please set the MEXPATH variable manually'
     #exit -1
