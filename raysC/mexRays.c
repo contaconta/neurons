@@ -16,6 +16,7 @@
 #include "mex.h"
 #include <stdio.h>
 #include "rays.h"
+#include "cv.h"
 
 /* function [RAY1 RAY3 RAY4] = rays(E, G, angle, stride)
  * RAYS computes RAY features
@@ -100,7 +101,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     */
 
     mexPrintf("computeRays\n");
-    computeRays((const char*)pImageName, sigma, angle);
+    IplImage* ray1;
+    computeRays((const char*)pImageName, sigma, angle, ray1);
 
     mexPrintf("Cleaning\n");
     mxFree(pImageName);

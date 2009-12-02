@@ -36,7 +36,7 @@
  *   future we may add more methods for generating edges).  SIGMA specifies 
  *   the standard deviation of the edge filter.  
  */
-void computeRays(const char *pImageName, double sigma, double angle)
+void computeRays(const char *pImageName, double sigma, double angle, IplImage* ray1)
 {
     /*
     for(j=0;j<10;j++){
@@ -125,7 +125,7 @@ void computeRays(const char *pImageName, double sigma, double angle)
   cvSaveImage("img.png",img);
 
   // initialize the output matrices
-  IplImage* ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+  ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
   //IplImage* ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
   //IplImage* ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
 
@@ -347,7 +347,7 @@ void computeRays(const char *pImageName, double sigma, double angle)
   cvSaveImage("ray1.png",ray1);
 
   printf("Releasing\n");
-  cvReleaseImage(&ray1);
+  //cvReleaseImage(&ray1);
   cvReleaseImage(&img);
   cvReleaseImage(&gx);
   cvReleaseImage(&gy);

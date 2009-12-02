@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void computeRays(const char *pImageName, double sigma, double angle);
+void computeRays(const char *pImageName, double sigma, double angle, IplImage* ray1);
 
 void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys);
 
