@@ -36,7 +36,7 @@
  *   future we may add more methods for generating edges).  SIGMA specifies 
  *   the standard deviation of the edge filter.  
  */
-void computeRays(const char *pImageName, double sigma, double angle, IplImage* ray1)
+void computeRays(const char *pImageName, double sigma, double angle, IplImage*& ray1)
 {
     /*
     for(j=0;j<10;j++){
@@ -179,7 +179,7 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage* r
 
               ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
               //if(*ptrImg != 0)
-              if(*ptrImg > 10) // threshold edge map
+              if(*ptrImg > 30) // threshold edge map
                 steps_since_edge = 0;
 
               ptrImgRay1 = ((uchar*)(ray1->imageData + ray1->widthStep*y)) + x;
