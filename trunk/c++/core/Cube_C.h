@@ -32,21 +32,6 @@ public:
 
   void load_texture_brick(int row, int col, float scale=1.0, float min = 0.0, float max = 0.0);
 
-  void draw();
-
-  void draw
-  (float rotx, float roty, float nPlanes, int min_max, int microm_voxels);
-
-  void draw
-  (int x0, int y0, int z0, int x1, int y1, int z1,
-   float rotx, float roty, float nPlanes, int min_max, float threshold);
-
-  void draw_layer_tile_XY(float depth, int color);
-
-  void draw_layer_tile_XZ(float depth, int color);
-
-  void draw_layer_tile_YZ(float depth, int color);
-
   void min_max(float* min, float* max);
 
   Cube_P* threshold(float thres, string outputName="output",
@@ -75,7 +60,7 @@ public:
 
   void delete_alphas(int ni, int nj, int nk);
 
-  float getValueAsFloat(int x, int y, int z);
+  float get(int x, int y, int z);
 
   string className(){
     return "Cube_C";

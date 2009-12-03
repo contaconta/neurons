@@ -67,7 +67,7 @@ Cube_T::Cube_T(string filename){
 void Cube_T::load_texture_brick(int row, int col, float scale, float _max, float _min)
 {
   float max, min;
-  this->min_max(&min, &max);
+  this->min_max(min, max);
   for(int i = 0; i < cubes.size(); i++){
     cubes[i]->load_texture_brick(row, col, scale, min, max);
   }
@@ -109,7 +109,7 @@ void Cube_T::draw()
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
   glPushMatrix();
-  cubes[timeStep]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+  cubes[timeStep]->draw(nPlanes,this->v_draw_projection, 0);
   glPopMatrix();
 
   drawgt();
@@ -123,7 +123,7 @@ void Cube_T::draw()
       cubes[timeStep-1]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-1]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      cubes[timeStep-1]->draw(nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
     if(timeStep - 2 >= 0){
@@ -133,7 +133,7 @@ void Cube_T::draw()
       cubes[timeStep-2]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-2]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      cubes[timeStep-2]->draw(nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
     if(timeStep - 3 >= 0){
@@ -143,7 +143,7 @@ void Cube_T::draw()
       cubes[timeStep-3]->v_draw_projection = this->v_draw_projection;
       glPushMatrix();
       glLoadMatrixf(pModelViewMatrix);
-      cubes[timeStep-3]->draw(0,0,nPlanes,this->v_draw_projection, 0);
+      cubes[timeStep-3]->draw(nPlanes,this->v_draw_projection, 0);
       glPopMatrix();
     }
 //     for(int i = 0; i < timeStep; i++){
@@ -164,13 +164,13 @@ void Cube_T::draw()
 }
 
 void Cube_T::draw
-(float rotx, float roty, float nPlanes, int min_max, int microm_voxels)
+(float nPlanes, int min_max, int microm_voxels)
 {
   cubes[timeStep]->v_r = this->v_r;
   cubes[timeStep]->v_g = this->v_g;
   cubes[timeStep]->v_b = this->v_b;
   cubes[timeStep]->v_draw_projection = this->v_draw_projection;
-  cubes[timeStep]->draw(rotx, roty, nPlanes, min_max, microm_voxels);
+  cubes[timeStep]->draw(nPlanes, min_max, microm_voxels);
 }
 
 
@@ -219,14 +219,14 @@ void Cube_T::draw_layer_tile_YZ(float depth, int color)
     drawgt();
 }
 
-void Cube_T::min_max(float* min, float* max)
+void Cube_T::min_max(float& min, float& max)
 {
   float curr_min, curr_max;
   cubes[0]->min_max(min, max);
   for(int i = 1; i < cubes.size(); i++){
-    cubes[i]->min_max(&curr_min, &curr_max);
-    if(curr_min < *min) *min = curr_min;
-    if(curr_max < *max) *max = curr_max;
+    cubes[i]->min_max(curr_min, curr_max);
+    if(curr_min < min) min = curr_min;
+    if(curr_max < max) max = curr_max;
   }
 }
 

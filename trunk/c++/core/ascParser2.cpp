@@ -455,7 +455,7 @@ int ascParser2::get_section_name()
               s = s + nextToken;
 //               error(s);
               file.seekg(startPosition);
-              return ascParser2::ERROR;
+              return ascParser2::ERRORN;
             }
 	}
 
@@ -463,7 +463,7 @@ int ascParser2::get_section_name()
       s2 = s2 + nextToken;
       error(s2);
       file.seekg(startPosition);
-      return ascParser2::ERROR;
+      return ascParser2::ERRORN;
     }
 
   else
@@ -472,7 +472,7 @@ int ascParser2::get_section_name()
 //       s = s + token;
 //       error(s);
       file.seekg(startPosition);
-      return ascParser2::ERROR;
+      return ascParser2::ERRORN;
     }
 
 }

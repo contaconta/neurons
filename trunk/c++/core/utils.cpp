@@ -325,7 +325,12 @@ if ( access( strPath.c_str(), 0 ) == 0 )
 }
 
 int makeDirectory(string directory){
-  return mkdir(directory.c_str(), 0775);
+#ifdef _WIN32
+  return mkdir(directory.c_str());
+#else
+   return mkdir(directory.c_str(), 0775);
+#endif
+
 }
 
 

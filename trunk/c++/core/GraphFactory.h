@@ -101,6 +101,22 @@ public:
         return NULL;
       }
     }
+    else if(pointType == "Point2Do"){
+      if(edgeType == "Edge"){
+        return new Graph<Point2Do,Edge<Point2Do> >();
+      }
+      if(edgeType == "EdgeW"){
+        return new Graph<Point2Do,EdgeW<Point2Do> >();
+      }
+      else if(edgeType == "Edge2W"){
+        return new Graph<Point2Do,Edge2W<Point2Do> >();
+      }
+      else{
+        printf("GraphFactory::graphFromTypes error: no idea what kind of edge it is%s\n",
+               edgeType.c_str());
+        return NULL;
+      }
+    }
     else{
       printf("GraphFactory::graphFromTypes error: no idea what kind of point it is %s\n",
              pointType.c_str());

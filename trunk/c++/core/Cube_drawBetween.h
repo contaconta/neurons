@@ -31,6 +31,7 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
       threshold_old = threshold;
 
       //And now we reload the new texture
+#ifdef WITH_GLEW
       glEnable(GL_TEXTURE_3D);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
       glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -43,8 +44,9 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
       for(int i = 0; i < 4; i++)
         border_color[i] = 1.0;
       glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
-
-      printf("P0=[%i %i %i] P1=[%i %i %i] D=[%i %i %i]\n", x0, y0, z0, x1, y1, z1, width, height, depth);
+#endif
+      printf("P0=[%i %i %i] P1=[%i %i %i] D=[%i %i %i]\n",
+             x0, y0, z0, x1, y1, z1, width, height, depth);
       if(sizeof(T)==1){
         uchar* texels =(uchar*)( malloc(width*height*depth*sizeof(uchar)));
         float x_step = max(1.0,(double)fabs((float)x1-(float)x0)/max_texture_size);
@@ -77,8 +79,10 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
             fflush(stdout);
           }
         printf("]\n");
+#ifdef WITH_GLEW
         glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8, width, height, depth, 0, GL_LUMINANCE,
                      GL_UNSIGNED_BYTE, texels);
+#endif
         free(texels);
       }
       // if(sizeof(T)==4){
@@ -566,6 +570,7 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
 
 
       glEnable(GL_BLEND);
+#ifdef WITH_GLEW
       if(min_max == 0)
         glBlendEquation(GL_MIN);
 //         glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
@@ -575,7 +580,7 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
 
       glEnable(GL_TEXTURE_3D);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
-
+#endif
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
       //All the previous was preparation, here with draw the poligon
@@ -587,10 +592,10 @@ void Cube<T,U>::draw(int x0, int y0, int z0, int x1, int y1, int z1, float rotx,
           glVertex3f(intersectionPoints[indexes[i]][0],intersectionPoints[indexes[i]][1],intersectionPoints[indexes[i]][2]);
         }
       glEnd();
-
+#ifdef WITH_GLEW
       glDisable(GL_TEXTURE_3D);
       glDisable(GL_BLEND);
-
+#endif
       //Draws an sphere on all the intersection points
       if(false)
         {

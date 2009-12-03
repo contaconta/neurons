@@ -42,6 +42,10 @@ Y s                    |/            |/
 #define CUBE_MAX_Y 10000
 #define CUBE_MAX_Z 1000
 
+#ifdef _WIN32
+typedef unsigned long ulong;
+#endif
+
 using std::string;
 using std::vector;
 using namespace std;
@@ -64,7 +68,6 @@ public:
   // Transfer function
   T* tf;
 
-  unsigned int wholeTexture;
   unsigned int wholeTextureTrue;
   GLuint wholeTextureDepth;
 
@@ -269,7 +272,7 @@ public:
   T at(int x, int y, int z);
 
   /** Returns a float with the value of the cube at a position.*/
-  float getValueAsFloat(int x, int y, int z);
+  float get(int x, int y, int z);
 
   /** Changes the value of the voxel at indexes x,y,z.*/
   void put(int x, int y, int z, T value);
@@ -333,9 +336,6 @@ public:
   /** Draws a set of planes with the texture among them.*/
   void draw_layers_parallel();
 
-  /** Draws a MIP projection of the cube.*/
-  void draw(float rotx, float roty, float nPlanes = 200.0, int min_max = 0, int microm_voxels = 1);
-
   /** Draws the whole cube.*/
   void draw_whole(float rotx, float roty, float nPlanes, int min_max);
 
@@ -345,22 +345,19 @@ public:
       float nPlanes, int min_max, float threshold = -1e6);
 
   /** Draws the XY layer number depth of the brick.*/
-  void draw_layer_tile_XY(float depth, int color = 0);
+  // void draw_layer_tile_XY(float depth, int color = 0);
 
   /** Draws the XZ layer number depth of the brick.*/
-  void draw_layer_tile_XZ(float depth, int color = 0);
+  // void draw_layer_tile_XZ(float depth, int color = 0);
 
   /** Draws the YZ layer number depth of the brick.*/
-  void draw_layer_tile_YZ(float depth, int color = 0);
+  // void draw_layer_tile_YZ(float depth, int color = 0);
 
   /** Draws an orientation grid for the cube.*/
   void draw_orientation_grid(bool include_split = true, bool min_max = true);
 
   /** Renders a string.*/
   void render_string(const char* format, ...);
-
-  /** Draws the cube in micrometers.*/
-  void draw();
 
   /** Allocate memory for the alpha values */
   void allocate_alphas(int ni, int nj, int nk);

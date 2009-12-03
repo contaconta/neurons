@@ -60,7 +60,9 @@ public:
 
   Image(string filename, bool subtract_mean = false);
 
-//   void calculateIntegralImage(string filename);
+  Image(int width, int height, string filename="");
+
+  void load_file(string filename);
 
   /** Calculates the dx derivative in x and ny derivative in y of the image*/
   Image<float>* calculate_derivative(int nx, int ny, double sigma,  string filename = "");
@@ -74,7 +76,7 @@ public:
   /** Convolves with a normalized gaussian mask (energy = 1)*/
   Image<float>* calculate_gaussian_normalized(int dx, int dy, double sigma, string filename = "");
 
-  Image<float>* create_blank_image_float(string name);
+  Image<float>* create_blank_image_float(string name = "");
 
   Image<T>*     create_blank_image(string name);
 
@@ -109,6 +111,13 @@ public:
                       string eigenValueL = "l2.jpg", bool saveOrientation = false,
                       string orientationFile = "theta.jpg");
 #endif
+
+  void computeGradient(float sigma, string output,
+                       string orientation = "");
+
+  float* dt(float *f, int n);
+  Image<float>* distanceTransform(string filename, T threshold);
+
 
   double getMean();
 
@@ -162,11 +171,18 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
   texture_loaded = false;
   directory = "";
   name = "";
+  load_file(filename);
+}
+
+template<class T>
+void Image<T>::load_file(string filename)
+{
   img = cvLoadImage(filename.c_str(),0);
   if(img == NULL){
     printf("Error getting the image %s\n", filename.c_str());
     exit(0);
   }
+
   directory = getDirectoryFromPath(filename);
   name = getNameFromPath(filename);
   name_raw = directory + name.substr(0,name.find_last_of(".")) + ".raw";
@@ -178,16 +194,8 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
 
   texels = new T[width*height];
 
-  double mean  = 0;
-  if(subtract_mean)
-    for(int y = 0; y < height; y++)
-      for(int x = 0; x < width; x++)
-        mean += ((uchar *)(img->imageData + y*img->widthStep))[x];
-
-  mean = mean/(width*height);
-
   //Creates the mapping of the raw data.
-  fildes = open64(name_raw.c_str(), O_RDWR);
+  fildes = open(name_raw.c_str(), O_RDWR);
 
   if(fildes == -1) //The file does not exist create it
     {
@@ -200,22 +208,19 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
       CvScalar s;
       for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
-          if(subtract_mean){
-            buff[x] = ((T)((uchar *)(img->imageData + y*img->widthStep))[x]-mean)/255;
-          }
-          else{
             buff[x] = (T)((uchar *)(img->imageData + y*img->widthStep))[x];
-          }
         }
         fwrite(buff, sizeof(T), line_length, fp);
       }
       fclose(fp);
-      fildes = open64(name_raw.c_str(), O_RDWR);
+      fildes = open(name_raw.c_str(), O_RDWR);
     }
 
-  void* mapped_file = mmap64(0,
-                             width*height*sizeof(T),
-                             PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
+  void* mapped_file;
+  #ifndef _WIN32
+  mapped_file = mmap(0,
+                     width*height*sizeof(T),
+                     PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
 
   if(mapped_file == MAP_FAILED)
     {
@@ -223,6 +228,7 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
              name_raw.c_str());
       exit(0);
     }
+  #endif
 
   pixels_origin = (T*) mapped_file;
   pixels = (T**)malloc(height*sizeof(T*));
@@ -232,8 +238,40 @@ Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
     pixels[j]=(T*)&pixels_origin[j*width];
   }
 
-//   name = filename;
+  name = filename;
+
 }
+
+
+
+template<class T>
+Image<T>::Image(int width, int height, string filename) : VisibleE()
+{
+  texture_loaded = false;
+  directory = "";
+  name = "";
+
+  this->width =  width;
+  this->height = height;
+
+  if(filename!= ""){
+    if(sizeof(T)==1)
+      create_blank_image(filename);
+    else
+      create_blank_image_float(filename);
+    load_file(filename);
+  }
+  else{
+    pixels_origin = (T*) malloc(width*height*sizeof(T));
+    pixels = (T**)malloc(height*sizeof(T*));
+
+  //Initializes the pointer structure to acces quickly to the voxels
+    for(int j = 0; j < height; j++){
+      pixels[j]=(T*)&pixels_origin[j*width];
+    }
+  }
+}
+
 
 
 template<class T>
@@ -482,10 +520,14 @@ template<class T>
 Image<float>* Image<T>::create_blank_image_float(string name)
 {
 //   printf("Name: %s %i %i\n", name.c_str(), width, height);
-  IplImage* img = cvCreateImage(cvSize(width,height), IPL_DEPTH_32F, 3);
-  cvSaveImage(name.c_str(),img);
-  Image<float>* imag = new Image<float>(name);
-  return imag;
+  if(name!= ""){
+    IplImage* img = cvCreateImage(cvSize(width,height), IPL_DEPTH_32F, 3);
+    cvSaveImage(name.c_str(),img);
+    Image<float>* imag = new Image<float>(name);
+    return imag;
+  } else{
+    return new Image<float>(img->width, img->height);
+  }
 }
 
 
@@ -530,6 +572,9 @@ T Image<T>::max()
 template<class T>
 void Image<T>::save()
 {
+  printf("Trying to save %s\n", name.c_str());
+  if(name=="")
+    return;
   //Gets the max and the min of the image
   T max;
   T min;
@@ -583,18 +628,17 @@ void Image<T>::threshold
  T toValueLow, T toValueUp
  )
 {
-
   Image<T>* toThreshold = this;
   if(filename!=""){
     toThreshold = create_blank_image(filename);
   }
 
-    for(int x = 0; x < width; x++)
-      for(int y = 0; y < height; y++)
-        if(at(x,y) < threshold)
-          toThreshold->put(x,y,toValueLow);
-        else
-          toThreshold->put(x,y,toValueUp);
+  for(int x = 0; x < width; x++)
+    for(int y = 0; y < height; y++)
+      if(at(x,y) < threshold)
+        toThreshold->put(x,y,toValueLow);
+      else
+        toThreshold->put(x,y,toValueUp);
 
   toThreshold->save();
 }
@@ -643,7 +687,7 @@ void Image<T>::draw()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D,  GL_TEXTURE_PRIORITY, 1.0);
     GLfloat border_color[4];
     for(int i = 0; i < 4; i++)
@@ -827,7 +871,43 @@ void Image<T>::computeHessian
 }
 #endif
 
+template< class T>
+void Image<T>::computeGradient
+(float sigma, string gradientName, string orientationName)
+{
+  char name[1024];
+  Image<float>* gx;
+  Image<float>* gy;
+  sprintf(name, "%s/g_x_%.02f.jpg", directory.c_str(), sigma);
+  if(!fileExists(name))
+    gx = calculate_derivative(1,0,sigma,name);
+  else
+    gx = new Image<float>(name);
+  sprintf(name, "%s/g_y_%.02f.jpg", directory.c_str(), sigma);
+  if(!fileExists(name))
+    gy = calculate_derivative(0,1,sigma,name);
+  else
+    gy = new Image<float>(name);
 
+  bool saveOrientation = false;
+  if(orientationName!="") saveOrientation = true;
+  Image<float>* gradient = create_blank_image_float(gradientName);
+  Image<float>* orientation;
+  if(saveOrientation)
+    orientation = create_blank_image_float(orientationName);
+
+  for(int x = 0; x < width; x++)
+    for(int y = 0; y < height; y++){
+      gradient->put(x,y, sqrt(gx->at(x,y)*gx->at(x,y) +
+                         gy->at(x,y)*gy->at(x,y)));
+      if(saveOrientation){
+        orientation->put(x,y,atan2(-gy->at(x,y), gx->at(x,y)));}
+    }
+
+  gradient->save();
+  if(saveOrientation)
+    orientation->save();
+}
 
 template< class T>
 double Image<T>::getMean()
@@ -858,5 +938,95 @@ void Image<T>::applyMask(Image<float>* mask, T value, bool high_mask)
   }
 }
 
+
+/* ADAPTED FROM:
+ * Distance Transforms of Sampled Functions
+ * Pedro F. Felzenszwalb and Daniel P. Huttenlocher
+ * Cornell Computing and Information Science TR2004-1963
+ */
+
+#define INF 1e24
+#define SQUARE(a) ((a)*(a)) 
+template<class T>
+float* Image<T>::dt(float *f, int n){
+
+  float *d = new float[n];
+  int *v = new int[n];
+  float *z = new float[n+1];
+  int k = 0;
+  v[0] = 0;
+  z[0] = -INF;
+  z[1] = +INF;
+  for (int q = 1; q <= n-1; q++) {
+    float s  = ((f[q]+SQUARE(q))-(f[v[k]]+SQUARE(v[k])))/(2*q-2*v[k]);
+    while (s <= z[k]) {
+      k--;
+      s  = ((f[q]+SQUARE(q))-(f[v[k]]+SQUARE(v[k])))/(2*q-2*v[k]);
+    }
+    k++;
+    v[k] = q;
+    z[k] = s;
+    z[k+1] = +INF;
+  }
+
+  k = 0;
+  for (int q = 0; q <= n-1; q++) {
+    while (z[k+1] < q)
+      k++;
+    d[q] = SQUARE(q-v[k]) + f[v[k]];
+  }
+
+  delete [] v;
+  delete [] z;
+  return d;
+}
+
+
+
+template<class T>
+Image<float>* Image<T>::distanceTransform
+(string filename, T threshold)
+{
+  Image<float>* imt  = create_blank_image_float(filename);
+  for(int x = 0; x < width; x++)
+    for(int y = 0; y < height; y++)
+      if(at(x,y) > threshold)
+        imt->put(x,y, 0);
+      else
+        imt->put(x,y, INF);
+  Image<float>* dtf  = create_blank_image_float(filename);
+  Image<float>* tmp = create_blank_image_float();
+  float *f = new float[std::max(width,height)];
+
+  // transform along columns
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
+      f[y] = imt->at(x, y);
+    }
+
+    float *d = dt(f, height);
+
+    for (int y = 0; y < height; y++) {
+      tmp->put(x, y, d[y]);
+    }
+    delete [] d;
+  }
+  // transform along rows
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      f[x] = tmp->at(x, y);
+    }
+
+    float *d = dt(f, width);
+
+    for (int x = 0; x < width; x++) {
+      dtf->put(x, y, sqrt(d[x]));
+    }
+    delete [] d;
+  }
+
+  dtf->save();
+  delete [] f;
+}
 
 #endif

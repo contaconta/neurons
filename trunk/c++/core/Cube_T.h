@@ -32,7 +32,7 @@ public:
   void draw();
 
   void draw
-  (float rotx, float roty, float nPlanes, int min_max, int microm_voxels);
+  (float nPlanes, int min_max, int microm_voxels);
 
   void draw
   (int x0, int y0, int z0, int x1, int y1, int z1,
@@ -46,7 +46,7 @@ public:
 
   void draw_layer_tile_YZ(float depth, int color=0);
 
-  void min_max(float* min, float* max);
+  void min_max(float& min, float& max);
 
   Cube_P* threshold(float thres, string outputName="output",
                     bool putHigherValuesTo = false, bool putLowerValuesTo = true,
@@ -80,7 +80,7 @@ public:
     return "Cube_T";
   }
 
-  float getValueAsFloat(int x, int y, int z){return 0.0;}
+  float get(int x, int y, int z){return 0.0;}
 
 
 };

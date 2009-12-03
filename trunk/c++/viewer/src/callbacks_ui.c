@@ -215,7 +215,7 @@ void unProjectMouse()
         (indexes[1] >= 0) && (indexes[1] < cube->cubeHeight) &&
         (indexes[2] >= 0) && (indexes[2] < cube->cubeDepth) ){
       printf("Indexes: %i %i %i and value %f\n", indexes[0], indexes[1], indexes[2],
-             cube->getValueAsFloat(indexes[0], indexes[1], indexes[2]));
+             cube->get(indexes[0], indexes[1], indexes[2]));
     }
     on_drawing3D_expose_event(drawing3D,NULL, NULL);
   }
