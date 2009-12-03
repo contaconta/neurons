@@ -105,7 +105,7 @@ void renderString(const char* format, ...);
 void secondStatistics(vector< double > data, double* mean, double* variance);
 
 // This class will be used to plot vectors using matlab from the C++ code.
-
+/* Not needed for anything
 class MATLABDRAW
 {
 public:
@@ -158,7 +158,7 @@ public:
   }
 };
 
-
+*/
 
 
 #endif //STUPID_UTILS_H

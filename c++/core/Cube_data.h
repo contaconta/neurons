@@ -101,21 +101,28 @@ void Cube<T,U>::load_volume_data(string filenameVoxelData, bool reflectToFile)
 
   // If there is actually a file where I want to map the volume
   if(reflectToFile){
+#ifdef _WIN32
+    fildes = open(filenameVoxelData.c_str(), O_RDWR);
+#else
     fildes = open64(filenameVoxelData.c_str(), O_RDWR);
+#endif
     if(fildes == -1) //The file does not exist
       {
         printf("The file %s does not exist.Aborting.\n", filenameVoxelData.c_str());
         exit(0);
       }
-    void* mapped_file = mmap64(0,
-                               cubeWidth*cubeHeight*cubeDepth*sizeof(T),
-                               PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
+    void* mapped_file;
+#ifndef _WIN32
+    mapped_file = mmap64(0,
+                         cubeWidth*cubeHeight*cubeDepth*sizeof(T),
+                         PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
     if(mapped_file == MAP_FAILED)
       {
         printf("Cube<T,U>::load_volume_data: There is a bug here, volume not loaded. %s\n",
                filenameVoxelData.c_str());
         exit(0);
       }
+#endif
     voxels_origin = (T*) mapped_file;
   } else {
     voxels_origin = (T*)calloc(cubeWidth*cubeHeight*cubeDepth,sizeof(T));
@@ -135,13 +142,24 @@ void Cube<T,U>::load_volume_data(string filenameVoxelData, bool reflectToFile)
 template <class T, class U>
 void Cube<T,U>::load_integral_volume(string filename)
 {
- int fildes = open64(filename.c_str(), O_RDWR);
- void* mapped_file = mmap64(0,cubeWidth*cubeHeight*cubeDepth*sizeof(U), PROT_READ, MAP_PRIVATE, fildes, 0);
+  int fildes;
+#ifdef _WIN32
+    fildes = open(filename.c_str(), O_RDWR);
+#else
+    fildes = open64(filename.c_str(), O_RDWR);
+#endif
+
+ void* mapped_file;
+
+#ifndef _WIN32
+  mapped_file = mmap64(0,cubeWidth*cubeHeight*cubeDepth*sizeof(U), PROT_READ, MAP_PRIVATE, fildes, 0);
  if(mapped_file == MAP_FAILED)
     {
       printf("Cube<T,U>::load_integral_volume(%s): Volume not loaded\n", filename.c_str());
       exit(0);
     }
+#endif
+
   voxels_integral_origin = (U*) mapped_file;
   voxels_integral = (U***)malloc(cubeDepth*sizeof(U**));
 
@@ -195,7 +213,13 @@ void Cube<T,U>::create_integral_cube(string filename)
   sprintf(buff, "touch %s", filename.c_str());
   system(buff);
   printf("Cube::create_integral_cube(): creating the file %s\n", filename.c_str());
-  int fp = open64(filename.c_str(), O_WRONLY || O_SYNC || O_LARGEFILE );
+  int fp;
+#ifdef _WIN32
+  fp = open(filename.c_str(), O_WRONLY );
+#else
+  fp = open64(filename.c_str(), O_WRONLY || O_SYNC || O_LARGEFILE );
+#endif
+
   if(fp == -1)
     {
       printf("Cube::create_integral_cube(): error openning the file %s\n", filename.c_str());
@@ -242,6 +266,7 @@ void Cube<T,U>::create_integral_cube(string filename)
             temporal_layer_integral[col-1 + (row-1)*cubeWidth] +
             temporal_layer_integral[col-1 + row*cubeWidth];
         }
+
       }
       printf("#");
       fflush(stdout);
@@ -263,7 +288,12 @@ void Cube<T,U>::create_integral_cube_by_layers(string filename)
   sprintf(buff, "touch %s", filename.c_str());
   system(buff);
   printf("Cube::create_integral_cube(): creating the file %s\n", filename.c_str());
-  int fp = open64(filename.c_str(), O_WRONLY || O_SYNC || O_LARGEFILE );
+  int fp;
+#ifdef _WIN32
+  fp = open(filename.c_str(), O_WRONLY);
+#else
+  fp = open64(filename.c_str(), O_WRONLY || O_SYNC || O_LARGEFILE );
+#endif
   if(fp == -1)
     {
       printf("Cube::create_integral_cube(): error openning the file %s\n", filename.c_str());
@@ -764,7 +794,7 @@ void Cube<T,U>::createMIPImage(string filename, bool minMax)
   if(type == "uchar")
     {
       IplImage* output = cvCreateImage(cvSize(cubeWidth, cubeHeight), IPL_DEPTH_8U, 1);
-      uint minimum_intensity;
+      int minimum_intensity;
       if(!minMax)
         minimum_intensity = 255;
       else
@@ -779,9 +809,9 @@ void Cube<T,U>::createMIPImage(string filename, bool minMax)
           for(int z = 0; z < cubeDepth; z++)
             {
               if( (this->at(x,y,z) < minimum_intensity) && !minMax)
-                minimum_intensity = (uint)this->at(x,y,z);
+                minimum_intensity = (int)this->at(x,y,z);
               if( (this->at(x,y,z) > minimum_intensity) && minMax)
-                minimum_intensity = (uint)this->at(x,y,z);
+                minimum_intensity = (int)this->at(x,y,z);
             }
           output->imageData[y*output->widthStep + x] = minimum_intensity;
         }
@@ -926,7 +956,7 @@ void Cube<T,U>::histogram(string filename)
     out.close();
   }
 }
-
+ 
 
 
 template <class T, class U>
@@ -1259,7 +1289,7 @@ template <class T, class U>
 T Cube<T,U>::at(int x, int y, int z) {return voxels[z][y][x];}
 
 template <class T, class U>
-float Cube<T,U>::getValueAsFloat(int x, int y, int z) {return voxels[z][y][x];}
+float Cube<T,U>::get(int x, int y, int z) {return voxels[z][y][x];}
 
 
 template <class T, class U>

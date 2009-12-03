@@ -19,7 +19,16 @@ set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+
+IF(WIN32)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -D _WIN32")
+##gray80 LINK_DIRECTORIES(c:/windows/system32 c:/MinGW/lib)
+ENDIF(WIN32)
+
+## Need to check for openmp
+##set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
@@ -33,7 +42,7 @@ find_package(OpenCV REQUIRED)
 include_directories(${OPENCV_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIR} )
+#include_directories(${GLUT_INCLUDE_DIR} )
 
 #find_package(BBP-SDK)
 #IF(${BBP-SDK_FOUND})
@@ -74,10 +83,11 @@ ENDIF(${GLEW_FOUND})
 find_package(Gmodule)
 
 set(LINK_LIBRARIES_ALL ${BBP-SDK_LIB} ${OPENCV_LIBRARIES}
-${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
+${GLUT_LIBRARIES} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
 ${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} 
 ${BBP-SDK_LIB} ${Boost_LIBRARIES} viva)
 
+message("Link Libraries: ${LINK_LIBRARIES_ALL}")
 
 ################################################################################
 ## Compilation flags and file organization
@@ -85,7 +95,7 @@ ${BBP-SDK_LIB} ${Boost_LIBRARIES} viva)
 set(CMAKE_CXX_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_DEBUG    "${CMAKE_CXX_FLAGS} -g -pg ")
 set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS} -o3 ")
-message("Cmake CXX flags debug " ${CMAKE_CXX_FLAGS_DEBUG})
+message("CXX flags " ${CMAKE_CXX_FLAGS})
 
 set(CMAKE_C_FLAGS         ${CMAKE_CXX_FLAGS})
 set(CMAKE_C_FLAGS_DEBUG   ${CMAKE_CXX_FLAGS_DEBUG})
@@ -281,6 +291,9 @@ target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
 target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 
+add_executable(imageFindSoma ${CMAKE_SOURCE_DIR}/../tools/image/imageFindSoma.cpp)
+target_link_libraries(imageFindSoma ${LINK_LIBRARIES_ALL})
+
 add_executable(imageGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/image/imageGaussianPyramid.cpp)
 target_link_libraries(imageGaussianPyramid ${LINK_LIBRARIES_ALL})
 
@@ -292,6 +305,13 @@ target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
 
 add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
 target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
+
+add_executable(imageGradient ${CMAKE_SOURCE_DIR}/../tools/image/imageGradient.cpp)
+target_link_libraries(imageGradient ${LINK_LIBRARIES_ALL})
+
+add_executable(imageDistanceTransform
+  ${CMAKE_SOURCE_DIR}/../tools/image/imageDistanceTransform.cpp)
+target_link_libraries(imageDistanceTransform ${LINK_LIBRARIES_ALL})
 
 IF(${GLEW_FOUND})
 add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)

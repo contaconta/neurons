@@ -3,18 +3,218 @@
 
 //#define USE_ALPHA
 
-/** We will have some tuning of the parameters for the rendering here
-    as defines. At some point they should be put as variables, so that
-    they can be accessed from the program.
+/** Creates a 3D texture and stores it in the memmory of the graphics card. It
+    will detect if the cube is made out of floats or uchars and react
+    accordingly. The pseudocode is:
+    - find the size of the texture in the memmory of the GPU (should be 2^n2^m2^p)
+    - move from the data in the cube structure to a contiguous space
+    - load it into the GPU memmory
  */
+template <class T, class U>
+void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, float _max)
+{
+  //Automatic inference of the maximum size of the texture that can be loaded into memmory.
+  // To be done, now it is forced.
+  GLint max_texture_size = 0;
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   max_texture_size = min(max_texture_size,max((int)cubeWidth,(int)cubeHeight));;
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  printf("Max texture size %i\n", max_texture_size);
 
-#define D_MAX_TEXTURE_SIZE      512
-// #define D_MAX_TEXTURE_SIZE      1024
-// #define D_MAX_TEXTURE_SIZE      2048
-// #define D_TEXTURE_INTERPOLATION GL_LINEAR
-#define D_TEXTURE_INTERPOLATION GL_NEAREST
+
+  nColToDraw = col;
+  nRowToDraw = row;
+
+  //End position of the pixels to load in memmory
+  int limit_x = min((int)cubeWidth,
+                    min((int)max_texture_size,
+                        (int)cubeWidth - (nColToDraw*max_texture_size)));
+  int limit_y = min((int)cubeHeight,
+                    min((int)max_texture_size,
+                        (int)cubeHeight - (nRowToDraw*max_texture_size)));
+  int limit_z =  (int)min(max_texture_size, (int)cubeDepth);
+
+  // Size of the texture so that it is a power of 2.
+  int texture_size_x = (int) pow(2.0, ceil(log((double)limit_x)/log(2.0)) );
+  int texture_size_y = (int) pow(2.0, ceil(log((double)limit_y)/log(2.0)) );
+  int texture_size_z = (int) pow(2.0, ceil(log((double)limit_z)/log(2.0)) );
+
+  //Limit of the texture coordinates. This is important for drawing
+  r_max = (double)(limit_x-1)/texture_size_x;
+  s_max = (double)(limit_y-1)/texture_size_y;
+  t_max = (double)(limit_z-1)/texture_size_z;
+
+  printf("Load_texture_brick: texture size %i, limit_x = %i, limit_y = %i limit_z = %i\n"
+         "               texture_size: x=%i y=%i z=%i, r_max=%f, s_max=%f, t_max=%f\n",
+         max_texture_size, limit_x, limit_y, limit_z,
+         texture_size_x, texture_size_y,texture_size_z,
+         r_max,s_max,t_max);
+
+  if( (limit_x<0) || (limit_y<0))
+    {
+      printf("Cube<T,U>::load_texture_brick requested col %i row %i out of range, loading 0,0\n",
+             nColToDraw, nRowToDraw);
+      nColToDraw = 0;
+      nRowToDraw = 0;
+      limit_x = min(max_texture_size,(int)cubeWidth);
+      limit_y = min(max_texture_size,(int)cubeHeight);
+    }
+
+  // If we want to use an alpha channel, the size of the array is double
+  int scaleForAlpha = 1;
+#ifdef USE_ALPHA
+      scaleForAlpha = 2;
+#endif
+
+#ifdef WITH_GLEW
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, D_TEXTURE_INTERPOLATION);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_PRIORITY, 1.0);
+  GLfloat border_color[4];
+  for(int i = 0; i < 4; i++)
+    border_color[i] = 1.0;
+  glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
+#endif
+
+  //   Creates the array with the texture. Coded to avoid float multiplications
+  int col_offset = (col)*max_texture_size;
+  int row_offset = (row)*max_texture_size;
+  int size_texture = max_texture_size;
+
+  //////////////////////////////////////////////////////////////////////
+  // Loading the texture brick for the case when the data is in uchar
+  if(sizeof(T) == 1)
+    {
+      GLubyte voxel;
+      int texture_size;
+      texture_size = texture_size_x*texture_size_y*texture_size_z*scaleForAlpha;
+      GLubyte* texels =(GLubyte*)(malloc(texture_size*sizeof(GLubyte)));
+      for(int t = 0; t < texture_size; t++)
+        texels[t] = 0;
+      int depth_y;
+      int depth_z;
+      for(int z = 0; z < limit_z; z++){
+        depth_z = z*texture_size_x*texture_size_y*scaleForAlpha;
+        for(int y = 0; y < limit_y; y++){
+          depth_y = y*texture_size_x*scaleForAlpha;
+          for(int x = 0; x < limit_x; x++){
+            voxel = (GLubyte)at(col_offset+x,row_offset+y,z)*scale;
+#ifdef USE_ALPHA
+            texels[depth_z + depth_y + x*2] = voxel;
+            if(alphas){
+              if(alphas[x][y][z]!=0)
+                printf("Alpha=%d\n", alphas[x][y][z]);
+              texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
+            }else{
+              //printf("Null alpha\n");
+              texels[depth_z + depth_y + x*2+1] = 0;
+            }
+#else
+            texels[depth_z + depth_y + x] = voxel;
+#endif
+          }
+        }
+        printf("#");
+        fflush(stdout);
+      }
+      printf("]\n");
+      //printf("Cube::load_whole_texture() 8 bits\n");
+#ifdef WITH_GLEW
+#ifdef USE_ALPHA
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8_ALPHA8,
+                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
+                   GL_UNSIGNED_BYTE, texels);
+#else
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8,
+                   texture_size_x, texture_size_y, texture_size_z, 0, GL_LUMINANCE,
+                   GL_UNSIGNED_BYTE, texels);
+#endif
+#endif
+      free(texels);
+    }
+
+  //////////////////////////////////////////////////////////////////////
+  // Loading the texture brick for the case when the data is in floats
+  if(sizeof(T) == 4)
+    {
+      float voxel;
+      int texture_size;
+      texture_size = texture_size_x*texture_size_y*texture_size_z*scaleForAlpha;
+      float* texels =(float*)(calloc(texture_size, sizeof(float)));
+
+      printf("Cube::load_texture_brick() creating texture from floats\n");
+      float max_texture = -10e6;
+      float min_texture = 10e6;
+      if(_min == _max){
+        min_max(&min_texture, &max_texture);
+      } else {
+        max_texture = _max;
+        min_texture = _min;
+      }
+      printf("Cube::load_texture_brick(): max=%f and min=%f\n", (float)max_texture, (float)min_texture);
+      printf("Loading texture brick %i %i [", row, col);
+      int depth_y;
+      int depth_z;
+      for(int z = 0; z < limit_z; z++)
+        {
+          depth_z = z*texture_size_x*texture_size_y*scaleForAlpha;
+          for(int y = 0; y < limit_y; y++)
+            {
+              depth_y = y*texture_size_x*scaleForAlpha;
+              for(int x = 0; x < limit_x; x++)
+                {
+                  voxel = scale*(this->at(col_offset+x,row_offset+y,z) - min_texture)
+                    / (max_texture - min_texture);
+#ifdef USE_ALPHA
+                  texels[depth_z + depth_y + x*scaleForAlpha] = voxel;
+                  if(alphas)
+                    {
+                      if(alphas[x][y][z]!=0)
+                        printf("Alphaf=%d\n", alphas[x][y][z]);
+                      texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
+                    }
+                  else
+                    {
+                      //printf("Null alpha\n");
+                      texels[depth_z + depth_y + x*2+1] = 0;
+                    }
+#else
+                  if(tf != 0)
+                    texels[depth_z + depth_y + x] = tf[(int)voxel];
+                  else
+                    texels[depth_z + depth_y + x] = voxel;
+#endif
+                }
+            }
+          printf("#");
+          fflush(stdout);
+        }
+      printf("]\n");
+#ifdef WITH_GLEW
+#ifdef USE_ALPHA
+      //printf("Cube::load_whole_texture() USE_ALPHA float\n");
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE_ALPHA,
+                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
+                   GL_FLOAT, texels);
+#else
+      //printf("Cube::load_whole_texture() NO_ALPHA float\n");
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE,
+                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE,
+                   GL_FLOAT, texels);
+#endif
+#endif
+      free(texels);
+    }
+}
 
 
+
+/** Do not know if it is working anymore*/
 template <class T, class U>
 void Cube<T,U>::load_whole_texture()
 {
@@ -23,7 +223,7 @@ void Cube<T,U>::load_whole_texture()
   nRowToDraw = -1;
 
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   #if debug
   printf("Cube::load_whole_texture() max_texture_size = %i\n", max_texture_size);
@@ -71,6 +271,7 @@ void Cube<T,U>::load_whole_texture()
   printf("Cube::load_whole_texture() created the texture buffer\n");
   #endif
 
+#ifdef WITH_GLEW
   glEnable(GL_TEXTURE_3D);
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
@@ -87,322 +288,27 @@ void Cube<T,U>::load_whole_texture()
     border_color[i] = 1.0;
   glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
   glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8, max_texture_size, max_texture_size, wholeTextureDepth, 0, GL_LUMINANCE,
-             GL_UNSIGNED_BYTE, texels);
+               GL_UNSIGNED_BYTE, texels);
+#endif
   GLclampf priority = 1;
   glPrioritizeTextures(1, &wholeTexture, &priority);
 }
 
-template <class T, class U>
-void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, float _max)
-{
-  nColToDraw = col;
-  nRowToDraw = row;
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-//   max_texture_size = min(max_texture_size,max((int)cubeWidth,(int)cubeHeight));;
-  max_texture_size = D_MAX_TEXTURE_SIZE;
-  printf("Max texture size %i\n", max_texture_size);
-
-  #if debug
-  printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
-  printf("Cube::load_texture_brick() creating the texture buffer\n");
-  #endif
-
-  int limit_x = min((int)cubeWidth,
-                    min((int)max_texture_size,
-                        (int)cubeWidth - (nColToDraw*max_texture_size)));
-  int limit_y = min((int)cubeHeight,
-                    min((int)max_texture_size,
-                        (int)cubeHeight - (nRowToDraw*max_texture_size)));
-  int limit_z =  (int)min(max_texture_size, (int)cubeDepth);
-
-  int texture_size_x = (int) pow(2.0, ceil(log((double)limit_x)/log(2.0)) );
-  int texture_size_y = (int) pow(2.0, ceil(log((double)limit_y)/log(2.0)) );
-  int texture_size_z = (int) pow(2.0, ceil(log((double)limit_z)/log(2.0)) );
-
-  //Limit od the textures. They are object variables
-  r_max = (double)(limit_x-1)/texture_size_x;
-  s_max = (double)(limit_y-1)/texture_size_y;
-  t_max = (double)(limit_z-1)/texture_size_z;
-
-  printf("Load_texture_brick: texture size %i, limit_x = %i, limit_y = %i limit_z = %i\n               texture_size: x=%i y=%i z=%i, r_max=%f, s_max=%f, t_max=%f\n",
-         max_texture_size, limit_x, limit_y, limit_z,
-         texture_size_x, texture_size_y,texture_size_z,
-         r_max,s_max,t_max);
 
 
-  if( (limit_x<0) || (limit_y<0))
-    {
-      printf("Cube<T,U>::load_texture_brick requested col %i row %i out of range, loading 0,0\n", nColToDraw, nRowToDraw);
-      nColToDraw = 0;
-      nRowToDraw = 0;
-      limit_x = min(max_texture_size,(int)cubeWidth);
-      limit_y = min(max_texture_size,(int)cubeHeight);
-    }
-
-  glEnable(GL_TEXTURE_3D);
-  glBindTexture(GL_TEXTURE_3D, wholeTexture);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, D_TEXTURE_INTERPOLATION);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
-  glTexParameterf(GL_TEXTURE_3D,  GL_TEXTURE_PRIORITY, 1.0);
-  GLfloat border_color[4];
-  for(int i = 0; i < 4; i++)
-    border_color[i] = 1.0;
-  glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
-
-  //   Creates the array with the texture. Coded to avoid float multiplications
-
-  int col_offset = (col)*max_texture_size;
-  int row_offset = (row)*max_texture_size;
-
-  int size_texture = max_texture_size;
-
-  /*
-  if(sizeof(T) == 1)
-    {
-      GLubyte* texels =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
-      for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
-            texels[t] = 0;
-
-      for(int z = 0; z < limit_z; z++)
-        {
-          int depth_z = z*texture_size_x*texture_size_y;
-          for(int y = 0; y < limit_y; y++)
-            {
-              int depth_y = y*texture_size_x;
-              for(int x = 0; x < limit_x; x++)
-                {
-                  texels[depth_z + depth_y + x] =
-                    (GLubyte)at(col_offset+x,row_offset+y,z)*scale;
-                }
-            }
-          printf("#");
-          fflush(stdout);
-//           printf("%u\n", texels[depth_z + 200*limit_x + 120]);
-        }
-      printf("]\n");
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8,
-                   texture_size_x, texture_size_y, texture_size_z, 0, GL_LUMINANCE,
-                   GL_UNSIGNED_BYTE, texels);
-      free(texels);
-    }
-*/
-
-  if(sizeof(T) == 1)
-    {
-      GLubyte voxel;
-
-      //GLubyte* texel =(GLubyte*)(malloc(texture_size_x*texture_size_y*texture_size_z*sizeof(GLubyte)));
-      //for(int t = 0; t < texture_size_x*texture_size_y*texture_size_z; t++)
-      //      texels[t] = 0;
-
-      int texture_size;
-#ifdef USE_ALPHA
-      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
-#else
-      texture_size = texture_size_x*texture_size_y*texture_size_z;
-#endif
-      GLubyte* texels =(GLubyte*)(malloc(texture_size*sizeof(GLubyte)));
-      for(int t = 0; t < texture_size; t++)
-        texels[t] = 0;
-
-      int depth_y;
-      int depth_z;
-      for(int z = 0; z < limit_z; z++)
-        {
-#ifdef USE_ALPHA
-          depth_z = z*texture_size_x*texture_size_y*2;
-#else
-          depth_z = z*texture_size_x*texture_size_y;
-#endif
-          for(int y = 0; y < limit_y; y++)
-            {
-#ifdef USE_ALPHA
-              depth_y = y*texture_size_x*2;
-#else
-              depth_y = y*texture_size_x;
-#endif
-              for(int x = 0; x < limit_x; x++)
-                {
-                  voxel = (GLubyte)at(col_offset+x,row_offset+y,z)*scale;
-
-#ifdef USE_ALPHA
-                  texels[depth_z + depth_y + x*2] = voxel;
-
-                  if(alphas)
-                    {
-                      if(alphas[x][y][z]!=0)
-                        printf("Alpha=%d\n", alphas[x][y][z]);
-                      texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
-                    }
-                  else
-                    {
-                      //printf("Null alpha\n");
-                      texels[depth_z + depth_y + x*2+1] = 0;
-                    }
-#else
-                  //if(tf!=0)
-                  //  texels[depth_z + depth_y + x] = tf[voxel];
-                  //else
-                    texels[depth_z + depth_y + x] = voxel;
-#endif
-                }
-            }
-          printf("#");
-          fflush(stdout);
-//           printf("%u\n", texels[depth_z + 200*limit_x + 120]);
-        }
-      printf("]\n");
-      //printf("Cube::load_whole_texture() 8 bits\n");
-#ifdef USE_ALPHA
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8_ALPHA8,
-                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
-                   GL_UNSIGNED_BYTE, texels);
-#else
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE8,
-                   texture_size_x, texture_size_y, texture_size_z, 0, GL_LUMINANCE,
-                   GL_UNSIGNED_BYTE, texels);
-#endif
-      free(texels);
-    }
-
-
-  if(sizeof(T) == 4)
-    {
-      float voxel;
-      int texture_size;
-#ifdef USE_ALPHA
-      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
-#else
-      texture_size = texture_size_x*texture_size_y*texture_size_z;
-#endif
-      float* texels =(float*)(calloc(texture_size, sizeof(float)));
-      /*
-      for(int t = 0; t < texture_size; t++)
-      float voxel;
-      int texture_size;
-#ifdef USE_ALPHA
-      texture_size = texture_size_x*texture_size_y*texture_size_z*2;
-#else
-      texture_size = texture_size_x*texture_size_y*texture_size_z;
-#endif
-      float* texels =(float*)(calloc(texture_size,sizeof(float)));
-      /*
-      for(int t = 0; t < texture_size; t++)
-            texels[t] = 0;
-      */
-
-      printf("Cube::load_texture_brick() creating texture from floats\n");
-      float max_texture = -10e6;
-      float min_texture = 10e6;
-      if(_min == _max){
-        min_max(&min_texture, &max_texture);
-      } else {
-        max_texture = _max;
-        min_texture = _min;
-      }
-      // for(int z = 0; z < limit_z; z++)
-        // {
-          // for(int y = 0; y < limit_y; y++)
-            // {
-              // for(int x = 0; x < limit_x; x++)
-                // {
-                  // if(max_texture <  this->at(col_offset+x,row_offset+y,z))
-                    // max_texture = this->at(col_offset+x,row_offset+y,z);
-                  // if(min_texture >  this->at(col_offset+x,row_offset+y,z))
-                    // min_texture = this->at(col_offset+x,row_offset+y,z);
-                // }
-            // }
-        // }
-      printf("Cube::load_texture_brick(): max=%f and min=%f\n", (float)max_texture, (float)min_texture);
-      printf("Loading texture brick %i %i [", row, col);
-      int depth_y;
-      int depth_z;
-      for(int z = 0; z < limit_z; z++)
-        {
-#ifdef USE_ALPHA
-          depth_z = z*texture_size_x*texture_size_y*2;
-#else
-          depth_z = z*texture_size_x*texture_size_y;
-#endif
-          for(int y = 0; y < limit_y; y++)
-            {
-#ifdef USE_ALPHA
-              depth_y = y*texture_size_x*2;
-#else
-              depth_y = y*texture_size_x;
-#endif
-              for(int x = 0; x < limit_x; x++)
-                {
-//                   if((y<20) || (z>86) || (z<10) ){
-//                     texels[depth_z + depth_y + x] = 0;
-//                   }
-//                   else{
-                  voxel = scale*(this->at(col_offset+x,row_offset+y,z) - min_texture)
-                    / (max_texture - min_texture);
-
-#ifdef USE_ALPHA
-                  texels[depth_z + depth_y + x*2] = voxel;
-                  if(alphas)
-                    {
-                      if(alphas[x][y][z]!=0)
-                        printf("Alphaf=%d\n", alphas[x][y][z]);
-                      texels[depth_z + depth_y + x*2+1] = alphas[x][y][z];
-                    }
-                  else
-                    {
-                      //printf("Null alpha\n");
-                      texels[depth_z + depth_y + x*2+1] = 0;
-                    }
-#else
-                  if(tf != 0)
-                    texels[depth_z + depth_y + x] = tf[(int)voxel];
-                  else
-                      texels[depth_z + depth_y + x] = voxel;                      
-#endif                  
-//                   }
-                }
-            }
-          printf("#");
-          fflush(stdout);
-        }
-      printf("]\n");
-#ifdef USE_ALPHA
-      //printf("Cube::load_whole_texture() USE_ALPHA float\n");
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE_ALPHA,
-                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE_ALPHA,
-                   GL_FLOAT, texels);
-#else
-      //printf("Cube::load_whole_texture() NO_ALPHA float\n");
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE,
-                   texture_size_x,texture_size_y, texture_size_z, 0, GL_LUMINANCE,
-                   GL_FLOAT, texels);
-#endif
-      free(texels);
-    }
-  #if debug
-  printf("Cube::load_whole_texture() created the texture buffer\n");
-  #endif
-
-//   glBindTexture(GL_TEXTURE_3D, wholeTexture);
-}
-
+/** Do not know if it is working anymore*/
 template <class T, class U>
 void Cube<T,U>::load_thresholded_texture_brick(int row, int col, float threshold)
 {
   nColToDraw = col;
   nRowToDraw = row;
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   #if debug
   printf("Cube::load_texture_brick() max_texture_size = %i\n", max_texture_size);
   printf("Cube::load_texture_brick() creating the texture buffer\n");
   #endif
-
   int limit_x = min((int)max_texture_size, (int)cubeWidth - (nColToDraw*max_texture_size));
   int limit_y = min((int)max_texture_size, (int)cubeHeight - (nRowToDraw*max_texture_size));
   if( (limit_x<0) || (limit_y<0))
@@ -413,8 +319,6 @@ void Cube<T,U>::load_thresholded_texture_brick(int row, int col, float threshold
       limit_x = max_texture_size;
       limit_y = max_texture_size;
     }
-
-
 //   if(sizeof(T) == 1) {
 //     printf("Cube::load_thresholded_texture_brick called when it is a uchar cube\n");
 //     return;
@@ -453,6 +357,7 @@ void Cube<T,U>::load_thresholded_texture_brick(int row, int col, float threshold
   printf("Cube::load_whole_texture() created the texture buffer\n");
   #endif
 
+#ifdef WITH_GLEW
   glEnable(GL_TEXTURE_3D);
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
@@ -470,17 +375,18 @@ void Cube<T,U>::load_thresholded_texture_brick(int row, int col, float threshold
 
   glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE, limit_x, limit_y, wholeTextureDepth, 0, GL_LUMINANCE,
                GL_UNSIGNED_BYTE, texels);
+#endif
 
 }
 
-
+/** Do not know if it is working anymore*/
 template <class T, class U>
 void Cube<T,U>::load_thresholded_maxmin_texture_brick_float(int row, int col, float threshold_low, float threshold_high)
 {
   nColToDraw = col;
   nRowToDraw = row;
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   int limit_x = min((int)max_texture_size, (int)cubeWidth - (nColToDraw*max_texture_size));
   int limit_y = min((int)max_texture_size, (int)cubeHeight - (nRowToDraw*max_texture_size));
@@ -560,7 +466,7 @@ void Cube<T,U>::load_thresholded_maxmin_texture_brick_float(int row, int col, fl
   #if debug
   printf("Cube::load_texture_brick_float() created the texture buffer\n");
   #endif
-
+#ifdef WITH_GLEW
   glEnable(GL_TEXTURE_3D);
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
@@ -580,17 +486,18 @@ void Cube<T,U>::load_thresholded_maxmin_texture_brick_float(int row, int col, fl
 
   glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE, limit_x, limit_y, wholeTextureDepth, 0, GL_LUMINANCE,
                GL_FLOAT, texels);
-
+#endif
   free(texels);
 }
 
+/** Do not know if it is working anymore*/
 template <class T, class U>
 void Cube<T,U>::load_thresholded_texture_brick_float(int row, int col, float threshold)
 {
   nColToDraw = col;
   nRowToDraw = row;
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   int limit_x = min((int)max_texture_size, (int)cubeWidth - (nColToDraw*max_texture_size));
   int limit_y = min((int)max_texture_size, (int)cubeHeight - (nRowToDraw*max_texture_size));
@@ -670,7 +577,7 @@ void Cube<T,U>::load_thresholded_texture_brick_float(int row, int col, float thr
   #if debug
   printf("Cube::load_texture_brick_float() created the texture buffer\n");
   #endif
-
+#ifdef WITH_GLEW
   glEnable(GL_TEXTURE_3D);
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
@@ -690,9 +597,10 @@ void Cube<T,U>::load_thresholded_texture_brick_float(int row, int col, float thr
 
   glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE, limit_x, limit_y, wholeTextureDepth, 0, GL_LUMINANCE,
                GL_FLOAT, texels);
-
+#endif
   free(texels);
 }
+
 
 
 template <class T, class U>
@@ -731,12 +639,12 @@ void Cube<T,U>::draw_layers_parallel()
       glPopMatrix();
       glColor3f(1.0, 1.0, 1.0);
     }
-
+#ifdef WITH_GLEW
   glEnable(GL_BLEND);
   glBlendEquation(GL_MIN);
   glEnable(GL_TEXTURE_3D);
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
-
+#endif
   for(float z = wholeTextureDepth-1; z >= 0; z-=1)
     {
       glBegin(GL_QUADS);
@@ -755,20 +663,22 @@ void Cube<T,U>::draw_layers_parallel()
 
       glEnd();
     }
-
+#ifdef WITH_GLEW
   glDisable(GL_TEXTURE_3D);
   glDisable(GL_BLEND);
+#endif
 }
 
+/*
 template< class T, class U>
 void Cube<T,U>::draw(){
   draw(0,0,500,v_draw_projection,0);
 //   draw_layers_parallel();
 }
+*/
 
 
-
-
+/** Do not know if it is working anymore*/
 template <class T, class U>
 void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
 {
@@ -781,7 +691,7 @@ void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
 //     printf("Texture NOT resident\n");
 
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   draw_orientation_grid(false, min_max);
 
@@ -1166,6 +1076,7 @@ void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
 
 
       glEnable(GL_BLEND);
+#ifdef WITH_GLEW
       if(min_max == 0)
         glBlendEquation(GL_MIN);
 //         glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
@@ -1175,7 +1086,7 @@ void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
 
       glEnable(GL_TEXTURE_3D);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
-
+#endif
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
       //All the previous was preparation, here with draw the poligon
@@ -1187,10 +1098,10 @@ void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
           glVertex3f(intersectionPoints[indexes[i]][0],intersectionPoints[indexes[i]][1],intersectionPoints[indexes[i]][2]);
         }
       glEnd();
-
+#ifdef WITH_GLEW
       glDisable(GL_TEXTURE_3D);
       glDisable(GL_BLEND);
-
+#endif
       //Draws an sphere on all the intersection points
       if(false)
         {
@@ -1225,279 +1136,6 @@ void Cube<T,U>::draw_whole(float rotx, float roty, float nPlanes, int min_max)
 
 
 
-template <class T, class U>
-void Cube<T,U>::draw_layer_tile_XY(float nLayerToDraw, int color)
-{
-//   draw_orientation_grid();
-  glEnable(GL_TEXTURE_3D);
-  glBindTexture(GL_TEXTURE_3D, wholeTexture);
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = D_MAX_TEXTURE_SIZE;
-  int size_texture = max_texture_size;
-
-  if(nLayerToDraw < 0)
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = 0;
-    }
-  if(nLayerToDraw > cubeDepth -1)
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = cubeDepth-1;
-    }
-
-
-  //In object coordinates, we will draw the cube
-  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
-  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
-  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
-
-  GLfloat increment_height =
-    min(float(cubeHeight - nRowToDraw*size_texture), float(size_texture));
-  increment_height = increment_height / size_texture;
-  GLfloat increment_width =
-    min(float(cubeWidth - nColToDraw*size_texture), float(size_texture));
-  increment_width = increment_width / size_texture;
-
-
-//   printf("draw_layer_tile_XY %f %f size texture %i %f %f\n", increment_height, increment_width, size_texture, float(cubeWidth)/size_texture, float(cubeHeight)/size_texture);
-
-  if(color == 0){
-//     glColor3f(1.0,1.0,1.0);
-    glColor3f(v_r,v_g,v_b);
-    glBegin(GL_QUADS);
-    glTexCoord3f(0,0,t_max*nLayerToDraw/(cubeDepth-1));
-    glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
-               heightStep - nRowToDraw*size_texture*voxelHeight,
-               -depthStep + nLayerToDraw*voxelDepth);
-
-    glTexCoord3f(r_max,0,t_max*nLayerToDraw/(cubeDepth-1));
-    glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
-               heightStep - nRowToDraw*size_texture*voxelHeight,
-               -depthStep + nLayerToDraw*voxelDepth);
-
-    glTexCoord3f(r_max,
-                 s_max,
-                 t_max*nLayerToDraw/(cubeDepth-1));
-    glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
-               heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
-               -depthStep + nLayerToDraw*voxelDepth);
-
-    glTexCoord3f(0,
-                 s_max,
-                 t_max*nLayerToDraw/(cubeDepth-1));
-    glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
-               heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
-               -depthStep + nLayerToDraw*voxelDepth);
-    glEnd();
-
-  }
-  else
-    glColor3f(0.0,0.0,1.0);
-
-
-  glDisable(GL_TEXTURE_3D);
-//   glColor3f(0.0,0.0,0.7);
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
-             heightStep - nRowToDraw*size_texture*voxelHeight,
-             -depthStep + nLayerToDraw*voxelDepth);
-  glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
-             heightStep - nRowToDraw*size_texture*voxelHeight,
-             -depthStep + nLayerToDraw*voxelDepth);
-  glVertex3f(-widthStep + (nColToDraw+increment_width)*size_texture*voxelWidth,
-             heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
-             -depthStep + nLayerToDraw*voxelDepth);
-  glVertex3f(-widthStep + nColToDraw*size_texture*voxelWidth,
-             heightStep - (nRowToDraw+increment_height)*size_texture*voxelHeight,
-             -depthStep + nLayerToDraw*voxelDepth);
-  glEnd();
-//   glColor3f(0.0,0.0,1.0);
-//  glBegin(GL_LINES);
-
-  glEnd();
-
-  //Draws the coordinates
-}
-
-template <class T, class U>
-void Cube<T,U>::draw_layer_tile_XZ(float nLayerToDraw, int color)
-{
-//   draw_orientation_grid();
-  glEnable(GL_TEXTURE_3D);
-  glBindTexture(GL_TEXTURE_3D, wholeTexture);
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = D_MAX_TEXTURE_SIZE;
-  int size_texture = max_texture_size;
-
-  if(nLayerToDraw < 0)
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = 0;
-    }
-  if( (nLayerToDraw > min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture) ) )
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = min((int)cubeHeight-1, (int)cubeHeight - nRowToDraw*size_texture);
-    }
-
-  //In object coordinates, we will draw the cube
-  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
-  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
-  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
-
-  GLfloat increment_depth =
-    min(float(cubeDepth), float(size_texture));
-  increment_depth = increment_depth / size_texture;
-  GLfloat increment_width =
-    min(float(cubeWidth - nColToDraw*size_texture), float(size_texture));
-  increment_width = increment_width / size_texture;
-
-  float y_max = min(size_texture, (int)cubeHeight - nRowToDraw*size_texture);
-
-  if(color == 0){
-    glColor3f(1.0,1.0,1.0);
-    glColor3f(v_r,v_g,v_b);
-    glBegin(GL_QUADS);
-    glTexCoord3f(0, s_max*nLayerToDraw/y_max, 0);
-    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight
-               - nLayerToDraw*voxelHeight,
-               -depthStep);
-    glTexCoord3f(0, s_max*nLayerToDraw/y_max, t_max);
-    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight
-               - nLayerToDraw*voxelHeight,
-               depthStep);
-    glTexCoord3f(r_max, s_max*nLayerToDraw/y_max, t_max);
-    glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight
-               - nLayerToDraw*voxelHeight,
-               depthStep);
-    glTexCoord3f(r_max, s_max*nLayerToDraw/y_max , 0);
-    glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight
-               - nLayerToDraw*voxelHeight,
-               -depthStep);
-    glEnd();
-  }
-  else
-    glColor3f(1.0,0.0,0.0);
-
-
-
-  glDisable(GL_TEXTURE_3D);
-//   glColor3f(0.7,0.0,0.0);
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight
-             - nLayerToDraw*voxelHeight,
-             -depthStep);
-  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight
-             - nLayerToDraw*voxelHeight,
-             depthStep);
-  glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight
-             - nLayerToDraw*voxelHeight,
-             depthStep);
-  glVertex3f(-widthStep + (nColToDraw+increment_width)*max_texture_size*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight
-             - nLayerToDraw*voxelHeight,
-             -depthStep);
-  glEnd();
-}
-
-template <class T, class U>
-void Cube<T,U>::draw_layer_tile_YZ(float nLayerToDraw,int color)
-{
-//   draw_orientation_grid();
-  glEnable(GL_TEXTURE_3D);
-  glBindTexture(GL_TEXTURE_3D, wholeTexture);
-  GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
-  max_texture_size = D_MAX_TEXTURE_SIZE;
-  int size_texture = max_texture_size;
-
-  if(nLayerToDraw < 0)
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = 0;
-    }
-  if( (nLayerToDraw > min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture) ) )
-    {
-      printf("Cube::draw_layer: invalid nLayerToDraw %f\n", nLayerToDraw);
-      nLayerToDraw = min((int)cubeWidth-1, (int)cubeWidth - nColToDraw*size_texture);
-    }
-
-  //In object coordinates, we will draw the cube
-  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
-  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
-  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
-
-  GLfloat increment_depth =
-    min(float(cubeDepth), float(size_texture));
-  increment_depth = increment_depth / size_texture;
-  GLfloat increment_height =
-    min(float(cubeHeight - nRowToDraw*size_texture), float(size_texture));
-  increment_height = increment_height / size_texture;
-
-  float x_max = min(size_texture, (int)cubeWidth - nColToDraw*size_texture);
-  GLfloat depth_texture = nLayerToDraw/r_max;
-
-  if(color == 0){
-//     glColor3f(1.0,1.0,1.0);
-    glColor3f(v_r,v_g,v_b);
-    glBegin(GL_QUADS);
-    glTexCoord3f(r_max*nLayerToDraw/x_max, 0, 0);
-    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-               + nLayerToDraw*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight,
-               -depthStep);
-    glTexCoord3f(r_max*nLayerToDraw/x_max, s_max, 0);
-    glVertex3f(-widthStep + nColToDraw *max_texture_size*voxelWidth
-               + nLayerToDraw*voxelWidth,
-               heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
-               -depthStep);
-    glTexCoord3f(r_max*nLayerToDraw/x_max, s_max, t_max);
-    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-               + nLayerToDraw*voxelWidth,
-               heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
-               depthStep);
-    glTexCoord3f(r_max*nLayerToDraw/x_max, 0, t_max);
-    glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-               + nLayerToDraw*voxelWidth,
-               heightStep - nRowToDraw*max_texture_size*voxelHeight,
-               depthStep);
-    glEnd();
-  }
-  else
-    glColor3f(0.0,1.0,0.0);
-
-
-  glDisable(GL_TEXTURE_3D);
-//   glColor3f(0.0,0.7,0.0);
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-             + nLayerToDraw*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight,
-             -depthStep);
-  glVertex3f(-widthStep + nColToDraw *max_texture_size*voxelWidth
-             + nLayerToDraw*voxelWidth,
-             heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
-             -depthStep);
-  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-             + nLayerToDraw*voxelWidth,
-             heightStep - (nRowToDraw+increment_height)*max_texture_size*voxelHeight,
-             depthStep);
-  glVertex3f(-widthStep + nColToDraw*max_texture_size*voxelWidth
-             + nLayerToDraw*voxelWidth,
-             heightStep - nRowToDraw*max_texture_size*voxelHeight,
-             depthStep);
-  glEnd();
-}
 
 
 template <class T, class U>
@@ -1505,7 +1143,7 @@ void Cube<T,U>::draw_orientation_grid(bool include_split, bool min_max)
 {
 
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   //In object coordinates, we will draw the cube
   GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
@@ -1674,7 +1312,7 @@ void Cube<T,U>::delete_alphas(int ni, int nj, int nk)
 }
 
 
-
+/*
 template <class T, class U>
 void Cube<T,U>::draw
 (float rotx, float roty, float nPlanes,
@@ -1684,7 +1322,7 @@ void Cube<T,U>::draw
   int nMatrices = 0;
 
   GLint max_texture_size = 0;
-  glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
 
   //  draw_orientation_grid(false, min_max);
@@ -2122,6 +1760,7 @@ void Cube<T,U>::draw
 //         glColor3f(1.0,1.0,1.0);
 
       glEnable(GL_BLEND);
+      #ifdef WITH_GLEW
       if(blendFunction == MIN_MAX)
         {
           if(min_max == 0)
@@ -2144,7 +1783,7 @@ void Cube<T,U>::draw
 
       glEnable(GL_TEXTURE_3D);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
-
+#endif
       glEdgeFlag(GL_FALSE);
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 //       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -2161,12 +1800,12 @@ void Cube<T,U>::draw
                      intersectionPoints[indexes[i]][2]);
         }
       glEnd();
-
+#ifdef WITH_GLEW
       glDisable(GL_TEXTURE_3D);
       glDisable(GL_BLEND);
       glDisable(GL_ALPHA_TEST); // Test AL
       //glDisable(GL_STENCIL_TEST);
-
+#endif
       //Draws an sphere on all the intersection points
       if(0)
         {
@@ -2214,3 +1853,4 @@ void Cube<T,U>::draw
   glMultMatrixf(pModelViewMatrix);
 }
 //End of drwa
+*/

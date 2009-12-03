@@ -18,10 +18,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdarg.h>
-#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#ifdef _WIN32
+#else
 #include <sys/syscall.h>
+#include <sys/mman.h>
+#endif
 
 //C++ libraries (sometimes used)
 #include <string>
@@ -35,7 +39,6 @@
 #include <algorithm>
 #include <cctype>
 #include <typeinfo>
-
 //For some math stuff
 #ifdef WITH_GSL
 #include <gsl/gsl_math.h>

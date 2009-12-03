@@ -17,7 +17,7 @@ public:
   // virtual void print(){
     // printf("Up\n");
   // }
-  virtual void print()=0;
+  virtual void print() {printf("Up\n");}
 
   virtual void printUp(){
     print();
@@ -75,12 +75,18 @@ int main(int argc, char **argv) {
   A*  a = new A();
   B*  b = new B();
   A*  c = new C();
+  Up* u = new Up();
 
   vector< Up* > v;
   // v.push_back(up);
   v.push_back(a);
   v.push_back(b);
   v.push_back(c);
+  v.push_back(u);
   printv(v);
+
+  printf("And Up says ");
+  u->print();
+  printf("\n");
 
 }

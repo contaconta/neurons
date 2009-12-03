@@ -51,6 +51,10 @@ void EdgeW< P >::draw(){
 //             0,
 //             1-w);
   glEnable(GL_LINE_SMOOTH);
+  glLineWidth(2.0);
+  Edge<P>::draw();
+  glLineWidth(1.0);
+
   if(0){
     glColor3f(140.0/255,40.0/255,40.0/255);
     glLineWidth(12.0);
@@ -63,7 +67,7 @@ void EdgeW< P >::draw(){
     glLineWidth(1.0);
   }
 
-  if(1){
+  if(0){  //cvpr10 style
     glColor3f(140.0/255,40.0/255,40.0/255);
     glLineWidth(6.0);
     Edge<P>::draw();
@@ -87,14 +91,19 @@ void EdgeW< P >::draw(){
     vector< double > pt(3);
     glColor3f(0,0,0);
     if(this->p0>this->p1){
-      pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
-      pt[1] = ((*this->points)[this->p0]->coords[1] +  (*this->points)[this->p1]->coords[1])/2;
-      pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
-    }
-    else{
-      pt[0] = ((*this->points)[this->p0]->coords[0] +  (*this->points)[this->p1]->coords[0])/2;
-      pt[1] = ((*this->points)[this->p0]->coords[1] + 1 + (*this->points)[this->p1]->coords[1])/2;
-      pt[2] = ((*this->points)[this->p0]->coords[2] +  (*this->points)[this->p1]->coords[2])/2;
+      pt[0] = ((*this->points)[this->p0]->coords[0] +
+               (*this->points)[this->p1]->coords[0])/2;
+      pt[1] = ((*this->points)[this->p0]->coords[1] +
+               (*this->points)[this->p1]->coords[1])/2;
+      pt[2] = ((*this->points)[this->p0]->coords[2] +
+               (*this->points)[this->p1]->coords[2])/2;
+    }else{
+      pt[0] = ((*this->points)[this->p0]->coords[0] +
+               (*this->points)[this->p1]->coords[0])/2;
+      pt[1] = ((*this->points)[this->p0]->coords[1] + 1 +
+               (*this->points)[this->p1]->coords[1])/2;
+      pt[2] = ((*this->points)[this->p0]->coords[2] +
+               (*this->points)[this->p1]->coords[2])/2;
     }
     glPushMatrix();
     // glLoadIdentity();

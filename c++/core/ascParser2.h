@@ -183,7 +183,7 @@ public:
                 CELLBODY,
                 AXON,
                 DENDRITE,
-                ERROR,
+                ERRORN,
                 SECTIONS,
                 APICAL,
                 FONT,
