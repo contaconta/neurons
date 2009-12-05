@@ -1,8 +1,17 @@
 #include <list>
+#include "cv.h"
 
 using namespace std;
 
-void computeRays(const char *pImageName, double sigma, double angle, IplImage*& ray1);
+#define F_SOBEL 0
+#define F_CANNY 1
+
+// Parameter for canny filter
+const float edge_low_thresh = 27000;
+const float edge_up_thresh = 30000;
+const int apertureSize = 7;
+
+void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, int filterType);
 
 void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys);
 
