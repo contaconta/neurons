@@ -52,41 +52,41 @@ int main(int argc, char **argv) {
     Point3Dot::Type type;
 
     if( ((pt->type == Point3Dot::TrainingPositive)  &&
-         (cube->getValueAsFloat(x,y,z) > threshold) &&
+         (cube->get(x,y,z) > threshold) &&
           minMax)
         ||
         ((pt->type == Point3Dot::TrainingPositive)  &&
-         (cube->getValueAsFloat(x,y,z) < threshold) &&
+         (cube->get(x,y,z) < threshold) &&
          !minMax)
         )
       type = Point3Dot::TruePositive;
 
     if( ((pt->type == Point3Dot::TrainingPositive)  &&
-         (cube->getValueAsFloat(x,y,z) < threshold) &&
+         (cube->get(x,y,z) < threshold) &&
          minMax)
         ||
         ((pt->type == Point3Dot::TrainingPositive)  &&
-         (cube->getValueAsFloat(x,y,z) > threshold) &&
+         (cube->get(x,y,z) > threshold) &&
          !minMax)
         )
       type = Point3Dot::FalseNegative;
 
     if( ((pt->type == Point3Dot::TrainingNegative)  &&
-         (cube->getValueAsFloat(x,y,z) > threshold) &&
+         (cube->get(x,y,z) > threshold) &&
          minMax)
         ||
         ((pt->type == Point3Dot::TrainingNegative)  &&
-         (cube->getValueAsFloat(x,y,z) < threshold) &&
+         (cube->get(x,y,z) < threshold) &&
          !minMax)
         )
       type = Point3Dot::FalsePositive;
 
     if( ((pt->type == Point3Dot::TrainingNegative)  &&
-         (cube->getValueAsFloat(x,y,z) < threshold) &&
+         (cube->get(x,y,z) < threshold) &&
          minMax)
         ||
         ((pt->type == Point3Dot::TrainingNegative)  &&
-         (cube->getValueAsFloat(x,y,z) > threshold) &&
+         (cube->get(x,y,z) > threshold) &&
          !minMax)
         )
       type = Point3Dot::TrueNegative;
