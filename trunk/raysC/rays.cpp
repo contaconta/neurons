@@ -118,13 +118,16 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   angle = fmod(angle,360.0);
   if (angle < 0)
     angle += 360;
+
+  // convert to radians
+  angle = angle * (PI/180.0);
   
   // get a scamline in direction angle
   list<int> xs;
   list<int> ys;
   linepoints(img->width,img->height,angle,xs,ys);
 
-  printf("size %d %d\n",xs.size(),ys.size());
+  //printf("size %d %d\n",xs.size(),ys.size());
 
   //for(int i = 0;i< xs.size(); i++)
   list<int>::iterator ix = xs.begin();
@@ -137,8 +140,11 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
     }
   cvSaveImage("img.png",img);
 
+  printf("ray1\n");
+
   // initialize the output matrices
   *ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
+  cvSet(*ray1, cvScalar(0)); // TODO : DEBUG ONLY !!!
   //IplImage* ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
   //IplImage* ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
 
@@ -152,11 +158,40 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   int steps_since_edge = 0;  // the border of the image serves as an edge
   uchar* ptrImgRay1;
   // if S touches the top & bottom of the image
-  if (((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315)))
+  //if (((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315)))
+  double m_angle = angle;
+  bool scan_left_right = false;
+  if( (((float)img->height)/(float)img->width) < tan(m_angle))
+    scan_left_right = true;
+  if(m_angle > PI/2.0f)
+    {
+      
+      //if(m_angle > 0.75*PI)
+      //  m_angle = PI-m_angle;
+      //else
+        m_angle = m_angle-(PI/2.0f);
+      
+      if( (((float)img->height)/(float)img->width) < tan(m_angle))
+        scan_left_right = false;
+      else
+        scan_left_right = true;
+      /*
+      if(m_angle > 0.75*PI)
+        m_angle = m_angle-(PI/2.0f);
+      else
+        m_angle = PI-m_angle;
+      */
+    }
+  printf("tan %f %f %f %f %d\n",m_angle,m_angle*180/PI,tan(m_angle),(((float)img->height)/img->width),
+         (float)((float)img->height/(float)img->width) < (float)tan(m_angle));
+
+  //if( (((float)img->height)/(float)img->width) < tan(m_angle))
+  if(scan_left_right)
     {
       // scan to the left
       int x_ofs = 0;
 
+      printf("scan to the left\n");
       do
         {
           //for(int i = 0;i < ys.size();i++)
@@ -208,8 +243,12 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       // scan to the right
       x_ofs = 1;
 
+      printf("scan to the right\n");
       do
         {
+
+          //printf("x_ofs %d",x_ofs);
+
           //for(int i = 0;i < ys.size();i++)
           //for(;ix != xs.end(); ix++,iy++)
           xj.clear();
@@ -219,10 +258,11 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
           for(;ix != xs.end(); ix++,iy++)
             {
               t = *ix + x_ofs;
-              //if(t >= img->width)
-              //  break;
-              yj.push_back(*iy);
-              xj.push_back(t);
+              if(t < img->width)
+                {
+                  yj.push_back(*iy);
+                  xj.push_back(t);
+                }
             }
 
           //for(int i = 0;i < yj.size();i++)
@@ -235,7 +275,8 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
 
               //if(x < 0 || y < 0)
               if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-                printf("r %d %d\n",x,y);
+                continue;
+                //printf("r %d %d\n",x,y);
 
               ptrImg = ((uchar*)(g->imageData + g->widthStep*y)) + x;
               if(*ptrImg != 0)
@@ -257,16 +298,26 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       // scan to the bottom
       int y_ofs = 0;
 
+      printf("scan to the bottom\n");
+
       do
         {
           //for(int i = 0;i < ys.size();i++)
           //for(;ix != xs.end(); ix++,iy++)
 
+          //ix = xs.end();
+          //ix--;
+          //printf("xs %d\n",*ix);
+          //iy = ys.end();
+          //iy--;
+          //printf("ys %d\n",*iy);
+
           xj.clear();
           yj.clear();
           ix = xs.begin();
           iy = ys.begin();
-          for(;iy != ys.end(); ix++,iy++)
+          //for(;iy != ys.end(); ix++,iy++)
+          for(;ix != xs.end(); ix++,iy++)
             {
               t = *iy + y_ofs;
               //if(t < 0)
@@ -385,9 +436,6 @@ else
     angle = Angle;
 end
   */
-
-  // convert to radians
-  angle = angle * (PI/180.0);
 
   // format the angle so it is between 0 and less than pi/2
   const float EPS = 0.001f;
@@ -532,164 +580,3 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
       ys.reverse();
     }
 }
-
-/*
-
-    // compute the gradient norm GN
-    MatrixN G(pGradient);
-    double GN = sqrt(sum((G.^2),3));
-
-% convert the Gradient G into unit vectors
-G = gradientnorm(G);
-v = double(v); eta = .00000001;
-mag = sqrt(  sum( (v.^2),3)) + eta;
-v = v ./ repmat(mag, [1 1 2]);
-
-
-% get a scanline in direction angle
-warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
-[Sr, Sc] = linepoints(E,angle);
-warning on MATLAB:nearlySingularMatrix; warning on MATLAB:singularMatrix;
-
-% initialize the output matrices
-RAY1 = zeros(size(E));  % distrance rays
-RAY3 = zeros(size(E));  % gradient orientation
-RAY4 = zeros(size(E));  % gradient norm
-
-% determine the unit vector in the direction of the Ray
-rayVector = unitvector(angle);
-
-% if S touches the top & bottom of the image
-if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
-    % SCAN TO THE LEFT!
-    j = 0;
-    c = Sc + j;
-    inimage = find(c > 0);
-    while ~isempty(inimage);
-        r = Sr(inimage);
-        c = Sc(inimage) + j;
-        steps_since_edge = 0;  % the border of the image serves as an edge
-        lastGN = 0;
-        lastGA = 1;
-        for i = 1:length(r);
-            if E(r(i),c(i)) == 1
-                steps_since_edge = 0;
-                lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-                %if isnan(lastGA); keyboard; end;
-                lastGN = GN(r(i),c(i));
-            end
-            RAY1(r(i),c(i)) = steps_since_edge;
-            RAY3(r(i),c(i)) = lastGA;
-            RAY4(r(i),c(i)) = lastGN;
-            steps_since_edge = steps_since_edge +1;
-        end
-        j = j-1;
-        c = Sc + j;
-        inimage = find(c > 0);
-    end
-
-
-    % SCAN TO THE RIGHT!
-    j = 1;
-    c = Sc + j;
-    inimage = find(c <= size(E,2));
-    while ~isempty(inimage);
-        r = Sr(inimage);
-        c = Sc(inimage) + j;
-        steps_since_edge = 0;  % the border of the image serves as an edge
-        lastGN = 0;
-        lastGA = 1;
-        for i = 1:length(r);
-            if E(r(i),c(i)) == 1
-                steps_since_edge = 0;
-                lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-                %if isnan(lastGA); keyboard; end;
-                lastGN = GN(r(i),c(i));
-            end
-            RAY1(r(i),c(i)) = steps_since_edge;
-            RAY3(r(i),c(i)) = lastGA;
-            RAY4(r(i),c(i)) = lastGN;
-            steps_since_edge = steps_since_edge +1;
-        end
-        j = j+1;
-        c = Sc + j;
-        inimage = find(c <= size(E,2));
-    end
-   
-% if S touches left & right of image (-pi/4 > angle > pi/4) or (3pi/4 > angle > 5pi/4)
-else
-    % SCAN TO THE bottom!
-    j = 0;
-    r = Sr + j;
-    inimage = find(r > 0);
-    while ~isempty(inimage);
-        r = Sr(inimage) + j;
-        c = Sc(inimage);
-        steps_since_edge = 0;  % the border of the image serves as an edge
-        lastGN = 0;
-        lastGA = 1;
-        for i = 1:length(r);
-            if E(r(i),c(i)) == 1
-                steps_since_edge = 0;
-                lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-                %if isnan(lastGA); keyboard; end;
-                lastGN = GN(r(i),c(i));
-            end
-            RAY1(r(i),c(i)) = steps_since_edge;
-            RAY3(r(i),c(i)) = lastGA;
-            RAY4(r(i),c(i)) = lastGN;
-            steps_since_edge = steps_since_edge +1;
-        end
-        j = j-1;
-        r = Sr + j;
-        inimage = find(r > 0);
-    end
-
-
-    % SCAN TO THE top!
-    j = 1;
-    r = Sr + j;
-    inimage = find(r <= size(E,1));
-    while ~isempty(inimage);
-        r = Sr(inimage) + j;
-        c = Sc(inimage);
-        steps_since_edge = 0;  % the border of the image serves as an edge
-        lastGN = 0;
-        lastGA = 1;
-        for i = 1:length(r);
-            if E(r(i),c(i)) == 1
-                steps_since_edge = 0;
-                lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-                %if isnan(lastGA); keyboard; end;
-                lastGN = GN(r(i),c(i));
-            end
-            RAY1(r(i),c(i)) = steps_since_edge;
-            RAY3(r(i),c(i)) = lastGA;
-            RAY4(r(i),c(i)) = lastGN;
-            steps_since_edge = steps_since_edge +1;
-        end
-        j = j+1;
-        r = Sr + j;
-        inimage = find(r <= size(E,1));
-    end
-end
-
-if stride ~= 1
-    RAY1 = RAY1(1:stride:size(RAY1,1), 1:stride:size(RAY1,2));
-    RAY3 = RAY3(1:stride:size(RAY3,1), 1:stride:size(RAY3,2));
-    RAY4 = RAY4(1:stride:size(RAY4,1), 1:stride:size(RAY4,2));
-end
-
-
-
-
-
-
-
-
-function v = gradientnorm(v)
-v = double(v); eta = .00000001;
-mag = sqrt(  sum( (v.^2),3)) + eta;
-v = v ./ repmat(mag, [1 1 2]);
-
-*/
