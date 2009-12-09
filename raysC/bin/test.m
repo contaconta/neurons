@@ -1,5 +1,5 @@
 img_name = {'mitochondria2.png'};
-rays(img_name,20,45);
+rays(img_name,20,220);
 
 g = imread('g.png');
 imagesc(g);
