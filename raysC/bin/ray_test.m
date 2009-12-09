@@ -3,6 +3,11 @@ function ray_test(angle)
 img_name = {'mitochondria2.png'};
 rays(img_name,20,angle);
 
-im = imread('ray1.png');
 figure;
+g = imread('img.png');
+imagesc(g);
+axis xy
+print -dpng img2.png
+
+im = imread('ray1.png');
 imagesc(im);
