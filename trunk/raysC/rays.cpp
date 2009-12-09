@@ -159,34 +159,11 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   uchar* ptrImgRay1;
   // if S touches the top & bottom of the image
   //if (((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315)))
-  double m_angle = angle;
-  bool scan_left_right = false;
-  if( (((float)img->height)/(float)img->width) < tan(m_angle))
-    scan_left_right = true;
-  if(m_angle > PI/2.0f)
-    {
-      
-      //if(m_angle > 0.75*PI)
-      //  m_angle = PI-m_angle;
-      //else
-        m_angle = m_angle-(PI/2.0f);
-      
-      if( (((float)img->height)/(float)img->width) < tan(m_angle))
-        scan_left_right = false;
-      else
-        scan_left_right = true;
-      /*
-      if(m_angle > 0.75*PI)
-        m_angle = m_angle-(PI/2.0f);
-      else
-        m_angle = PI-m_angle;
-      */
-    }
-  printf("tan %f %f %f %f %d\n",m_angle,m_angle*180/PI,tan(m_angle),(((float)img->height)/img->width),
-         (float)((float)img->height/(float)img->width) < (float)tan(m_angle));
 
-  //if( (((float)img->height)/(float)img->width) < tan(m_angle))
-  if(scan_left_right)
+  if(angle > PI/2.0f)
+    angle = PI-angle;
+
+  if( (((float)img->height)/(float)img->width) < fabs(tan(angle)))
     {
       // scan to the left
       int x_ofs = 0;
@@ -480,7 +457,8 @@ end
       start_x = 0;
       start_y = img_height-1;
       end_x = img_width-1;
-      end_y = img_height-img_height*tan(PI - angle);
+      end_y = img_height-img_width*tan(PI - angle);
+      //end_y = img_height-img_height*tan(angle);
       if(end_y > 0)
         end_y--;
 
