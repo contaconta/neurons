@@ -124,13 +124,15 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   list<int> ys;
   linepoints(img->width,img->height,angle,xs,ys);
 
+  printf("size %d %d\n",xs.size(),ys.size());
+
   //for(int i = 0;i< xs.size(); i++)
   list<int>::iterator ix = xs.begin();
   list<int>::iterator iy = ys.begin();
   for(;ix != xs.end(); ix++,iy++)
     {
       if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-        printf("%d %d\n",*ix,*iy);
+        printf("Warning : %d %d\n",*ix,*iy);
       cvSet2D(img,*iy,*ix,cvScalar(0));
     }
   cvSaveImage("img.png",img);
@@ -217,8 +219,8 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
           for(;ix != xs.end(); ix++,iy++)
             {
               t = *ix + x_ofs;
-              if(t >= img->width)
-                break;
+              //if(t >= img->width)
+              //  break;
               yj.push_back(*iy);
               xj.push_back(t);
             }
@@ -403,12 +405,25 @@ end
   int start_y;
   int end_x;
   int end_y;
-  if ((angle >= 0 ) && (angle <= PI/2.0))
+
+  if((angle > PI/2-EPS) && (angle < PI/2+EPS))
+    {
+      // straight line on y axis
+      start_x = 0;
+      start_y = 0;
+      end_x = 0;
+      end_y = img_width;
+
+      intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
+    }
+  else if ((angle >= 0 ) && (angle <= PI/2.0))
     {
       start_x = 0;
       start_y = 0;
       end_x = img_width-1;
-      end_y = img_width*tan(angle)-1;
+      end_y = img_width*tan(angle);
+      if(end_y > 0)
+        end_y--;
 
       intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
     }
@@ -417,7 +432,9 @@ end
       start_x = 0;
       start_y = img_height-1;
       end_x = img_width-1;
-      end_y = img_height*tan(PI - angle)-1;
+      end_y = img_height-img_height*tan(PI - angle);
+      if(end_y > 0)
+        end_y--;
 
       intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
     }
@@ -473,13 +490,16 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
         }
 
       double m = (y2 - y1)/(double)(x2 - x1);
-      printf("m %f\n",m);
+      printf("m1 %f %d %d\n",m,x1,x2);
       int y;
       for(int x = x1;x<=x2;x++)
         {
           y = round(y1 + m*(x - x1));
           if(x< 0 || x>=img_width || y < 0 || y >= img_height)
-            break;
+            {
+              printf("w %d %d\n",x,y);
+              continue; //break;
+            }
           xs.push_back(x);
           ys.push_back(y);
         }
@@ -494,13 +514,13 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
           flip = true;
         }
       double m = (x2 - x1)/(double)(y2 - y1);
-      printf("m %f\n",m);
+      printf("m2 %f %d %d\n",m,y1,y2);
       int x;
       for(int y = y1;y<=y2;y++)
         {
           x = round(x1 + m*(y - y1));
           if(x< 0 || x>=img_width || y < 0 || y >= img_height)
-            break;
+            continue; //break;
           xs.push_back(x);
           ys.push_back(y);
         }
