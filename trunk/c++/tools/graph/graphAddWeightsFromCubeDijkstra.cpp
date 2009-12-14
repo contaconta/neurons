@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
   Graph<Point3D, EdgeW<Point3D> >* orig =
     new   Graph<Point3D, EdgeW<Point3D> >(origGraphName);
   Graph<Point3D, EdgeW<Point3D> >* dest =
-    new   Graph<Point3D, EdgeW<Point3D> >();
+    new   Graph<Point3D, EdgeW<Point3D> >(orig->cloud);
   Cube<float, double>* probs = new Cube<float, double>(cubeProbsName);
 
 
