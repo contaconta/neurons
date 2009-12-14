@@ -426,4 +426,3 @@ vector< Cloud< Point3D >*> CubeLiveWire::goThroughBordersCloud(int nClouds)
 
   return toReturn;
 }
-
