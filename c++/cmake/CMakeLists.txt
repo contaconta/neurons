@@ -14,7 +14,7 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-#set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
 set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
@@ -288,6 +288,9 @@ target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 
 ################################################################################
 ## image tools
+add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
+target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
+
 add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
 target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 
@@ -336,6 +339,9 @@ ENDIF(${GLEW_FOUND})
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
+add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
+target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
+
 add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
 target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
 
@@ -382,6 +388,9 @@ target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
 
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
+target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})
 
 add_executable(checkNonMaxSup ${CMAKE_SOURCE_DIR}/../tests/checkNonMaxSup.cpp)
 target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
