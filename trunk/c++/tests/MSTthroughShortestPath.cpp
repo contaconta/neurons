@@ -57,6 +57,7 @@ public:
                 ratioZ*ratioZ*(z0-z1)*(z0-z1));
     float p1 = cubeFloat->at(x0,y0,z0);
     float p2 = cubeFloat->at(x1,y1,z1);
+    //Cost Pascal
     if(fabs(p1-p2) < 1e-4) return -dist*log10(p1);
     return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
 

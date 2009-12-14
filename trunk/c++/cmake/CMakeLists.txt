@@ -339,6 +339,9 @@ ENDIF(${GLEW_FOUND})
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
+add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
+target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
+
 add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
 target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 

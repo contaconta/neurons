@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
 #include <fstream>
-#include "SWF.h"
+#include "SWC.h"
 #include <pthread.h>
 
 using namespace std;
@@ -98,8 +98,8 @@ void addObjectFromString(string name)
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
-  else if ((extension == "swf") || (extension == "SWF"))  {
-    toDraw.push_back(new SWF(name));
+  else if ((extension == "swc") || (extension == "SWC"))  {
+    toDraw.push_back(new SWC(name));
   }
   else if( extension == "cbt"){
     cube = new Cube_T(name);
@@ -121,10 +121,6 @@ void addObjectFromString(string name)
     toDraw.push_back(gr);
   } else if (extension == "cl"){
     Cloud_P* cd = CloudFactory::load(name);
-    toDraw.push_back(cd);
-  }
-  else if (extension == "swc"){
-    SWF* cd = new SWF(name);
     toDraw.push_back(cd);
   }
   else if ((extension == "jpg") || (extension == "png"))  {

@@ -23,6 +23,18 @@
 
 using namespace std;
 
+//Auxiliary class for the points in the dijkstra algorithm
+class PD
+{
+public:
+  int idx;
+  int prev;
+  PD(int _idx, int _prev){
+    idx = _idx; prev = _prev;
+  }
+};
+
+
 void computeAuxStructures
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< vector< float > >& distanceMatrix,
@@ -46,15 +58,6 @@ void computeAuxStructures
   }
 }
 
-class PD
-{
-public:
-  int idx;
-  int prev;
-  PD(int _idx, int _prev){
-    idx = _idx; prev = _prev;
-  }
-};
 
 void runDijkstra
 (Graph<Point3D, EdgeW<Point3D> >* gr,
@@ -136,10 +139,11 @@ void allShortestPaths
   // Temporal variables
   vector< vector< float > > distanceMatrix;
   vector< vector< int   > > neighbors;
-  computeAuxStructures(gr, distanceMatrix, neighbors);
   vector< float > distances;
   vector< int   > previous ;
   vector< int   > path;
+
+  computeAuxStructures(gr, distanceMatrix, neighbors);
 
   // Output
   int nPoints = gr->cloud->points.size();
@@ -169,5 +173,4 @@ int main(int argc, char **argv) {
   vector< vector< vector< int   > > > paths;
   vector< vector< float > > costs;
   allShortestPaths(gr, paths, costs);
-
 }

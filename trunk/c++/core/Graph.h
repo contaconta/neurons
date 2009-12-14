@@ -63,6 +63,14 @@ public:
       that have are connected to it by only one edge. */
   vector<int> findLeaves();
 
+  /** Each vector in the return object contains a list of the neighbors that
+      point has in the graph.*/
+  vector< vector< int > > findNeighbors();
+
+  /** Elliminates duplicated edges. It will keep only the first one if there is
+      a duplication.*/
+  void removeDuplicatedEdges();
+
 } ;
 
 // FOR THE MOMENT THE DEFINITIONS GO HERE, BUT NEED TO BE TAKEN OUT
@@ -463,8 +471,7 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
   // Allocation of a NxN matrix that will store the distances
   //  and a pseudo-matrix to store the neighbors
   printf("Graph<P,E>::primFromThisGraphFast initializing the data structures\n");
-  vector< vector< int > > neighbors;
-  neighbors.resize(cloud->points.size());
+  vector< vector< int > > neighbors = findNeighbors();
   vector< vector< double > > distances;
   distances.resize(cloud->points.size());
   for(int i = 0; i < cloud->points.size(); i++){
@@ -475,8 +482,6 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
       distances[i][j] = DBL_MAX;
 
   for(int i = 0; i < eset.edges.size(); i++){
-    neighbors[eset.edges[i]->p0].push_back(eset.edges[i]->p1);
-    neighbors[eset.edges[i]->p1].push_back(eset.edges[i]->p0);
     EdgeW<P> * edg = dynamic_cast<EdgeW<P>* >(eset.edges[i]);
     distances[eset.edges[i]->p0][eset.edges[i]->p1] = edg->w;
     distances[eset.edges[i]->p1][eset.edges[i]->p0] = edg->w;
@@ -540,6 +545,17 @@ Graph<Point3D, EdgeW<Point3D> >* Graph<P,E>::primFromThisGraphFast()
   return toReturn;
 }
 
+template< class P, class E>
+vector< vector<int> > Graph<P,E>::findNeighbors()
+{
+  vector< vector< int > > neighbors(cloud->points.size());
+  for(int i = 0; i < eset.edges.size(); i++){
+    neighbors[eset.edges[i]->p0].push_back(eset.edges[i]->p1);
+    neighbors[eset.edges[i]->p1].push_back(eset.edges[i]->p0);
+  }
+  return neighbors;
+}
+
 
 
 template< class P, class E>
@@ -571,5 +587,33 @@ vector<int> Graph<P,E>::findLeaves()
   }
         return leaves;
 }
+
+template< class P, class E>
+void Graph<P,E>::removeDuplicatedEdges()
+{
+  int nPoints = cloud->points.size();
+  vector< vector< int > > visited(nPoints);
+  vector< int > toDelete;
+  int p0; int p1;
+  for(int i = 0; i < nPoints; i++){
+    visited[i].resize(nPoints);
+    for(int j = 0; j < nPoints; j++)
+      visited[i][j] = 0;
+  }
+  for(int i = 0; i < eset.edges.size(); i++){
+    p0 = eset.edges[i]->p0;
+    p1 = eset.edges[i]->p1;
+    if(visited[p0][p1] == 0){
+      visited[p0][p1] = 1;
+      visited[p1][p0] = 1;
+    }
+    else{
+      toDelete.push_back(i);
+    }
+  }
+  for(int i = toDelete.size()-1; i >=0; i--)
+    eset.edges.erase(i);
+}
+
 
 #endif

@@ -109,11 +109,11 @@ int main(int argc, char **argv) {
   for(int j = 0; j < nthreads; j++){
     cptGraphs[j] =
       new Graph<Point3D, EdgeW< Point3D> >(orig->cloud);
-    cubes[i] = new Cube<float, double>
+    cubes[j] = new Cube<float, double>
       (cubeProbsName);
     DMST* djkc
-      = new DMST(cubes[i]);
-    cubeLiveWires[i] = new CubeLiveWire(cubes[i], djkc);
+      = new DMST(cubes[j]);
+    cubeLiveWires[j] = new CubeLiveWire(cubes[j], djkc);
   }
 
   vector< vector< int > > neighbors = orig->findNeighbors();
@@ -133,23 +133,23 @@ int main(int argc, char **argv) {
     vector<float> micsDest(3);
     char graphName[1024];
     printf("Computing distances for point %i with thread %i\n", nP, nth);
-    micsOrig[0] = orig->cloud->points[nP].coords[0];
-    micsOrig[1] = orig->cloud->points[nP].coords[1];
-    micsOrig[2] = orig->cloud->points[nP].coords[2];
+    micsOrig[0] = orig->cloud->points[nP]->coords[0];
+    micsOrig[1] = orig->cloud->points[nP]->coords[1];
+    micsOrig[2] = orig->cloud->points[nP]->coords[2];
     cubes[nth]->micrometersToIndexes(micsOrig, idxsOrig);
 
     //Finding the region of interest to compute dijkstra
-    int xInit=cubes[i]->cubeWidth;
+    int xInit=cubes[nth]->cubeWidth;
     int xEnd = 0;
-    int yInit=cubes[i]->cubeHeight;
+    int yInit=cubes[nth]->cubeHeight;
     int yEnd=0;
-    int zInit=cubes[i]->cubeDepth;
+    int zInit=cubes[nth]->cubeDepth;
     int zEnd=0;
     //We might be doing some extra computations in here
     for(int i = 0; i < neighbors[nP].size(); i++){
-      micsDest[0] = orig->cloud->points[neighbors[nP][i]].coords[0];
-      micsDest[1] = orig->cloud->points[neighbors[nP][i]].coords[1];
-      micsDest[2] = orig->cloud->points[neighbors[nP][i]].coords[2];
+      micsDest[0] = orig->cloud->points[neighbors[nP][i]]->coords[0];
+      micsDest[1] = orig->cloud->points[neighbors[nP][i]]->coords[1];
+      micsDest[2] = orig->cloud->points[neighbors[nP][i]]->coords[2];
       cubes[nth]->micrometersToIndexes(micsDest, idxsDest);
       if(idxsDest[0] < xInit) xInit = idxsDest[0];
       if(idxsDest[0] > xEnd)  xEnd  = idxsDest[0];
@@ -168,12 +168,56 @@ int main(int argc, char **argv) {
     cubeLiveWires[nth]->computeDistances(idxsOrig[0], idxsOrig[1], idxsOrig[2]);
 
     for(int i = 0; i < neighbors[nP].size(); i++){
+      if(i <= nP) continue; //to prevent double edges
+      micsDest[0] = orig->cloud->points[neighbors[nP][i]]->coords[0];
+      micsDest[1] = orig->cloud->points[neighbors[nP][i]]->coords[1];
+      micsDest[2] = orig->cloud->points[neighbors[nP][i]]->coords[2];
+      cubes[nth]->micrometersToIndexes(micsDest, idxsDest);
+      Graph<Point3D, EdgeW<Point3D> >* shortestPath =
+        cubeLiveWires[nth]->findShortestPathG(idxsOrig[0] ,idxsOrig[1] ,idxsOrig[2],
+                                              idxsDest[0], idxsDest[1], idxsDest[2]);
+      sprintf(graphName,
+              "%s/path_%04i_%04i.gr", destGraphsPaths.c_str(), nP, neighbors[nP][i]);
+      double cost = 0;
+      for(int nedge=0; nedge < shortestPath->eset.edges.size(); nedge++){
+        EdgeW<Point3D>* edge = dynamic_cast<EdgeW<Point3D>*>
+          (shortestPath->eset.edges[nedge]);
+        cost += edge->w;
+      }
 
-    }
-
-
-
+      shortestPath->cloud->v_r = cost;
+      shortestPath->cloud->v_g = 1-cost;
+      shortestPath->cloud->v_b = 0;
+      // shortestPath->cloud->v_b = gsl_rng_uniform(r);
+      shortestPath->cloud->v_radius = 0.4;
+      shortestPath->saveToFile(graphName);
+      double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
+                           (microm2[1]-microm[1])*(microm2[1]-microm[1]) +
+                           (microm2[2]-microm[2])*(microm2[2]-microm[2]) );
+      cptGraphs[nth]->eset.edges.push_back
+        (new EdgeW< Point3D>
+         (&cptGraphs[nth]->cloud->points, nP,neighbors[nP][i],
+          cost ) );
+    }//end of finding the path
   }//end of the loops
+
+  //Now we merge the complete Graph
+  printf("Building the complete graph\n"); fflush(stdout);
+  for(int j = 0; j < nthreads; j++){
+    for(int i = 0; i < cptGraphs[j]->eset.edges.size(); i++){
+      EdgeW<Point3D>* edgeToAdd =
+        dynamic_cast<EdgeW<Point3D>*>(cptGraphs[j]->eset.edges[i]);
+      dest->eset.edges.push_back
+        (new EdgeW< Point3D > ( &dest->cloud->points,
+                                edgeToAdd->p0,
+                                edgeToAdd->p1,
+                                edgeToAdd->w )
+         );
+    }
+  }
+
+
+  dest->saveToFile(destGraphName);
 
 
 }

@@ -34,5 +34,4 @@ int main(int argc, char **argv) {
     new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
   Graph<Point3D, EdgeW<Point3D> >* mst = cpt->primFromThisGraphFast();
   mst->saveToFile(argv[2]);
-
 }
