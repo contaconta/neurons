@@ -76,8 +76,8 @@ int main(int argc, char **argv) {
   }
   string origGraphName(argv[1]);
   string cubeProbsName(argv[2]);
-  string destGraphsPaths(argv[3]);
-  string destGraphName(argv[4]);
+  string destGraphName(argv[3]);
+  string destGraphsPaths(argv[4]);
 
   //In out
   Graph<Point3D, EdgeW<Point3D> >* orig =
@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
 #ifdef WITH_OPENMP
 #pragma omp parallel for
 #endif
-  for(int nP = 0; nP < endPoint; nP ++){
+   for(int nP = 0; nP < endPoint-1; nP ++){
     int nth = 0;
 #ifdef WITH_OPENMP
     nth = omp_get_thread_num();
@@ -132,31 +132,30 @@ int main(int argc, char **argv) {
     vector<float> micsOrig(3);
     vector<float> micsDest(3);
     char graphName[1024];
-    printf("Computing distances for point %i with thread %i\n", nP, nth);
     micsOrig[0] = orig->cloud->points[nP]->coords[0];
     micsOrig[1] = orig->cloud->points[nP]->coords[1];
     micsOrig[2] = orig->cloud->points[nP]->coords[2];
     cubes[nth]->micrometersToIndexes(micsOrig, idxsOrig);
 
     //Finding the region of interest to compute dijkstra
-    int xInit=cubes[nth]->cubeWidth;
-    int xEnd = 0;
-    int yInit=cubes[nth]->cubeHeight;
-    int yEnd=0;
-    int zInit=cubes[nth]->cubeDepth;
-    int zEnd=0;
+    int xInit= idxsOrig[0]-1;
+    int xEnd = idxsOrig[0]+1;
+    int yInit= idxsOrig[1]-1;
+    int yEnd = idxsOrig[1]+1;
+    int zInit= idxsOrig[2]-1;
+    int zEnd = idxsOrig[2]+1;
     //We might be doing some extra computations in here
     for(int i = 0; i < neighbors[nP].size(); i++){
       micsDest[0] = orig->cloud->points[neighbors[nP][i]]->coords[0];
       micsDest[1] = orig->cloud->points[neighbors[nP][i]]->coords[1];
       micsDest[2] = orig->cloud->points[neighbors[nP][i]]->coords[2];
       cubes[nth]->micrometersToIndexes(micsDest, idxsDest);
-      if(idxsDest[0] < xInit) xInit = idxsDest[0];
-      if(idxsDest[0] > xEnd)  xEnd  = idxsDest[0];
-      if(idxsDest[1] < yInit) yInit = idxsDest[1];
-      if(idxsDest[1] > yEnd)  yEnd  = idxsDest[1];
-      if(idxsDest[2] < zInit) zInit = idxsDest[2];
-      if(idxsDest[2] > zEnd)  zEnd  = idxsDest[2];
+      if(idxsDest[0] < xInit) xInit = idxsDest[0]-1;
+      if(idxsDest[0] > xEnd)  xEnd  = idxsDest[0]+1;
+      if(idxsDest[1] < yInit) yInit = idxsDest[1]-1;
+      if(idxsDest[1] > yEnd)  yEnd  = idxsDest[1]+1;
+      if(idxsDest[2] < zInit) zInit = idxsDest[2]-1;
+      if(idxsDest[2] > zEnd)  zEnd  = idxsDest[2]+1;
     }
     cubeLiveWires[nth]->iROIx = max(0, xInit);
     cubeLiveWires[nth]->iROIy = max(0, yInit);
@@ -165,14 +164,29 @@ int main(int argc, char **argv) {
     cubeLiveWires[nth]->eROIy = min((int)cubes[nth]->cubeHeight-1, yEnd);
     cubeLiveWires[nth]->eROIz = min((int)cubes[nth]->cubeDepth -1, zEnd);
 
+    printf("Analyzing point %04i, thread %04i y positions [%04i,%04i,%04i]\n", nP, nth,
+           xEnd-xInit, yEnd-yInit, zEnd-zInit);
     cubeLiveWires[nth]->computeDistances(idxsOrig[0], idxsOrig[1], idxsOrig[2]);
 
+    printf("and cubelivewire should be done\n");
+
     for(int i = 0; i < neighbors[nP].size(); i++){
-      if(i <= nP) continue; //to prevent double edges
+      if(neighbors[nP][i] <= nP) continue; //to prevent double edges
       micsDest[0] = orig->cloud->points[neighbors[nP][i]]->coords[0];
       micsDest[1] = orig->cloud->points[neighbors[nP][i]]->coords[1];
       micsDest[2] = orig->cloud->points[neighbors[nP][i]]->coords[2];
       cubes[nth]->micrometersToIndexes(micsDest, idxsDest);
+      printf("Csp beetween [%i,%i,%i] and [%i,%i,%i]"
+             "where the limits are [%i,%i,%i]->[%i,%i,%i]\n",
+             idxsOrig[0] ,idxsOrig[1] ,idxsOrig[2],
+             idxsDest[0], idxsDest[1], idxsDest[2],
+             cubeLiveWires[nth]->iROIx,
+             cubeLiveWires[nth]->iROIy,
+             cubeLiveWires[nth]->iROIz,
+             cubeLiveWires[nth]->eROIx,
+             cubeLiveWires[nth]->eROIy,
+             cubeLiveWires[nth]->eROIz);
+             
       Graph<Point3D, EdgeW<Point3D> >* shortestPath =
         cubeLiveWires[nth]->findShortestPathG(idxsOrig[0] ,idxsOrig[1] ,idxsOrig[2],
                                               idxsDest[0], idxsDest[1], idxsDest[2]);
@@ -190,6 +204,7 @@ int main(int argc, char **argv) {
       shortestPath->cloud->v_b = 0;
       // shortestPath->cloud->v_b = gsl_rng_uniform(r);
       shortestPath->cloud->v_radius = 0.4;
+      printf("saving path in %s\n", graphName);
       shortestPath->saveToFile(graphName);
       double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
                            (microm2[1]-microm[1])*(microm2[1]-microm[1]) +
@@ -199,7 +214,9 @@ int main(int argc, char **argv) {
          (&cptGraphs[nth]->cloud->points, nP,neighbors[nP][i],
           cost ) );
     }//end of finding the path
+    printf("Point completed  %04i, thread %04i.\n", nP, nth);
   }//end of the loops
+  //  exit(0);
 
   //Now we merge the complete Graph
   printf("Building the complete graph\n"); fflush(stdout);

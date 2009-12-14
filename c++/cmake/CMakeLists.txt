@@ -28,7 +28,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -D _WIN32")
 ENDIF(WIN32)
 
 ## Need to check for openmp
-##set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 
 message("Hostname = " ${HOST} ", using the following CXX compiler: "
   ${CMAKE_CXX_COMPILER})
