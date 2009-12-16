@@ -47,9 +47,9 @@ void EdgeW< P >::draw(){
 
   glGetFloatv(GL_CURRENT_COLOR, currCol);
 
-  glColor3f(w,
-            0,
-            1-w);
+  // glColor3f(w,
+            // 0,
+            // 1-w);
   glEnable(GL_LINE_SMOOTH);
   glLineWidth(2.0);
   Edge<P>::draw();
@@ -89,7 +89,7 @@ void EdgeW< P >::draw(){
   // To draw the value of the edge
   if(0){
     vector< double > pt(3);
-    glColor3f(0,0,0);
+    glColor3f(0,1.0,0);
     if(this->p0>this->p1){
       pt[0] = ((*this->points)[this->p0]->coords[0] +
                (*this->points)[this->p1]->coords[0])/2;

@@ -153,12 +153,33 @@ void Graph<P,E>::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
+
+    //Standard drawing proccedure
     if(1){
       VisibleE::draw();
-      eset.draw();
-      cloud->draw();
+      // cloud->draw();
+      if(typeid(E) == typeid(EdgeW<Point3D>)){
+        printf("And here the reescaling will go\n");
+        float edgeMin = FLT_MAX; float edgeMax = FLT_MIN;
+        for(int nE = 0; nE < eset.edges.size(); nE++){
+          EdgeW<Point3D>* e = dynamic_cast<EdgeW<Point3D>* >(eset.edges[nE]);
+          if(e->w > edgeMax) edgeMax = e->w;
+          if(e->w < edgeMin) edgeMin = e->w;
+        }
+        for(int nE = 0; nE < eset.edges.size(); nE++){
+          EdgeW<Point3D>* e = dynamic_cast<EdgeW<Point3D>* >(eset.edges[nE]);
+          float color = (e->w - edgeMin)/(edgeMax-edgeMin);
+          glColor3f(color, 0, 1-color);
+          eset.edges[nE]->draw();
+        }
+        glColor3f(1.0,1.0,1.0);
+      }
+      else
+        eset.draw();
     }
-    else {
+
+
+    if(0) {
       int idx0, idx1;
       idx0 = eset.edges[0]->p1;
       idx1 = eset.edges[eset.edges.size()-1]->p0;

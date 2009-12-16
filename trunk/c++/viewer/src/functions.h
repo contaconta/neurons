@@ -47,3 +47,6 @@ void scrollAsc(GtkWidget       *widget,
                gpointer         user_data);
 
 
+Cube<uchar, ulong>* loadImageStackFromSFC
+(string directory, string fileFormat, int layerBegin, int layerEnd,
+ float voxelWidth, float voxelHeight, float voxelDepth);

@@ -25,7 +25,15 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-  Image<float> * img  = new Image<float>("/media/neurons/findSoma/n7.jpg");
+  if(argc!=3){
+    printf("Usage: imageFindSoma img soma.gr\n");
+    exit(0);
+  }
+
+  string nameImg(argv[1]);
+  string nameGraph(argv[2]);
+
+  Image<float> * img  = new Image<float>(nameImg);
   IntegralImage* iimg = new IntegralImage(img);
 
   // Image<float>* res1 = img->create_blank_image_float("/media/neurons/findSoma/n7s1.png");
@@ -107,6 +115,6 @@ int main(int argc, char **argv) {
     (new EdgeW<Point2Do>(&gr->cloud->points, 0, gr->cloud->points.size()-1, 1));
   gr->v_radius = 0.2;
   gr->cloud->v_radius = 0.2;
-  gr->saveToFile("/media/neurons/findSoma/contour.gr");
+  gr->saveToFile(nameGraph);
 
 }

@@ -150,6 +150,17 @@ void addObjectFromString(string name)
     }
     printf("\n");
   }
+  else if (extension == "stc") {
+    Configuration* conf = new Configuration(name);
+    Cube<uchar, ulong>* cube =
+      loadImageStackFromSFC
+      (conf->retrieve("directory"),
+       conf->retrieve("format"),
+       conf->retrieveInt("layerInit"), conf->retrieveInt("layerEnd"),
+       conf->retrieveFloat("voxelWidth"), conf->retrieveFloat("voxelHeight"),
+       conf->retrieveFloat("voxelDepth"));
+    toDraw.push_back(cube);
+  }
   else{
     printf("neseg::on_drawing3D_realize:: unknown file type %s, exiting... \n",
            name.c_str());
@@ -161,7 +172,6 @@ void addObjectFromString(string name)
   if(majorMode == MOD_SCREENSHOT){
     pthread_create(&screenShotThread, NULL, saveScreenShotThreadF, NULL);
   }
-
 
 }
 
@@ -571,8 +581,41 @@ on_open_4d_stack1_activate             (GtkMenuItem     *menuitem,
 
 }
 
+void
+on_projectionComboBox_changed          (GtkComboBox     *combobox,
+                                        gpointer         user_data)
+{
+  gint active = gtk_combo_box_get_active(combobox);
+  if(!flag_initializing_GUI)
+    {
+      switch(active)
+        {
+        case 0:
+          flag_minMax = 0;
+          break;
+        case 1:
+          flag_minMax = 1;
+          break;
+        default:
+          break;
+        }
+    }
+  for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+      itObj != toDraw.end(); itObj++)
+    {
+      if( ((*itObj)->className()=="Cube") ||
+               ((*itObj)->className()=="Cube_T") ||
+               ((*itObj)->className()=="Cube_P")
+               ){
+        Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
+        cubeDraw->v_draw_projection = flag_minMax;
+      }
+    }
 
 
+
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
+}
 
 
 

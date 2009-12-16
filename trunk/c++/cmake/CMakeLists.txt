@@ -339,6 +339,12 @@ ENDIF(${GLEW_FOUND})
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
+add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
+target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
+
+add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
+target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
+
 add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
 target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
 
