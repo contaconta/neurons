@@ -58,11 +58,11 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkMenuItem" id="open_4d_stack1">
+		    <widget class="GtkMenuItem" id="open_stc_file">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Open 4D stack</property>
+		      <property name="label" translatable="yes">Open stc file</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_open_4d_stack1_activate" last_modification_time="Fri, 16 Oct 2009 15:19:09 GMT"/>
+		      <signal name="activate" handler="on_open_stc_file_activate" last_modification_time="Wed, 16 Dec 2009 05:13:55 GMT"/>
 		    </widget>
 		  </child>
 
@@ -102,7 +102,7 @@
 		      <signal name="activate" handler="on_screenshot_activate" last_modification_time="Tue, 12 Aug 2008 14:22:34 GMT"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image1">
+			<widget class="GtkImage" id="image5">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-media-record</property>
 			  <property name="icon_size">1</property>
@@ -112,33 +112,6 @@
 			  <property name="ypad">0</property>
 			</widget>
 		      </child>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkMenuItem" id="videolayers">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">VideoLayers</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_videolayers_activate" last_modification_time="Tue, 28 Jul 2009 11:51:22 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkMenuItem" id="videorotation">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">VIdeoRotation</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_videorotation_activate" last_modification_time="Tue, 28 Jul 2009 11:51:58 GMT"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkMenuItem" id="videorotationtime">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">VideoRotationTime</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_videorotationtime_activate" last_modification_time="Fri, 28 Aug 2009 09:35:35 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -383,56 +356,6 @@ Dual</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkLabel" id="label6">
-		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">LayerSpanViewZ</property>
-		  <property name="use_underline">False</property>
-		  <property name="use_markup">False</property>
-		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
-		  <property name="selectable">False</property>
-		  <property name="xalign">0</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
-		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		  <property name="width_chars">-1</property>
-		  <property name="single_line_mode">False</property>
-		  <property name="angle">0</property>
-		</widget>
-		<packing>
-		  <property name="left_attach">0</property>
-		  <property name="right_attach">1</property>
-		  <property name="top_attach">6</property>
-		  <property name="bottom_attach">7</property>
-		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkSpinButton" id="layer_view">
-		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="climb_rate">1</property>
-		  <property name="digits">0</property>
-		  <property name="numeric">False</property>
-		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-		  <property name="snap_to_ticks">False</property>
-		  <property name="wrap">False</property>
-		  <property name="adjustment">1 0 100 1 10 10</property>
-		  <signal name="value_changed" handler="on_layer_view_value_changed" last_modification_time="Tue, 20 Nov 2007 21:49:45 GMT"/>
-		</widget>
-		<packing>
-		  <property name="left_attach">1</property>
-		  <property name="right_attach">2</property>
-		  <property name="top_attach">6</property>
-		  <property name="bottom_attach">7</property>
-		  <property name="y_options"></property>
-		</packing>
-	      </child>
-
-	      <child>
 		<widget class="GtkLabel" id="label4">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">Cube Row</property>
@@ -633,66 +556,50 @@ Dual</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkToggleButton" id="cube_transparency">
+		<widget class="GtkLabel" id="label36">
 		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Cube Transparency</property>
-		  <property name="use_underline">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <property name="focus_on_click">True</property>
-		  <property name="active">False</property>
-		  <property name="inconsistent">False</property>
-		  <signal name="toggled" handler="on_cube_transparency_toggled" last_modification_time="Thu, 17 Apr 2008 09:46:47 GMT"/>
+		  <property name="label" translatable="yes">Projection</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">0</property>
 		  <property name="right_attach">1</property>
-		  <property name="top_attach">7</property>
-		  <property name="bottom_attach">8</property>
+		  <property name="top_attach">6</property>
+		  <property name="bottom_attach">7</property>
 		  <property name="x_options">fill</property>
 		  <property name="y_options"></property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="shaders">
+		<widget class="GtkComboBoxEntry" id="projectionComboBox">
 		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Shaders</property>
-		  <property name="use_underline">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="items" translatable="yes">MIN
+MAX</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="has_frame">True</property>
 		  <property name="focus_on_click">True</property>
-		  <signal name="clicked" handler="on_shaders_clicked" last_modification_time="Mon, 19 Jan 2009 16:23:55 GMT"/>
+		  <signal name="changed" handler="on_projectionComboBox_changed" last_modification_time="Wed, 16 Dec 2009 05:00:57 GMT"/>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
 		  <property name="right_attach">2</property>
-		  <property name="top_attach">7</property>
-		  <property name="bottom_attach">8</property>
+		  <property name="top_attach">6</property>
+		  <property name="bottom_attach">7</property>
 		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkToggleButton" id="buttonViewOnlyCube">
-		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">OnlyCube</property>
-		  <property name="use_underline">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <property name="focus_on_click">True</property>
-		  <property name="active">False</property>
-		  <property name="inconsistent">False</property>
-		  <signal name="toggled" handler="on_buttonViewOnlyCube_toggled" last_modification_time="Thu, 12 Nov 2009 09:24:05 GMT"/>
-		</widget>
-		<packing>
-		  <property name="left_attach">0</property>
-		  <property name="right_attach">1</property>
-		  <property name="top_attach">8</property>
-		  <property name="bottom_attach">9</property>
-		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
+		  <property name="y_options">fill</property>
 		</packing>
 	      </child>
 	    </widget>
@@ -2269,8 +2176,8 @@ ALPHA_TEST</property>
   <child>
     <widget class="GtkTable" id="table5">
       <property name="visible">True</property>
-      <property name="n_rows">3</property>
-      <property name="n_columns">3</property>
+      <property name="n_rows">5</property>
+      <property name="n_columns">5</property>
       <property name="homogeneous">False</property>
       <property name="row_spacing">0</property>
       <property name="column_spacing">0</property>
@@ -2336,6 +2243,186 @@ ALPHA_TEST</property>
 	  <property name="bottom_attach">3</property>
 	  <property name="x_options">fill</property>
 	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="shaders">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">Shaders</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <property name="focus_on_click">True</property>
+	  <signal name="clicked" handler="on_shaders_clicked" last_modification_time="Mon, 19 Jan 2009 16:23:55 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">0</property>
+	  <property name="bottom_attach">1</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkToggleButton" id="cube_transparency">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">Cube Transparency</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <property name="focus_on_click">True</property>
+	  <property name="active">False</property>
+	  <property name="inconsistent">False</property>
+	  <signal name="toggled" handler="on_cube_transparency_toggled" last_modification_time="Thu, 17 Apr 2008 09:46:47 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">1</property>
+	  <property name="bottom_attach">2</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkToggleButton" id="buttonViewOnlyCube">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">OnlyCube</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <property name="focus_on_click">True</property>
+	  <property name="active">False</property>
+	  <property name="inconsistent">False</property>
+	  <signal name="toggled" handler="on_buttonViewOnlyCube_toggled" last_modification_time="Thu, 12 Nov 2009 09:24:05 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">2</property>
+	  <property name="bottom_attach">3</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkLabel" id="label6">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">LayerSpanViewZ</property>
+	  <property name="use_underline">False</property>
+	  <property name="use_markup">False</property>
+	  <property name="justify">GTK_JUSTIFY_LEFT</property>
+	  <property name="wrap">False</property>
+	  <property name="selectable">False</property>
+	  <property name="xalign">0</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	  <property name="width_chars">-1</property>
+	  <property name="single_line_mode">False</property>
+	  <property name="angle">0</property>
+	</widget>
+	<packing>
+	  <property name="left_attach">2</property>
+	  <property name="right_attach">3</property>
+	  <property name="top_attach">0</property>
+	  <property name="bottom_attach">1</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkSpinButton" id="layer_view">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="climb_rate">1</property>
+	  <property name="digits">0</property>
+	  <property name="numeric">False</property>
+	  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+	  <property name="snap_to_ticks">False</property>
+	  <property name="wrap">False</property>
+	  <property name="adjustment">1 0 100 1 10 10</property>
+	  <signal name="value_changed" handler="on_layer_view_value_changed" last_modification_time="Tue, 20 Nov 2007 21:49:45 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">2</property>
+	  <property name="right_attach">3</property>
+	  <property name="top_attach">1</property>
+	  <property name="bottom_attach">2</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkMenuItem" id="open_4d_stack1">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">Open 4D stack</property>
+	  <property name="use_underline">True</property>
+	  <signal name="activate" handler="on_open_4d_stack1_activate" last_modification_time="Fri, 16 Oct 2009 15:19:09 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">2</property>
+	  <property name="right_attach">3</property>
+	  <property name="top_attach">2</property>
+	  <property name="bottom_attach">3</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options">fill</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkMenuItem" id="videolayers">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">VideoLayers</property>
+	  <property name="use_underline">True</property>
+	  <signal name="activate" handler="on_videolayers_activate" last_modification_time="Tue, 28 Jul 2009 11:51:22 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">1</property>
+	  <property name="right_attach">2</property>
+	  <property name="top_attach">3</property>
+	  <property name="bottom_attach">4</property>
+	  <property name="x_options">fill</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkMenuItem" id="videorotation">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">VIdeoRotation</property>
+	  <property name="use_underline">True</property>
+	  <signal name="activate" handler="on_videorotation_activate" last_modification_time="Tue, 28 Jul 2009 11:51:58 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">0</property>
+	  <property name="right_attach">1</property>
+	  <property name="top_attach">3</property>
+	  <property name="bottom_attach">4</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options">fill</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkMenuItem" id="videorotationtime">
+	  <property name="visible">True</property>
+	  <property name="label" translatable="yes">VideoRotationTime</property>
+	  <property name="use_underline">True</property>
+	  <signal name="activate" handler="on_videorotationtime_activate" last_modification_time="Fri, 28 Aug 2009 09:35:35 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">0</property>
+	  <property name="right_attach">1</property>
+	  <property name="top_attach">4</property>
+	  <property name="bottom_attach">5</property>
+	  <property name="x_options">fill</property>
 	</packing>
       </child>
     </widget>

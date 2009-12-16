@@ -36,16 +36,13 @@ create_main_window (void)
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
   GtkWidget *open_3d_stack1;
-  GtkWidget *open_4d_stack1;
+  GtkWidget *open_stc_file;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit1;
   GtkWidget *menuitem5;
   GtkWidget *menuitem5_menu;
   GtkWidget *screenshot;
-  GtkWidget *image1;
-  GtkWidget *videolayers;
-  GtkWidget *videorotation;
-  GtkWidget *videorotationtime;
+  GtkWidget *image5;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *_3dmenu;
@@ -65,9 +62,6 @@ create_main_window (void)
   GtkObject *layer_XY_spin_adj;
   GtkWidget *layer_XY_spin;
   GtkWidget *view_entry;
-  GtkWidget *label6;
-  GtkObject *layer_view_adj;
-  GtkWidget *layer_view;
   GtkWidget *label4;
   GtkObject *cube_row_spin_adj;
   GtkWidget *cube_row_spin;
@@ -80,9 +74,8 @@ create_main_window (void)
   GtkWidget *layerXZ_spin;
   GtkObject *layer_YZ_spin_adj;
   GtkWidget *layer_YZ_spin;
-  GtkWidget *cube_transparency;
-  GtkWidget *shaders;
-  GtkWidget *buttonViewOnlyCube;
+  GtkWidget *label36;
+  GtkWidget *projectionComboBox;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -118,9 +111,9 @@ create_main_window (void)
   gtk_widget_show (open_3d_stack1);
   gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_3d_stack1);
 
-  open_4d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 4D stack"));
-  gtk_widget_show (open_4d_stack1);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_4d_stack1);
+  open_stc_file = gtk_menu_item_new_with_mnemonic (_("Open stc file"));
+  gtk_widget_show (open_stc_file);
+  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_stc_file);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
@@ -142,21 +135,9 @@ create_main_window (void)
   gtk_widget_show (screenshot);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), screenshot);
 
-  image1 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
-  gtk_widget_show (image1);
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image1);
-
-  videolayers = gtk_menu_item_new_with_mnemonic (_("VideoLayers"));
-  gtk_widget_show (videolayers);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videolayers);
-
-  videorotation = gtk_menu_item_new_with_mnemonic (_("VIdeoRotation"));
-  gtk_widget_show (videorotation);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotation);
-
-  videorotationtime = gtk_menu_item_new_with_mnemonic (_("VideoRotationTime"));
-  gtk_widget_show (videorotationtime);
-  gtk_container_add (GTK_CONTAINER (menuitem5_menu), videorotationtime);
+  image5 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
+  gtk_widget_show (image5);
+  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image5);
 
   menuitem6 = gtk_menu_item_new_with_mnemonic (_("_View"));
   gtk_widget_show (menuitem6);
@@ -252,20 +233,6 @@ create_main_window (void)
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
   g_object_set (view_entry, "has_frame", FALSE, NULL);
 
-  label6 = gtk_label_new (_("LayerSpanViewZ"));
-  gtk_widget_show (label6);
-  gtk_table_attach (GTK_TABLE (table1), label6, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
-
-  layer_view_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  layer_view = gtk_spin_button_new (GTK_ADJUSTMENT (layer_view_adj), 1, 0);
-  gtk_widget_show (layer_view);
-  gtk_table_attach (GTK_TABLE (table1), layer_view, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   label4 = gtk_label_new (_("Cube Row"));
   gtk_widget_show (label4);
   gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 5, 6,
@@ -318,23 +285,20 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
-  gtk_widget_show (cube_transparency);
-  gtk_table_attach (GTK_TABLE (table1), cube_transparency, 0, 1, 7, 8,
+  label36 = gtk_label_new (_("Projection"));
+  gtk_widget_show (label36);
+  gtk_table_attach (GTK_TABLE (table1), label36, 0, 1, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
 
-  shaders = gtk_button_new_with_mnemonic (_("Shaders"));
-  gtk_widget_show (shaders);
-  gtk_table_attach (GTK_TABLE (table1), shaders, 1, 2, 7, 8,
+  projectionComboBox = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (projectionComboBox);
+  gtk_table_attach (GTK_TABLE (table1), projectionComboBox, 1, 2, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  buttonViewOnlyCube = gtk_toggle_button_new_with_mnemonic (_("OnlyCube"));
-  gtk_widget_show (buttonViewOnlyCube);
-  gtk_table_attach (GTK_TABLE (table1), buttonViewOnlyCube, 0, 1, 8, 9,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MIN"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MAX"));
 
   g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
@@ -342,23 +306,14 @@ create_main_window (void)
   g_signal_connect ((gpointer) open_3d_stack1, "activate",
                     G_CALLBACK (on_open_3d_stack1_activate),
                     NULL);
-  g_signal_connect ((gpointer) open_4d_stack1, "activate",
-                    G_CALLBACK (on_open_4d_stack1_activate),
+  g_signal_connect ((gpointer) open_stc_file, "activate",
+                    G_CALLBACK (on_open_stc_file_activate),
                     NULL);
   g_signal_connect ((gpointer) quit1, "activate",
                     G_CALLBACK (on_quit1_activate),
                     NULL);
   g_signal_connect ((gpointer) screenshot, "activate",
                     G_CALLBACK (on_screenshot_activate),
-                    NULL);
-  g_signal_connect ((gpointer) videolayers, "activate",
-                    G_CALLBACK (on_videolayers_activate),
-                    NULL);
-  g_signal_connect ((gpointer) videorotation, "activate",
-                    G_CALLBACK (on_videorotation_activate),
-                    NULL);
-  g_signal_connect ((gpointer) videorotationtime, "activate",
-                    G_CALLBACK (on_videorotationtime_activate),
                     NULL);
   g_signal_connect ((gpointer) _3dmenu, "activate",
                     G_CALLBACK (on_3dmenu_activate),
@@ -411,9 +366,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) view_entry, "changed",
                     G_CALLBACK (on_view_entry_changed),
                     NULL);
-  g_signal_connect ((gpointer) layer_view, "value_changed",
-                    G_CALLBACK (on_layer_view_value_changed),
-                    NULL);
   g_signal_connect ((gpointer) cube_row_spin, "value_changed",
                     G_CALLBACK (on_cube_row_spin_value_changed),
                     NULL);
@@ -426,14 +378,8 @@ create_main_window (void)
   g_signal_connect ((gpointer) layer_YZ_spin, "value_changed",
                     G_CALLBACK (on_layer_YZ_spin_value_changed),
                     NULL);
-  g_signal_connect ((gpointer) cube_transparency, "toggled",
-                    G_CALLBACK (on_cube_transparency_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) shaders, "clicked",
-                    G_CALLBACK (on_shaders_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) buttonViewOnlyCube, "toggled",
-                    G_CALLBACK (on_buttonViewOnlyCube_toggled),
+  g_signal_connect ((gpointer) projectionComboBox, "changed",
+                    G_CALLBACK (on_projectionComboBox_changed),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -443,16 +389,13 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (main_window, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (main_window, open_3d_stack1, "open_3d_stack1");
-  GLADE_HOOKUP_OBJECT (main_window, open_4d_stack1, "open_4d_stack1");
+  GLADE_HOOKUP_OBJECT (main_window, open_stc_file, "open_stc_file");
   GLADE_HOOKUP_OBJECT (main_window, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (main_window, quit1, "quit1");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5, "menuitem5");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5_menu, "menuitem5_menu");
   GLADE_HOOKUP_OBJECT (main_window, screenshot, "screenshot");
-  GLADE_HOOKUP_OBJECT (main_window, image1, "image1");
-  GLADE_HOOKUP_OBJECT (main_window, videolayers, "videolayers");
-  GLADE_HOOKUP_OBJECT (main_window, videorotation, "videorotation");
-  GLADE_HOOKUP_OBJECT (main_window, videorotationtime, "videorotationtime");
+  GLADE_HOOKUP_OBJECT (main_window, image5, "image5");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (main_window, _3dmenu, "_3dmenu");
@@ -471,8 +414,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label1, "label1");
   GLADE_HOOKUP_OBJECT (main_window, layer_XY_spin, "layer_XY_spin");
   GLADE_HOOKUP_OBJECT (main_window, view_entry, "view_entry");
-  GLADE_HOOKUP_OBJECT (main_window, label6, "label6");
-  GLADE_HOOKUP_OBJECT (main_window, layer_view, "layer_view");
   GLADE_HOOKUP_OBJECT (main_window, label4, "label4");
   GLADE_HOOKUP_OBJECT (main_window, cube_row_spin, "cube_row_spin");
   GLADE_HOOKUP_OBJECT (main_window, label3, "label3");
@@ -481,9 +422,8 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label8, "label8");
   GLADE_HOOKUP_OBJECT (main_window, layerXZ_spin, "layerXZ_spin");
   GLADE_HOOKUP_OBJECT (main_window, layer_YZ_spin, "layer_YZ_spin");
-  GLADE_HOOKUP_OBJECT (main_window, cube_transparency, "cube_transparency");
-  GLADE_HOOKUP_OBJECT (main_window, shaders, "shaders");
-  GLADE_HOOKUP_OBJECT (main_window, buttonViewOnlyCube, "buttonViewOnlyCube");
+  GLADE_HOOKUP_OBJECT (main_window, label36, "label36");
+  GLADE_HOOKUP_OBJECT (main_window, projectionComboBox, "projectionComboBox");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);
@@ -1207,11 +1147,21 @@ create_window1 (void)
   GtkWidget *draw_neuron;
   GtkWidget *draw_cube_toggle;
   GtkWidget *get_matrix_button;
+  GtkWidget *shaders;
+  GtkWidget *cube_transparency;
+  GtkWidget *buttonViewOnlyCube;
+  GtkWidget *label6;
+  GtkObject *layer_view_adj;
+  GtkWidget *layer_view;
+  GtkWidget *open_4d_stack1;
+  GtkWidget *videolayers;
+  GtkWidget *videorotation;
+  GtkWidget *videorotationtime;
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (window1), _("window1"));
 
-  table5 = gtk_table_new (3, 3, FALSE);
+  table5 = gtk_table_new (5, 5, FALSE);
   gtk_widget_show (table5);
   gtk_container_add (GTK_CONTAINER (window1), table5);
 
@@ -1233,6 +1183,62 @@ create_window1 (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  shaders = gtk_button_new_with_mnemonic (_("Shaders"));
+  gtk_widget_show (shaders);
+  gtk_table_attach (GTK_TABLE (table5), shaders, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
+  gtk_widget_show (cube_transparency);
+  gtk_table_attach (GTK_TABLE (table5), cube_transparency, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  buttonViewOnlyCube = gtk_toggle_button_new_with_mnemonic (_("OnlyCube"));
+  gtk_widget_show (buttonViewOnlyCube);
+  gtk_table_attach (GTK_TABLE (table5), buttonViewOnlyCube, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label6 = gtk_label_new (_("LayerSpanViewZ"));
+  gtk_widget_show (label6);
+  gtk_table_attach (GTK_TABLE (table5), label6, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
+
+  layer_view_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  layer_view = gtk_spin_button_new (GTK_ADJUSTMENT (layer_view_adj), 1, 0);
+  gtk_widget_show (layer_view);
+  gtk_table_attach (GTK_TABLE (table5), layer_view, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  open_4d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 4D stack"));
+  gtk_widget_show (open_4d_stack1);
+  gtk_table_attach (GTK_TABLE (table5), open_4d_stack1, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  videolayers = gtk_menu_item_new_with_mnemonic (_("VideoLayers"));
+  gtk_widget_show (videolayers);
+  gtk_table_attach (GTK_TABLE (table5), videolayers, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+  videorotation = gtk_menu_item_new_with_mnemonic (_("VIdeoRotation"));
+  gtk_widget_show (videorotation);
+  gtk_table_attach (GTK_TABLE (table5), videorotation, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  videorotationtime = gtk_menu_item_new_with_mnemonic (_("VideoRotationTime"));
+  gtk_widget_show (videorotationtime);
+  gtk_table_attach (GTK_TABLE (table5), videorotationtime, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
   g_signal_connect ((gpointer) draw_neuron, "toggled",
                     G_CALLBACK (on_draw_neuron_toggled),
                     NULL);
@@ -1242,6 +1248,30 @@ create_window1 (void)
   g_signal_connect ((gpointer) get_matrix_button, "clicked",
                     G_CALLBACK (on_get_matrix_button_clicked),
                     NULL);
+  g_signal_connect ((gpointer) shaders, "clicked",
+                    G_CALLBACK (on_shaders_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) cube_transparency, "toggled",
+                    G_CALLBACK (on_cube_transparency_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) buttonViewOnlyCube, "toggled",
+                    G_CALLBACK (on_buttonViewOnlyCube_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) layer_view, "value_changed",
+                    G_CALLBACK (on_layer_view_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) open_4d_stack1, "activate",
+                    G_CALLBACK (on_open_4d_stack1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) videolayers, "activate",
+                    G_CALLBACK (on_videolayers_activate),
+                    NULL);
+  g_signal_connect ((gpointer) videorotation, "activate",
+                    G_CALLBACK (on_videorotation_activate),
+                    NULL);
+  g_signal_connect ((gpointer) videorotationtime, "activate",
+                    G_CALLBACK (on_videorotationtime_activate),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (window1, window1, "window1");
@@ -1249,6 +1279,15 @@ create_window1 (void)
   GLADE_HOOKUP_OBJECT (window1, draw_neuron, "draw_neuron");
   GLADE_HOOKUP_OBJECT (window1, draw_cube_toggle, "draw_cube_toggle");
   GLADE_HOOKUP_OBJECT (window1, get_matrix_button, "get_matrix_button");
+  GLADE_HOOKUP_OBJECT (window1, shaders, "shaders");
+  GLADE_HOOKUP_OBJECT (window1, cube_transparency, "cube_transparency");
+  GLADE_HOOKUP_OBJECT (window1, buttonViewOnlyCube, "buttonViewOnlyCube");
+  GLADE_HOOKUP_OBJECT (window1, label6, "label6");
+  GLADE_HOOKUP_OBJECT (window1, layer_view, "layer_view");
+  GLADE_HOOKUP_OBJECT (window1, open_4d_stack1, "open_4d_stack1");
+  GLADE_HOOKUP_OBJECT (window1, videolayers, "videolayers");
+  GLADE_HOOKUP_OBJECT (window1, videorotation, "videorotation");
+  GLADE_HOOKUP_OBJECT (window1, videorotationtime, "videorotationtime");
 
   return window1;
 }

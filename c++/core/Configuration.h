@@ -15,6 +15,10 @@ public:
 
   map< string, string> stock;
 
+  Configuration()
+  {
+  };
+
   Configuration(string filename)
   {
     assert(fileExists(filename));
@@ -25,6 +29,14 @@ public:
   string retrieve(string name)
   {
     return stock[name];
+  };
+
+  int retrieveInt(string name){
+    return atoi(stock[name].c_str());
+  };
+
+  int retrieveFloat(string name){
+    return atof(stock[name].c_str());
   };
 
   bool retrieveIfExists(string name, float* ptval){

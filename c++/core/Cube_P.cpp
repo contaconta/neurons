@@ -625,6 +625,7 @@ void Cube_P::draw
 //End of draw
 
 void Cube_P::draw(){
+  // printf("I am beauty\n");
   draw(200,v_draw_projection,0);
 //   draw_layers_parallel();
 }

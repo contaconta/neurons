@@ -442,3 +442,19 @@ on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
 void
 on_buttonViewOnlyCube_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_maxProjection_group_changed         (GtkRadioButton  *radiobutton,
+                                        gpointer         user_data);
+
+void
+on_minProjection_group_changed         (GtkRadioButton  *radiobutton,
+                                        gpointer         user_data);
+
+void
+on_projectionComboBox_changed          (GtkComboBox     *combobox,
+                                        gpointer         user_data);
+
+void
+on_open_stc_file_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

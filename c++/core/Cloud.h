@@ -219,4 +219,5 @@ void Cloud<T>::cleanPointsAccordingToWeight(double minWeight, double maxWeight)
 }
 
 
+
 #endif

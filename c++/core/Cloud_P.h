@@ -41,6 +41,37 @@ class Cloud_P : public VisibleE
    If the cloud's points do not have type, then do nothing to them.*/
   virtual void cleanPointsAccordingToWeight(double minWeight, double maxWeight) = 0;
 
+  int findPointClosestTo(float xS, float yS, float zS)
+  {
+    float dMaxPSoma = FLT_MAX;
+    int   pointSoma = 0;
+    for(int i = 0; i < points.size(); i++){
+      float d = sqrt
+        ( (points[i]->coords[0]-xS)*(points[i]->coords[0]-xS) +
+          (points[i]->coords[1]-yS)*(points[i]->coords[1]-yS) +
+          (points[i]->coords[2]-zS)*(points[i]->coords[2]-zS) );
+      if( d < dMaxPSoma){
+        dMaxPSoma = d;
+        pointSoma = i;
+      }
+    }
+    return pointSoma;
+  }
+
+  vector< int >  findPointsCloserToThan(float xS, float yS, float zS, float R)
+  {
+    vector< int > pointsClose;
+    for(int i = 0; i < points.size(); i++){
+      float d = sqrt
+        ( (points[i]->coords[0]-xS)*(points[i]->coords[0]-xS) +
+          (points[i]->coords[1]-yS)*(points[i]->coords[1]-yS) +
+          (points[i]->coords[2]-zS)*(points[i]->coords[2]-zS) );
+      if( d < R)
+        pointsClose.push_back(i);
+    }
+    return pointsClose;
+  }
+
 
   // virtual void addPoint(float x, float y, float z) = 0;
 

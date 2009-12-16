@@ -1,5 +1,50 @@
 #include "globalsE.h"
 #include "support.h"
+#include "Configuration.h"
+
+Cube<uchar, ulong>* loadImageStackFromSFC
+(string directory, string imageFormat, int layerInit, int layerEnd,
+ float voxelWidth, float voxelHeight, float voxelDepth)
+{
+  char fileFormat[1024];
+  sprintf(fileFormat, "%s/%s", directory.c_str(), imageFormat.c_str());
+
+  char fileName[1024];
+  sprintf(fileName, fileFormat, layerInit);
+  IplImage* pepe = cvLoadImage(fileName,0);
+  Cube<uchar, ulong>* cubeN = new Cube<uchar, ulong>
+    (pepe->width, pepe->height, layerEnd-layerInit+1,
+     voxelWidth, voxelHeight, voxelDepth);
+
+  for(int i = layerInit; i <= layerEnd; i++){
+    sprintf(fileName, fileFormat, i);
+    printf("%s\n", fileName);
+    IplImage* pepe = cvLoadImage(fileName,0);
+    for(int y = 0; y < pepe->height; y++)
+      for(int x = 0; x < pepe->width; x++)
+        cubeN->put(x,y,i-layerInit,
+                  ((uchar *)(pepe->imageData + y*pepe->widthStep))[x]);
+
+  }
+  cubeN->v_r = 1.0;
+  cubeN->v_g = 1.0;
+  cubeN->v_b = 1.0;
+  cubeN->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  nCubes++;
+
+
+  printf("Directory %s\nFormat %s\nLayerInit %i\n"
+         "LayerEnd %i\n voxelWidth %f\n voxelHeight %f\n"
+         "voxelDepth %f\n",
+         directory.c_str(), imageFormat.c_str(), layerInit,
+         layerEnd, voxelWidth, voxelHeight,
+         voxelDepth);
+
+  cube = cubeN;
+
+  return cubeN;
+}
+
 
 void
 on_3DLIS_D_changed                     (GtkEditable     *editable,
@@ -97,6 +142,7 @@ on__3DLIS_saveStackB_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   _3DLIS_saveStack = !_3DLIS_saveStack;
+  printf("_3DLIS_saveStack = %i\n", _3DLIS_saveStack);
 }
 
 
@@ -114,24 +160,22 @@ on__3DLIS_saveStack_BB_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *dialog;
-
-  dialog = gtk_file_chooser_dialog_new ("Save Screenshot",
-                                        NULL,
+  dialog = gtk_file_chooser_dialog_new ("Choose the file where to store the configuration",
+                                        (GtkWindow*)_3DLIS,
                                         GTK_FILE_CHOOSER_ACTION_SAVE,
                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                        GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                         NULL);
-
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
       char *filename;
-
       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-
-/*       saveScreenShot(filename); */
+      _3DLIS_saveName = filename;
+      GtkWidget* entry = lookup_widget(_3DLIS, "entry_3DLIS_saveStackText");
+      gtk_entry_set_text((GtkEntry*)entry , filename);
+      g_free (filename);
     }
   gtk_widget_destroy (dialog);
-
 }
 
 
@@ -167,32 +211,68 @@ on_3DIS_OK_clicked                     (GtkButton       *button,
     }
   }
 
-
-  sprintf(fileName, fileFormat, _3DLIS_layerInit);
-  IplImage* pepe = cvLoadImage(fileName,0);
-  Cube<uchar, ulong>* cubeN = new Cube<uchar, ulong>
-    (pepe->width, pepe->height, _3DLIS_layerEnd-_3DLIS_layerInit+1,
-     _3DLIS_voxelWidth, _3DLIS_voxelHeight, _3DLIS_voxelDepth);
-
-  for(int i = _3DLIS_layerInit; i <= _3DLIS_layerEnd; i++){
-    sprintf(fileName, fileFormat, i);
-    printf("%s\n", fileName);
-    IplImage* pepe = cvLoadImage(fileName,0);
-    for(int y = 0; y < pepe->height; y++)
-      for(int x = 0; x < pepe->width; x++)
-        cubeN->put(x,y,i-_3DLIS_layerInit,
-                  ((uchar *)(pepe->imageData + y*pepe->widthStep))[x]);
-
+  //And now we save the file
+  if(_3DLIS_saveStack){
+    string extension = getExtension(_3DLIS_saveName);
+    if(extension != "stc"){
+      printf("3DLIS::the file %s does not have the extension stc, cancelling\n",
+             _3DLIS_saveName.c_str());
+      return;
+    }
+    Configuration* conf = new Configuration();
+    conf->add("directory", _3DLIS_directory);
+    conf->add("format",_3DLIS_format);
+    conf->add("layerInit",_3DLIS_layerInit);
+    conf->add("layerEnd",_3DLIS_layerEnd);
+    conf->add("voxelWidth",_3DLIS_voxelWidth);
+    conf->add("voxelHeight",_3DLIS_voxelHeight);
+    conf->add("voxelDepth",_3DLIS_voxelDepth);
+    conf->add("saveStack",_3DLIS_saveStack);
+    string saveFile = _3DLIS_directory + "/" + getNameFromPath(_3DLIS_saveName);
+    printf("Saving the file in %s\n", saveFile.c_str());
+    conf->saveToFile(saveFile);
   }
-  cube = cubeN;
-  cubeN->v_r = 1.0;
-  cubeN->v_g = 1.0;
-  cubeN->v_b = 1.0;
-  cubeN->load_texture_brick(cubeRowToDraw, cubeColToDraw);
-  objectNames.push_back("newCube.nfo");
-  toDraw.push_back(cubeN);
-  nCubes++;
+
+  //call the function
+  Cube<uchar, ulong>* cube = loadImageStackFromSFC
+    (_3DLIS_directory, _3DLIS_format, _3DLIS_layerInit, _3DLIS_layerEnd,
+     _3DLIS_voxelWidth, _3DLIS_voxelHeight, _3DLIS_voxelDepth);
+  toDraw.push_back(cube);
+
   gtk_widget_destroy(_3DLIS);
+}
+
+
+void
+on_open_stc_file_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog;
+  dialog = gtk_file_chooser_dialog_new ("Choose file",
+                                        (GtkWindow*)_3DLIS,
+                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                        GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                        NULL);
+  char *filename;
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+
+    }
+  gtk_widget_destroy (dialog);
+
+  Configuration* conf = new Configuration(filename);
+
+  Cube<uchar, ulong>* cube = loadImageStackFromSFC
+    (conf->retrieve("directory"),
+     conf->retrieve("format"),
+     conf->retrieveInt("layerInit"), conf->retrieveInt("layerEnd"),
+     conf->retrieveFloat("voxelWidth"), conf->retrieveFloat("voxelHeight"),
+     conf->retrieveFloat("voxelDepth"));
+  toDraw.push_back(cube);
+
+  g_free (filename);
 }
 
 
