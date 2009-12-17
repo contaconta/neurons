@@ -193,7 +193,12 @@ ENDIF(${GLEW_FOUND})
 ## Instalation Rules
 ################################################################################
 install(FILES ../lib/libviva.so    DESTINATION /usr/lib/)
-install(FILES ../bin/vivaView      DESTINATION /usr/bin/)
+install(PROGRAMS ../bin/vivaView      DESTINATION /usr/bin/)
+install(TARGETS viva
+  RUNTIME DESTINATION /usr/lib/
+  LIBRARY DESTINATION /usr/lib/
+  ARCHIVE DESTINATION /usr/lib/
+)
 install(FILES ../assets/viva.png   DESTINATION /usr/share/icons/)
 install(FILES ../assets/viva.png   DESTINATION /usr/share/pixmaps/)
 
