@@ -190,6 +190,15 @@ IF(${GLEW_FOUND})
 ENDIF(${GLEW_FOUND})
 
 ################################################################################
+## Instalation Rules
+################################################################################
+install(FILES ../lib/libviva.so    DESTINATION /usr/lib/)
+install(FILES ../bin/vivaView      DESTINATION /usr/bin/)
+install(FILES ../assets/viva.png   DESTINATION /usr/share/icons/)
+install(FILES ../assets/viva.png   DESTINATION /usr/share/pixmaps/)
+
+
+################################################################################
 ## Compilation of the tools
 ################################################################################
 

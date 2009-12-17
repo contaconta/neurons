@@ -14,9 +14,15 @@ cd $path
 mkdir -p package/usr/lib
 mkdir -p package/usr/bin
 mkdir -p package/DEBIAN
+mkdir -p package/usr/share/applications/
+mkdir -p package/usr/share/icons/
+mkdir -p package/usr/share/pixmaps/
 
 cp ../lib/libviva.so package/usr/lib/
 cp ../bin/vivaView package/usr/bin/
+cp ../assets/viva.desktop package/usr/share/applications/
+cp ../assets/viva.png package/usr/share/icons/
+cp ../assets/viva.png package/usr/share/pixmaps/
 
 ## creates the md5
 cd package
