@@ -36,7 +36,7 @@ float computeCost(Graph3D* gr, CubeF* cube){
     cube->micrometersToIndexes3
       (gr->cloud->points[i]->coords[0], gr->cloud->points[i]->coords[1],
        gr->cloud->points[i]->coords[2], x, y, z);
-    cost -= log10(cube->at(x,y,z));
+    cost -= log10(cube->at(x,y,z)/0.9);
   }
   return cost;
 }
