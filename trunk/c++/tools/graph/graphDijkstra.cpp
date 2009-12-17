@@ -176,7 +176,8 @@ void allShortestPaths
         (paths[i][j]).push_back(path[nE]);
       //###################################### HERE #####################################
       //Here is the cost put
-      costs[i][j] = (distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
+      // costs[i][j] = (distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
+      costs[i][j] = (distances[j]+10)/(paths[i][j].size()+1);
       // costs[i][j] = 4*(distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
     }
   }
@@ -285,10 +286,12 @@ void addSomaToCptGraphAndInitializeSolution
 
 int main(int argc, char **argv) {
 
-  if(argc!=3){
-    printf("graphDijkstra complete.gr out.gr\n");
+  if(argc!=4){
+    printf("graphDijkstra complete.gr out.gr solsDirectory\n");
     exit(0);
   }
+
+  string solsDirectory(argv[3]);
 
   float xS = 27.7;
   float yS = -64.7;
@@ -304,6 +307,7 @@ int main(int argc, char **argv) {
   for(int i = 0; i < nPoints; i++)
     S[i] = -1;
 
+  // Initialization of the solution
   addSomaToCptGraphAndInitializeSolution
     (gr, xS, yS, zS, R, S);
 
@@ -320,7 +324,7 @@ int main(int argc, char **argv) {
   for(int i = 0; i < nPoints; i++)
     for(int j = i+1; j < nPoints; j++)
       Q.insert(pair<float, int>(costs[i][j], i*nPoints+j));
-  
+
 
   //Puts the most probable path as the solution already
   //old
@@ -360,7 +364,7 @@ int main(int argc, char **argv) {
           // printf("S: ");
           // printSolution(S);
           sols = solutionToGraph(gr, S);
-          sprintf(solsName, "sols/sol_%03i.gr",nComponentsAdded);
+          sprintf(solsName, "%s/sol_%03i.gr",solsDirectory.c_str(), nComponentsAdded);
           sols->saveToFile(solsName);
           Q.erase(it);
           nComponentsAdded++;

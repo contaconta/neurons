@@ -3,6 +3,7 @@ List of dependent libraries of VIVA
 cmake
 libGLEW1_5
 glew
+glew-devel
 freeglut
 freeglut-devel
 gsl-devel
