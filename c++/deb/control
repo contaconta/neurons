@@ -1,0 +1,10 @@
+Package: viva
+Version: 0.01
+Architecture: all
+Maintainer: German Gonzalez <german.gonzalez@epfl.ch>
+Installed-Size: 232
+Depends: libhighgui1, libglut3, libglew1.5, libgtkglext1, libglib2.0-0
+Section: math
+Priority: optional
+Homepage: http://code.google.com/p/neurons/
+Description: Volumetric Image Visualization and Analysis. A tool to see 3D / 4D volumes of data and get some statistics out of them.

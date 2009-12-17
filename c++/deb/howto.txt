@@ -1,0 +1,47 @@
+Scratch notes on how to create a debian package
+
+the .deb package contains
+debian-binary    - text file, should contain 2.0
+control.tar.gz   - control related stuff
+  - control      - text file with all the dependencies, version, etc...
+  - md5sums      - md5sums of the files
+data.tar.gz      - the files that should be installed
+                 - follow the same directory path as in the root file
+
+Naming convenction: packagename_version_arch.deb
+ - with only lowercase letters, numbers and -, +
+
+
+
+
+
+
+################################################################################
+## Example control file
+################################################################################
+Package: concalc
+Version: 0.9.1-1
+Architecture: i386
+Maintainer: Varun Hiremath <varun@debian.org>
+Installed-Size: 232
+Depends: libc6 (>= 2.7-1), libgcc1 (>= 1:4.1.1-21), libstdc++6 (>= 4.1.1-21)
+Section: math
+Priority: optional
+Homepage: http://extcalc-linux.sourceforge.net/
+Description: console calculator
+ concalc is a calculator for the Linux console. It is just the
+ parser-algorithm of extcalc packed into a simple console program. You
+ can use it if you need a calculator in your shell. concalc is also able
+ to run scripts written in a C-like programming language.
+
+
+################################################################################
+## Example md5sums
+################################################################################
+f3c2efc8e7860fd75da6d87f05e8322a  usr/bin/concalc
+a372421e83de3c8b0c89daa9ff7731a9  usr/share/man/man1/concalc.1.gz
+4654b2e0c2054f08120b6997a4578646  usr/share/doc/concalc/AUTHORS
+e7a48931984dcf35c9486fd41cad02c3  usr/share/doc/concalc/copyright
+ef237570618f3b72887b45657635350a  usr/share/doc/concalc/changelog.gz
+c9417ef503cc94d7a052fc241db489f7  usr/share/doc/concalc/README.gz
+bfbd17d39ce4abffabca93e751b4a8f0  usr/share/doc/concalc/changelog.Debian.gz
