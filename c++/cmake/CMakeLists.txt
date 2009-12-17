@@ -199,9 +199,9 @@ install(TARGETS viva
   LIBRARY DESTINATION /usr/lib/
   ARCHIVE DESTINATION /usr/lib/
 )
-install(FILES ../assets/viva.png   DESTINATION /usr/share/icons/)
-install(FILES ../assets/viva.png   DESTINATION /usr/share/pixmaps/)
-
+install(FILES ../assets/viva.png       DESTINATION /usr/share/icons/)
+install(FILES ../assets/viva.png       DESTINATION /usr/share/pixmaps/)
+install(FILES ../assets/viva.desktop   DESTINATION /usr/share/applications/)
 
 ################################################################################
 ## Compilation of the tools
