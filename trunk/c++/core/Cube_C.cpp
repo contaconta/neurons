@@ -6,44 +6,50 @@ Cube_C::Cube_C(string filenameParams)
   v_g = 1.0;
   v_b = 1.0;
 
-  printf("Loading cube_C\n");
-  std::ifstream file(filenameParams.c_str());
-  if(!file.good())
-    printf("Cube_C::load_parameters: error loading the file %s\n", filenameParams.c_str());
-
-  string name;
-  string attribute;
-  while(file.good())
-    {
-       file >> name;
-       file >> attribute;
-       if(!strcmp(name.c_str(), "filenameVoxelDataR"))
-         filenameVoxelDataR = attribute;
-       else if(!strcmp(name.c_str(), "filenameVoxelDataG"))
-         filenameVoxelDataG = attribute;
-       else if(!strcmp(name.c_str(), "filenameVoxelDataB"))
-         filenameVoxelDataB = attribute;
-       else if(!strcmp(name.c_str(), "type"))
-         type = attribute;
-       else
-         printf("Cube_C::load_parameters: Attribute %s and value %s not known\n",
-                name.c_str(), attribute.c_str());
-     }
-  if(type != "color"){
-    printf("Cube_C called to load an nfo file that is not a Cube_C... exiting\n");
-    exit(0);
+  string extension = getExtension(filenameParams);
+  if(extension=="tiff" || extension=="TIFF"){
+    loadFromTIFFImage(filenameParams);
   }
-  if ( (filenameVoxelDataR == "") || (filenameVoxelDataG == "") ||
-       (filenameVoxelDataB == "") )
-    {
-    printf("Cube_C one of the color channels is not defined... exiting\n");
-    exit(0);
-  }
+  else{
+    printf("Loading cube_C\n");
+    std::ifstream file(filenameParams.c_str());
+    if(!file.good())
+      printf("Cube_C::load_parameters: error loading the file %s\n", filenameParams.c_str());
 
-  data.resize(0);
-  data.push_back(new Cube<uchar, ulong>(filenameVoxelDataR));
-  data.push_back(new Cube<uchar, ulong>(filenameVoxelDataG));
-  data.push_back(new Cube<uchar, ulong>(filenameVoxelDataB));
+    string name;
+    string attribute;
+    while(file.good())
+      {
+        file >> name;
+        file >> attribute;
+        if(!strcmp(name.c_str(), "filenameVoxelDataR"))
+          filenameVoxelDataR = attribute;
+        else if(!strcmp(name.c_str(), "filenameVoxelDataG"))
+          filenameVoxelDataG = attribute;
+        else if(!strcmp(name.c_str(), "filenameVoxelDataB"))
+          filenameVoxelDataB = attribute;
+        else if(!strcmp(name.c_str(), "type"))
+          type = attribute;
+        else
+          printf("Cube_C::load_parameters: Attribute %s and value %s not known\n",
+                 name.c_str(), attribute.c_str());
+      }
+    if(type != "color"){
+      printf("Cube_C called to load an nfo file that is not a Cube_C... exiting\n");
+      exit(0);
+    }
+    if ( (filenameVoxelDataR == "") || (filenameVoxelDataG == "") ||
+         (filenameVoxelDataB == "") )
+      {
+        printf("Cube_C one of the color channels is not defined... exiting\n");
+        exit(0);
+      }
+    data.resize(0);
+    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataR));
+    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataG));
+    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataB));
+  } //not .tiff
+
   printf("Now all the cubes should be loaded -> %i\n", data.size());
 
   this->cubeHeight  = data[0]->cubeHeight;
@@ -55,6 +61,58 @@ Cube_C::Cube_C(string filenameParams)
   // this->x_offset = data[0]->x_offset;
   // this->y_offset = data[0]->y_offset;
   // this->z_offset = data[0]->z_offset;
+}
+
+void Cube_C::loadFromTIFFImage(string imageName)
+{
+  //First we need some information
+  int dircount = 0;
+  uint32 w; uint32 h;
+  TIFF* tif = TIFFOpen(imageName.c_str(), "r");
+  if(!tif){
+    printf("Cube_C::Error getting the tiff image.\n");
+    exit(0);
+  } else {
+    do{
+        dircount++;
+        TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+      } while (TIFFReadDirectory(tif));
+  }
+  TIFFClose(tif);
+  printf("Cube_C::The tiff has %i layers of size=[%i,%i]\n", dircount, w, h);
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
+
+  //Now we fill the cubes
+  tif = TIFFOpen(imageName.c_str(), "r");
+  uint32 px;
+  uint32 mask = 0x000000FF;
+  uint32* raster;
+  printf("Loading the layers[");
+  for(int z = 0; z < dircount; z++){
+    //Prepare the raster
+    raster = (uint32*) _TIFFmalloc(w*h * sizeof (uint32));
+    if (TIFFReadRGBAImage(tif, w, h, raster, 0)) {
+      for(int y = 0; y < h; y++){
+        for(int x = 0; x < w; x++){
+          px = raster[y*w+x];
+          data[0]->put(x,h-1-y,z, (uchar)(mask & px));
+          data[1]->put(x,h-1-y,z, (uchar)(mask & px >> 8));
+          data[2]->put(x,h-1-y,z, (uchar)(mask & px >> 16));
+        }//x
+      }//y
+      TIFFReadDirectory(tif);
+      printf("#"); fflush(stdout);
+    }//TIFFread
+    else{
+      printf("Cube_C::loadFromTIFFImage::error loading the raster for directory %i\n", z);
+    }
+    _TIFFfree(raster);
+  }
+  TIFFClose(tif);
+  printf("\n");
 }
 
 

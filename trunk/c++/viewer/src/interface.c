@@ -82,6 +82,8 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (main_window, 1024, 702);
+  gtk_widget_set_events (main_window, GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK);
+  gtk_widget_set_extension_events (main_window, GDK_EXTENSION_EVENTS_ALL);
   gtk_window_set_title (GTK_WINDOW (main_window), _("VIVA 0.0"));
   main_window_icon_pixbuf = create_pixbuf ("icon.png");
   if (main_window_icon_pixbuf)
@@ -190,6 +192,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox1), drawing3D, TRUE, TRUE, 0);
   gtk_widget_set_size_request (drawing3D, 800, 600);
   GTK_WIDGET_SET_FLAGS (drawing3D, GTK_CAN_FOCUS);
+  GTK_WIDGET_SET_FLAGS (drawing3D, GTK_CAN_DEFAULT);
   gtk_widget_set_events (drawing3D, GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK);
   gtk_widget_set_extension_events (drawing3D, GDK_EXTENSION_EVENTS_ALL);
   gtk_widget_add_accelerator (drawing3D, "grab-focus", accel_group,
@@ -303,6 +306,9 @@ create_main_window (void)
   g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
                     NULL);
+  g_signal_connect ((gpointer) main_window, "drag_drop",
+                    G_CALLBACK (on_main_window_drag_drop),
+                    NULL);
   g_signal_connect ((gpointer) open_3d_stack1, "activate",
                     G_CALLBACK (on_open_3d_stack1_activate),
                     NULL);
@@ -359,6 +365,12 @@ create_main_window (void)
                     NULL);
   g_signal_connect ((gpointer) drawing3D, "scroll_event",
                     G_CALLBACK (on_drawing3D_scroll_event),
+                    NULL);
+  g_signal_connect ((gpointer) drawing3D, "drag_drop",
+                    G_CALLBACK (on_drawing3D_drag_drop),
+                    NULL);
+  g_signal_connect ((gpointer) drawing3D, "drag_data_received",
+                    G_CALLBACK (on_drawing3D_drag_data_received),
                     NULL);
   g_signal_connect ((gpointer) layer_XY_spin, "value_changed",
                     G_CALLBACK (on_layer_XY_spin_value_changed),

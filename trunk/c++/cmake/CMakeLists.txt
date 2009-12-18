@@ -42,6 +42,8 @@ find_package(OpenCV REQUIRED)
 include_directories(${OPENCV_INCLUDE_DIR})
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(TIFF REQUIRED)
+
 #include_directories(${GLUT_INCLUDE_DIR} )
 
 #find_package(BBP-SDK)
@@ -84,7 +86,7 @@ find_package(Gmodule)
 
 set(LINK_LIBRARIES_ALL  ${OPENCV_LIBRARIES}
 ${GLUT_LIBRARIES} ${OPENGL_LIBRARY} ${GTK2_LIBRARY} ${GLEW_LIBRARY}
-${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} 
+${GTKGLEXT_LIBS} ${GSL_LIBRARIES} ${GSL_GSLCBLAS_LIBRARY} ${TIFF_LIBRARIES}
 viva)
 
 message("Link Libraries: ${LINK_LIBRARIES_ALL}")
@@ -411,6 +413,9 @@ target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
 
 add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
+target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
 
 add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
 target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})

@@ -8,3 +8,5 @@ freeglut
 freeglut-devel
 gsl-devel
 gtkglext-devel
+highgui
+cvaux
