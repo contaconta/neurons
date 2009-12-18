@@ -102,7 +102,9 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 
     mexPrintf("computeRays\n");
     IplImage* ray1;
-    computeRays((const char*)pImageName, sigma, angle, &ray1,F_CANNY);
+    IplImage* ray3;
+    IplImage* ray4;
+    computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY);
 
     mexPrintf("Cleaning\n");
     mxFree(pImageName);
