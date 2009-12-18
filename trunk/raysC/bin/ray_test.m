@@ -11,3 +11,11 @@ print -dpng img2.png
 
 im = imread('ray1.png');
 imagesc(im);
+
+figure;
+im = imread('ray3.png');
+imagesc(im);
+
+figure;
+im = imread('ray4.png');
+imagesc(im);
