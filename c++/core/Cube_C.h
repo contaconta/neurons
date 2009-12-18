@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "Cube.h"
 #include "Cube_P.h"
+#include "tiffio.h"
 
 class Cube_C : public Cube_P
 {
@@ -31,6 +32,8 @@ public:
   void print_size();
 
   void load_texture_brick(int row, int col, float scale=1.0, float min = 0.0, float max = 0.0);
+
+  void loadFromTIFFImage(string image);
 
   void min_max(float* min, float* max);
 

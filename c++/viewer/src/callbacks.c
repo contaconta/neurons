@@ -61,6 +61,8 @@ void addObjectFromString(string name)
 
   string extension;
   extension = getExtension(name);
+  printf("The extension is %s\n", extension.c_str());
+  std::cout << name << "a" << std::endl;
 
   if(extension == "nfo"){
     cube = CubeFactory::load(name);
@@ -98,6 +100,11 @@ void addObjectFromString(string name)
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
+  else if (extension == "tiff")  {
+    cube = new Cube_C(name);
+    toDraw.push_back(cube);
+    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+  }
   else if ((extension == "swc") || (extension == "SWC"))  {
     toDraw.push_back(new SWC(name));
   }
@@ -117,6 +124,7 @@ void addObjectFromString(string name)
     toDraw.push_back(neuronita);
   }
   else if (extension == "gr") {
+    printf("Hey, the extension is really gr\n");
     Graph_P* gr = GraphFactory::load(name);
     toDraw.push_back(gr);
   } else if (extension == "cl"){
@@ -618,4 +626,82 @@ on_projectionComboBox_changed          (GtkComboBox     *combobox,
 }
 
 
+
+
+gboolean
+on_drawing3D_drag_drop                 (GtkWidget       *widget,
+                                        GdkDragContext  *context,
+                                        gint             x,
+                                        gint             y,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+  const gchar *name = gtk_widget_get_name (widget);
+  g_print ("%s: drag_drop_handl\n", name);
+  GdkAtom         target_type;
+  if (context-> targets)
+    {
+
+      /* Choose the best target type */
+      target_type = GDK_POINTER_TO_ATOM
+        (g_list_nth_data (context-> targets, 0));
+
+      /* Request the data from the source. */
+      gtk_drag_get_data
+        (
+         widget,         /* will receive 'drag-data-received' signal */
+         context,        /* represents the current state of the DnD */
+         target_type,    /* the target type we want */
+         time            /* time stamp */
+         );
+    }
+
+  printf("Something dropped: [%i,%i,%i], %i\n", x, y, time,
+         g_list_length(context->targets));
+  return TRUE;
+}
+
+
+gboolean
+on_main_window_drag_drop               (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+
+  return FALSE;
+}
+
+
+void
+on_drawing3D_drag_data_received        (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        GtkSelectionData *selection_data,
+                                        guint            target_type,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+  const gchar *name = gtk_widget_get_name (widget);
+  g_print ("%s: drag_data_received_handl\n", name);
+  glong   *_idata;
+  char   *_sdata;
+  /* Deal with what we are given from source */
+
+  if((selection_data != NULL) && (selection_data-> length >= 0)){
+    _sdata = (char*)selection_data-> data;
+    g_print ("string: %s", _sdata);
+  }
+  g_print (".\n");
+  string nameo(_sdata);
+  // Elliminates the file:// and the \n at the end
+  string name2 = nameo.substr(7, nameo.size()-7-2);
+
+  addObjectFromString(name2);
+
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
+}
 

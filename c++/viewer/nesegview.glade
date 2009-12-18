@@ -7,6 +7,8 @@
   <property name="width_request">1024</property>
   <property name="height_request">702</property>
   <property name="visible">True</property>
+  <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK</property>
+  <property name="extension_events">GDK_EXTENSION_EVENTS_ALL</property>
   <property name="title" translatable="yes">VIVA 0.0</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -22,6 +24,7 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <signal name="destroy" handler="on_ascEditor_destroy" last_modification_time="Wed, 05 Mar 2008 22:04:06 GMT"/>
+  <signal name="drag_drop" handler="on_main window_drag_drop" last_modification_time="Thu, 17 Dec 2009 21:50:24 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -226,7 +229,10 @@
 	      <property name="width_request">800</property>
 	      <property name="height_request">600</property>
 	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
+	      <property name="has_focus">True</property>
 	      <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK</property>
 	      <property name="extension_events">GDK_EXTENSION_EVENTS_ALL</property>
 	      <signal name="button_press_event" handler="on_drawing3D_button_press_event"/>
@@ -237,6 +243,8 @@
 	      <signal name="realize" handler="on_drawing3D_realize"/>
 	      <signal name="button_release_event" handler="on_drawing3D_button_release_event"/>
 	      <signal name="scroll_event" handler="on_drawing3D_scroll_event" last_modification_time="Thu, 17 Jul 2008 11:12:50 GMT"/>
+	      <signal name="drag_drop" handler="on_drawing3D_drag_drop" last_modification_time="Thu, 17 Dec 2009 21:46:01 GMT"/>
+	      <signal name="drag_data_received" handler="on_drawing3D_drag_data_received" last_modification_time="Thu, 17 Dec 2009 21:55:14 GMT"/>
 	      <accelerator key="d" modifiers="0" signal="grab-focus"/>
 	    </widget>
 	    <packing>
