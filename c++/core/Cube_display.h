@@ -13,6 +13,10 @@
 template <class T, class U>
 void Cube<T,U>::load_texture_brick(int row, int col, float scale, float _min, float _max)
 {
+  if(wholeTexture == 0){
+    glGenTextures(1, &wholeTexture);
+    printf("Cube::generated tecture %i\n", wholeTexture);
+  }
   //Automatic inference of the maximum size of the texture that can be loaded into memmory.
   // To be done, now it is forced.
   GLint max_texture_size = 0;

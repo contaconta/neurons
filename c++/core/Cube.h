@@ -624,8 +624,8 @@ Cube<T,U>::Cube(string filenameParams, string _filenameVoxelData)
 
   nColToDraw = -1;
   nRowToDraw = -1;
-  glGenTextures(1, &wholeTexture);
-  glGenTextures(1, &wholeTextureTrue);
+  // glGenTextures(1, &wholeTexture);
+  // glGenTextures(1, &wholeTextureTrue);
 }
 
 template <class T, class U>
@@ -643,8 +643,8 @@ Cube<T,U>::Cube(string filenameParams, string filenameVoxelData, string filename
 
   nColToDraw = -1;
   nRowToDraw = -1;
-  glGenTextures(1, &wholeTexture);
-  glGenTextures(1, &wholeTextureTrue);
+  // glGenTextures(1, &wholeTexture);
+  // glGenTextures(1, &wholeTextureTrue);
 }
 
 template <class T, class U>
@@ -680,8 +680,8 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
 
   nColToDraw = -1;
   nRowToDraw = -1;
-  glGenTextures(1, &wholeTexture);
-  glGenTextures(1, &wholeTextureTrue);
+  // glGenTextures(1, &wholeTexture);
+  // glGenTextures(1, &wholeTextureTrue);
 }
 
 template <class T, class U>

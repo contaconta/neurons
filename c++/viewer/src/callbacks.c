@@ -71,6 +71,7 @@ void addObjectFromString(string name)
       tf[i] = i;
     tf[255] = 0;
     //((Cube<float,double>*)cube)->set_tf(tf);
+    cube->v_draw_projection = flag_minMax;
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
     if(nCubes == 0){
       cube->v_r = 1.0;
@@ -97,11 +98,13 @@ void addObjectFromString(string name)
   }
   else if (extension == "nfc")  {
     cube = new Cube_C(name);
+    cube->v_draw_projection = flag_minMax;
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
   else if (extension == "tiff")  {
     cube = new Cube_C(name);
+    cube->v_draw_projection = flag_minMax;
     toDraw.push_back(cube);
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
@@ -113,6 +116,7 @@ void addObjectFromString(string name)
     cube->v_r = 1.0;
     cube->v_g = 1.0;
     cube->v_b = 1.0;
+    cube->v_draw_projection = flag_minMax;
     cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
     toDraw.push_back(cube);
   }
@@ -198,9 +202,8 @@ void init_GUI_late()
 {
   std::cout << "on_drawing3D_realize" << std::endl;
 
-  GdkGLContext *glcontext   = gtk_widget_get_gl_context  (drawing3D);
-  GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (drawing3D);
-
+  /* GdkGLContext *glcontext   = gtk_widget_get_gl_context  (drawing3D); */
+  /* GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (drawing3D); */
 
   /* Axis* axis = new Axis(); */
   /* toDraw.push_back(axis); */
@@ -213,24 +216,22 @@ void init_GUI_late()
       continue; //Nothing to be done
     addObjectFromString(objectNames[i]);
   }
-
+  flag_initializing_GUI = false;
 
   /*** OpenGL BEGIN ***/
-  if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
-  {
-    printf("Realize event: there is no gdk_gl_drawable\n");
-    return;
-  }
+  /* if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext)) */
+  /* { */
+    /* printf("Realize event: there is no gdk_gl_drawable\n"); */
+    /* return; */
+  /* } */
 
   /** Loads the drawing parameters to the cube.*/
-  for(int i = 0; i < toDraw.size(); i++){
-    toDraw[i]->v_draw_projection = flag_minMax;
-  }
-  gdk_gl_drawable_gl_end (gldrawable);
+  /* for(int i = 0; i < toDraw.size(); i++){ */
+    /* toDraw[i]->v_draw_projection = flag_minMax; */
+  /* } */
+  /* gdk_gl_drawable_gl_end (gldrawable); */
   /*** OpenGL END*/
-
- flag_initializing_GUI = false;
- on_drawing3D_expose_event(drawing3D,NULL, NULL);
+ /* on_drawing3D_expose_event(drawing3D,NULL, NULL); */
 
 }
 
@@ -244,7 +245,8 @@ on_drawing3D_configure_event           (GtkWidget       *widget,
   drawing3D = widget;
   widgetWidth = widget->allocation.width;
   widgetHeight = widget->allocation.height;
-  std::cout << "Widget width and height = " << widgetWidth << " " << widgetHeight << std::endl;
+  std::cout << "Widget width and height = "
+            << widgetWidth << " " << widgetHeight << std::endl;
   return FALSE;
 }
 
@@ -613,6 +615,7 @@ on_projectionComboBox_changed          (GtkComboBox     *combobox,
     {
       if( ((*itObj)->className()=="Cube") ||
                ((*itObj)->className()=="Cube_T") ||
+               ((*itObj)->className()=="Cube_C") ||
                ((*itObj)->className()=="Cube_P")
                ){
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
@@ -671,7 +674,7 @@ on_main_window_drag_drop               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 
-  return FALSE;
+  return TRUE;
 }
 
 
@@ -699,9 +702,13 @@ on_drawing3D_drag_data_received        (GtkWidget       *widget,
   string nameo(_sdata);
   // Elliminates the file:// and the \n at the end
   string name2 = nameo.substr(7, nameo.size()-7-2);
+  printf("The name passed is %sa\n", name2.c_str());
+
+  objectNames.push_back(name2);
 
   addObjectFromString(name2);
 
-  on_drawing3D_expose_event(drawing3D,NULL, user_data);
+  /* on_drawing3D_expose_event(drawing3D,NULL, user_data); */
+  /* return; */
 }
 

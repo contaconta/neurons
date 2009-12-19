@@ -251,7 +251,7 @@ void Cube_P::draw
     }
 
   //Draws a sphere in the furthest and closest point of the cube
-  if(0){
+  if(1){
     glPushMatrix();
     nMatrices++;
     glTranslatef(cubePoints_c[closest_point_idx][0], cubePoints_c[closest_point_idx][1], cubePoints_c[closest_point_idx][2]);
@@ -470,7 +470,7 @@ void Cube_P::draw
               intersectionPointsIdx++;
 
               //Draws spheres in the intersection points
-              if(0){
+              if(1){
                 glPushMatrix();
                 nMatrices++;
                 glTranslatef(x_point, y_point, z_point);
@@ -530,7 +530,7 @@ void Cube_P::draw
 //         glColor3f(1.0,1.0,1.0);
 
       glEnable(GL_BLEND);
-      #ifdef WITH_GLEW
+#ifdef WITH_GLEW
       if(blendFunction == MIN_MAX)
         {
           if(min_max == 0)
@@ -552,6 +552,7 @@ void Cube_P::draw
       //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
       glEnable(GL_TEXTURE_3D);
+      // printf("Cube_P::draw: binding to texture = %i\n", wholeTexture);
       glBindTexture(GL_TEXTURE_3D, wholeTexture);
 #endif
       glEdgeFlag(GL_FALSE);
@@ -626,6 +627,10 @@ void Cube_P::draw
 
 void Cube_P::draw(){
   // printf("I am beauty\n");
+  if(!glIsTexture(wholeTexture)){
+      printf("Cube_P::draw::there is no texture loaded, not even trying to draw\n");
+      return;
+    }
   draw(200,v_draw_projection,0);
 //   draw_layers_parallel();
 }
@@ -826,7 +831,7 @@ void Cube_P::draw_layer_tile_YZ(float nLayerToDraw,int color)
   glBindTexture(GL_TEXTURE_3D, wholeTexture);
 #endif
   GLint max_texture_size = 0;
-//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  //   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
   int size_texture = max_texture_size;
 

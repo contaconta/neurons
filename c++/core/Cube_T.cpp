@@ -22,7 +22,15 @@ Cube_T::Cube_T(string filename){
     }
   string s;
   while(getline(in,s)){
-    Cube_P* cb = CubeFactory::load(s);
+    Cube_P* cb;
+    if(fileExists(s))
+      cb = CubeFactory::load(s);
+    else if(fileExists(getDirectoryFromPath(filename) + "/" + getNameFromPath(s)))
+      cb = CubeFactory::load(getDirectoryFromPath(filename) +
+                             "/" + getNameFromPath(s));
+    else{
+      printf("Cube_T::The file %s does not exist, exiting\n", s.c_str());
+    }
     if(!cb){
       printf("Cube_T::error::The cubee %s can not be loaded\n",s.c_str());
       exit(0);

@@ -6,6 +6,7 @@
 #include "Axis.h"
 #include "CubeFactory.h"
 #include "Cube.h"
+#include "Cube_C.h"
 
 class Stage : public QGLWidget
 {
@@ -22,6 +23,8 @@ protected:
   void mouseMoveEvent(QMouseEvent *event);
   void mouseDoubleClickEvent(QMouseEvent *event);
   void keyPressEvent(QKeyEvent *event);
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
 
 private:
   void draw();

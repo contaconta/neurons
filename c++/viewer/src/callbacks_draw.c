@@ -294,14 +294,16 @@ void draw_objects()
         }
       else if( ((*itObj)->className()=="Cube") ||
                ((*itObj)->className()=="Cube_T") ||
+               ((*itObj)->className()=="Cube_C") ||
                ((*itObj)->className()=="Cube_P")
                ){
         //If we are not supposed to draw the cube, ignore it
-        if(!drawCube_flag) continue;
+        /* if(!drawCube_flag) continue; */
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         if((mod_display == MOD_DISPLAY_3D) ||
            (mod_display == MOD_DISPLAY_COMBO) ){
           cubeDraw->draw();
+          /* std::cout << "I should be drawing a " << (*itObj)->className() << std::endl; */
           setUpVolumeMatrices();
         }
         else if (mod_display == MOD_DISPLAY_XY)

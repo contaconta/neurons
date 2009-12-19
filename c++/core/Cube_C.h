@@ -19,9 +19,6 @@ public:
 
   vector< Cube<uchar, ulong>* > data;
 
-  /** Taken from Cube.h*/
-  unsigned int wholeTexture;
-
   Cube_C() {}
 
   Cube_C(string filename);

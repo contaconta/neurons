@@ -9,13 +9,15 @@
 
 Stage::Stage(QWidget* parent) : QGLWidget(parent)
 {
+  //Enable dropping
+  setAcceptDrops(true);
 
   setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
   // Camera parameters
   fovy3D = 30;
   aspect3D = 1;
   zNear3D = 1;
-  zFar3D = 1000;
+  zFar3D = 10000;
 
   // Position of the origin of coordinates
   rotationX = 0;
@@ -47,9 +49,10 @@ void Stage::initializeGL()
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
   }
 
-  Cube_P* cube = CubeFactory::load("/media/neurons/n7/3d/4/N7_4.nfo");
-  cube->load_texture_brick(0,0);
-  actors.push_back(cube);
+  // Cube_P* cube = new Cube_C("/media/neurons/MacGabhan/C14_4.nfc");
+  // Cube_P* cube = CubeFactory::load("/media/neurons/n7/3d/4/N7_4.nfo");
+  // cube->load_texture_brick(0,0);
+  // actors.push_back(cube);
 
   qglClearColor(Qt::white);
   glShadeModel(GL_FLAT);
@@ -178,3 +181,27 @@ void Stage::keyPressEvent(QKeyEvent *event)
   updateGL();
 }
 
+ void Stage::dragEnterEvent(QDragEnterEvent *event)
+ {
+     if (event->mimeData()->hasFormat("text/uri-list"))
+         event->acceptProposedAction();
+ }
+
+ void Stage::dropEvent(QDropEvent *event)
+ {
+     // bool QMimeData::hasText ()textBrowser->setPlainText(event->mimeData()->text());
+
+   // if(event->mimeData()->hasUrls() ){
+   QList<QUrl> urls = event->mimeData()->urls();
+     QList<QUrl>::iterator it = urls.begin();
+     for(it = urls.begin(); it != urls.end(); ++it){
+       QString path = it->path();
+       printf("%s\n", qPrintable(path));
+       Cube_P* cube = CubeFactory::load(qPrintable(path));
+       cube->load_texture_brick(0,0);
+       actors.push_back(cube);
+
+     }
+   // }
+     event->acceptProposedAction();
+ }
