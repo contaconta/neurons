@@ -14,8 +14,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-set(CMAKE_BUILD_TYPE release) #debug none release distribution
+set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+# set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")

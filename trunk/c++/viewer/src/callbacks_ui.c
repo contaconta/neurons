@@ -165,7 +165,8 @@ void get_world_coordinates(double &wx, double &wy, double &wz, bool change_layer
   world[0] = wx;
   world[1] = wy;
   world[2] = wz;
-  cube->micrometersToIndexes(world, indexes);
+  if(cube!= NULL)
+    cube->micrometersToIndexes(world, indexes);
 
   if( (mod_display == MOD_DISPLAY_COMBO) && change_layers){
     //If the click is on the XY corner

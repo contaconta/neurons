@@ -1,12 +1,13 @@
 #include "Cube_C.h"
 
-Cube_C::Cube_C(string filenameParams)
+Cube_C::Cube_C(string filenameParams) : Cube_P()
 {
   v_r = 1.0;
   v_g = 1.0;
   v_b = 1.0;
 
   string extension = getExtension(filenameParams);
+  directory = getDirectoryFromPath(filenameParams);
   if(extension=="tiff" || extension=="TIFF"){
     loadFromTIFFImage(filenameParams);
   }
@@ -45,9 +46,18 @@ Cube_C::Cube_C(string filenameParams)
         exit(0);
       }
     data.resize(0);
-    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataR));
-    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataG));
-    data.push_back(new Cube<uchar, ulong>(filenameVoxelDataB));
+    if(fileExists(filenameVoxelDataR))
+      data.push_back(new Cube<uchar, ulong>(filenameVoxelDataR));
+    else if (fileExists(directory + "/" + filenameVoxelDataR))
+      data.push_back(new Cube<uchar, ulong>(directory + "/" + filenameVoxelDataR));
+    if(fileExists(filenameVoxelDataG))
+      data.push_back(new Cube<uchar, ulong>(filenameVoxelDataG));
+    else if (fileExists(directory + "/" + filenameVoxelDataG))
+      data.push_back(new Cube<uchar, ulong>(directory + "/" + filenameVoxelDataG));
+    if(fileExists(filenameVoxelDataB))
+      data.push_back(new Cube<uchar, ulong>(filenameVoxelDataB));
+    else if (fileExists(directory + "/" + filenameVoxelDataB))
+      data.push_back(new Cube<uchar, ulong>(directory + "/" + filenameVoxelDataB));
   } //not .tiff
 
   printf("Now all the cubes should be loaded -> %i\n", data.size());
@@ -58,6 +68,19 @@ Cube_C::Cube_C(string filenameParams)
   this->voxelHeight = data[0]->voxelHeight;
   this->voxelDepth  = data[0]->voxelDepth;
   this->voxelWidth  = data[0]->voxelWidth;
+  // this->r_max       = data[0]->r_max;
+  // this->s_max       = data[0]->s_max;
+  // this->t_max       = data[0]->t_max;
+  // this->nColToDraw  = data[0]->nColToDraw;
+  // this->nRowToDraw  = data[0]->nRowToDraw;
+  this->filenameVoxelData = "";
+  this->directory          = getDirectoryFromPath(filenameParams);
+  this->filenameParameters = getNameFromPath(filenameParams);
+  this->type               = "color";
+
+
+  // glGenTextures(1, &wholeTexture);
+
   // this->x_offset = data[0]->x_offset;
   // this->y_offset = data[0]->y_offset;
   // this->z_offset = data[0]->z_offset;
@@ -81,9 +104,10 @@ void Cube_C::loadFromTIFFImage(string imageName)
   }
   TIFFClose(tif);
   printf("Cube_C::The tiff has %i layers of size=[%i,%i]\n", dircount, w, h);
-  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
-  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
-  data.push_back(new Cube<uchar, ulong>(w,h,dircount,.1,.1,1));
+  data.resize(0);
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
+  data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
 
   //Now we fill the cubes
   tif = TIFFOpen(imageName.c_str(), "r");
@@ -112,12 +136,20 @@ void Cube_C::loadFromTIFFImage(string imageName)
     _TIFFfree(raster);
   }
   TIFFClose(tif);
-  printf("\n");
+  printf("]\n");
 }
 
 
 void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float _max)
 {
+  if(!glIsTexture(wholeTexture)){
+    glGenTextures(1, &wholeTexture);
+    printf("Cube_C::generated texture out of nowhere %i\n", wholeTexture);
+  } else {
+    glDeleteTextures(1, &wholeTexture);
+    glGenTextures(1, &wholeTexture);
+    printf("Cube_C::generated texture by destroying another one %i\n", wholeTexture);
+  }
   printf("Cube_C, loading texture brick\n");
   nColToDraw = col;
   nRowToDraw = row;
@@ -126,6 +158,7 @@ void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float
   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
   max_texture_size = D_MAX_TEXTURE_SIZE;
 #endif
+  max_texture_size = D_MAX_TEXTURE_SIZE;
   printf("Max texture size %i\n", max_texture_size);
 
   int limit_x = min((int)cubeWidth,
@@ -160,20 +193,11 @@ void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float
       limit_x = min(max_texture_size,(int)cubeWidth);
       limit_y = min(max_texture_size,(int)cubeHeight);
     }
-#ifdef WITH_GLEW
-  glEnable(GL_TEXTURE_3D);
-  glBindTexture(GL_TEXTURE_3D, wholeTexture);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, D_TEXTURE_INTERPOLATION);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
-  glTexParameterf(GL_TEXTURE_3D,  GL_TEXTURE_PRIORITY, 1.0);
-  GLfloat border_color[4];
-  for(int i = 0; i < 4; i++)
-    border_color[i] = 1.0;
-  glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
-#endif
+  printf("Cube_C::load_texture_brick: Whole texure = %i\n", wholeTexture);
+// #ifdef WITH_GLEW
+  // glEnable(GL_TEXTURE_3D);
+  // glBindTexture(GL_TEXTURE_3D, wholeTexture);
+// #endif
   int col_offset = (col)*max_texture_size;
   int row_offset = (row)*max_texture_size;
 
@@ -188,6 +212,7 @@ void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float
 
   int depth_y;
   int depth_z;
+  float R = 0; float G = 0; float B = 0;
   for(int z = 0; z < limit_z; z++)
     {
       depth_z = z*texture_size_x*texture_size_y*3;
@@ -198,17 +223,37 @@ void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float
             {
               voxel = (GLubyte)data[0]->at(col_offset+x,row_offset+y,z)*scale;
               texels[depth_z + depth_y + 3*x + 0] = voxel;
+              R+= voxel;
               voxel = (GLubyte)data[1]->at(col_offset+x,row_offset+y,z)*scale;
               texels[depth_z + depth_y + 3*x + 1] = voxel;
+              G+= voxel;
               voxel = (GLubyte)data[2]->at(col_offset+x,row_offset+y,z)*scale;
               texels[depth_z + depth_y + 3*x + 2] = voxel;
+              B+= voxel;
             }
         }
       printf("#");
       fflush(stdout);
     }
-  printf("]\n");
+  printf("] average values are [R,G,B] = [%f,%f,%f]\n", R/(limit_x*limit_y*limit_z),
+         G/(limit_x*limit_y*limit_z),B/(limit_x*limit_y*limit_z));
+  printf("wholeTexture = %i\n", wholeTexture);
+
 #ifdef WITH_GLEW
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
+  glTexParameteri(GL_TEXTURE_3D,  GL_TEXTURE_MIN_FILTER, D_TEXTURE_INTERPOLATION);
+  glTexParameteri(GL_TEXTURE_3D,  GL_TEXTURE_MAG_FILTER, D_TEXTURE_INTERPOLATION);
+  glTexParameteri(GL_TEXTURE_3D,  GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D,  GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D,  GL_TEXTURE_WRAP_R, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_3D,  GL_TEXTURE_PRIORITY, 1.0);
+  GLfloat border_color[4];
+  for(int i = 0; i < 4; i++)
+    border_color[i] = 1.0;
+  glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, border_color);
+  glEnable(GL_TEXTURE_3D);
+  glBindTexture(GL_TEXTURE_3D, wholeTexture);
   glTexImage3D(GL_TEXTURE_3D,
                0, // level
                GL_RGB,
@@ -217,6 +262,15 @@ void Cube_C::load_texture_brick(int row, int col, float scale, float _min, float
                GL_RGB,
                GL_UNSIGNED_BYTE,
                texels);
+  GLenum error = glGetError();
+  if(error != GL_NO_ERROR){
+    printf("Cube_C there has been an error loading the texture\n");
+    char* error_msg = (char *) gluErrorString(error);
+    printf("The error is %s\n", error_msg);
+  } else {
+    printf("No error loading the texture\n");
+  }
+
 #endif
   free(texels);
 
@@ -257,4 +311,4 @@ void Cube_C::allocate_alphas(int ni, int nj, int nk){}
 void Cube_C::delete_alphas(int ni, int nj, int nk){}
 
 
-float Cube_C::get(int x, int y, int z){}
+float Cube_C::get(int x, int y, int z){ return 0.0;}

@@ -143,13 +143,12 @@ void init_GUI()
       gtk_combo_box_set_active(selection_type,0);
     }
 
-  static GtkTargetEntry drop_types[2] =
+  static GtkTargetEntry drop_types[1] =
     {
-      { "text/uri-list", GTK_TARGET_OTHER_APP, 0 },
-      { "image/jpg",     GTK_TARGET_OTHER_APP, 1 }
+      { "text/uri-list", GTK_TARGET_OTHER_APP, 0 }
     };
 
-  gtk_drag_dest_set(drawing3D, GTK_DEST_DEFAULT_ALL, drop_types, 2, GDK_ACTION_COPY);
+  gtk_drag_dest_set(drawing3D, GTK_DEST_DEFAULT_ALL, drop_types, 1, GDK_ACTION_COPY);
 }
 
 void
@@ -391,7 +390,7 @@ main (int argc, char *argv[])
   argcp = argc;
   argvp = argv;
 
-  add_pixmap_directory("/home/ggonzale/workspace/viva/assets/");
+  add_pixmap_directory("/usr/share/pixmaps/");
 
   //Initialization of the arguments
   flag_minMax = 0; //minIntensity
@@ -428,8 +427,8 @@ main (int argc, char *argv[])
                                 TRUE,
                                 GDK_GL_RGBA_TYPE);
 
-  cube = new Cube<uchar, ulong>();
-  cube->dummy = true;
+  /* cube = new Cube<uchar, ulong>(); */
+  /* cube->dummy = true; */
 
   glutInit(&argcp, argvp);
   if(flag_windowMaximize)

@@ -5,8 +5,8 @@
     as defines. At some point they should be put as variables, so that
     they can be accessed from the program.
  */
-// #define D_MAX_TEXTURE_SIZE      512
-#define D_MAX_TEXTURE_SIZE      1024
+#define D_MAX_TEXTURE_SIZE      512
+// #define D_MAX_TEXTURE_SIZE      1024
 // #define D_MAX_TEXTURE_SIZE      2048
 // #define D_TEXTURE_INTERPOLATION GL_LINEAR
 #define D_TEXTURE_INTERPOLATION GL_NEAREST
@@ -39,7 +39,10 @@ public:
 
   bool dummy; //Used for something by Aurelien
 
-  Cube_P() : VisibleE(),dummy(false){}
+  Cube_P() : VisibleE(),dummy(false)
+  {
+    wholeTexture = 0;
+  }
 
   virtual void print_size()=0;
 
@@ -90,7 +93,7 @@ public:
   double r_max;
   double s_max;
   double t_max;
-  int wholeTexture;
+  GLuint wholeTexture;
 
   int nColToDraw;
   int nRowToDraw;
