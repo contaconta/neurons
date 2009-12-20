@@ -41,7 +41,8 @@ public:
 
   Cube_P() : VisibleE(),dummy(false)
   {
-    wholeTexture = 0;
+    wholeTexture = 0; v_r = 1.0; v_g = 1.0; v_b = 1.0;
+    v_draw_projection = true; v_blend = true; v_enable_depth_test = true;
   }
 
   virtual void print_size()=0;

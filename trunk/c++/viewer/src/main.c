@@ -427,8 +427,8 @@ main (int argc, char *argv[])
                                 TRUE,
                                 GDK_GL_RGBA_TYPE);
 
-  /* cube = new Cube<uchar, ulong>(); */
-  /* cube->dummy = true; */
+  cube = new Cube<uchar, ulong>();
+  cube->dummy = true;
 
   glutInit(&argcp, argvp);
   if(flag_windowMaximize)
