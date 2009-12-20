@@ -9,13 +9,13 @@ imagesc(g);
 axis xy
 print -dpng img2.png
 
-im = imread('ray1.png');
+im=read_32bitsimage('ray1.ppm',[size(g,2) size(g,1)]);
 imagesc(im);
 
 figure;
-im = imread('ray3.png');
+im=read_32bitsimage('ray3.ppm',[size(g,2) size(g,1)]);
 imagesc(im);
 
 figure;
-im = imread('ray4.png');
+im=read_32bitsimage('ray4.ppm',[size(g,2) size(g,1)]);
 imagesc(im);

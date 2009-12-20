@@ -16,6 +16,8 @@
 #include "highgui.h"
 #include <stdio.h>
 #include "rays.h"
+#include <fstream>
+#include <sstream>
 
 #define PI 3.1415926536
 
@@ -35,9 +37,11 @@
  *   future we may add more methods for generating edges).  SIGMA specifies 
  *   the standard deviation of the edge filter.  
  */
-void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType)
+void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType, bool saveImages)
 {
-  static const int threshold_edge_map = 0;
+  // control sensitivity to edge detection.
+  // 0 means that the ray will stop after hitting the first edge.
+  static const uchar threshold_edge_map = 0;
 
   IplImage* img = cvLoadImage(pImageName,0);
   if(!img)
@@ -46,21 +50,17 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       return;
     }
 
-  uchar* ptrImg;
-  IplImage* gx = 0;
-  IplImage* gy = 0;
-  IplImage* gn = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
-  IplImage* edge = 0;
+  uint* ptrGN;
   int lastGN;
   int lastGA;
 
   // Compute gradient images
-  gx = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
-  gy = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
+  IplImage* edge = 0;
+  IplImage* gn = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1);
+  IplImage* gx = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
+  IplImage* gy = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_16S, 1);
   cvSobel(img, gx, 1, 0, 3);
   cvSobel(img, gy, 0, 1, 3);
-  //cvSaveImage("gx.png",gx);
-  //cvSaveImage("gy.png",gy);
 
   // compute the gradient norm GN
   int nx = 0;
@@ -76,16 +76,15 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
         //ptrImg = (short*)&((short*)(g->imageData + g->widthStep*y))[x*g->nChannels];
         //ptrImg = &(((((float*)g->imageData) + g->widthStep*y)))[x*g->nChannels];
         //*ptrImg = 'a';
-        ptrImg = ((uchar*)(gn->imageData + gn->widthStep*y)) + x; //x*g->nChannels;
+        ptrGN = ((uint*)(gn->imageData + gn->widthStep*y)) + x; //x*g->nChannels;
         //printf("%d %x\n",i++,ptrImg);
-        //*ptrImg = 1;
-        //*ptrImg = (uchar)(abs(nx)/4.0);
-        *ptrImg = (uchar)(sqrt(nx+ny)/4.0f/1.5f);
+        //*ptrImg = (uchar)(sqrt(nx+ny)/4.0f/1.5f);
+        *ptrGN = (uint)(sqrt(nx+ny));
       }
 
-  if(filterType == F_SOBEL)
-    edge = gn;
-  else
+  //if(filterType == F_SOBEL)
+  //  edge = gn; //TODO : convert type
+  //else
     {
       edge = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
       //cvSmooth( gray, edge, CV_BLUR, 3, 3, 0, 0 );
@@ -95,7 +94,8 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       cvCanny(img, edge, edge_low_thresh, edge_up_thresh, apertureSize);
     }
 
-  cvSaveImage("edge.png",edge);
+    if(saveImages)
+      cvSaveImage("edge.png",edge);
 
   // ensure good angles
   angle = fmod(angle,360.0);
@@ -105,14 +105,15 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   // convert to radians
   angle = angle * (PI/180.0);
   
-  // get a scamline in direction angle
+  // get a scanline in direction angle
   list<int> xs;
   list<int> ys;
+  list<int>::iterator ix;
+  list<int>::iterator iy;
   linepoints(img->width,img->height,angle,xs,ys);
 
-  //printf("size %d %d\n",xs.size(),ys.size());
-
-  //for(int i = 0;i< xs.size(); i++)
+  /*
+  // Draw ray on the image
   list<int>::iterator ix = xs.begin();
   list<int>::iterator iy = ys.begin();
   for(;ix != xs.end(); ix++,iy++)
@@ -122,18 +123,18 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       cvSet2D(img,*iy,*ix,cvScalar(0));
     }
   cvSaveImage("img.png",img);
+  */
 
   // initialize the output matrices
-  *ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1);
-  //cvSet(*ray1, cvScalar(0)); // TODO : DEBUG ONLY !!!
-  *ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1); // TODO : should be a 32 bits image !!!
-  *ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_8U, 1); // TODO : should be a 32 bits image !!!
+  *ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1);
+  *ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
+  *ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
 
-  cvSet(*ray3, cvScalar(0)); // TODO : DEBUG ONLY !!!
-  cvSet(*ray4, cvScalar(0)); // TODO : DEBUG ONLY !!!
+  //cvSet(*ray1, cvScalar(0)); // TODO : DEBUG ONLY !!!
+  //cvSet(*ray3, cvScalar(0)); // TODO : DEBUG ONLY !!!
+  //cvSet(*ray4, cvScalar(0)); // TODO : DEBUG ONLY !!!
 
   // determine the unit vector in the direction of the Ray
-  //rayVector = unitvector(angle);
   int ray_x = sin(angle);
   int ray_y = cos(angle);
 
@@ -142,10 +143,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   int x,y;
   int t;
   int steps_since_edge = 0;  // the border of the image serves as an edge
-  uchar* ptrImgRay1;
-  uchar* ptrImgRay3;
-  uchar* ptrImgRay4;
-  uchar* ptrGN;
+  uint* ptrImgRay1;
+  uint* ptrImgRay3;
+  uint* ptrImgRay4;
+  uchar* ptrEdge;
 
   if(angle > PI/2.0f)
     angle = PI-angle;
@@ -156,12 +157,9 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       // scan to the left
       int x_ofs = 0;
 
-      printf("scan to the left\n");
+      //printf("scan to the left\n");
       do
         {
-          //for(int i = 0;i < ys.size();i++)
-          //for(;ix != xs.end(); ix++,iy++)
-
           xj.clear();
           yj.clear();
           ix = xs.begin();
@@ -178,28 +176,27 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                 }
             }
 
-          //for(int i = 0;i < yj.size();i++)
           ix = xj.begin();
           iy = yj.begin();
           lastGN = 0;
           lastGA = 1;
+          steps_since_edge = 0;
           for(;ix != xj.end(); ix++,iy++)
             {
               x = *ix;
               y = *iy;
 
-              //if(x < 0 || y < 0)
               if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-                printf("l %d %d\n",x,y);
+                printf("warning l %d %d\n",x,y);
 
-              ptrImg = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
-              if(*ptrImg > threshold_edge_map) // threshold edge map
+              ptrEdge = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
+              if(*ptrEdge > threshold_edge_map) // threshold edge map
                 {
                   // reset ray1
                   steps_since_edge = 0;
 
                   // ray3
-                  ptrGN = ((uchar*)(gn->imageData + gn->widthStep*y)) + x;
+                  ptrGN = ((uint*)(gn->imageData + gn->widthStep*y)) + x;
                   lastGN = *ptrGN;
                   
                   // ray 4
@@ -208,17 +205,17 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   lastGA = nx * ray_x + ny * ray_y;
                 }
 
-              ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uchar)steps_since_edge;
+              //ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+              //*ptrImgRay1 = (uchar)steps_since_edge;
 
-              ptrImgRay3 = ((uchar*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uchar)lastGN;
+              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+              *ptrImgRay1 = (uint)steps_since_edge;
 
-              ptrImgRay4 = ((uchar*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uchar)lastGA;
+              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+              *ptrImgRay3 = (uint)lastGN;
 
-              //cvSet2D(ray3,x,y,cvScalar(lastGA));
-              //cvSet2D(ray4,x,y,cvScalar(lastGN));
+              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+              *ptrImgRay4 = (uint)lastGA;
 
               steps_since_edge++;
             }
@@ -230,12 +227,9 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       // scan to the right
       x_ofs = 1;
 
-      printf("scan to the right\n");
+      //printf("scan to the right\n");
       do
         {
-
-          //for(int i = 0;i < ys.size();i++)
-          //for(;ix != xs.end(); ix++,iy++)
           xj.clear();
           yj.clear();
           ix = xs.begin();
@@ -250,29 +244,28 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                 }
             }
 
-          //for(int i = 0;i < yj.size();i++)
           ix = xj.begin();
           iy = yj.begin();
           lastGN = 0;
           lastGA = 1;
+          steps_since_edge = 0;
           for(;ix != xj.end(); ix++,iy++)
             {
               x = *ix;
               y = *iy;
 
-              //if(x < 0 || y < 0)
               if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-                continue;
-                //printf("r %d %d\n",x,y);
+                //continue;
+                printf("warning r %d %d\n",x,y);
 
-              ptrImg = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
-              if(*ptrImg > threshold_edge_map) // threshold edge map
+              ptrEdge = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
+              if(*ptrEdge > threshold_edge_map) // threshold edge map
                 {
                   // reset ray1
                   steps_since_edge = 0;
 
                   // ray3
-                  ptrGN = ((uchar*)(gn->imageData + gn->widthStep*y)) + x;
+                  ptrGN = ((uint*)(gn->imageData + gn->widthStep*y)) + x;
                   lastGN = *ptrGN;
                   
                   // ray 4
@@ -281,17 +274,14 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   lastGA = nx * ray_x + ny * ray_y;
                 }
 
-              ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uchar)steps_since_edge;
+              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+              *ptrImgRay1 = (uint)steps_since_edge;
 
-              ptrImgRay3 = ((uchar*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uchar)lastGN;
+              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+              *ptrImgRay3 = (uint)lastGN;
 
-              ptrImgRay4 = ((uchar*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uchar)lastGA;
-
-              //cvSet2D(ray3,x,y,cvScalar(lastGA));
-              //cvSet2D(ray4,x,y,cvScalar(lastGN));
+              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+              *ptrImgRay4 = (uint)lastGA;
 
               steps_since_edge++;
             }
@@ -305,13 +295,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       // scan to the bottom
       int y_ofs = 0;
 
-      printf("scan to the bottom\n");
+      //printf("scan to the bottom\n");
 
       do
         {
-          //for(int i = 0;i < ys.size();i++)
-          //for(;ix != xs.end(); ix++,iy++)
-
           //ix = xs.end();
           //ix--;
           //printf("xs %d\n",*ix);
@@ -323,7 +310,6 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
           yj.clear();
           ix = xs.begin();
           iy = ys.begin();
-          //for(;iy != ys.end(); ix++,iy++)
           for(;ix != xs.end(); ix++,iy++)
             {
               t = *iy + y_ofs;
@@ -336,28 +322,27 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                 }
             }
 
-          //for(int i = 0;i < yj.size();i++)
           ix = xj.begin();
           iy = yj.begin();
           lastGN = 0;
           lastGA = 1;
+          steps_since_edge = 0;
           for(;ix != xj.end(); ix++,iy++)
             {
               x = *ix;
               y = *iy;
 
-              //if(x < 0 || y < 0)
               if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-                printf("b %d %d\n",x,y);
+                printf("warning b %d %d\n",x,y);
 
-              ptrImg = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
-              if(*ptrImg > threshold_edge_map) // threshold edge map
+              ptrEdge = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
+              if(*ptrEdge > threshold_edge_map) // threshold edge map
                 {
                   // reset ray1
                   steps_since_edge = 0;
 
                   // ray3
-                  ptrGN = ((uchar*)(gn->imageData + gn->widthStep*y)) + x;
+                  ptrGN = ((uint*)(gn->imageData + gn->widthStep*y)) + x;
                   lastGN = *ptrGN;
                   
                   // ray 4
@@ -366,17 +351,14 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   lastGA = nx * ray_x + ny * ray_y;
                 }
 
-              ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uchar)steps_since_edge;
+              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+              *ptrImgRay1 = (uint)steps_since_edge;
 
-              ptrImgRay3 = ((uchar*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uchar)lastGN;
+              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+              *ptrImgRay3 = (uint)lastGN;
 
-              ptrImgRay4 = ((uchar*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uchar)lastGA;
-
-              //cvSet2D(ray3,x,y,cvScalar(lastGA));
-              //cvSet2D(ray4,x,y,cvScalar(lastGN));
+              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+              *ptrImgRay4 = (uint)lastGA;
 
               steps_since_edge++;
             }
@@ -390,8 +372,6 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
 
       do
         {
-          //for(int i = 0;i < ys.size();i++)
-          //for(;ix != xs.end(); ix++,iy++)
           xj.clear();
           yj.clear();
           ix = xs.begin();
@@ -413,23 +393,23 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
           iy = yj.begin();
           lastGN = 0;
           lastGA = 1;
+          steps_since_edge = 0;
           for(;ix != xj.end(); ix++,iy++)
             {
               x = *ix;
               y = *iy;
 
-              //if(x < 0 || y < 0)
               if((*ix < 0) || (*iy < 0) || (*ix >= img->width) || (*iy >= img->height))
-                printf("t %d %d\n",x,y);
+                printf("warning t %d %d\n",x,y);
 
-              ptrImg = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
-              if(*ptrImg > threshold_edge_map) // threshold edge map
+              ptrEdge = ((uchar*)(edge->imageData + edge->widthStep*y)) + x;
+              if(*ptrEdge > threshold_edge_map) // threshold edge map
                 {
                   // reset ray1
                   steps_since_edge = 0;
 
                   // ray3
-                  ptrGN = ((uchar*)(gn->imageData + gn->widthStep*y)) + x;
+                  ptrGN = ((uint*)(gn->imageData + gn->widthStep*y)) + x;
                   lastGN = *ptrGN;
                   
                   // ray 4
@@ -438,17 +418,14 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   lastGA = nx * ray_x + ny * ray_y;
                 }
 
-              ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uchar)steps_since_edge;
+              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+              *ptrImgRay1 = (uint)steps_since_edge;
 
-              ptrImgRay3 = ((uchar*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uchar)lastGN;
+              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+              *ptrImgRay3 = (uint)lastGN;
 
-              ptrImgRay4 = ((uchar*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uchar)lastGA;
-
-              //cvSet2D(ray3,x,y,cvScalar(lastGA));
-              //cvSet2D(ray4,x,y,cvScalar(lastGN));
+              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+              *ptrImgRay4 = (uint)lastGA;
 
               steps_since_edge++;
             }
@@ -458,14 +435,17 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       while(yj.size() > 0);
     }
 
-  printf("Saving ray1\n");
-  cvSaveImage("ray1.png",*ray1);
-  printf("Saving ray3\n");
-  cvSaveImage("ray3.png",*ray3);
-  printf("Saving ray4\n");
-  cvSaveImage("ray4.png",*ray4);
+  if(saveImages)
+    {
+      //printf("Saving ray1\n");
+      save32bitsimage("ray1.ppm",*ray1);
+      //printf("Saving ray3\n");
+      save32bitsimage("ray3.ppm",*ray3);
+      printf("Saving ray4\n");
+      save32bitsimage("ray4.ppm",*ray4);
+    }
 
-  printf("Releasing\n");
+  //printf("Releasing\n");
   //cvReleaseImage(&ray1);
   cvReleaseImage(&img);
   if(gx)
@@ -473,9 +453,9 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   if(gy)
     cvReleaseImage(&gy);
   cvReleaseImage(&gn);
-  if(filterType == F_CANNY)
-    cvReleaseImage(&edge);
-  printf("End release\n");
+  //if(filterType == F_CANNY)
+  cvReleaseImage(&edge);
+  //printf("End release\n");
 }
 
 /*
@@ -543,9 +523,11 @@ end
         end_y--;
 
       intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
+      xs.reverse();
+      ys.reverse();
     }
 
-  printf("xy %f %d %d %d %d\n",angle,start_x, end_x, start_y, end_y);
+  //printf("xy %f %d %d %d %d\n",angle,start_x, end_x, start_y, end_y);
 
   // TODO : Ask Kevin
   // if the angle points to quadrant 2 or 3, we need to re-sort the elements 
@@ -603,7 +585,7 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
           y = round(y1 + m*(x - x1));
           if(x< 0 || x>=img_width || y < 0 || y >= img_height)
             {
-              printf("w %d %d\n",x,y);
+              //printf("w %d %d\n",x,y);
               continue; //break;
             }
           xs.push_back(x);
@@ -637,4 +619,19 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
       xs.reverse();
       ys.reverse();
     }
+}
+
+
+void save32bitsimage(char* filename, IplImage* img)
+{
+  ofstream ofs(filename, ios::out | ios::binary);
+
+  uint* ptrImg;
+  for(int y=0;y<img->height;y++)
+    for(int x=0;x<img->width;x++)
+      {
+        ptrImg = ((uint*)(img->imageData + img->widthStep*y)) + x*(img)->nChannels;
+        ofs.write((char*)ptrImg,sizeof(int));
+      }
+  ofs.close();
 }
