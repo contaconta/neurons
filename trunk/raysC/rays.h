@@ -11,8 +11,10 @@ const float edge_low_thresh = 27000;
 const float edge_up_thresh = 30000;
 const int apertureSize = 7;
 
-void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType=F_CANNY);
+void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType=F_CANNY, bool saveImages=false);
 
 void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys);
 
 inline void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int img_width, int img_height);
+
+void save32bitsimage(char* filename, IplImage* img);
