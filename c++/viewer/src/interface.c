@@ -32,17 +32,18 @@ create_main_window (void)
   GtkWidget *main_window;
   GdkPixbuf *main_window_icon_pixbuf;
   GtkWidget *vbox1;
+  GtkWidget *alignment2;
   GtkWidget *menubar1;
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
-  GtkWidget *open_3d_stack1;
   GtkWidget *open_stc_file;
+  GtkWidget *image8;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit1;
   GtkWidget *menuitem5;
   GtkWidget *menuitem5_menu;
   GtkWidget *screenshot;
-  GtkWidget *image5;
+  GtkWidget *image9;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *_3dmenu;
@@ -98,9 +99,13 @@ create_main_window (void)
   GTK_WIDGET_SET_FLAGS (vbox1, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (vbox1, GTK_CAN_DEFAULT);
 
+  alignment2 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment2);
+  gtk_box_pack_start (GTK_BOX (vbox1), alignment2, FALSE, FALSE, 0);
+
   menubar1 = gtk_menu_bar_new ();
   gtk_widget_show (menubar1);
-  gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
+  gtk_container_add (GTK_CONTAINER (alignment2), menubar1);
 
   menuitem4 = gtk_menu_item_new_with_mnemonic (_("_File"));
   gtk_widget_show (menuitem4);
@@ -109,13 +114,16 @@ create_main_window (void)
   menuitem4_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menuitem4_menu);
 
-  open_3d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 3D stack"));
-  gtk_widget_show (open_3d_stack1);
-  gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_3d_stack1);
-
-  open_stc_file = gtk_menu_item_new_with_mnemonic (_("Open stc file"));
+  open_stc_file = gtk_image_menu_item_new_with_mnemonic (_("_Open File"));
   gtk_widget_show (open_stc_file);
   gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_stc_file);
+  gtk_widget_add_accelerator (open_stc_file, "activate", accel_group,
+                              GDK_o, (GdkModifierType) GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  image8 = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
+  gtk_widget_show (image8);
+  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (open_stc_file), image8);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
@@ -137,9 +145,9 @@ create_main_window (void)
   gtk_widget_show (screenshot);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), screenshot);
 
-  image5 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
-  gtk_widget_show (image5);
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image5);
+  image9 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
+  gtk_widget_show (image9);
+  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image9);
 
   menuitem6 = gtk_menu_item_new_with_mnemonic (_("_View"));
   gtk_widget_show (menuitem6);
@@ -309,9 +317,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) main_window, "drag_drop",
                     G_CALLBACK (on_main_window_drag_drop),
                     NULL);
-  g_signal_connect ((gpointer) open_3d_stack1, "activate",
-                    G_CALLBACK (on_open_3d_stack1_activate),
-                    NULL);
   g_signal_connect ((gpointer) open_stc_file, "activate",
                     G_CALLBACK (on_open_stc_file_activate),
                     NULL);
@@ -397,17 +402,18 @@ create_main_window (void)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
   GLADE_HOOKUP_OBJECT (main_window, vbox1, "vbox1");
+  GLADE_HOOKUP_OBJECT (main_window, alignment2, "alignment2");
   GLADE_HOOKUP_OBJECT (main_window, menubar1, "menubar1");
   GLADE_HOOKUP_OBJECT (main_window, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (main_window, menuitem4_menu, "menuitem4_menu");
-  GLADE_HOOKUP_OBJECT (main_window, open_3d_stack1, "open_3d_stack1");
   GLADE_HOOKUP_OBJECT (main_window, open_stc_file, "open_stc_file");
+  GLADE_HOOKUP_OBJECT (main_window, image8, "image8");
   GLADE_HOOKUP_OBJECT (main_window, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (main_window, quit1, "quit1");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5, "menuitem5");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5_menu, "menuitem5_menu");
   GLADE_HOOKUP_OBJECT (main_window, screenshot, "screenshot");
-  GLADE_HOOKUP_OBJECT (main_window, image5, "image5");
+  GLADE_HOOKUP_OBJECT (main_window, image9, "image9");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (main_window, _3dmenu, "_3dmenu");

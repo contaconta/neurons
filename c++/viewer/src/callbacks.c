@@ -34,7 +34,7 @@ int tick = 0;
 static void* saveScreenShotThreadF(void* vptr_args)
 {
 
-  sleep(1);
+  sleep(0.5);
   screenShot_waitedEnough = true;
 }
 
@@ -62,7 +62,7 @@ void addObjectFromString(string name)
   string extension;
   extension = getExtension(name);
   printf("The extension is %s\n", extension.c_str());
-  std::cout << name << "a" << std::endl;
+  /* std::cout << name << "a" << std::endl; */
 
   if(extension == "nfo"){
     cube = CubeFactory::load(name);
@@ -97,16 +97,18 @@ void addObjectFromString(string name)
     toDraw.push_back(cube);
   }
   else if (extension == "nfc")  {
-    cube = new Cube_C(name);
-    cube->v_draw_projection = flag_minMax;
-    toDraw.push_back(cube);
-    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    Cube_C* cubec = new Cube_C(name);
+    cube = cubec;
+    cubec->v_draw_projection = flag_minMax;
+    toDraw.push_back(cubec);
+    cubec->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
   else if (extension == "tiff")  {
-    cube = new Cube_C(name);
-    cube->v_draw_projection = flag_minMax;
-    toDraw.push_back(cube);
-    cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    Cube_C* cubec = new Cube_C(name);
+    cube = cubec;
+    cubec->v_draw_projection = flag_minMax;
+    toDraw.push_back(cubec);
+    cubec->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
   else if ((extension == "swc") || (extension == "SWC"))  {
     toDraw.push_back(new SWC(name));
@@ -192,8 +194,8 @@ void
 on_drawing3D_realize                   (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-  for(int i = 0; i < objectNames.size(); i++)
-    std::cout << objectNames[i] << std::endl;
+  /* for(int i = 0; i < objectNames.size(); i++) */
+    /* std::cout << objectNames[i] << std::endl; */
 }
 
 

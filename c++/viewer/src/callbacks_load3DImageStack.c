@@ -1,6 +1,7 @@
 #include "globalsE.h"
 #include "support.h"
 #include "Configuration.h"
+#include "functions.h"
 
 Cube<uchar, ulong>* loadImageStackFromSFC
 (string directory, string imageFormat, int layerInit, int layerEnd,
@@ -262,15 +263,19 @@ on_open_stc_file_activate              (GtkMenuItem     *menuitem,
     }
   gtk_widget_destroy (dialog);
 
-  Configuration* conf = new Configuration(filename);
+  /* Configuration* conf = new Configuration(filename); */
 
-  Cube<uchar, ulong>* cube = loadImageStackFromSFC
-    (conf->retrieve("directory"),
-     conf->retrieve("format"),
-     conf->retrieveInt("layerInit"), conf->retrieveInt("layerEnd"),
-     conf->retrieveFloat("voxelWidth"), conf->retrieveFloat("voxelHeight"),
-     conf->retrieveFloat("voxelDepth"));
-  toDraw.push_back(cube);
+  /* Cube<uchar, ulong>* cube = loadImageStackFromSFC */
+    /* (conf->retrieve("directory"), */
+     /* conf->retrieve("format"), */
+     /* conf->retrieveInt("layerInit"), conf->retrieveInt("layerEnd"), */
+     /* conf->retrieveFloat("voxelWidth"), conf->retrieveFloat("voxelHeight"), */
+     /* conf->retrieveFloat("voxelDepth")); */
+  /* toDraw.push_back(cube); */
+
+  addObjectFromString(filename);
+  on_drawing3D_expose_event(drawing3D,NULL, NULL);
+
 
   g_free (filename);
 }

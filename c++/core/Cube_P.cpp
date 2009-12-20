@@ -251,7 +251,7 @@ void Cube_P::draw
     }
 
   //Draws a sphere in the furthest and closest point of the cube
-  if(1){
+  if(0){
     glPushMatrix();
     nMatrices++;
     glTranslatef(cubePoints_c[closest_point_idx][0], cubePoints_c[closest_point_idx][1], cubePoints_c[closest_point_idx][2]);
@@ -470,7 +470,7 @@ void Cube_P::draw
               intersectionPointsIdx++;
 
               //Draws spheres in the intersection points
-              if(1){
+              if(0){
                 glPushMatrix();
                 nMatrices++;
                 glTranslatef(x_point, y_point, z_point);
@@ -529,8 +529,12 @@ void Cube_P::draw
 //       if(min_max==4)
 //         glColor3f(1.0,1.0,1.0);
 
-      glEnable(GL_BLEND);
+
 #ifdef WITH_GLEW
+      glEnable(GL_TEXTURE_3D);
+      // printf("Cube_P::draw: binding to texture = %i\n", wholeTexture);
+      glBindTexture(GL_TEXTURE_3D, wholeTexture);
+      glEnable(GL_BLEND);
       if(blendFunction == MIN_MAX)
         {
           if(min_max == 0)
@@ -551,10 +555,7 @@ void Cube_P::draw
       //glStencilFunc(GL_GREATER,1.0f,~0);
       //glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-      glEnable(GL_TEXTURE_3D);
-      // printf("Cube_P::draw: binding to texture = %i\n", wholeTexture);
-      glBindTexture(GL_TEXTURE_3D, wholeTexture);
-#endif
+
       glEdgeFlag(GL_FALSE);
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 //       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -571,10 +572,10 @@ void Cube_P::draw
                      intersectionPoints[indexes[i]][2]);
         }
       glEnd();
-#ifdef WITH_GLEW
+
       glDisable(GL_TEXTURE_3D);
       glDisable(GL_BLEND);
-      glDisable(GL_ALPHA_TEST); // Test AL
+      // glDisable(GL_ALPHA_TEST); // Test AL
       //glDisable(GL_STENCIL_TEST);
 #endif
       //Draws an sphere on all the intersection points
