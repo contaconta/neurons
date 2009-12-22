@@ -33,6 +33,7 @@ Y s                    |/            |/
 #include "VisibleE.h"
 #include "Cloud_P.h"
 #include <typeinfo>
+#include "tiffio.h"
 
 #ifdef WITH_OPENMP
 #include <omp.h>
@@ -106,6 +107,9 @@ public:
    turned to false, it will allocate the size of the cube in the memory of the computer,
    but not save it in the file filenameVoxelData*/
   void load_volume_data(string filenameVoxelData, bool reflectToFile = true);
+
+  /** Initialize the volume data from the tiff file.*/
+  void load_tiff_file(string filenameTiff);
 
   /** Initializes the pointers to the integral cube.*/
   void load_integral_volume(string filename);
@@ -668,13 +672,24 @@ Cube<T,U>::Cube(string filenameParams, bool load_volume_file)
 //   glGenTextures(1, &wholeTexture);
 //   glGenTextures(1, &wholeTexturerue);
 
+  string extension = getExtension(filenameParams);
   init();
-  load_parameters(filenameParams);
 
-  if(load_volume_file){
-    string directory = filenameParams.substr(0,filenameParams.find_last_of("/\\")+1); 
-    if((filenameVoxelData != "")){
-      load_volume_data(directory + filenameVoxelData);
+  if( (extension == "tiff") ||
+      (extension == "TIFF") ||
+      (extension == "tif")  ||
+      (extension == "TIF")
+      )
+    {
+      load_tiff_file(filenameParams);
+    }
+  else{
+    load_parameters(filenameParams);
+    if(load_volume_file){
+      string directory = filenameParams.substr(0,filenameParams.find_last_of("/\\")+1);
+      if((filenameVoxelData != "")){
+        load_volume_data(directory + filenameVoxelData);
+      }
     }
   }
 

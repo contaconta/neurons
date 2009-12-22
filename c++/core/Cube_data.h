@@ -140,6 +140,82 @@ void Cube<T,U>::load_volume_data(string filenameVoxelData, bool reflectToFile)
 }
 
 template <class T, class U>
+void Cube<T,U>::load_tiff_file(string filename)
+{
+  int dircount = 0;
+  uint16 bps;
+  uint32 w,h;
+  TIFF* tif = TIFFOpen(filename.c_str(), "r");
+  if(!tif){
+    printf("Cube_C::Error getting the tiff image.\n");
+    exit(0);
+  } else {
+    do{
+        dircount++;
+        TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+        TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
+      } while (TIFFReadDirectory(tif));
+  }
+  TIFFClose(tif);
+
+  this->cubeWidth   = w;
+  this->cubeHeight  = h;
+  this->cubeDepth   = dircount;
+  this->voxelWidth  = 1;
+  this->voxelHeight = 1;
+  this->voxelDepth  = 1;
+  this->x_offset = 0;
+  this->y_offset = 0;
+  this->z_offset = 0;
+  this->filenameVoxelData = "";
+  load_volume_data("", false);
+
+  tif = TIFFOpen(filename.c_str(), "r");
+  // In the case it is a uchar file
+  if(bps==8){
+    uint32 px;
+    uint32 mask = 0x000000FF;
+    uint32* raster;
+
+    for(int z = 0; z < dircount; z++){
+      //Prepare the raster
+      raster = (uint32*) _TIFFmalloc(w*h * sizeof (uint32));
+      if (TIFFReadRGBAImage(tif, w, h, raster, 0)) {
+        for(int y = 0; y < h; y++){
+          for(int x = 0; x < w; x++){
+            px = raster[y*w+x];
+            put(x,h-1-y,z, (uchar)(mask & px));
+          }//x
+        }//y
+        TIFFReadDirectory(tif);
+        printf("#"); fflush(stdout);
+      }//TIFFread
+      else{
+        printf("Cube::load_tiff_image::error loading the raster for directory %i\n", z);
+      }//TIFFread
+      _TIFFfree(raster);
+    }
+  } else {
+    //that seems to be the magic word
+    // TIFFReadScanline();
+    uint16 array[w*h];
+    for(int z = 0; z < dircount; z++){
+      for (int j = 0; j < h; j++)
+        TIFFReadScanline(tif, &array[j * w], j, 0);
+      for(int y = 0; y < h; y++){
+        for(int x = 0; x < w; x++){
+          put(x,y,z, (T)array[y*w+x]);
+        }//x
+      }//y
+      TIFFReadDirectory(tif);
+    }//z
+  } //16 bbp
+  TIFFClose(tif);
+
+}
+
+template <class T, class U>
 void Cube<T,U>::load_integral_volume(string filename)
 {
   int fildes;

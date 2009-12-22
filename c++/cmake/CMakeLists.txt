@@ -14,8 +14,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-# set(CMAKE_BUILD_TYPE release) #debug none release distribution
+# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
@@ -40,6 +40,7 @@ message("Hostname = " ${HOST} ", using the following CXX compiler: "
 ## REQUIRED
 find_package(OpenCV REQUIRED)
 include_directories(${OPENCV_INCLUDE_DIR})
+message("OpenCV directories = ${OPENCV_INCLUDE_DIR}")
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(TIFF REQUIRED)
@@ -48,7 +49,7 @@ find_package(TIFF REQUIRED)
 
 #find_package(BBP-SDK)
 #IF(${BBP-SDK_FOUND})
-#  find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework)      
+#  find_package(Boost 1.35.0 COMPONENTS thread filesystem system serialization unit_test_framework)
 #  IF(${Boost_FOUND})
 #        INCLUDE_DIRECTORIES( ${BBP-SDK_INCLUDE_DIRS})
 #        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D WITH_BBP")
@@ -222,128 +223,130 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
 ENDIF(${GLEW_FOUND})
 
-add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
-target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
+# # add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
+# target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
-target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
+# add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
+# target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
-target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
+# add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
+# target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
 
 
-add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
-target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
+# # add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
+# target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
-target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
+# add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
+# target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
-target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
+# add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
+# target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
-target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
+# add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
+# target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
-target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
+# add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
+# target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
-target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
+# add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
+# target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
-target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
+# add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
+# target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
-target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
+# # add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
+# target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
-target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
+# add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
+# target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
-target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
+# add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
+# target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
 # target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
-target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
+# add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
+# target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
-target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
-
-
-add_executable(cubeDerivative ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivative.cpp)
-target_link_libraries(cubeDerivative ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
-target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
-target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
-target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
-target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
-target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
-target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
-
-add_executable(cube-log10 ${CMAKE_SOURCE_DIR}/../tools/cube/cube-log10.cpp)
-target_link_libraries(cube-log10 ${LINK_LIBRARIES_ALL})
+# # add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
+# target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
 
 
-add_executable(cubeFixAguetThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixAguetThreshold.cpp)
-target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
+# add_executable(cubeDerivative ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivative.cpp)
+# target_link_libraries(cubeDerivative ${LINK_LIBRARIES_ALL})
+
+# # add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
+# target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
+
+# add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
+# target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
+
+# add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
+# target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
+
+# add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
+# target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
+
+# # add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
+# target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
+
+# add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
+# target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
+
+# add_executable(cube-log10 ${CMAKE_SOURCE_DIR}/../tools/cube/cube-log10.cpp)
+# target_link_libraries(cube-log10 ${LINK_LIBRARIES_ALL})
+
+
+# # add_executable(cubeFixAguetThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixAguetThreshold.cpp)
+# target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
 ## image tools
-add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
-target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
+################################################################################
 
-add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
-target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
+# add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
+# target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
 
-add_executable(imageFindSoma ${CMAKE_SOURCE_DIR}/../tools/image/imageFindSoma.cpp)
-target_link_libraries(imageFindSoma ${LINK_LIBRARIES_ALL})
+# add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
+# target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 
-add_executable(imageGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/image/imageGaussianPyramid.cpp)
-target_link_libraries(imageGaussianPyramid ${LINK_LIBRARIES_ALL})
+# add_executable(imageFindSoma ${CMAKE_SOURCE_DIR}/../tools/image/imageFindSoma.cpp)
+# target_link_libraries(imageFindSoma ${LINK_LIBRARIES_ALL})
 
-add_executable(imageMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/image/imageMergeAcrossScales.cpp)
-target_link_libraries(imageMergeAcrossScales ${LINK_LIBRARIES_ALL})
+# # add_executable(imageGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/image/imageGaussianPyramid.cpp)
+# target_link_libraries(imageGaussianPyramid ${LINK_LIBRARIES_ALL})
 
-add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
-target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
+# # add_executable(imageMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/image/imageMergeAcrossScales.cpp)
+# target_link_libraries(imageMergeAcrossScales ${LINK_LIBRARIES_ALL})
 
-add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
-target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
+# add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
+# target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
 
-add_executable(imageGradient ${CMAKE_SOURCE_DIR}/../tools/image/imageGradient.cpp)
-target_link_libraries(imageGradient ${LINK_LIBRARIES_ALL})
+# add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
+# target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
 
-add_executable(imageDistanceTransform
-  ${CMAKE_SOURCE_DIR}/../tools/image/imageDistanceTransform.cpp)
-target_link_libraries(imageDistanceTransform ${LINK_LIBRARIES_ALL})
+# add_executable(imageGradient ${CMAKE_SOURCE_DIR}/../tools/image/imageGradient.cpp)
+# target_link_libraries(imageGradient ${LINK_LIBRARIES_ALL})
 
-IF(${GLEW_FOUND})
-add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
-target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
-add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
-target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
-add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
-target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
-add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
-target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
-add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
-target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
-ENDIF(${GLEW_FOUND})
+# add_executable(imageDistanceTransform
+  # ${CMAKE_SOURCE_DIR}/../tools/image/imageDistanceTransform.cpp)
+# target_link_libraries(imageDistanceTransform ${LINK_LIBRARIES_ALL})
+
+# IF(${GLEW_FOUND})
+# add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
+# target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
+# # add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
+# target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
+# add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
+# target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+# add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
+# target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
+# # add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
+# target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
+# ENDIF(${GLEW_FOUND})
 
 
 
@@ -351,123 +354,126 @@ ENDIF(${GLEW_FOUND})
 
 ################################################################################
 ## graph tools
+################################################################################
 
-add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
-target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
+# add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
+# target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
-add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
-target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
+# # add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
+# target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
 
-add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
-target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
+# # add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
+# target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
 
-add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
-target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
+# # add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
+# target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
 
-add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
-target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
+# add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
+# target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 
-add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
-target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
+# # add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
+# target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
 
-add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
-target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
+# add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
+# target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
-target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
+# add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
+# target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
 
-add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
-target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
+# add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
+# target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
-add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
-target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
+# add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
+# target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 
-add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
-target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
+# add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
+# target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
 
-add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
-target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
+# add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
+# target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
 ## neuron tools
+################################################################################
 
-add_executable(neuronOutputAllEdgeLengths ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronOutputAllEdgeLengths.cpp)
-target_link_libraries(neuronOutputAllEdgeLengths ${LINK_LIBRARIES_ALL})
+# # add_executable(neuronOutputAllEdgeLengths ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronOutputAllEdgeLengths.cpp)
+# target_link_libraries(neuronOutputAllEdgeLengths ${LINK_LIBRARIES_ALL})
 
-add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
-target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
+# # add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
+# target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
 
-add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
-target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
+# add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
+# target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
-target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
+# add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
+# target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
 
-add_executable(neuronFlat ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFlat.cpp)
-target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
+# add_executable(neuronFlat ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFlat.cpp)
+# target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
 ## Test examples
+################################################################################
 
-add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
-target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+# add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
+# target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
-target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
+# add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
+# target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
 
-add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
-target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})
+# add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
+# target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})
 
-add_executable(checkNonMaxSup ${CMAKE_SOURCE_DIR}/../tests/checkNonMaxSup.cpp)
-target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
-
-
-add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
-target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
-
-add_executable(kMSTgraphToHighResgraph ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphToHighResgraph.cpp)
-target_link_libraries(kMSTgraphToHighResgraph ${LINK_LIBRARIES_ALL})
-
-add_executable(kMSTanalyzeDir ${CMAKE_SOURCE_DIR}/../tests/kMSTanalyzeDir.cpp)
-target_link_libraries(kMSTanalyzeDir ${LINK_LIBRARIES_ALL})
-
-add_executable(kMSTevaluateDir ${CMAKE_SOURCE_DIR}/../tests/kMSTevaluateDir.cpp)
-target_link_libraries(kMSTevaluateDir ${LINK_LIBRARIES_ALL})
-
-add_executable(kMSTgraphAddScale ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphAddScale.cpp)
-target_link_libraries(kMSTgraphAddScale ${LINK_LIBRARIES_ALL})
-
-add_executable(kMSTGraphToFile ${CMAKE_SOURCE_DIR}/../tests/kMSTGraphToFile.cpp)
-target_link_libraries(kMSTGraphToFile ${LINK_LIBRARIES_ALL})
+# add_executable(checkNonMaxSup ${CMAKE_SOURCE_DIR}/../tests/checkNonMaxSup.cpp)
+# target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
 
 
-add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
-target_link_libraries(convolutionsFast ${LINK_LIBRARIES_ALL})
+# add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
+# target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
 
-add_executable(convolutionsSlow ${CMAKE_SOURCE_DIR}/../tests/convolutionsSlow.cpp)
-target_link_libraries(convolutionsSlow ${LINK_LIBRARIES_ALL})
+# # add_executable(kMSTgraphToHighResgraph ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphToHighResgraph.cpp)
+# target_link_libraries(kMSTgraphToHighResgraph ${LINK_LIBRARIES_ALL})
+
+# add_executable(kMSTanalyzeDir ${CMAKE_SOURCE_DIR}/../tests/kMSTanalyzeDir.cpp)
+# target_link_libraries(kMSTanalyzeDir ${LINK_LIBRARIES_ALL})
+
+# add_executable(kMSTevaluateDir ${CMAKE_SOURCE_DIR}/../tests/kMSTevaluateDir.cpp)
+# target_link_libraries(kMSTevaluateDir ${LINK_LIBRARIES_ALL})
+
+# add_executable(kMSTgraphAddScale ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphAddScale.cpp)
+# target_link_libraries(kMSTgraphAddScale ${LINK_LIBRARIES_ALL})
+
+# add_executable(kMSTGraphToFile ${CMAKE_SOURCE_DIR}/../tests/kMSTGraphToFile.cpp)
+# target_link_libraries(kMSTGraphToFile ${LINK_LIBRARIES_ALL})
 
 
-add_executable(MSTthroughShortestPath ${CMAKE_SOURCE_DIR}/../tests/MSTthroughShortestPath.cpp)
-target_link_libraries(MSTthroughShortestPath ${LINK_LIBRARIES_ALL})
+# add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
+# target_link_libraries(convolutionsFast ${LINK_LIBRARIES_ALL})
 
-add_executable(graphToDisplayList ${CMAKE_SOURCE_DIR}/../tests/graphToDisplayList.cpp)
-target_link_libraries(graphToDisplayList ${LINK_LIBRARIES_ALL})
+# add_executable(convolutionsSlow ${CMAKE_SOURCE_DIR}/../tests/convolutionsSlow.cpp)
+# target_link_libraries(convolutionsSlow ${LINK_LIBRARIES_ALL})
 
-add_executable(gslMinimization ${CMAKE_SOURCE_DIR}/../tests/gslMinimization.cpp)
-target_link_libraries(gslMinimization ${LINK_LIBRARIES_ALL})
 
-add_executable(clone ${CMAKE_SOURCE_DIR}/../tests/clone.cpp)
-target_link_libraries(clone ${LINK_LIBRARIES_ALL})
+# # add_executable(MSTthroughShortestPath ${CMAKE_SOURCE_DIR}/../tests/MSTthroughShortestPath.cpp)
+# target_link_libraries(MSTthroughShortestPath ${LINK_LIBRARIES_ALL})
 
-add_executable(configuration ${CMAKE_SOURCE_DIR}/../tests/configuration.cpp)
-target_link_libraries(configuration ${LINK_LIBRARIES_ALL})
+# add_executable(graphToDisplayList ${CMAKE_SOURCE_DIR}/../tests/graphToDisplayList.cpp)
+# target_link_libraries(graphToDisplayList ${LINK_LIBRARIES_ALL})
 
-add_executable(openmp ${CMAKE_SOURCE_DIR}/../tests/openmp.cpp)
-target_link_libraries(openmp ${LINK_LIBRARIES_ALL})
+# add_executable(gslMinimization ${CMAKE_SOURCE_DIR}/../tests/gslMinimization.cpp)
+# target_link_libraries(gslMinimization ${LINK_LIBRARIES_ALL})
 
-add_executable(copyFile ${CMAKE_SOURCE_DIR}/../tests/copyFile.cpp)
-target_link_libraries(copyFile ${LINK_LIBRARIES_ALL})
+# add_executable(clone ${CMAKE_SOURCE_DIR}/../tests/clone.cpp)
+# target_link_libraries(clone ${LINK_LIBRARIES_ALL})
+
+# add_executable(configuration ${CMAKE_SOURCE_DIR}/../tests/configuration.cpp)
+# target_link_libraries(configuration ${LINK_LIBRARIES_ALL})
+
+# add_executable(openmp ${CMAKE_SOURCE_DIR}/../tests/openmp.cpp)
+# target_link_libraries(openmp ${LINK_LIBRARIES_ALL})
+
+# add_executable(copyFile ${CMAKE_SOURCE_DIR}/../tests/copyFile.cpp)
+# target_link_libraries(copyFile ${LINK_LIBRARIES_ALL})
 
