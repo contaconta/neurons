@@ -7,11 +7,13 @@ using namespace std;
 #define F_CANNY 1
 
 // Parameter for canny filter
-const float edge_low_thresh = 27000;
-const float edge_up_thresh = 30000;
+const float edge_low_thresh_default = 27000;
+const float edge_up_thresh_default = 30000;
 const int apertureSize = 7;
 
-void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType=F_CANNY, bool saveImages=false);
+void computeRays(const char *pImageName, double sigma, double angle,
+                 IplImage** ray1, IplImage** ray3, IplImage** ray4,
+                 int filterType=F_CANNY, bool saveImages=false, float edge_low_threshold=edge_low_thresh_default);
 
 void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys);
 
