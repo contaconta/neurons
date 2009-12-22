@@ -37,7 +37,9 @@
  *   future we may add more methods for generating edges).  SIGMA specifies 
  *   the standard deviation of the edge filter.  
  */
-void computeRays(const char *pImageName, double sigma, double angle, IplImage** ray1, IplImage** ray3, IplImage** ray4, int filterType, bool saveImages)
+void computeRays(const char *pImageName, double sigma, double angle,
+                 IplImage** ray1, IplImage** ray3, IplImage** ray4,
+                 int filterType, bool saveImages, float edge_low_threshold)
 {
   // control sensitivity to edge detection.
   // 0 means that the ray will stop after hitting the first edge.
@@ -91,7 +93,7 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
       //cvNot( gray, edge );
 
       // Run the edge detector on grayscale
-      cvCanny(img, edge, edge_low_thresh, edge_up_thresh, apertureSize);
+      cvCanny(img, edge, edge_low_threshold, edge_low_threshold+2000, apertureSize);
     }
 
     if(saveImages)
@@ -135,8 +137,11 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
   //cvSet(*ray4, cvScalar(0)); // TODO : DEBUG ONLY !!!
 
   // determine the unit vector in the direction of the Ray
-  int ray_x = sin(angle);
-  int ray_y = cos(angle);
+  float ray_x = sin(angle);
+  float ray_y = cos(angle);
+  float nxf;
+  float nyf;
+  float n;
 
   list<int> xj;
   list<int> yj;
@@ -202,7 +207,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   // ray 4
                   nx = ((short*)(gx->imageData + gx->widthStep*y))[x*gx->nChannels];
                   ny = ((short*)(gy->imageData + gy->widthStep*y))[x*gy->nChannels];
-                  lastGA = nx * ray_x + ny * ray_y;
+                  n = nx*nx + ny*ny;
+                  nxf = nx/n;
+                  nyf = ny/n;
+                  lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
               //ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
@@ -271,7 +279,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   // ray 4
                   nx = ((short*)(gx->imageData + gx->widthStep*y))[x*gx->nChannels];
                   ny = ((short*)(gy->imageData + gy->widthStep*y))[x*gy->nChannels];
-                  lastGA = nx * ray_x + ny * ray_y;
+                  n = nx*nx + ny*ny;
+                  nxf = nx/n;
+                  nyf = ny/n;
+                  lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
               ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
@@ -348,7 +359,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   // ray 4
                   nx = ((short*)(gx->imageData + gx->widthStep*y))[x*gx->nChannels];
                   ny = ((short*)(gy->imageData + gy->widthStep*y))[x*gy->nChannels];
-                  lastGA = nx * ray_x + ny * ray_y;
+                  n = nx*nx + ny*ny;
+                  nxf = nx/n;
+                  nyf = ny/n;
+                  lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
               ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
@@ -415,7 +429,10 @@ void computeRays(const char *pImageName, double sigma, double angle, IplImage** 
                   // ray 4
                   nx = ((short*)(gx->imageData + gx->widthStep*y))[x*gx->nChannels];
                   ny = ((short*)(gy->imageData + gy->widthStep*y))[x*gy->nChannels];
-                  lastGA = nx * ray_x + ny * ray_y;
+                  n = nx*nx + ny*ny;
+                  nxf = nx/n;
+                  nyf = ny/n;
+                  lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
               ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
@@ -474,13 +491,23 @@ else
 end
   */
 
+  bool flip = false;
+
   // format the angle so it is between 0 and less than pi/2
   const float EPS = 0.001f;
+  /*
   if((angle > PI-EPS) && (angle < PI+EPS))
-    angle = 0;
+    {
+      angle = 0;
+      flip = true;
+    }
   else
+  */
     if (angle > PI)
-      angle -= PI;
+      {
+        angle -= PI;
+        flip = true;
+      }
 
   // find where the line intercepts the edge of the image.  draw a line to
   // this point from (1,1) if 0<=angle<=pi/2.  otherwise pi/2>angle>pi draw 
@@ -523,6 +550,11 @@ end
         end_y--;
 
       intline(start_x, end_x, start_y, end_y, xs, ys, img_width, img_height);
+      flip = !flip;
+    }
+
+  if(flip)
+    {
       xs.reverse();
       ys.reverse();
     }
