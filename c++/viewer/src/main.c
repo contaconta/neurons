@@ -83,7 +83,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
       flag_verbose = 1;
       break;
     case 'p':
-      flag_minMax = 1;
+      flag_minMax = 0;
       break;
     case 'e':
       majorMode |= MOD_ASCEDITOR;
@@ -393,7 +393,7 @@ main (int argc, char *argv[])
   add_pixmap_directory("/usr/share/pixmaps/");
 
   //Initialization of the arguments
-  flag_minMax = 0; //minIntensity
+  flag_minMax = 1; //minIntensity
   flag_verbose = 0; // not verbose
   neuron_name = "";
   volume_name = "";

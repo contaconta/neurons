@@ -18,13 +18,13 @@
 #include "plugin_info.h"
 
 //Camera parameters
-double fovy3D = 60;
+double fovy3D = 80;
 double aspect3D = 1;
 double zNear3D = 1;
 double zFar3D =  5000;
 double disp3DX = 0;
 double disp3DY = 0;
-double disp3DZ = 300;
+double disp3DZ = 1000;
 double rot3DX = 0;
 double rot3DY = 0;
 
@@ -143,7 +143,7 @@ bool flag_draw_neuron = true;
 int layerSpanViewZ = 1;
 bool drawCube_flag = true;
 bool drawOnlyCube_flag = false;
-bool flag_minMax   = false;
+bool flag_minMax   = true;
 bool flag_verbose = false;
 bool flag_cube_transparency = true;
 
