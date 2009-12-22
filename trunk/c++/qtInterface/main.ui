@@ -49,7 +49,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
+  <widget class="BasicMenu" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -82,7 +82,7 @@
   </widget>
   <action name="actionAdd_Object">
    <property name="text">
-    <string>Add Object</string>
+    <string>Open</string>
    </property>
   </action>
   <action name="action3D">
@@ -126,6 +126,11 @@
    <class>Stage</class>
    <extends>QGraphicsView</extends>
    <header>Stage.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BasicMenu</class>
+   <extends>QMenuBar</extends>
+   <header>BasicMenu.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -103,8 +103,12 @@ void addObjectFromString(string name)
     toDraw.push_back(cubec);
     cubec->load_texture_brick(cubeRowToDraw, cubeColToDraw);
   }
-  else if (extension == "tiff")  {
-    Cube_C* cubec = new Cube_C(name);
+  else if ( (extension == "tiff") ||
+            (extension == "TIFF") ||
+            (extension == "tif")  ||
+            (extension == "TIF")
+           )  {
+    Cube_P* cubec = CubeFactory::load(name);
     cube = cubec;
     cubec->v_draw_projection = flag_minMax;
     toDraw.push_back(cubec);

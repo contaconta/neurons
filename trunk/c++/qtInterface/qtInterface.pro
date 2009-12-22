@@ -12,8 +12,8 @@ QMAKE_CFLAGS += -openmp -D WITH_OPENMP
 
 # Input
 FORMS += main.ui CubeDialog.ui
-HEADERS += Stage.h CubeDialog.h
-SOURCES += main.cpp Stage.cpp CubeDialog.cpp
+HEADERS += Stage.h CubeDialog.h BasicMenu.h
+SOURCES += main.cpp Stage.cpp CubeDialog.cpp BasicMenu.cpp
 
 
 # External libraries

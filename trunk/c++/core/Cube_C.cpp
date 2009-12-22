@@ -8,7 +8,8 @@ Cube_C::Cube_C(string filenameParams) : Cube_P()
 
   string extension = getExtension(filenameParams);
   directory = getDirectoryFromPath(filenameParams);
-  if(extension=="tiff" || extension=="TIFF"){
+  if(extension=="tiff" || extension=="TIFF" ||
+     extension=="tif" || extension=="TIF"){
     loadFromTIFFImage(filenameParams);
   }
   else{
@@ -90,7 +91,8 @@ void Cube_C::loadFromTIFFImage(string imageName)
 {
   //First we need some information
   int dircount = 0;
-  uint32 w; uint32 h;
+  uint32 w; uint32 h; uint32 depth;
+  uint16 bps, samplesPerPixel; 
   TIFF* tif = TIFFOpen(imageName.c_str(), "r");
   if(!tif){
     printf("Cube_C::Error getting the tiff image.\n");
@@ -100,14 +102,21 @@ void Cube_C::loadFromTIFFImage(string imageName)
         dircount++;
         TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
         TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+        TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
+        TIFFGetField(tif, TIFFTAG_IMAGEDEPTH, &depth);
+        TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
       } while (TIFFReadDirectory(tif));
   }
   TIFFClose(tif);
-  printf("Cube_C::The tiff has %i layers of size=[%i,%i]\n", dircount, w, h);
+  printf("Cube_C::The tiff has %i layers of size=[%i,%i] and %i bits per sample\n"
+         "depth = %i, samplesPerPixel=%i\n",
+         dircount, w, h, bps, depth, samplesPerPixel);
   data.resize(0);
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
+
+  // exit(0);
 
   //Now we fill the cubes
   tif = TIFFOpen(imageName.c_str(), "r");
@@ -122,9 +131,9 @@ void Cube_C::loadFromTIFFImage(string imageName)
       for(int y = 0; y < h; y++){
         for(int x = 0; x < w; x++){
           px = raster[y*w+x];
-          data[0]->put(x,h-1-y,z, (uchar)(mask & px));
-          data[1]->put(x,h-1-y,z, (uchar)(mask & px >> 8));
-          data[2]->put(x,h-1-y,z, (uchar)(mask & px >> 16));
+          data[0]->put(x,h-1-y,z, (uchar)32*(mask & px));
+          data[1]->put(x,h-1-y,z, (uchar)32*(mask & px >> 8));
+          data[2]->put(x,h-1-y,z, (uchar)32*(mask & px >> 16));
         }//x
       }//y
       TIFFReadDirectory(tif);

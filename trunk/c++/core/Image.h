@@ -597,7 +597,7 @@ void Image<T>::save()
         img->imageData[x*nChannels + n + y*img->widthStep] =
           (uchar)255*(float(at(x,y) - min)/(max-min));
 
-  string full_name = directory + name;
+  string full_name = name;
   cvSaveImage(full_name.c_str(),img);
 //   printf("Saving in %s\n", full_name.c_str());
 }
