@@ -21,6 +21,13 @@
 
 #define PI 3.1415926536
 
+// DEBUG ONLY
+string getNameFromPathWithoutExtension(string path){
+  string nameWith =  path.substr(path.find_last_of("/\\")+1);
+  string nameWithout = nameWith.substr(0,nameWith.find_last_of("."));
+  return nameWithout;
+}
+
 /* function [RAY1 RAY3 RAY4] = rays(E, G, angle, stride)
  * RAYS computes RAY features
  *   Example:
@@ -39,7 +46,7 @@
  */
 void computeRays(const char *pImageName, double sigma, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
-                 int filterType, bool saveImages, float edge_low_threshold)
+                 int filterType, bool saveImages, int edge_low_threshold, int edge_high_threshold)
 {
   // control sensitivity to edge detection.
   // 0 means that the ray will stop after hitting the first edge.
@@ -93,11 +100,14 @@ void computeRays(const char *pImageName, double sigma, double angle,
       //cvNot( gray, edge );
 
       // Run the edge detector on grayscale
-      cvCanny(img, edge, edge_low_threshold, edge_low_threshold+2000, apertureSize);
+      cvCanny(img, edge, edge_low_threshold, edge_high_threshold, apertureSize);
     }
 
-    if(saveImages)
-      cvSaveImage("edge.png",edge);
+    //if(saveImages)
+    stringstream sout;
+    string s(pImageName);
+    sout << "/tmp/" << getNameFromPathWithoutExtension(s) << "edge.png";
+    cvSaveImage(sout.str().c_str(),edge);
 
   // ensure good angles
   angle = fmod(angle,360.0);
@@ -454,9 +464,9 @@ void computeRays(const char *pImageName, double sigma, double angle,
 
   if(saveImages)
     {
-      //printf("Saving ray1\n");
+      printf("Saving ray1\n");
       save32bitsimage("ray1.ppm",*ray1);
-      //printf("Saving ray3\n");
+      printf("Saving ray3\n");
       save32bitsimage("ray3.ppm",*ray3);
       printf("Saving ray4\n");
       save32bitsimage("ray4.ppm",*ray4);

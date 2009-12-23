@@ -85,7 +85,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if(nrhs == 4)
       {
         double th=*((double *)mxGetPr(prhs[3]));
-        computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY,true,th);
+        computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY,true,th,th+10000);
       }
     else
       computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY,true);
