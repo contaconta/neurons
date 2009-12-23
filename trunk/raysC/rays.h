@@ -8,12 +8,12 @@ using namespace std;
 
 // Parameter for canny filter
 const float edge_low_thresh_default = 27000;
-const float edge_up_thresh_default = 30000;
+const float edge_high_thresh_default = 30000;
 const int apertureSize = 7;
 
 void computeRays(const char *pImageName, double sigma, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
-                 int filterType=F_CANNY, bool saveImages=false, float edge_low_threshold=edge_low_thresh_default);
+                 int filterType=F_CANNY, bool saveImages=false, int edge_low_threshold=edge_low_thresh_default, int edge_high_threshold=edge_high_thresh_default);
 
 void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list<int>& ys);
 
