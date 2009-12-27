@@ -138,9 +138,12 @@ void computeRays(const char *pImageName, double sigma, double angle,
   */
 
   // initialize the output matrices
-  *ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1);
-  *ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
-  *ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
+  if(ray1 != 0)
+    *ray1 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1);
+  if(ray3 != 0)
+    *ray3 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
+  if(ray4 != 0)
+    *ray4 = cvCreateImage(cvSize(img->width,img->height), IPL_DEPTH_32S, 1); // TODO : should be a 32 bits image !!!
 
   //cvSet(*ray1, cvScalar(0)); // TODO : DEBUG ONLY !!!
   //cvSet(*ray3, cvScalar(0)); // TODO : DEBUG ONLY !!!
@@ -226,14 +229,23 @@ void computeRays(const char *pImageName, double sigma, double angle,
               //ptrImgRay1 = ((uchar*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
               //*ptrImgRay1 = (uchar)steps_since_edge;
 
-              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uint)steps_since_edge;
+              if(ray1 != 0)
+                {
+                  ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+                  *ptrImgRay1 = (uint)steps_since_edge;
+                }
 
-              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uint)lastGN;
+              if(ray3 != 0)
+                {
+                  ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+                  *ptrImgRay3 = (uint)lastGN;
+                }
 
-              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uint)lastGA;
+              if(ray4 != 0)
+                {
+                  ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+                  *ptrImgRay4 = (uint)lastGA;
+                }
 
               steps_since_edge++;
             }
@@ -295,14 +307,23 @@ void computeRays(const char *pImageName, double sigma, double angle,
                   lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
-              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uint)steps_since_edge;
+              if(ray1 != 0)
+                {
+                  ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+                  *ptrImgRay1 = (uint)steps_since_edge;
+                }
 
-              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uint)lastGN;
+              if(ray3 != 0)
+                {
+                  ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+                  *ptrImgRay3 = (uint)lastGN;
+                }
 
-              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uint)lastGA;
+              if(ray4 != 0)
+                {
+                  ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+                  *ptrImgRay4 = (uint)lastGA;
+                }
 
               steps_since_edge++;
             }
@@ -375,14 +396,23 @@ void computeRays(const char *pImageName, double sigma, double angle,
                   lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
-              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uint)steps_since_edge;
+              if(ray1 != 0)
+                {
+                  ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+                  *ptrImgRay1 = (uint)steps_since_edge;
+                }
 
-              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uint)lastGN;
+              if(ray3 != 0)
+                {
+                  ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+                  *ptrImgRay3 = (uint)lastGN;
+                }
 
-              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uint)lastGA;
+              if(ray4 != 0)
+                {
+                  ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+                  *ptrImgRay4 = (uint)lastGA;
+                }
 
               steps_since_edge++;
             }
@@ -445,14 +475,23 @@ void computeRays(const char *pImageName, double sigma, double angle,
                   lastGA = (nxf * ray_x + nyf * ray_y) * 65536;
                 }
 
-              ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
-              *ptrImgRay1 = (uint)steps_since_edge;
+              if(ray1 != 0)
+                {
+                  ptrImgRay1 = ((uint*)((*ray1)->imageData + (*ray1)->widthStep*y)) + x;
+                  *ptrImgRay1 = (uint)steps_since_edge;
+                }
 
-              ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
-              *ptrImgRay3 = (uint)lastGN;
+              if(ray3 != 0)
+                {
+                  ptrImgRay3 = ((uint*)((*ray3)->imageData + (*ray3)->widthStep*y)) + x;
+                  *ptrImgRay3 = (uint)lastGN;
+                }
 
-              ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
-              *ptrImgRay4 = (uint)lastGA;
+              if(ray4 != 0)
+                {
+                  ptrImgRay4 = ((uint*)((*ray4)->imageData + (*ray4)->widthStep*y)) + x;
+                  *ptrImgRay4 = (uint)lastGA;
+                }
 
               steps_since_edge++;
             }
