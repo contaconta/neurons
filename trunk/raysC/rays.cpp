@@ -106,7 +106,7 @@ void computeRays(const char *pImageName, double sigma, double angle,
     //if(saveImages)
     stringstream sout;
     string s(pImageName);
-    sout << "/tmp/" << getNameFromPathWithoutExtension(s) << "edge.png";
+    sout << "/tmp/" << getNameFromPathWithoutExtension(s) << "edge_" << edge_low_threshold << "_" << edge_high_threshold << ".png";
     cvSaveImage(sout.str().c_str(),edge);
 
   // ensure good angles
