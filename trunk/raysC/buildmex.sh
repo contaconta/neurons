@@ -44,10 +44,13 @@ fi
 CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
 #CFLAGS="-w -c -O3" #$(OPENMP)
 
+#LIB_RAYS="-L. -lrays"
+LIB_RAYS="CMakeFiles/rays.dir/rays.o CMakeFiles/rays.dir/combnk.o"
+
 #$GCC -fPIC $CFLAGS -I$MEX_PATH testMex.c
 #$MEX_EXE testMex.o -lgcc -outdir ../bin $MEX_ARG
 $GCC -fPIC $CFLAGS -I$MEX_PATH mexRays.c
-$MEX_EXE CMakeFiles/rays.dir/rays.o mexRays.o -lgcc -outdir ./bin $MEX_ARG
+$MEX_EXE mexRays.o $LIB_RAYS -lgcc -outdir ./bin $MEX_ARG -output rays
 
 $GCC -fPIC $CFLAGS -I$MEX_PATH mexDistDiffRays.c
-$MEX_EXE CMakeFiles/rays.dir/rays.o mexDistDiffRays.o -lgcc -outdir ./bin $MEX_ARG
+$MEX_EXE mexDistDiffRays.o $LIB_RAYS -lgcc -outdir ./bin $MEX_ARG -output distDiffRays

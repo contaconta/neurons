@@ -1,7 +1,8 @@
 function ray_test(angle)
 
 img_name = {'mitochondria1.png'};
-rays(img_name,20,angle);
+sigma = 20;
+rays(img_name,sigma,angle);
 
 figure;
 g = imread(img_name{1});

@@ -40,7 +40,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     mxArray    *tmp;
     char *pImageName;
     
-    /* Check for proper number of input and output arguments */    
+    // Check for proper number of input and output arguments
     if ((nrhs != 5) && (nrhs != 7)) {
       mexErrMsgTxt("Five or seven input arguments required.");
     } 
@@ -48,7 +48,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 	mexErrMsgTxt("Too many output arguments.");
     }
     
-    /* Check data type of input argument */
+    // Check data type of input argument
     if (!(mxIsCell(prhs[0]))) {
       mexErrMsgTxt("First input argument must be of type cell.");
     }
@@ -84,20 +84,6 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     end_angle=*((double *)mxGetPr(prhs[3]));
     step_angle=*((double *)mxGetPr(prhs[4]));
 
-    mexPrintf("computeRays\n");
-
-    computeDistanceDifferenceRays(pImageName,
-                                  start_angle, end_angle, step_angle,
-                                  0, 0);
-
-    /*
-    int nAngles = (end_angle-start_angle)/step_angle;
-    IplImage** rays1 = new IplImage*[nAngles];
-    IplImage** rays3 = 0;
-    IplImage** rays4 = 0;
-    //IplImage** rays3 = new IplImage*[nAngles];
-    //IplImage** rays4 = new IplImage*[nAngles];
-
     double low_th = 15000;
     double high_th = 30000;
     if(nrhs > 5)
@@ -107,6 +93,23 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         if(nrhs > 6)
           high_th = *((double *)mxGetPr(prhs[6]));
       }
+
+    mexPrintf("computeRays\n");
+    IplImage** rays2 = 0;
+    computeDistanceDifferenceRays(pImageName,
+                                  start_angle, end_angle, step_angle,
+                                  rays2, 0, F_CANNY, true, sigma,
+                                  low_th, high_th);
+    
+    /*
+    int nAngles = (end_angle-start_angle)/step_angle;
+    IplImage** rays1 = new IplImage*[nAngles];
+    IplImage** rays3 = 0;
+    IplImage** rays4 = 0;
+    //IplImage** rays3 = new IplImage*[nAngles];
+    //IplImage** rays4 = new IplImage*[nAngles];
+
+
 
     double angle = 0;
     for(int a = 0;a<nAngles;a++)
