@@ -48,3 +48,6 @@ CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
 #$MEX_EXE testMex.o -lgcc -outdir ../bin $MEX_ARG
 $GCC -fPIC $CFLAGS -I$MEX_PATH mexRays.c
 $MEX_EXE CMakeFiles/rays.dir/rays.o mexRays.o -lgcc -outdir ./bin $MEX_ARG
+
+$GCC -fPIC $CFLAGS -I$MEX_PATH mexDistDiffRays.c
+$MEX_EXE CMakeFiles/rays.dir/rays.o mexDistDiffRays.o -lgcc -outdir ./bin $MEX_ARG
