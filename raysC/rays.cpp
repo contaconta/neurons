@@ -40,7 +40,7 @@ string getNameFromPathWithoutExtension(string path){
  * @param edge_low_threshold low threshold used for the canny edge detection
  * @param edge_high_threshold high threshold used for the canny edge detection
  */
-void computeDistanceDifferenceRay(const char *pImageName,
+void computeDistanceDifferenceRays(const char *pImageName,
                                   int start_angle, int end_angle, int step_angle,
                                   IplImage** ray1, IplImage** ray2)
 {
@@ -53,14 +53,22 @@ void computeDistanceDifferenceRay(const char *pImageName,
   cb.push_back (1);
   cb.push_back (2);
 
-  vector<int> pairs;
+  vector< vector<int> > pairs;
   recursive_combination(ca.begin(),ca.end(),0,
                         cb.begin(),cb.end(),0,6-4,pairs);
+
+  for(vector< vector<int> >::iterator itp = pairs.begin(); itp != pairs.end(); itp++)
+    {
+      for(vector<int>::iterator it = itp->begin(); it != itp->end(); it++)
+        printf("%d ",*it);
+      printf("\n");
+    }
 
 }
 
 /* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
  * @param sigma specifies the standard deviation of the edge filter.
+ * @param angle specifies the angle at which the features should be computed.
  * @param ray1 is a pointer to the ray responses for the first type of feature (Distance feature)
  * @param ray3 is a pointer to the ray responses for the first type of feature (Norm feature)
  * @param ray4 is a pointer to the ray responses for the first type of feature (Orientation feature)
