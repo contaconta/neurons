@@ -41,12 +41,16 @@ string getNameFromPathWithoutExtension(string path){
  * @param edge_high_threshold high threshold used for the canny edge detection
  */
 void computeDistanceDifferenceRays(const char *pImageName,
-                                  int start_angle, int end_angle, int step_angle,
-                                  IplImage** ray1, IplImage** ray2)
+                                   int start_angle, int end_angle, int step_angle,
+                                   IplImage** rays2, IplImage** rays1,
+                                   int filterType, bool saveImages, double sigma,
+                                   int edge_low_threshold, int edge_high_threshold)
 {
+  const int eta = 1;
   vector<int> ca;
   for(int a = start_angle;a<=end_angle;a+=step_angle)
     {
+      printf("%d ",a);
       ca.push_back(a);
     }
   vector<int> cb;
@@ -55,13 +59,90 @@ void computeDistanceDifferenceRays(const char *pImageName,
 
   vector< vector<int> > pairs;
   recursive_combination(ca.begin(),ca.end(),0,
-                        cb.begin(),cb.end(),0,6-4,pairs);
+                        cb.begin(),cb.end(),0,ca.size()-cb.size(),pairs);
 
-  for(vector< vector<int> >::iterator itp = pairs.begin(); itp != pairs.end(); itp++)
+  printf("\ncomputeDistanceDifferenceRays %d\n",pairs.size());
+
+  bool ray1_computed = false;
+  int nAngles = (end_angle-start_angle)/step_angle;
+  if(rays1==0)
     {
-      for(vector<int>::iterator it = itp->begin(); it != itp->end(); it++)
-        printf("%d ",*it);
-      printf("\n");
+      printf("Precomputing Rays1 for %d different angles\n",nAngles);
+      rays1 = new IplImage*[nAngles];
+      int angle = start_angle;
+      for(int a = 0;a<nAngles;a++)
+        {
+          printf("angle %d\n",angle);
+          computeRays((const char*)pImageName, sigma, angle,
+                      &rays1[a], 0, 0, filterType, false,
+                      edge_low_threshold, edge_high_threshold);
+          angle += step_angle;
+        }
+      ray1_computed = true;
+    }
+
+  IplImage* ra1;
+  IplImage* ra2;
+  int* ptrRay2;
+  int* ptrRay1a1;
+  int* ptrRay1a2;;
+  int angle1;
+  int angle2;
+  int i = 0;
+  printf("Precomputing Rays2 for %d different combinations\n",pairs.size());
+  rays2 = new IplImage*[pairs.size()];
+  for(vector< vector<int> >::iterator itp = pairs.begin(); itp != pairs.end(); itp++,i++)
+    {
+      //for(vector<int>::iterator it = itp->begin(); it != itp->end(); it++)
+      //  printf("%d ",*it);
+      //printf("\n");
+      vector<int>::iterator it = itp->begin();
+      angle1 = *it;
+      it++;
+      angle2 = *it;
+
+      printf("angle1 %d angle2 %d\n",angle1,angle2);
+
+      // TODO : retrieve index
+      ra1 = rays1[angle1/step_angle];
+      ra2 = rays1[angle2/step_angle];
+
+      printf("w %d h %d\n",ra1->width,ra1->height);
+
+      rays2[i] = cvCreateImage(cvSize(ra1->width,ra1->height), IPL_DEPTH_32S, 1);
+
+      for(int u=0;u<ra1->width;u++)
+        {
+          for(int v=0;v<ra1->height;v++)
+            {
+              //printf("u %d v %d\n",u,v);
+
+              ptrRay1a1 = &((int*)(ra1->imageData + ra1->widthStep*v))[u*ra1->nChannels];
+              ptrRay1a2 = &((int*)(ra2->imageData + ra2->widthStep*v))[u*ra2->nChannels];
+              ptrRay2 = &((int*)(rays2[i]->imageData + rays2[i]->widthStep*v))[u*rays2[i]->nChannels];
+
+              *ptrRay2 = (*ptrRay1a1-*ptrRay1a2)/(*ptrRay1a1+eta);
+              //*ptrRay2 = exp((*ptrRay1a1-*ptrRay1a2)/(*ptrRay1a1+eta));
+            }
+        }
+
+      if(saveImages)
+        {
+          stringstream sout;
+          sout << "ray2_" << i << ".ppm";
+          printf("Saving %s\n",sout.str().c_str());
+          save32bitsimage((char*)sout.str().c_str(),rays2[i]);
+        }
+
+    }
+
+  if(ray1_computed)
+    {
+      printf("Cleaning\n");
+      for(int a = 0;a<nAngles;a++)
+        {
+          cvReleaseImage(&rays1[a]);
+        }
     }
 
 }
