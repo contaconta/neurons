@@ -35,7 +35,7 @@
  *   the standard deviation of the edge filter.  
  */
 void mexFunction(int nlhs,       mxArray *plhs[],
-                      int nrhs, const mxArray *prhs[])
+                 int nrhs, const mxArray *prhs[])
 {
     mwSize nElements,j;
     mwSize number_of_dims;

@@ -14,20 +14,21 @@ fi
 # Set the include path for mex
 if [ -d /usr/bin/MATLAB79/extern/include/ ]
 then
-    MEXPATH='/usr/bin/MATLAB79/extern/include/'
+    MEX_PATH='/usr/bin/MATLAB79/extern/include/'
 elif [ -d /usr/local/MATLAB79/extern/include/ ]
 then
-    MEXPATH='/usr/local/MATLAB79/extern/include/'
+    MEX_PATH='/usr/local/MATLAB79/extern/include/'
 elif [ -d /usr/local/matlab/extern/include/ ]
 then
-    MEXPATH='/usr/local/matlab/extern/include/'
+    MEX_PATH='/usr/local/matlab/extern/include/'
 else
-    echo 'Error : please set the MEXPATH variable manually'
+    echo 'Error : please set the MEX_PATH variable manually'
     #exit -1
 fi
-#MEXPATH='/usr/bin/MATLAB79/extern/include/'
-#MEXPATH='/usr/local/MATLAB79/extern/include/'
-export MEXPATH
+#TODO : If MEX_PATH was not set properly, you have to edit it manually
+#MEX_PATH='/usr/bin/MATLAB79/extern/include/'
+#MEX_PATH='/usr/local/MATLAB79/extern/include/'
+export MEX_PATH
 
 make
 #GCC=/usr/bin/c++
@@ -43,7 +44,7 @@ fi
 CFLAGS="-w -c -O3 `pkg-config --cflags opencv`" #$(OPENMP)
 #CFLAGS="-w -c -O3" #$(OPENMP)
 
-#$GCC -fPIC $CFLAGS -I$MEXPATH testMex.c
+#$GCC -fPIC $CFLAGS -I$MEX_PATH testMex.c
 #$MEX_EXE testMex.o -lgcc -outdir ../bin $MEX_ARG
-$GCC -fPIC $CFLAGS -I$MEXPATH mexRays.c
+$GCC -fPIC $CFLAGS -I$MEX_PATH mexRays.c
 $MEX_EXE CMakeFiles/rays.dir/rays.o mexRays.o -lgcc -outdir ./bin $MEX_ARG

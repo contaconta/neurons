@@ -18,6 +18,8 @@
 #include "rays.h"
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include "combnk.h"
 
 #define PI 3.1415926536
 
@@ -28,21 +30,44 @@ string getNameFromPathWithoutExtension(string path){
   return nameWithout;
 }
 
-/* function [RAY1 RAY3 RAY4] = rays(E, G, angle, stride)
- * RAYS computes RAY features
- *   Example:
- *   -------------------------
- *   I = imread('cameraman.tif');
- *   SPEDGE = spedge_dist(I,30,2, 11);
- *   imagesc(SPEDGE);  axis image;
- *
- *
- *   FEATURE = spedge_dist(E, G, ANGLE, STRIDE)  computes a spedge 
- *   feature on a grayscale image I at angle ANGLE.  Each pixel in FEATURE 
- *   contains the distance to the nearest edge in direction ANGLE.  Edges 
- *   are computed using Laplacian of Gaussian zero-crossings (!!! in the 
- *   future we may add more methods for generating edges).  SIGMA specifies 
- *   the standard deviation of the edge filter.  
+/* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
+ * @param sigma specifies the standard deviation of the edge filter.
+ * @param ray1 is a pointer to the ray responses for the first type of feature (Distance feature)
+ * @param ray3 is a pointer to the ray responses for the first type of feature (Norm feature)
+ * @param ray4 is a pointer to the ray responses for the first type of feature (Orientation feature)
+ * @param filterType specifies the type of edge filter to be use (F_SOBEL or F_CANNY)
+ * @param saveImages specifies if the images should be saved (DEBUG mode only)
+ * @param edge_low_threshold low threshold used for the canny edge detection
+ * @param edge_high_threshold high threshold used for the canny edge detection
+ */
+void computeDistanceDifferenceRay(const char *pImageName,
+                                  int start_angle, int end_angle, int step_angle,
+                                  IplImage** ray1, IplImage** ray2)
+{
+  vector<int> ca;
+  for(int a = start_angle;a<=end_angle;a+=step_angle)
+    {
+      ca.push_back(a);
+    }
+  vector<int> cb;
+  cb.push_back (1);
+  cb.push_back (2);
+
+  vector<int> pairs;
+  recursive_combination(ca.begin(),ca.end(),0,
+                        cb.begin(),cb.end(),0,6-4,pairs);
+
+}
+
+/* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
+ * @param sigma specifies the standard deviation of the edge filter.
+ * @param ray1 is a pointer to the ray responses for the first type of feature (Distance feature)
+ * @param ray3 is a pointer to the ray responses for the first type of feature (Norm feature)
+ * @param ray4 is a pointer to the ray responses for the first type of feature (Orientation feature)
+ * @param filterType specifies the type of edge filter to be use (F_SOBEL or F_CANNY)
+ * @param saveImages specifies if the images should be saved (DEBUG mode only)
+ * @param edge_low_threshold low threshold used for the canny edge detection
+ * @param edge_high_threshold high threshold used for the canny edge detection
  */
 void computeRays(const char *pImageName, double sigma, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
@@ -702,7 +727,9 @@ void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int im
     }
 }
 
-
+/*
+ * Save a 32 bits image to a binary file
+ */
 void save32bitsimage(char* filename, IplImage* img)
 {
   ofstream ofs(filename, ios::out | ios::binary);

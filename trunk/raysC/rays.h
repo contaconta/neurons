@@ -7,9 +7,13 @@ using namespace std;
 #define F_CANNY 1
 
 // Parameter for canny filter
-const float edge_low_thresh_default = 27000;
+const float edge_low_thresh_default = 15000;
 const float edge_high_thresh_default = 30000;
 const int apertureSize = 7;
+
+void computeDistanceDifferenceRay(const char *pImageName,
+                                  int start_angle, int end_angle, int step_angle,
+                                  IplImage** ray1, IplImage** ray2);
 
 void computeRays(const char *pImageName, double sigma, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
