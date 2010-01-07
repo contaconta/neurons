@@ -24,8 +24,7 @@ SET(CMAKE_CXX_COMPILER g++-4.2)
 SET(EXECUTABLE_OUTPUT_PATH ./bin/
     CACHE PATH "Single output directory for building all executables.")
 
-#INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
-ADD_LIBRARY(rays MODULE rays.cpp)
+ADD_LIBRARY(rays MODULE rays.cpp combnk.cpp)
 
 # OpenCv
 FIND_PACKAGE(OpenCV REQUIRED)
