@@ -30,27 +30,26 @@ string getNameFromPathWithoutExtension(string path){
   return nameWithout;
 }
 
-/* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
- * @param sigma specifies the standard deviation of the edge filter.
+/* Computes RAY distance difference features on an image pImageName at the specified angles.
+ * @param ray2 is a pointer to the ray responses computed by this function
  * @param ray1 is a pointer to the ray responses for the first type of feature (Distance feature)
- * @param ray3 is a pointer to the ray responses for the first type of feature (Norm feature)
- * @param ray4 is a pointer to the ray responses for the first type of feature (Orientation feature)
  * @param filterType specifies the type of edge filter to be use (F_SOBEL or F_CANNY)
  * @param saveImages specifies if the images should be saved (DEBUG mode only)
  * @param edge_low_threshold low threshold used for the canny edge detection
  * @param edge_high_threshold high threshold used for the canny edge detection
+ * @return the number of combinations is returned or -1 if an error occured.
  */
-void computeDistanceDifferenceRays(const char *pImageName,
+int computeDistanceDifferenceRays(const char *pImageName,
                                    int start_angle, int end_angle, int step_angle,
-                                   IplImage** rays2, IplImage** rays1,
-                                   int filterType, bool saveImages, double sigma,
+                                   IplImage**& rays2, IplImage** rays1,
+                                   int filterType, bool saveImages,
                                    int edge_low_threshold, int edge_high_threshold)
 {
+  int res = -1;
   const int eta = 1;
   vector<int> ca;
   for(int a = start_angle;a<=end_angle;a+=step_angle)
     {
-      printf("%d ",a);
       ca.push_back(a);
     }
   vector<int> cb;
@@ -61,7 +60,9 @@ void computeDistanceDifferenceRays(const char *pImageName,
   recursive_combination(ca.begin(),ca.end(),0,
                         cb.begin(),cb.end(),0,ca.size()-cb.size(),pairs);
 
-  printf("\ncomputeDistanceDifferenceRays %d\n",pairs.size());
+
+  res = pairs.size();
+  //printf("\ncomputeDistanceDifferenceRays %d\n",pairs.size());
 
   bool ray1_computed = false;
   int nAngles = ((end_angle-start_angle)/step_angle)+1;
@@ -73,7 +74,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
       for(int a = 0;a<nAngles;a++)
         {
           printf("angle %d\n",angle);
-          computeRays((const char*)pImageName, sigma, angle,
+          computeRays((const char*)pImageName, angle,
                       &rays1[a], 0, 0, filterType, false,
                       edge_low_threshold, edge_high_threshold);
 
@@ -111,14 +112,14 @@ void computeDistanceDifferenceRays(const char *pImageName,
       it++;
       angle2 = *it;
 
-      printf("angle1 %d angle2 %d\n",angle1,angle2);
-      printf("angle1/step_angle %d angle2/step_angle %d\n",angle1/step_angle,angle2/step_angle);
+      //printf("angle1 %d angle2 %d\n",angle1,angle2);
+      //printf("angle1/step_angle %d angle2/step_angle %d\n",angle1/step_angle,angle2/step_angle);
 
       // TODO : retrieve index
       ra1 = rays1[angle1/step_angle];
       ra2 = rays1[angle2/step_angle];
 
-      printf("w %d h %d\n",ra1->width,ra1->height);
+      //printf("w %d h %d\n",ra1->width,ra1->height);
 
       rays2[i] = cvCreateImage(cvSize(ra1->width,ra1->height), IPL_DEPTH_32F, 1);
 
@@ -166,10 +167,11 @@ void computeDistanceDifferenceRays(const char *pImageName,
         }
     }
   */
+
+  return res;
 }
 
 /* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
- * @param sigma specifies the standard deviation of the edge filter.
  * @param angle specifies the angle at which the features should be computed.
  * @param ray1 is a pointer to the ray responses for the first type of feature (Distance feature)
  * @param ray3 is a pointer to the ray responses for the first type of feature (Norm feature)
@@ -179,7 +181,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
  * @param edge_low_threshold low threshold used for the canny edge detection
  * @param edge_high_threshold high threshold used for the canny edge detection
  */
-void computeRays(const char *pImageName, double sigma, double angle,
+void computeRays(const char *pImageName, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
                  int filterType, bool saveImages, int edge_low_threshold, int edge_high_threshold)
 {

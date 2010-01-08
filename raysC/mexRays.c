@@ -18,11 +18,10 @@
 #include "rays.h"
 #include "cv.h"
 
-char* usage = "image_name sigma angle edge_low_threshold edge_high_threshold";
+char* usage = "image_name angle edge_low_threshold edge_high_threshold";
 
 /* mexRays computes the following RAY features ; distance (ray1), orientation (ray3), norm (ray4)
  * @param name of the input image.
- * @param sigma specifies the standard deviation of the edge filter.
  * @param angle specifies the angle at which the features should be computed.
  * @param edge_low_threshold low threshold used for the canny edge detection.
  * @param edge_high_threshold high threshold used for the canny edge detection.
@@ -32,15 +31,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 {
     mwSize nElements,j;
     mwSize number_of_dims;
-    double sigma;
     double angle;
     int strLength;
     mxArray    *tmp;
     char *pImageName;
     
     /* Check for proper number of input and output arguments */    
-    if ((nrhs != 3) && (nrhs != 5)) {
-      mexErrMsgTxt("Three or four input arguments required.");
+    if ((nrhs != 2) && (nrhs != 4)) {
+      mexErrMsgTxt("Two or four input arguments required.");
     } 
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
@@ -53,14 +51,11 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     if (!(mxIsDouble(prhs[1]))) {
       mexErrMsgTxt("Second input argument must be of type double.");
     }
-    if (!(mxIsDouble(prhs[2]))) {
+    if ((nrhs > 2) && !(mxIsDouble(prhs[2]))) {
       mexErrMsgTxt("Third input argument must be of type double.");
     }
     if ((nrhs > 3) && !(mxIsDouble(prhs[3]))) {
       mexErrMsgTxt("Fourth input argument must be of type double.");
-    }
-    if ((nrhs > 4) && !(mxIsDouble(prhs[4]))) {
-      mexErrMsgTxt("Fifth input argument must be of type double.");
     }
     
     mexPrintf("Loading input parameters\n");
@@ -71,8 +66,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     pImageName = (char*)mxCalloc(strLength, sizeof(char));
     mxGetString(tmp,pImageName,strLength);
 
-    sigma=*((double *)mxGetPr(prhs[1]));
-    angle=*((double *)mxGetPr(prhs[2]));
+    angle=*((double *)mxGetPr(prhs[1]));
 
     mexPrintf("computeRays\n");
     IplImage* ray1;
@@ -81,14 +75,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 
     if(nrhs > 3)
       {
-        double low_th = *((double *)mxGetPr(prhs[3]));
+        double low_th = *((double *)mxGetPr(prhs[2]));
         double high_th = low_th + 10000;
         if(nrhs > 4)
-          high_th = *((double *)mxGetPr(prhs[4]));
-        computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY,true,low_th,high_th);
+          high_th = *((double *)mxGetPr(prhs[3]));
+        computeRays((const char*)pImageName, angle, &ray1,&ray3,&ray4,F_CANNY,true,low_th,high_th);
       }
     else
-      computeRays((const char*)pImageName, sigma, angle, &ray1,&ray3,&ray4,F_CANNY,true);
+      computeRays((const char*)pImageName, angle, &ray1,&ray3,&ray4,F_CANNY,true);
 
     // Release images
     mexPrintf("Cleaning\n");

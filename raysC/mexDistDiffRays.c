@@ -18,7 +18,7 @@
 #include "rays.h"
 #include "cv.h"
 
-char* usage = "image_name sigma start_angle end_angle step_angle edge_low_threshold edge_high_threshold";
+char* usage = "image_name start_angle end_angle step_angle edge_low_threshold edge_high_threshold";
 
 /* mexRays computes the following RAY features ; distance (ray1), orientation (ray3), norm (ray4)
  * @param name of the input image.
@@ -32,7 +32,6 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 {
     mwSize nElements,j;
     mwSize number_of_dims;
-    double sigma;
     double start_angle;
     double end_angle;
     double step_angle;
@@ -41,8 +40,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     char *pImageName;
     
     // Check for proper number of input and output arguments
-    if ((nrhs != 5) && (nrhs != 7)) {
-      mexErrMsgTxt("Five or seven input arguments required.");
+    if ((nrhs != 4) && (nrhs != 6)) {
+      mexErrMsgTxt("Four or six input arguments required.");
     } 
     if (nlhs > 1){
 	mexErrMsgTxt("Too many output arguments.");
@@ -59,16 +58,13 @@ void mexFunction(int nlhs,       mxArray *plhs[],
       mexErrMsgTxt("Third input argument must be of type double.");
     }
     if (!(mxIsDouble(prhs[3]))) {
-      mexErrMsgTxt("Third input argument must be of type double.");
-    }
-    if (!(mxIsDouble(prhs[4]))) {
-      mexErrMsgTxt("Third input argument must be of type double.");
-    }
-    if ((nrhs > 5) && !(mxIsDouble(prhs[5]))) {
       mexErrMsgTxt("Fourth input argument must be of type double.");
     }
-    if ((nrhs > 6) && !(mxIsDouble(prhs[6]))) {
+    if ((nrhs > 4) && !(mxIsDouble(prhs[4]))) {
       mexErrMsgTxt("Fifth input argument must be of type double.");
+    }
+    if ((nrhs > 5) && !(mxIsDouble(prhs[5]))) {
+      mexErrMsgTxt("Sixth input argument must be of type double.");
     }
     
     mexPrintf("Loading input parameters\n");
@@ -79,26 +75,25 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     pImageName = (char*)mxCalloc(strLength, sizeof(char));
     mxGetString(tmp,pImageName,strLength);
 
-    sigma=*((double *)mxGetPr(prhs[1]));
-    start_angle=*((double *)mxGetPr(prhs[2]));
-    end_angle=*((double *)mxGetPr(prhs[3]));
-    step_angle=*((double *)mxGetPr(prhs[4]));
+    start_angle=*((double *)mxGetPr(prhs[1]));
+    end_angle=*((double *)mxGetPr(prhs[2]));
+    step_angle=*((double *)mxGetPr(prhs[3]));
 
     double low_th = 15000;
     double high_th = 30000;
     if(nrhs > 5)
       {
-        low_th = *((double *)mxGetPr(prhs[5]));
+        low_th = *((double *)mxGetPr(prhs[4]));
         high_th = low_th + 10000;
         if(nrhs > 6)
-          high_th = *((double *)mxGetPr(prhs[6]));
+          high_th = *((double *)mxGetPr(prhs[5]));
       }
 
     mexPrintf("computeRays\n");
     IplImage** rays2 = 0;
     computeDistanceDifferenceRays(pImageName,
                                   start_angle, end_angle, step_angle,
-                                  rays2, 0, F_CANNY, true, sigma,
+                                  rays2, 0, F_CANNY, true,
                                   low_th, high_th);
     
     /*
