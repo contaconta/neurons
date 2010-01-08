@@ -92,7 +92,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
 
   IplImage* ra1;
   IplImage* ra2;
-  int* ptrRay2;
+  float* ptrRay2;
   int* ptrRay1a1;
   int* ptrRay1a2;;
   int angle1;
@@ -128,12 +128,12 @@ void computeDistanceDifferenceRays(const char *pImageName,
             {
               ptrRay1a1 = &((int*)(ra1->imageData + ra1->widthStep*v))[u*ra1->nChannels];
               ptrRay1a2 = &((int*)(ra2->imageData + ra2->widthStep*v))[u*ra2->nChannels];
-              ptrRay2 = &((int*)(rays2[i]->imageData + rays2[i]->widthStep*v))[u*rays2[i]->nChannels];
+              ptrRay2 = &((float*)(rays2[i]->imageData + rays2[i]->widthStep*v))[u*rays2[i]->nChannels];
 
               distdiff = ((double)(*ptrRay1a1-*ptrRay1a2))/(*ptrRay1a1+eta);
               *ptrRay2 = exp(distdiff);
 
-              printf("u %d v %d, %f %f\n",u,v,distdiff,exp(distdiff));
+              //printf("u %d v %d, %f %f\n",u,v,distdiff,exp(distdiff));
             }
         }
 
@@ -142,7 +142,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
           stringstream sout;
           sout << "ray2_" << angle1 << "_" << angle2 << ".ppm";
           printf("Saving %s\n",sout.str().c_str());
-          save32bitsimage((char*)sout.str().c_str(),rays2[i]);
+          savefloatimage((char*)sout.str().c_str(),rays2[i]);
         }
 
     }
@@ -850,6 +850,23 @@ void save32bitsimage(char* filename, IplImage* img)
       {
         ptrImg = ((uint*)(img->imageData + img->widthStep*y)) + x*(img)->nChannels;
         ofs.write((char*)ptrImg,sizeof(int));
+      }
+  ofs.close();
+}
+
+/*
+ * Save a float image to a binary file
+ */
+void savefloatimage(char* filename, IplImage* img)
+{
+  ofstream ofs(filename, ios::out | ios::binary);
+
+  float* ptrImg;
+  for(int y=0;y<img->height;y++)
+    for(int x=0;x<img->width;x++)
+      {
+        ptrImg = ((float*)(img->imageData + img->widthStep*y)) + x*(img)->nChannels;
+        ofs.write((char*)ptrImg,sizeof(float));
       }
   ofs.close();
 }

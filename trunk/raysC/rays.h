@@ -27,3 +27,4 @@ void linepoints(int img_width, int img_height ,double angle, list<int>& xs, list
 inline void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys,int img_width, int img_height);
 
 void save32bitsimage(char* filename, IplImage* img);
+void savefloatimage(char* filename, IplImage* img);
