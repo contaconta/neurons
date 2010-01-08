@@ -1,8 +1,9 @@
 function ray_test(angle)
 
 img_name = {'mitochondria1.png'};
-sigma = 20;
-rays(img_name,sigma,angle);
+edge_low_threshold = 10000;
+edge_high_threshold = 30000;
+rays(img_name,angle,edge_low_threshold,edge_high_threshold);
 
 figure;
 g = imread(img_name{1});

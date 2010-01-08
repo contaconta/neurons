@@ -1,12 +1,11 @@
 
 img_name = {'mitochondria1.png'};
-sigma = 20;
 start_angle = 0;
 end_angle = 180;
 step_angle = 90;
 edge_low_threshold = 10000;
 edge_high_threshold = 30000;
-distDiffRays(img_name,sigma,start_angle,end_angle,step_angle,edge_low_threshold,edge_high_threshold);
+distDiffRays(img_name,start_angle,end_angle,step_angle,edge_low_threshold,edge_high_threshold);
 
 g = imread(img_name{1});
 %for i=start_angle:step_angle:end_angle

@@ -11,13 +11,13 @@ const float edge_low_thresh_default = 15000;
 const float edge_high_thresh_default = 30000;
 const int apertureSize = 7;
 
-void computeDistanceDifferenceRays(const char *pImageName,
+int computeDistanceDifferenceRays(const char *pImageName,
                                    int start_angle, int end_angle, int step_angle,
-                                   IplImage** rays2, IplImage** rays1=0,
-                                   int filterType=F_CANNY, bool saveImages=false,double sigma=0,
+                                   IplImage**& rays2, IplImage** rays1=0,
+                                   int filterType=F_CANNY, bool saveImages=false,
                                    int edge_low_threshold=edge_low_thresh_default, int edge_high_threshold=edge_high_thresh_default);
 
-void computeRays(const char *pImageName, double sigma, double angle,
+void computeRays(const char *pImageName, double angle,
                  IplImage** ray1, IplImage** ray3, IplImage** ray4,
                  int filterType=F_CANNY, bool saveImages=false,
                  int edge_low_threshold=edge_low_thresh_default, int edge_high_threshold=edge_high_thresh_default);
