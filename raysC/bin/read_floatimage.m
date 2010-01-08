@@ -19,7 +19,7 @@ function I = read_32bitsimage(labelFilenm, s)
 
 
 fid = fopen(labelFilenm,'r');
-I = fread(fid,[s(1) s(2)],'int32');
+I = fread(fid,[s(1) s(2)],'float');
 I = double(I)';
 
 fclose(fid);
