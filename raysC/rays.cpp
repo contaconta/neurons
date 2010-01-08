@@ -64,7 +64,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
   printf("\ncomputeDistanceDifferenceRays %d\n",pairs.size());
 
   bool ray1_computed = false;
-  int nAngles = (end_angle-start_angle)/step_angle;
+  int nAngles = ((end_angle-start_angle)/step_angle)+1;
   if(rays1==0)
     {
       printf("Precomputing Rays1 for %d different angles\n",nAngles);
@@ -76,6 +76,15 @@ void computeDistanceDifferenceRays(const char *pImageName,
           computeRays((const char*)pImageName, sigma, angle,
                       &rays1[a], 0, 0, filterType, false,
                       edge_low_threshold, edge_high_threshold);
+
+          if(saveImages)
+            {
+              stringstream sout;
+              sout << "ray1_" << angle << ".ppm";
+              printf("Saving %s\n",sout.str().c_str());
+              save32bitsimage((char*)sout.str().c_str(),rays1[a]);
+            }
+
           angle += step_angle;
         }
       ray1_computed = true;
@@ -88,6 +97,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
   int* ptrRay1a2;;
   int angle1;
   int angle2;
+  double distdiff;
   int i = 0;
   printf("Precomputing Rays2 for %d different combinations\n",pairs.size());
   rays2 = new IplImage*[pairs.size()];
@@ -102,6 +112,7 @@ void computeDistanceDifferenceRays(const char *pImageName,
       angle2 = *it;
 
       printf("angle1 %d angle2 %d\n",angle1,angle2);
+      printf("angle1/step_angle %d angle2/step_angle %d\n",angle1/step_angle,angle2/step_angle);
 
       // TODO : retrieve index
       ra1 = rays1[angle1/step_angle];
@@ -109,27 +120,27 @@ void computeDistanceDifferenceRays(const char *pImageName,
 
       printf("w %d h %d\n",ra1->width,ra1->height);
 
-      rays2[i] = cvCreateImage(cvSize(ra1->width,ra1->height), IPL_DEPTH_32S, 1);
+      rays2[i] = cvCreateImage(cvSize(ra1->width,ra1->height), IPL_DEPTH_32F, 1);
 
       for(int u=0;u<ra1->width;u++)
         {
           for(int v=0;v<ra1->height;v++)
             {
-              //printf("u %d v %d\n",u,v);
-
               ptrRay1a1 = &((int*)(ra1->imageData + ra1->widthStep*v))[u*ra1->nChannels];
               ptrRay1a2 = &((int*)(ra2->imageData + ra2->widthStep*v))[u*ra2->nChannels];
               ptrRay2 = &((int*)(rays2[i]->imageData + rays2[i]->widthStep*v))[u*rays2[i]->nChannels];
 
-              *ptrRay2 = (*ptrRay1a1-*ptrRay1a2)/(*ptrRay1a1+eta);
-              //*ptrRay2 = exp((*ptrRay1a1-*ptrRay1a2)/(*ptrRay1a1+eta));
+              distdiff = ((double)(*ptrRay1a1-*ptrRay1a2))/(*ptrRay1a1+eta);
+              *ptrRay2 = exp(distdiff);
+
+              printf("u %d v %d, %f %f\n",u,v,distdiff,exp(distdiff));
             }
         }
 
       if(saveImages)
         {
           stringstream sout;
-          sout << "ray2_" << i << ".ppm";
+          sout << "ray2_" << angle1 << "_" << angle2 << ".ppm";
           printf("Saving %s\n",sout.str().c_str());
           save32bitsimage((char*)sout.str().c_str(),rays2[i]);
         }
@@ -138,13 +149,23 @@ void computeDistanceDifferenceRays(const char *pImageName,
 
   if(ray1_computed)
     {
-      printf("Cleaning\n");
+      printf("Cleaning rays1\n");
       for(int a = 0;a<nAngles;a++)
         {
           cvReleaseImage(&rays1[a]);
         }
     }
 
+  /*
+  if(ray1_computed)
+    {
+      printf("Cleaning rays1\n");
+      for(int a = 0;a<nAngles;a++)
+        {
+          cvReleaseImage(&rays1[a]);
+        }
+    }
+  */
 }
 
 /* Computes RAY features 1,3 and 4 on an image pImageName at a specified angle.
