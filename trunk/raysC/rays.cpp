@@ -81,7 +81,7 @@ int computeDistanceDifferenceRays(const char *pImageName,
           if(saveImages)
             {
               stringstream sout;
-              sout << "ray1_" << angle << ".ppm";
+              sout << "/tmp/" << getNameFromPathWithoutExtension((string)pImageName) << "ray1_" << angle << ".ppm";
               printf("Saving %s\n",sout.str().c_str());
               save32bitsimage((char*)sout.str().c_str(),rays1[a]);
             }
@@ -133,15 +133,13 @@ int computeDistanceDifferenceRays(const char *pImageName,
 
               distdiff = ((double)(*ptrRay1a1-*ptrRay1a2))/(*ptrRay1a1+eta);
               *ptrRay2 = exp(distdiff);
-
-              //printf("u %d v %d, %f %f\n",u,v,distdiff,exp(distdiff));
             }
         }
 
       if(saveImages)
         {
           stringstream sout;
-          sout << "ray2_" << angle1 << "_" << angle2 << ".ppm";
+          sout << "/tmp/" << getNameFromPathWithoutExtension((string)pImageName) << "ray2_" << angle1 << "_" << angle2 << ".ppm";
           printf("Saving %s\n",sout.str().c_str());
           savefloatimage((char*)sout.str().c_str(),rays2[i]);
         }
