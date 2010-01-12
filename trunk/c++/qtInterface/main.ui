@@ -49,7 +49,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="BasicMenu" name="menubar">
+  <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -126,11 +126,6 @@
    <class>Stage</class>
    <extends>QGraphicsView</extends>
    <header>Stage.h</header>
-  </customwidget>
-  <customwidget>
-   <class>BasicMenu</class>
-   <extends>QMenuBar</extends>
-   <header>BasicMenu.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

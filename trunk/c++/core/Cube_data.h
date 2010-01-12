@@ -173,6 +173,8 @@ void Cube<T,U>::load_tiff_file(string filename)
 
   tif = TIFFOpen(filename.c_str(), "r");
   // In the case it is a uchar file
+  printf("The bps = %i\n", bps);
+  // exit(0);
   if(bps==8){
     uint32 px;
     uint32 mask = 0x000000FF;
@@ -196,7 +198,7 @@ void Cube<T,U>::load_tiff_file(string filename)
       }//TIFFread
       _TIFFfree(raster);
     }
-  } else {
+  } else if (bps == 16){
     //that seems to be the magic word
     // TIFFReadScanline();
     uint16 array[w*h];
@@ -211,6 +213,21 @@ void Cube<T,U>::load_tiff_file(string filename)
       TIFFReadDirectory(tif);
     }//z
   } //16 bbp
+  else if (bps == 32){
+    float array[w*h];
+    for(int z = 0; z < dircount; z++){
+      for (int j = 0; j < h; j++)
+        TIFFReadScanline(tif, &array[j * w], j, 0);
+      for(int y = 0; y < h; y++){
+        for(int x = 0; x < w; x++){
+          put(x,y,z, (T)array[y*w+x]);
+        }//x
+      }//y
+      TIFFReadDirectory(tif);
+    }//z
+  }
+
+
   TIFFClose(tif);
 
 }

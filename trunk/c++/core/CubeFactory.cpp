@@ -50,8 +50,10 @@ Cube_P* CubeFactory::load(string volume_name){
       if(samplesPerPixel == 1){
         if(bitsPerSample == 16){
           cube =  new Cube<int,long>   (volume_name,0);
-        } else {
+        } else if (bitsPerSample == 8) {
           cube =  new Cube<uchar,ulong>(volume_name,0);
+        } else if (bitsPerSample == 32) {
+          cube =  new Cube<float, double>(volume_name,0);
         }
       } else {
         cube = new Cube_C(volume_name);

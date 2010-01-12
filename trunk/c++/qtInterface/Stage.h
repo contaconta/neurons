@@ -7,6 +7,7 @@
 #include "CubeFactory.h"
 #include "Cube.h"
 #include "Cube_C.h"
+#include "ActorSet.h"
 
 class Stage : public QGLWidget
 {
@@ -14,6 +15,7 @@ class Stage : public QGLWidget
 
 public:
   Stage(QWidget* parent = 0);
+  ActorSet* actorSet;
 
 protected:
   void initializeGL();
@@ -42,9 +44,6 @@ private:
   GLfloat disp3DZ;
 
   QPoint  lastPos;
-
-  //In a stage you need someone to perform
-  vector< VisibleE* > actors;
 
   QColor faceColors[4];
 };
