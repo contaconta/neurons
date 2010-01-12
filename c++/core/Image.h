@@ -86,9 +86,15 @@ public:
 
   void convolve_vertically  (vector<float>& mask, Image<float>* output);
 
+  void convolve_2D(vector< vector< double > > mask, Image<float>* res);
+
   void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
+  void micromtersToIndexes(float& mx, float& my, int& x, int& y);
+
   void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
+
+  void indexesToMicrometers(int& x, int& y, float& mx, float& my);
 
   /** Threshold the image.
       If the filename is defined, it creates a new image with that name and
@@ -122,6 +128,8 @@ public:
   double getMean();
 
   T at(int x, int y);
+
+  T atm(float x, float y);
 
   T max();
 
@@ -281,6 +289,15 @@ T Image<T>::at(int x, int y){
 }
 
 template<class T>
+T Image<T>::atm(float xm, float ym){
+  //printf("xy : %d %d %x\n",x,y,pixels);
+  int x, y;
+  micromtersToIndexes(xm, ym, x, y);
+  return pixels[y][x];
+}
+
+
+template<class T>
 void Image<T>::put(int x, int y, T value){
   pixels[y][x] = value;
 }
@@ -393,6 +410,35 @@ void Image<T>::convolve_vertically(vector<float>& mask, Image<float>* output)
     }
   }
 //   printf("]\n");
+}
+
+template<class T>
+void Image<T>::convolve_2D
+( vector< vector< double > > mask,
+  Image<float>* dest)
+{
+  //ignoring the borders
+  int radius = mask[0].size()/2;
+  float res;
+
+  // printf("Computing the convolution [");
+  for(int y = 0; y < height; y++){
+    for(int x = 0; x < width; x++){
+      res = 0;
+      for(int j = -radius; j <= radius; j++){
+        for(int i = -radius; i <= radius; i++){
+          res +=
+            at(min(width-1,abs(x+i)),
+                    min(height-1,abs(y+j)))*
+            mask[i+radius][j+radius];
+        }
+      }
+      dest->put(x,y,res);
+    }
+    // printf("#");fflush(stdout);
+  }
+  // printf("]\n");
+  dest->save();
 }
 
 template<class T>
@@ -612,6 +658,14 @@ void Image<T>::micrometersToIndexes(vector<float>& micrometers, vector< int >& i
 }
 
 template<class T>
+void Image<T>::micromtersToIndexes(float& mx, float& my, int& x, int& y)
+{
+  x = (int)mx;
+  y = (int)(height -0.001 - my);
+}
+
+
+template<class T>
 void Image<T>::indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers)
 {
   assert(indexes.size() == micrometers.size());
@@ -621,6 +675,14 @@ void Image<T>::indexesToMicrometers(vector< int >& indexes, vector< float >& mic
   if(micrometers.size() == 3)
     micrometers[2] = 0;
 }
+
+template<class T>
+void Image<T>::indexesToMicrometers(int& x, int& y, float& mx, float& my)
+{
+  mx = x + 0.5;
+  my = height - 1 - y + 0.5;
+}
+
 
 template<class T>
 void Image<T>::threshold
@@ -710,6 +772,7 @@ void Image<T>::draw()
 
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   if(1){
     glBegin(GL_QUADS);
@@ -835,12 +898,16 @@ void Image<T>::computeHessian
   double data[4];
   double v_x, v_y, l1_t, l2_t;
 
-  for(int x = 0; x < width; x++)
-    for(int y = 0; y < height; y++){
-      data[0] = -gxx->at(x,y);
-      data[1] = -gxy->at(x,y);
+  for(int x = 10; x < width-10; x++)
+    for(int y = 10; y < height-10; y++){
+      // data[0] = -gxx->at(x,y);
+      // data[1] = -gxy->at(x,y);
+      // data[2] = data[1];
+      // data[3] = -gyy->at(x,y);
+      data[0] = gxx->at(x,y);
+      data[1] = gxy->at(x,y);
       data[2] = data[1];
-      data[3] = -gyy->at(x,y);
+      data[3] = gyy->at(x,y);
       gsl_matrix_view M
         = gsl_matrix_view_array (data, 2, 2);
       gsl_eigen_symmv (&M.matrix, eign, evec, w2);

@@ -5,8 +5,8 @@
     as defines. At some point they should be put as variables, so that
     they can be accessed from the program.
  */
-#define D_MAX_TEXTURE_SIZE      512
-// #define D_MAX_TEXTURE_SIZE      1024
+// #define D_MAX_TEXTURE_SIZE      512
+#define D_MAX_TEXTURE_SIZE      1024
 // #define D_MAX_TEXTURE_SIZE      2048
 // #define D_TEXTURE_INTERPOLATION GL_LINEAR
 #define D_TEXTURE_INTERPOLATION GL_NEAREST
@@ -132,6 +132,7 @@ public:
 
   virtual void draw_layer_tile_YZ(float depth, int color=0);
 
+  void draw_orientation_grid(bool include_split = true, bool min_max = false);
 
   /** Product between a matrix and a vector.*/
   GLfloat* matrix_vector_product(GLfloat* matrix, GLfloat* vector);

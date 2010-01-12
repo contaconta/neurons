@@ -58,6 +58,8 @@ public:
       pointType = "Point2D";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point2Do>))
       pointType = "Point2Do";
+    else if(typeid(*cloudOrig) == typeid(Cloud<Point2Dot>))
+      pointType = "Point2Dot";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3D>))
       pointType = "Point3D";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3Do>))

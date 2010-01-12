@@ -27,7 +27,9 @@ Stage::Stage(QWidget* parent) : QGLWidget(parent)
   disp3DY = 0;
   disp3DZ = -500;
 
-  actors.push_back(new Axis());
+  actorSet = new ActorSet();
+
+  actorSet->actors.push_back(new Axis());
 
   setFocus();
 
@@ -115,8 +117,8 @@ void Stage::draw()
   glRotatef(rotationX,1,0,0);
   glRotatef(rotationY,0,1,0);
 
-  for(int i = 0; i < actors.size(); i++)
-    actors[i]->draw();
+  for(int i = 0; i < actorSet->actors.size(); i++)
+    actorSet->actors[i]->draw();
 }
 
 void Stage::keyPressEvent(QKeyEvent *event)
@@ -189,18 +191,13 @@ void Stage::keyPressEvent(QKeyEvent *event)
 
  void Stage::dropEvent(QDropEvent *event)
  {
-     // bool QMimeData::hasText ()textBrowser->setPlainText(event->mimeData()->text());
-
    // if(event->mimeData()->hasUrls() ){
    QList<QUrl> urls = event->mimeData()->urls();
      QList<QUrl>::iterator it = urls.begin();
      for(it = urls.begin(); it != urls.end(); ++it){
        QString path = it->path();
        printf("%s\n", qPrintable(path));
-       Cube_P* cube = CubeFactory::load(qPrintable(path));
-       cube->load_texture_brick(0,0);
-       actors.push_back(cube);
-
+       actorSet->addActorFromPath(qPrintable(path));
      }
    // }
      event->acceptProposedAction();

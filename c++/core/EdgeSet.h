@@ -123,7 +123,7 @@ template< class P, class E>
 void EdgeSet<P,E>::setPointVector(vector< Point* >* _points)
 {
   points = _points;
-  for(int i = 0; i < edges.size(); i++)
+  for(uint i = 0; i < edges.size(); i++)
     edges[i]->points = points;
 }
 

@@ -214,12 +214,12 @@ install(FILES ../assets/viva.desktop   DESTINATION /usr/share/applications/)
 ## cube tools
 
 IF(${GLEW_FOUND})
-add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
-target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
-add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
-target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
-add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
-target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
+# add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
+# target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
+# add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
+# target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
+# add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
+# target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
 ENDIF(${GLEW_FOUND})
 
@@ -307,8 +307,16 @@ ENDIF(${GLEW_FOUND})
 ## image tools
 ################################################################################
 
+# add_executable(imageConvolution2D ${CMAKE_SOURCE_DIR}/../tools/image/imageConvolution2D.cpp)
+# target_link_libraries(imageConvolution2D ${LINK_LIBRARIES_ALL})
+
+
 # add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
 # target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
+
+# add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
+# target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
 # target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
@@ -344,6 +352,7 @@ ENDIF(${GLEW_FOUND})
 # target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 # add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
 # target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
+
 # # add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
 # target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
 # ENDIF(${GLEW_FOUND})
@@ -391,6 +400,9 @@ ENDIF(${GLEW_FOUND})
 
 # add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
 # target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
+
+# # add_executable(cloudEliminatePointsFromImage ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminatePointsFromImage.cpp)
+# target_link_libraries(cloudEliminatePointsFromImage ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################

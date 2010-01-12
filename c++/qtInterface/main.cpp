@@ -1,28 +1,7 @@
 #include <glew.h>
 #include <QApplication>
-#include "ui_main.h"
-#include "CubeDialog.h"
-#include "Stage.h"
-
-class MainWindow: public QMainWindow, Ui::MainWindow
-{
-public:
-  MainWindow() : QMainWindow(), Ui::MainWindow(){
-    setupUi(this);
-    // cubeDialog = new CubeDialog();
-
-    // cubeDialog->setObjectName(QString::fromUtf8("cubeDialog"));
-    // cubeDialog->setGeometry(QRect(0, 20, 251, 381));
-    // cubeDialog->setFrameShape(QFrame::StyledPanel);
-    // cubeDialog->setFrameShadow(QFrame::Raised);
-    // tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Cube", 0, QApplication::UnicodeUTF8));
-
-    // cubeDialog->show();
-  }
-
-  CubeDialog *cubeDialog;
-};
-
+#include "ActorSet.h"
+#include "MainWindow.h"
 
 
 
@@ -33,5 +12,14 @@ public:
 
      MainWindow mainWin;
      mainWin.show();
+
+
+     ActorSet* aset = new ActorSet();;
+     for(int i = 1; i < argc; i++){
+       aset->addActorFromPath(argv[i]);
+     }
+     mainWin.setActorSet(aset);
+
+
      return app.exec();
  }

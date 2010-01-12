@@ -632,6 +632,7 @@ void Cube_P::draw(){
       printf("Cube_P::draw::there is no texture loaded, not even trying to draw\n");
       return;
     }
+  draw_orientation_grid();
   draw(200,v_draw_projection,0);
 //   draw_layers_parallel();
 }
@@ -913,6 +914,118 @@ void Cube_P::draw_layer_tile_YZ(float nLayerToDraw,int color)
              heightStep - nRowToDraw*max_texture_size*voxelHeight,
              depthStep);
   glEnd();
+}
+
+void Cube_P::draw_orientation_grid(bool include_split, bool min_max)
+{
+
+  GLint max_texture_size = 0;
+//   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+  max_texture_size = D_MAX_TEXTURE_SIZE;
+  //In object coordinates, we will draw the cube
+  GLfloat widthStep = float(cubeWidth)*voxelWidth/2;
+  GLfloat heightStep = float(cubeHeight)*voxelHeight/2;
+  GLfloat depthStep = float(cubeDepth)*voxelDepth/2;
+
+  if(include_split) //draws the OpenGL coordinates
+    {
+      glColor3f(1.0, 1.0, 1.0);
+      glutSolidSphere(1.0, 20, 20);
+      glPushMatrix();
+      //Draw The Z axis
+      glColor3f(0.0, 0.0, 1.0);
+      glRotatef(180, 1.0, 0, 0);
+      glutSolidCone(1.0, 10, 20, 20);
+      glPushMatrix();
+      glTranslatef(0,0,10);
+      renderString("Z");
+      glPopMatrix();
+      //Draw the x axis
+      glColor3f(1.0, 0.0, 0.0);
+      glRotatef(90, 0.0, 1.0, 0.0);
+      glutSolidCone(1.0, 10, 20, 20);
+      glPushMatrix();
+      glTranslatef(0,0,10);
+      renderString("X");
+      glPopMatrix();
+      //Draw the y axis
+      glColor3f(0.0, 1.0, 0.0);
+      glRotatef(90, 1.0, 0.0, 0.0);
+      glutSolidCone(1.0, 10, 20, 20);
+      glPopMatrix();
+      glPushMatrix();
+      glTranslatef(0,10,0);
+      renderString("Y");
+      glPopMatrix();
+      glColor3f(0.0,0.0,0.0);
+      //Draws the coordinates
+      glPushMatrix();
+      glTranslatef(-widthStep,heightStep+5,-depthStep);
+      for(float x = -widthStep; x <= widthStep+1; x+=max_texture_size*voxelWidth)
+        {
+          renderString("%.2f", x);
+          glTranslatef(max_texture_size*voxelWidth,0,0);
+        }
+      glPopMatrix();
+      glPushMatrix();
+      glTranslatef(-widthStep-20,heightStep,-depthStep);
+      for(float y = heightStep; y >= -heightStep; y-=max_texture_size*voxelHeight)
+        {
+          renderString("%.2f", y);
+          glTranslatef(0,-max_texture_size*voxelHeight,0);
+        }
+      glPopMatrix();
+      glColor3f(1.0, 1.0, 1.0);
+    } //if include_split
+
+  glMatrixMode(GL_MODELVIEW);
+  if(min_max)
+    glColor3f(1.0,1.0,1.0);
+  else
+    glColor3f(0.0,0.0,0.0);
+
+
+  glBegin(GL_LINE_STRIP);
+  glVertex3f(-widthStep,  heightStep, -depthStep); //0
+  glVertex3f(-widthStep,  heightStep,  depthStep); //1
+  glVertex3f( widthStep,  heightStep,  depthStep); //2
+  glVertex3f( widthStep, -heightStep,  depthStep); //6
+  glVertex3f( widthStep, -heightStep, -depthStep); //7
+  glVertex3f(-widthStep, -heightStep, -depthStep); //4
+  glVertex3f(-widthStep,  heightStep, -depthStep); //0
+  glVertex3f(-widthStep, -heightStep, -depthStep); //4
+  glVertex3f(-widthStep, -heightStep, +depthStep); //5
+  glVertex3f(-widthStep, +heightStep, +depthStep); //1
+  glVertex3f(-widthStep, -heightStep, +depthStep); //5
+  glVertex3f( widthStep, -heightStep,  depthStep); //6
+  glVertex3f( widthStep,  heightStep,  depthStep); //2
+  glVertex3f( widthStep,  heightStep, -depthStep); //3
+  glVertex3f( widthStep, -heightStep, -depthStep); //7
+  glVertex3f( widthStep,  heightStep, -depthStep); //3
+  glVertex3f(-widthStep,  heightStep, -depthStep); //0
+  glEnd();
+
+  //Draws a grid for orientation purposes
+  if(include_split)
+    {
+      glColor3f(1.0,0.0,0.0);
+      for(float i = -widthStep; i <= widthStep; i+= voxelWidth*D_MAX_TEXTURE_SIZE)
+        {
+          glBegin(GL_LINES);
+          glVertex3f(i, heightStep, -depthStep);
+          glVertex3f(i, -heightStep, -depthStep);
+          glEnd();
+        }
+      for(float i = heightStep; i >= -heightStep; i-= voxelHeight*D_MAX_TEXTURE_SIZE)
+        {
+          glBegin(GL_LINES);
+          glVertex3f(-widthStep, i, -depthStep);
+          glVertex3f(widthStep, i, -depthStep);
+          glEnd();
+        }
+    }
+  glColor3f(1.0,1.0,1.0);
+
 }
 
 

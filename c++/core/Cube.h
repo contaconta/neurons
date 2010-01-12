@@ -358,7 +358,7 @@ public:
   // void draw_layer_tile_YZ(float depth, int color = 0);
 
   /** Draws an orientation grid for the cube.*/
-  void draw_orientation_grid(bool include_split = true, bool min_max = true);
+  // void draw_orientation_grid(bool include_split = true, bool min_max = true);
 
   /** Renders a string.*/
   void render_string(const char* format, ...);
