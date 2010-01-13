@@ -173,7 +173,7 @@ void Cube<T,U>::load_tiff_file(string filename)
 
   tif = TIFFOpen(filename.c_str(), "r");
   // In the case it is a uchar file
-  printf("The bps = %i\n", bps);
+  printf("The bps = %i anf the number of directories is %i\n", bps, dircount);
   // exit(0);
   if(bps==8){
     uint32 px;

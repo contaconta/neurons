@@ -7,6 +7,11 @@
   #include <GL/glew.h>
 #endif
 #include <GL/glut.h>
+#ifdef _APPLE
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 // This is a computer vision program, isn't it?
 #include "cv.h"

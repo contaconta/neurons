@@ -469,6 +469,10 @@ Image<float>* Image<T>::calculate_derivative(int dx, int dy,double sigma,  strin
   tmp->convolve_vertically(m_y, result);
 
   result->save();
+  
+  remove(tmp_name.c_str());
+  string raw_tmp_name = directory + getNameFromPathWithoutExtension(filename) + "tmp.raw";
+  remove(raw_tmp_name.c_str());
   return result;
 }
 

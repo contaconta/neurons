@@ -47,6 +47,9 @@ Cube_P* CubeFactory::load(string volume_name){
       TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
       TIFFClose(tif);
       //bw image
+      printf("Loading cube from tiff. SamplesPerPixel = %i, bitsPerSample = %i\n",
+             samplesPerPixel, bitsPerSample);
+      // exit(0);
       if(samplesPerPixel == 1){
         if(bitsPerSample == 16){
           cube =  new Cube<int,long>   (volume_name,0);
