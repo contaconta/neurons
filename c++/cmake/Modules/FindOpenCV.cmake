@@ -54,6 +54,7 @@ SET (OpenCV_POSSIBLE_ROOT_DIRS
   "$ENV{OPENCV_HOME}" # only for backward compatibility
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Intel(R) Open Source Computer Vision Library_is1;Inno Setup: App Path]"
   "$ENV{ProgramFiles}/OpenCV"
+  /usr/local/share
   /usr/local
   /usr
   )
@@ -82,7 +83,7 @@ ENDIF (${CMAKE_COMPILER_IS_GNUCXX})
 # select exactly ONE OpenCV base directory/tree 
 # to avoid mixing different version headers and libs
 #
-FIND_PATH(OpenCV_ROOT_DIR 
+FIND_PATH(OpenCV_ROOT_DIR
   NAMES 
   cv/include/cv.h     # windows
   include/opencv/cv.h # linux /opt/net
