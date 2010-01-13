@@ -27,6 +27,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -D _WIN32")
 ##gray80 LINK_DIRECTORIES(c:/windows/system32 c:/MinGW/lib)
 ENDIF(WIN32)
 
+IF(APPLE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -D _APPLE")
+##gray80 LINK_DIRECTORIES(c:/windows/system32 c:/MinGW/lib)
+ENDIF(APPLE)
+
+
 ## Need to check for openmp
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -D WITH_OPENMP")
 
