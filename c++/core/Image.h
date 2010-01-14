@@ -34,6 +34,8 @@ public:
 
   IplImage* img;
 
+  bool reflectToFile;
+
   int width;
   int height;
   int widthStep;
@@ -58,7 +60,7 @@ public:
 
   ~Image();
 
-  Image(string filename, bool subtract_mean = false);
+  Image(string filename, bool reflectToFile = true);
 
   Image(int width, int height, string filename="");
 
@@ -173,9 +175,9 @@ Image<T>::~Image()
 }
 
 template<class T>
-Image<T>::Image(string filename, bool subtract_mean) : VisibleE()
+Image<T>::Image(string filename, bool _reflectToFile) : VisibleE()
 {
-
+  reflectToFile = _reflectToFile;
   texture_loaded = false;
   directory = "";
   name = "";
@@ -203,42 +205,52 @@ void Image<T>::load_file(string filename)
   texels = new T[width*height];
 
   //Creates the mapping of the raw data.
-  fildes = open(name_raw.c_str(), O_RDWR);
+  if(reflectToFile){
+    fildes = open(name_raw.c_str(), O_RDWR);
 
-  if(fildes == -1) //The file does not exist create it
-    {
-      printf("The file %s does not exist. Creating it.\n", name_raw.c_str());
-      FILE* fp = fopen(name_raw.c_str(), "w");
-      int line_length = width;
-      //FIXME
-      T buff[line_length];
-      float sum = 0;
-      CvScalar s;
-      for(int y = 0; y < height; y++){
-        for(int x = 0; x < width; x++){
+    if(fildes == -1) //The file does not exist create it
+      {
+        printf("The file %s does not exist. Creating it.\n", name_raw.c_str());
+        FILE* fp = fopen(name_raw.c_str(), "w");
+        int line_length = width;
+        //FIXME
+        T buff[line_length];
+        float sum = 0;
+        CvScalar s;
+        for(int y = 0; y < height; y++){
+          for(int x = 0; x < width; x++){
             buff[x] = (T)((uchar *)(img->imageData + y*img->widthStep))[x];
+          }
+          fwrite(buff, sizeof(T), line_length, fp);
         }
-        fwrite(buff, sizeof(T), line_length, fp);
+        fclose(fp);
+        fildes = open(name_raw.c_str(), O_RDWR);
       }
-      fclose(fp);
-      fildes = open(name_raw.c_str(), O_RDWR);
+
+    void* mapped_file;
+#ifndef _WIN32
+    mapped_file = mmap(0,
+                       width*height*sizeof(T),
+                       PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
+
+    if(mapped_file == MAP_FAILED)
+      {
+        printf("Image. There is a bug here, volume not loaded. %s\n", 
+               name_raw.c_str());
+        exit(0);
+      }
+#endif
+
+    pixels_origin = (T*) mapped_file;
+  }// if reflect to file 
+  else {
+    pixels_origin = (T*)malloc(width*height*sizeof(T));
+    for(int y = 0; y < height; y++){
+      for(int x = 0; x < width; x++){
+        pixels_origin[y*width + x] = (T)((uchar *)(img->imageData + y*img->widthStep))[x];
+      }
     }
-
-  void* mapped_file;
-  #ifndef _WIN32
-  mapped_file = mmap(0,
-                     width*height*sizeof(T),
-                     PROT_READ|PROT_WRITE, MAP_SHARED, fildes, 0);
-
-  if(mapped_file == MAP_FAILED)
-    {
-      printf("Image. There is a bug here, volume not loaded. %s\n", 
-             name_raw.c_str());
-      exit(0);
-    }
-  #endif
-
-  pixels_origin = (T*) mapped_file;
+  }
   pixels = (T**)malloc(height*sizeof(T*));
 
   //Initializes the pointer structure to acces quickly to the voxels

@@ -42,15 +42,17 @@ Cube_P* CubeFactory::load(string volume_name){
     {
       TIFF* tif = TIFFOpen(volume_name.c_str(), "r");
       uint16 samplesPerPixel;
-      uint16 bitsPerSample;
+      uint16 bitsPerSample, photometric;
       TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
       TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
+      TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitsPerSample);
+      TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric);
       TIFFClose(tif);
       //bw image
       printf("Loading cube from tiff. SamplesPerPixel = %i, bitsPerSample = %i\n",
              samplesPerPixel, bitsPerSample);
       // exit(0);
-      if(samplesPerPixel == 1){
+      if(photometric == 1){
         if(bitsPerSample == 16){
           cube =  new Cube<int,long>   (volume_name,0);
         } else if (bitsPerSample == 8) {

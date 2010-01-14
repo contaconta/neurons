@@ -14,6 +14,7 @@
 #include "CubeFactory.h"
 #include "CloudFactory.h"
 #include "GraphFactory.h"
+#include "TiffFactory.h"
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
@@ -108,11 +109,18 @@ void addObjectFromString(string name)
             (extension == "tif")  ||
             (extension == "TIF")
            )  {
-    Cube_P* cubec = CubeFactory::load(name);
-    cube = cubec;
-    cubec->v_draw_projection = flag_minMax;
-    toDraw.push_back(cubec);
-    cubec->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    /* Cube_P* cubec = CubeFactory::load(name); */
+    /* cube = cubec; */
+    VisibleE* tiff = TiffFactory::load(name);
+    tiff->v_draw_projection = flag_minMax;
+    if((tiff->className() == "Cube") ||
+       (tiff->className() == "Cube_C") ||
+       (tiff->className() == "Cube_DTC") ) {
+      cube = (Cube_P*)tiff;
+      cube->load_texture_brick(cubeRowToDraw, cubeColToDraw);
+    }
+    toDraw.push_back(tiff);
+
   }
   else if ((extension == "swc") || (extension == "SWC"))  {
     toDraw.push_back(new SWC(name));

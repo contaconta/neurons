@@ -166,6 +166,7 @@ add_library (viva SHARED
 ../core/CubeFactory.cpp
 ../core/GraphCut.cpp
 ../core/Timer.cpp
+../core/TiffFactory.cpp
 )
 
 ################################################################################
@@ -440,8 +441,8 @@ target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 # target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
-# target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
+add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
+target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
 
 # add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
 # target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})
