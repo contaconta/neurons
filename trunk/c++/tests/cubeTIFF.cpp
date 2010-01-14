@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Cube_C.h"
+#include "TiffFactory.h"
 
 using namespace std;
 
@@ -27,5 +28,8 @@ int main(int argc, char **argv) {
     printf("Usage: cubeTIFF image.tiff\n");
     exit(0);
   }
-  Cube_C* cube = new Cube_C(argv[1]);
+
+  TiffFactory::getInfo(argv[1]);
+
+  // Cube_C* cube = new Cube_C(argv[1]);
 }

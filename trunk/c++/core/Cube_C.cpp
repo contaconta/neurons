@@ -92,7 +92,7 @@ void Cube_C::loadFromTIFFImage(string imageName)
   //First we need some information
   int dircount = 0;
   uint32 w; uint32 h; uint32 depth;
-  uint16 bps, samplesPerPixel; 
+  uint16 bps, samplesPerPixel, photometric; 
   TIFF* tif = TIFFOpen(imageName.c_str(), "r");
   if(!tif){
     printf("Cube_C::Error getting the tiff image.\n");
@@ -105,44 +105,92 @@ void Cube_C::loadFromTIFFImage(string imageName)
         TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
         TIFFGetField(tif, TIFFTAG_IMAGEDEPTH, &depth);
         TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
+        TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric);
       } while (TIFFReadDirectory(tif));
   }
   TIFFClose(tif);
   printf("Cube_C::The tiff has %i layers of size=[%i,%i] and %i bits per sample\n"
-         "depth = %i, samplesPerPixel=%i\n",
-         dircount, w, h, bps, depth, samplesPerPixel);
+         "depth = %i, samplesPerPixel=%i, photometric = %i\n",
+         dircount, w, h, bps, depth, samplesPerPixel, photometric);
   data.resize(0);
+  //Deal with more bps later
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
   data.push_back(new Cube<uchar, ulong>(w,h,dircount,1,1,1));
-
-  // exit(0);
 
   //Now we fill the cubes
   tif = TIFFOpen(imageName.c_str(), "r");
+  uint16 planarconfiguration;
   uint32 px;
   uint32 mask = 0x000000FF;
-  uint32* raster;
+  // tdata_t raster;
   printf("Loading the layers[");
+
   for(int z = 0; z < dircount; z++){
-    //Prepare the raster
-    raster = (uint32*) _TIFFmalloc(w*h * sizeof (uint32));
-    if (TIFFReadRGBAImage(tif, w, h, raster, 0)) {
+    TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
+    TIFFGetField(tif, TIFFTAG_IMAGEDEPTH, &depth);
+    TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
+    TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric);
+    TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarconfiguration);
+
+    //Read by lines
+    int linesize = TIFFScanlineSize(tif);
+    uchar raster[linesize];
+
+    //In the case we using a color palette image
+    if(photometric == 3){
+      // we need the colormap
+      uint16 *b_colormap; uint16* r_colormap; uint16* g_colormap;
+      TIFFGetField(tif, TIFFTAG_COLORMAP, &r_colormap,  &g_colormap,  &b_colormap);
+      //and now we scan the image
       for(int y = 0; y < h; y++){
-        for(int x = 0; x < w; x++){
-          px = raster[y*w+x];
-          data[0]->put(x,h-1-y,z, (uchar)32*(mask & px));
-          data[1]->put(x,h-1-y,z, (uchar)32*(mask & px >> 8));
-          data[2]->put(x,h-1-y,z, (uchar)32*(mask & px >> 16));
-        }//x
+        TIFFReadScanline(tif, &raster, y);
+        if(bps==8){
+          for(int x = 0; x < w; x++){
+            data[0]->put(x,y,z, r_colormap[((uchar*)raster)[x]]/256);
+            data[1]->put(x,y,z, g_colormap[((uchar*)raster)[x]]/256);
+            data[2]->put(x,y,z, b_colormap[((uchar*)raster)[x]]/256);
+          }
+        }
+        else{
+          printf("Cube_C::load_from_tiff trying to load a palette"
+                 " image with more than %i bps\n", bps);
+        }
       }//y
-      TIFFReadDirectory(tif);
-      printf("#"); fflush(stdout);
-    }//TIFFread
-    else{
-      printf("Cube_C::loadFromTIFFImage::error loading the raster for directory %i\n", z);
+    } //case of palette image
+
+    if(photometric == 2){
+      if(planarconfiguration == 1){ //it is a chunky image
+        for(int y = 0; y < h; y++){
+          TIFFReadScanline(tif, &raster, y);
+          if(bps == 8){
+            for(int x = 0; x < w*samplesPerPixel; x+=samplesPerPixel){
+              data[0]->put(x/3,y,z, raster[x+0]);
+              data[1]->put(x/3,y,z, raster[x+1]);
+              data[2]->put(x/3,y,z, raster[x+2]);
+            }
+          } //bps==8
+          if(bps == 16){
+            uint16* pt = (uint16*)raster;
+            for(int x = 0; x < w*samplesPerPixel; x+=samplesPerPixel){
+              data[0]->put(x/3,y,z, pt[x+0]/256);
+              data[1]->put(x/3,y,z, pt[x+1]/256);
+              data[2]->put(x/3,y,z, pt[x+2]/256);
+            }
+          }
+        }
+
+      } // planarconfiguration
+      else {
+        printf("Cube_C::load_from_tiff not yet ready for planar configuration\n");
+        exit(0);
+      }
     }
-    _TIFFfree(raster);
+
+    TIFFReadDirectory(tif);
+    printf("#"); fflush(stdout);
   }
   TIFFClose(tif);
   printf("]\n");
