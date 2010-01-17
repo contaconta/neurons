@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include "GraphCut.h"
 #include "DoubleSet.h"
+#include "Configuration.h"
 
 extern "C"
 {
@@ -25,6 +26,7 @@ extern "C"
   pthread_t          thread;
   //vector< GraphCut<Point3D>* > lGraphCuts;
   GraphCut<float>* graphCut;
+  Image<float>* img;
 
   struct sPoint3d
   {
@@ -37,24 +39,63 @@ extern "C"
   static void *thread_func(void *vptr_args)
   {
     int layer_xy = -1; // TODO : FIXME
-    if(localCube->type == "uchar"){
-      graphCut->run_maxflow((Cube<uchar,ulong>*)localCube, layer_xy);
-    }
-    else if(localCube->type == "float"){
-      graphCut->run_maxflow((Cube<float,double>*)localCube, layer_xy);
-    }
+    printf("[Graph-cuts] Thread started...\n");
+    if(localCube->dummy)
+      {
+        if(img)
+          {
+            // Reload image in case it is a color image that was loaded as a gray scale image by the Image class
+            string fullname = img->directory + img->name;
+
+            Configuration* config = Configuration::Instance();
+            int useColorImage = 0;
+            if(config)
+              {
+                config->retrieveIfExists("graphcuts_useColorImage",&useColorImage);
+                printf("[Graph-cuts] useColorImage %d\n",useColorImage);
+              }
+
+            IplImage* iimg;
+            if(useColorImage == 0)
+              iimg = cvLoadImage(fullname.c_str(),0);
+            else
+              iimg = cvLoadImage(fullname.c_str());
+
+            if(iimg)
+              {
+                graphCut->run_maxflow(iimg,1.0,1.0);
+                cvReleaseImage(&iimg);
+              }
+            else
+              printf("[Graph-cuts] Error while loading %s\n",fullname.c_str());
+          }
+      }
+    else
+      {
+        if(localCube->type == "uchar"){
+          graphCut->run_maxflow((Cube<uchar,ulong>*)localCube, layer_xy);
+        }
+        else if(localCube->type == "float"){
+          graphCut->run_maxflow((Cube<float,double>*)localCube, layer_xy);
+        }
+        else
+          printf("[Graph-cuts] Unknown cube type %s\n",localCube->type.c_str());
+      }
+    printf("[Graph-cuts] Thread is over...\n");
   }
 
   G_MODULE_EXPORT const bool plugin_init()
   {
-    printf("init GraphCuts\n");
-    action = CD_NONE;      
+    //printf("[Graph-cuts] initializing\n");
+    action = CD_NONE;
+    img = 0;
+    localCube = 0;
     return true;
   }
 
   G_MODULE_EXPORT const bool plugin_run(vector<Object*>& objects)
   {
-    printf("Plugin: run\n");
+    //printf("[Graph-cuts] run\n");
     int x,y,z;
     graphCut = new GraphCut<float>(0);
     for(vector<Object*>::iterator itObject = objects.begin();
@@ -99,7 +140,12 @@ extern "C"
               }
             */
             graphCut->set_points = ds;
-            printf("DoubleSet %d\n", graphCut->set_points);
+            printf("DoubleSet %d\n", (int)ds->set1.size());
+          }
+        else if((*itObject)->className()=="Image")
+          {
+            printf("Image\n");
+            img = dynamic_cast<Image<float>*>((*itObject));
           }
       }
 

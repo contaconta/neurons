@@ -973,8 +973,8 @@ create_ascEditControlsSelect (void)
   gtk_widget_show (label23);
   gtk_box_pack_start (GTK_BOX (hbox2), label23, FALSE, FALSE, 0);
 
-  brush_size_adj = gtk_adjustment_new (0.5, 0, 2, 0.10000000149, 1, 1);
-  brush_size = gtk_spin_button_new (GTK_ADJUSTMENT (brush_size_adj), 1, 4);
+  brush_size_adj = gtk_adjustment_new (0.5, 0, 10, 0.10000000149, 1, 1);
+  brush_size = gtk_spin_button_new (GTK_ADJUSTMENT (brush_size_adj), 1, 3);
   gtk_widget_show (brush_size);
   gtk_box_pack_start (GTK_BOX (hbox2), brush_size, TRUE, TRUE, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (brush_size), TRUE);

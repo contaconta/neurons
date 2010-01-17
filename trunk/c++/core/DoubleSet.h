@@ -6,6 +6,7 @@
 #include "Point.h"
 #include "VisibleE.h"
 #include "Cube_P.h"
+#include "Image.h"
 
 template < class C=float>
 class PointDs
@@ -101,9 +102,9 @@ class DoubleSet : public VisibleE
 
  void save(const string& filename);
 
- bool load(const string& filename, Cube_P* cube=0);
+ bool load(const string& filename, Cube_P* cube=0, Image<float>* img=0);
 
- bool load(istream &in, Cube_P* cube=0);
+ bool load(istream &in, Cube_P* cube=0, Image<float>* img=0);
  bool load_micrometers(istream &in, Cube_P* cube=0);
 
  virtual string className(){
@@ -210,16 +211,16 @@ void DoubleSet<P,T>::draw(float point_radius){
 }
 
 template<class P,class T>
-  bool DoubleSet<P,T>::load(const string& filename, Cube_P* cube)
+  bool DoubleSet<P,T>::load(const string& filename, Cube_P* cube, Image<float>* img)
 {
   ifstream in(filename.c_str());
-  bool bRes = load(in,cube);
+  bool bRes = load(in,cube,img);
   in.close();
   return bRes;
 }
 
 template<class P,class T>
-bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
+  bool DoubleSet<P,T>::load(istream &in, Cube_P* cube, Image<float>* img)
 {
   float x,y,z;
   int start = in.tellg();
@@ -248,9 +249,9 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
     return false;
   
   // Load Set1
-  cout << "s1:" << s << endl;
+  //cout << "s1:" << s << endl;
   in >> s;
-  cout << "s2:" << s << endl;
+  //cout << "s2:" << s << endl;
   orig = s.find("<Set1>");
   if(orig == string::npos){
     printf("Cloud::error load didn't find Set1\n");
@@ -261,10 +262,13 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   while(pt->load(in)){
 
     // DEBUG
-    printf("p.z : %f\n",  (float)pt->indexes[pt->indexes.size()-1]);
+    printf("p ");
+    for(int i = 0;i<pt->indexes.size();i++)
+      printf("%f ", (float)pt->indexes[i]);
+    printf("\n");
 
-    if(cube)
-      {        
+    if(cube!=0 && cube->dummy == false)
+      {
         cube->indexesToMicrometers3(pt->indexes[0],
                                     pt->indexes[1],
                                     pt->indexes[2],
@@ -276,6 +280,22 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
         pt->coords.push_back(y);
         pt->coords.push_back(z);
       }
+    else
+      {
+        if(img)
+          {
+            img->indexesToMicrometers(pt->indexes[0],
+                                      pt->indexes[1],
+                                      x,y);
+            z = pt->indexes[2];
+
+            printf("Image found 1 %f %f %f\n",x,y,z);
+            
+            pt->coords.push_back(x);
+            pt->coords.push_back(y);
+            pt->coords.push_back(z);
+          }
+      }
 
     set1.push_back(pt);
     pt = new PointDs<P>();
@@ -283,11 +303,11 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   delete pt;
 
   // Load Set2
-  cout << "s1:" << s << endl;
+  //cout << "s1:" << s << endl;
   in >> s;
-  cout << "s2:" << s << endl;
+  //cout << "s2:" << s << endl;
   in >> s;
-  cout << "s3:" << s << endl;
+  //cout << "s3:" << s << endl;
   orig = s.find("<Set2>");
   if(orig == string::npos){
     printf("Cloud::error load didn't find Set2\n");
@@ -298,20 +318,46 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   while(pt->load(in)){
 
     // DEBUG
-    printf("p.z : %f\n",  (float)pt->indexes[pt->indexes.size()-1]);
+    printf("p ");
+    for(int i = 0;i<pt->indexes.size();i++)
+      printf("%f ", (float)pt->indexes[i]);
+    printf("\n");
 
-    if(cube)
-      {        
+    if(cube!=0 && cube->dummy == false)
+      {
         cube->indexesToMicrometers3(pt->indexes[0],
                                     pt->indexes[1],
                                     pt->indexes[2],
                                     x,y,z);
 
-        printf("Cube found 1 %f %f %f\n",x,y,z);
+        printf("Cube found 2 %f %f %f\n",x,y,z);
 
         pt->coords.push_back(x);
         pt->coords.push_back(y);
         pt->coords.push_back(z);
+      }
+    else
+      {
+        if(img)
+          {
+            // DEBUG
+            cube->indexesToMicrometers3(pt->indexes[0],
+                                        pt->indexes[1],
+                                        pt->indexes[2],
+                                        x,y,z);
+            printf("Cube found 2 %f %f %f\n",x,y,z);
+
+            img->indexesToMicrometers(pt->indexes[0],
+                                      pt->indexes[1],
+                                      x,y);
+            z = pt->indexes[2];
+
+            printf("Image found 2 %f %f %f\n",x,y,z);
+            
+            pt->coords.push_back(x);
+            pt->coords.push_back(y);
+            pt->coords.push_back(z);
+          }
       }
 
     set2.push_back(pt);    
@@ -319,11 +365,11 @@ bool DoubleSet<P,T>::load(istream &in, Cube_P* cube)
   }
   delete pt;
 
-  cout << "s1:" << s << endl;
+  //cout << "s1:" << s << endl;
   in >> s;
-  cout << "s2:" << s << endl;
+  //cout << "s2:" << s << endl;
   in >> s;
-  cout << "s3:" << s << endl;
+  //cout << "s3:" << s << endl;
   if(s.find("</Cloud>")==string::npos){
     printf("Cloud::error load can not find </Cloud>\n");
     in.seekg(start);

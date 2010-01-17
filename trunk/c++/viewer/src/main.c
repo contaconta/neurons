@@ -137,12 +137,6 @@ void init_GUI()
   GtkComboBox* view_entry=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(ascEditor),"view_entry"));
   gtk_combo_box_set_active(view_entry,1);
 
-  if(majorMode & MOD_SELECT_EDITOR)
-    {
-      GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(selectionEditor),"selection_type"));
-      gtk_combo_box_set_active(selection_type,0);
-    }
-
   static GtkTargetEntry drop_types[1] =
     {
       { "text/uri-list", GTK_TARGET_OTHER_APP, 0 }
@@ -436,6 +430,7 @@ main (int argc, char *argv[])
   if(configurationFile!=""){
     configuration = new Configuration(configurationFile);
     loadConfiguration(configuration);
+    Configuration::setInstance(configuration);
   }
 
 
@@ -466,6 +461,9 @@ main (int argc, char *argv[])
   if(majorMode & MOD_SELECT_EDITOR){
     selectionEditor = create_ascEditControlsSelect();
     gtk_widget_show (selectionEditor);
+
+    GtkComboBox* selection_type=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(selectionEditor),"selection_type"));
+    gtk_combo_box_set_active(selection_type,0);
   }
   if(majorMode & MOD_ALPHA_EDITOR){
     alphaEditor = create_Alpha();

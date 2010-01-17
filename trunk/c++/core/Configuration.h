@@ -11,9 +11,26 @@ using namespace std;
 class Configuration : public Object
 {
 public:
+  static Configuration* pInstance;
   string filename;
 
   map< string, string> stock;
+
+  static Configuration* Instance() 
+  {
+    /*
+    if (pInstance == 0)  // is it the first call?
+      {  
+        pInstance = new Configuration(); // create unique instance
+      }
+    */
+    return pInstance; // address of unique instance
+  }
+
+  static void setInstance(Configuration* aInstance) 
+  {
+    pInstance = aInstance;
+  }
 
   Configuration()
   {
@@ -38,6 +55,14 @@ public:
   int retrieveFloat(string name){
     return atof(stock[name].c_str());
   };
+
+  bool retrieveIfExists(string name, int* ptval){
+    if(stock[name]!=""){
+      *ptval = atoi((stock[name]).c_str());
+      return true;
+    }
+    return false;
+  }
 
   bool retrieveIfExists(string name, float* ptval){
     if(stock[name]!=""){
@@ -114,7 +139,5 @@ public:
   }
 
 };
-
-
 
 #endif
