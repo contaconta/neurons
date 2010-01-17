@@ -92,7 +92,7 @@ public:
 
   void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
-  void micromtersToIndexes(float& mx, float& my, int& x, int& y);
+  void micrometersToIndexes(float mx, float my, int& x, int& y);
 
   void indexesToMicrometers(vector< int >& indexes, vector< float >& micrometers);
 
@@ -304,7 +304,7 @@ template<class T>
 T Image<T>::atm(float xm, float ym){
   //printf("xy : %d %d %x\n",x,y,pixels);
   int x, y;
-  micromtersToIndexes(xm, ym, x, y);
+  micrometersToIndexes(xm, ym, x, y);
   return pixels[y][x];
 }
 
@@ -674,7 +674,7 @@ void Image<T>::micrometersToIndexes(vector<float>& micrometers, vector< int >& i
 }
 
 template<class T>
-void Image<T>::micromtersToIndexes(float& mx, float& my, int& x, int& y)
+void Image<T>::micrometersToIndexes(float mx, float my, int& x, int& y)
 {
   x = (int)mx;
   y = (int)(height -0.001 - my);

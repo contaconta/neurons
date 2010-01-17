@@ -70,8 +70,21 @@ bool pressMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTyp
 	    point->coords.push_back((float)wz);
 
             int x,y,z;
-            cube->micrometersToIndexes3(wx,wy,wz,                                        
-                                        x,y,z);
+
+
+            if(cube!=NULL && cube->dummy == false)
+              {
+                cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                            x,y,z);
+              }
+            else if(img!=NULL)
+              {
+                img->micrometersToIndexes(wx,wy,x,y);                                       
+                x += img->width/2;
+                y -= img->height/2;
+                z = layerSpanViewZ;
+              }
+
             point->indexes.push_back(x);
             point->indexes.push_back(y);
             point->indexes.push_back(z);
@@ -116,7 +129,7 @@ bool motionMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTy
       {
 	if(active_id == CT_SIMPLE_SELECTION)
 	  {
-            printf("Add new point\n");
+            printf("Adding new point\n");
 	    PointDs<float>* point=new PointDs<float>;
 	    point->coords.push_back((float)wx);
 	    point->coords.push_back((float)wy);
@@ -129,8 +142,19 @@ bool motionMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointTy
             */
 
             int x,y,z;
-            cube->micrometersToIndexes3(wx,wy,wz,                                        
-                                        x,y,z);
+            if(cube!=NULL && cube->dummy == false)
+              {
+                cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                            x,y,z);
+              }
+            else if(img!=NULL)
+              {
+                img->micrometersToIndexes(wx,wy,x,y);                                       
+                x += img->width/2;
+                y -= img->height/2;
+                z = layerSpanViewZ;
+              }
+
             point->indexes.push_back(x);
             point->indexes.push_back(y);
             point->indexes.push_back(z);
@@ -220,8 +244,19 @@ bool releaseMouseSelectTool(int mouse_last_x, int mouse_last_y, SelectToolPointT
                   */
 
                   int s,t,u;
-                  cube->micrometersToIndexes3(wx,wy,wz,                                        
-                                              s,t,u);
+                  if(cube!=NULL && cube->dummy == false)
+                    {
+                      cube->micrometersToIndexes3(wx,wy,wz,                                        
+                                                  s,t,u);
+                    }
+                  else if(img!=NULL)
+                    {
+                      img->micrometersToIndexes(wx,wy,s,t);                                       
+                      s += img->width/2;
+                      t -= img->height/2;
+                      u = layerSpanViewZ;
+                    }
+
                   point->indexes.push_back(s);
                   point->indexes.push_back(t);
                   point->indexes.push_back(u);
@@ -437,7 +472,7 @@ on_load_selection_clicked                (GtkButton       *button,
 	{
 	  printf("Loading %s in %s\n", selName.c_str(), currentSelectionSet->name.c_str());
 
-	  currentSelectionSet->load(selName,cube);
+	  currentSelectionSet->load(selName, cube, img);
 	}
     }
   /*

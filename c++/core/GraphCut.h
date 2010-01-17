@@ -13,6 +13,10 @@
 #include "float.h"
 #include "Cube.h"
 #include "DoubleSet.h"
+#include "Configuration.h"
+
+extern bool flag_verbose;
+#define PRINT_MESSAGE(format, ...) if(flag_verbose) printf (format, ## __VA_ARGS__)
 
 using namespace std;
 
@@ -75,6 +79,8 @@ class GraphCut : public VisibleE
  void save(const string& filename);
  
  void setCube(Cube_P* cube);
+
+ void run_maxflow(IplImage* img, double alpha=1.0, double beta=1.0);
 
  template <class T, class U>
  void run_maxflow(Cube<T,U>* cube, int layer_id);
@@ -171,8 +177,8 @@ void GraphCut<P>::drawSeeds(int x, int y, int z){
 
 template< class P>
 void GraphCut<P>::draw(int x, int y, int z){
-  //if(m_graph==0 && !running_maxflow)
-  if(m_graph==0)
+  if(m_graph==0 && !running_maxflow)
+    //if(m_graph==0)
     return;
 
   if(lastX != x || lastY != y || lastZ != z)
@@ -241,7 +247,8 @@ void GraphCut<P>::draw_in_DL(int x, int y, int z){
 #ifdef USE_ALPHA
               m_cube->alphas[i][j][k] = 1;
 #endif
-	      m_cube->indexesToMicrometers3(i,j,k,fx,fy,fz);
+              if(m_cube->dummy == false)
+                m_cube->indexesToMicrometers3(i,j,k,fx,fy,fz);
 	      //cout << "vFloats: " << vFloats[0] << " " << vFloats[1] << " " << vFloats[2] << endl;
 	      glVertex3f(fx, fy, fz);
 	      //glPushMatrix();
@@ -274,6 +281,364 @@ template< class P>
 void GraphCut<P>::setCube(Cube_P* cube)
 {
   m_cube = cube;
+}
+
+/*
+ * Run Min-Cut/Max-Flow algorithm for energy minimization
+ * Energy function is defined as E = B + R
+ * B = Boundary term, R = Regional term
+ * @param mask is used to set the binary term.
+ * It's a gray scale image where 0=baskground, 255=foreground and everything else is ignored.
+ */
+template< class P>
+void GraphCut<P>::run_maxflow(IplImage* img, double alpha, double beta)
+{
+  // Build graph
+  int n = img->width*img->height;
+  // TODO : the following should be a class member.
+  // To do so, the 2 methods (for graphs and images) have to be merged !
+  GraphType::node_id* m_node_ids = new GraphType::node_id[n];
+  int nEdges = n*2-img->width-img->height;
+  m_graph = new GraphType(n, nEdges);
+  for(int id=0;id<n;id++)
+    {
+      m_node_ids[id] = m_graph->add_node();
+    }
+
+  typename vector< PointDs<P>* >::iterator itPoint;
+  double weightToSink;
+  double weightToSource;
+  double weight;
+  int idNode1 = 0;
+  int idNode2;
+  uchar pValue;
+  uchar pValue2;
+  double prob;
+
+  // Compute boundary term
+  // B(p,q) = exp(-(Ip - Iq)^2 / 2*sigma)/dist(p,q)
+
+  // Compute max value of sum(B(p,q))
+  double sumB;
+  double max_sumB = -1;
+  double sigma = 0;
+
+  /*
+  // Boykov 2001
+  for(map<int, vector < int >* >::iterator it = g->mNeighbors.begin();
+      it != g->mNeighbors.end(); it++)
+    {
+      sumB = 0;
+      for(vector < int >::iterator itNode = it->second->begin();
+            itNode != it->second->end();itNode++)
+        {
+          weight = exp(-pow((g->getAvgIntensity(it->first)-g->getAvgIntensity(*itNode)),2.f));
+          sumB += weight;
+          m_graph->add_edge(m_node_ids[it->first], m_node_ids[*itNode], weight, weight);
+        }
+      sigma += sumB;
+      if(sumB > max_sumB)
+        max_sumB = sumB;
+    }
+  sigma /= g->mNeighbors.size();
+  double K = 1 + max_sumB;
+  */
+
+  //double K = max_sumB - 2.3;
+
+  // Add edges
+
+  /*
+  for(map<int, supernode* >::iterator it = g->mSupernodes.begin();
+      it != g->mSupernodes.end(); it++)
+    {
+      vector < supernode* >* lNeighbors = &(it->second->neighbors);
+      sumB = 0;
+      for(vector < supernode* >::iterator itN = lNeighbors->begin();
+          itN != lNeighbors->end(); itN++)
+        {
+          weight = pow((g->getAvgIntensity(it->first)-g->getAvgIntensity((*itN)->id)),2.f);
+          sumB += weight;
+          m_graph->add_edge(m_node_ids[it->first], m_node_ids[(*itN)->id], weight, weight);
+        }
+      sigma += sumB;
+      if(sumB > max_sumB)
+        max_sumB = sumB;
+    }
+  sigma /= g->getNbEdges();
+  double K = 1 + max_sumB;
+  */
+
+  int useHistogram = 0;
+  Configuration* config = Configuration::Instance();
+  if(config)
+    {
+      config->retrieveIfExists("graphcuts_useHistogram",&useHistogram);
+      printf("[Graph-cuts] useHistogram %d\n",useHistogram);
+    }
+
+  float** histoSource = 0;
+  float** histoSink = 0;
+  int nbItemsPerBin = 25;
+  if(useHistogram)
+    {
+      // Compute histogram for boundary term
+      printf("[Graph-cuts] Compute histogram for boundary term\n");
+      if(config)
+        {
+          config->retrieveIfExists("graphcuts_nbBin",&nbItemsPerBin);
+          printf("[Graph-cuts] nbItemsPerBin %d\n",nbItemsPerBin);
+        }
+      const int histoSize = 255/nbItemsPerBin;
+      histoSource = new float*[img->nChannels];
+      int binId;
+      for(int n=0;n<img->nChannels;n++)
+        {
+          histoSource[n] = new float[histoSize];
+          memset(histoSource[n],0,histoSize);
+
+          for(itPoint=set_points->set1.begin();
+              itPoint != set_points->set1.end();itPoint++)
+            {
+              //printf("binId 1 %d %d %d\n",(*itPoint)->indexes[0],(*itPoint)->indexes[1],binId);
+              binId = ((uchar*)(img->imageData + img->widthStep*(*itPoint)->indexes[1]))[(*itPoint)->indexes[0]*img->nChannels+n]/nbItemsPerBin;
+              if(binId > 0)
+                binId--;
+              histoSource[n][binId]++;
+            }
+
+          // Normalize histogram
+          for(int i = 0;i<histoSize;i++)
+            {
+              histoSource[n][i] /= histoSize;
+            }
+        }
+
+      histoSink = new float*[img->nChannels];
+      for(int n=0;n<img->nChannels;n++)
+        {
+          histoSink[n] = new float[histoSize];
+          memset(histoSink[n],0,histoSize);
+
+          for(itPoint=set_points->set2.begin();
+              itPoint != set_points->set2.end();itPoint++)
+            {
+              //printf("binId 2 %d %d %d\n",(*itPoint)->indexes[0],(*itPoint)->indexes[1],binId);
+              binId = ((uchar*)(img->imageData + img->widthStep*(*itPoint)->indexes[1]))[(*itPoint)->indexes[0]*img->nChannels+n]/nbItemsPerBin;
+              if(binId > 0)
+                binId--;
+              histoSink[n][binId]++;
+            }
+
+          // Normalize histogram
+          for(int i = 0;i<histoSize;i++)
+            {
+              histoSink[n][i] /= histoSize;
+            }
+        }
+    }
+
+  printf("[Graph-cuts] computing sigma and K\n");
+
+  for(int y=0;y<img->height;y++)
+    for(int x=0;x<img->width;x++)
+      {
+        pValue = ((uchar*)(img->imageData + img->widthStep*y))[x];
+
+        sumB = 0;
+        if(x+1 < img->width)
+          {
+            pValue2 = ((uchar*)(img->imageData + img->widthStep*y))[x+1];
+            weight = pow(pValue2-pValue,2.f);
+            sumB += weight;
+          }
+
+        if(y+1 < img->height)
+          {
+            pValue2 = ((uchar*)(img->imageData + img->widthStep*(y+1)))[x];
+            weight = pow(pValue2-pValue,2.f);
+            sumB += weight;
+          }
+
+        sigma += sumB;
+        if(sumB > max_sumB)
+          max_sumB = sumB;
+        //printf("GraphCut : sigma=%f\n",sigma);
+      }
+  double K = 1 + max_sumB;
+
+  sigma /= nEdges;
+  printf("[Graph-cuts] sigma=%f K=%f\n",sigma,K);
+
+  //printf("nChannels %d\n",img->nChannels);
+
+  printf("[Graph-cuts] setting edge weights\n");
+  for(int y=0;y<img->height;y++)
+    for(int x=0;x<img->width;x++)
+      {
+        // The weight associated to nodes will be maximized by the run_maxflow method
+        // Unary terms : a high probability gives a high value
+
+        /*
+        pValue = ((uchar*)(mask->imageData + mask->widthStep*y))[x];
+        if(pValue == 0)
+          {
+            weightToSink = alpha;
+            weightToSource = 0;
+          }
+        else
+        if(pValue == 255)
+          {
+            weightToSink = 0;
+            weightToSource = alpha;
+          }
+        else
+          {
+            //printf("pValue %d\n",pValue);
+            weightToSink = 0;
+            weightToSource = 0;
+          }
+        */
+
+        // Compute regional term
+        weightToSink = 0;
+        weightToSource = 0;
+
+        // Compute weights to source and sink nodes          
+        for(itPoint=set_points->set1.begin();
+            itPoint != set_points->set1.end();itPoint++)
+          {
+            if((*itPoint)->indexes[0] == x && (*itPoint)->indexes[1] == y)
+              {
+                //printf("Source found %d %d\n", x, y);
+                weightToSource = K;
+                break;
+              }
+          }
+
+        for(itPoint=set_points->set2.begin();
+            itPoint != set_points->set2.end();itPoint++)
+          {
+            if((*itPoint)->indexes[0] == x && (*itPoint)->indexes[1] == y)
+              {
+                //printf("Sink found %d %d\n", x, y);
+                weightToSink = K;
+                break;
+              }
+          }
+
+        if(useHistogram)
+          {
+            int binId;
+            if(weightToSource == 0)
+              {
+                // Get value from histogram
+                for(int n=0;n<img->nChannels;n++)
+                  {
+                    binId = ((uchar*)(img->imageData + img->widthStep*y))[x*img->nChannels+n]/nbItemsPerBin;
+                    if(binId > 0)
+                      binId--;
+                    weightToSource += histoSource[n][binId];
+                  }
+              }
+            if(weightToSink == 0)
+              {
+                // Get value from histogram
+                for(int n=0;n<img->nChannels;n++)
+                  {
+                    binId = ((uchar*)(img->imageData + img->widthStep*y))[x*img->nChannels+n]/nbItemsPerBin;
+                    if(binId > 0)
+                      binId--;
+                    weightToSink += histoSink[n][binId];
+                  }
+              }
+          }
+
+        PRINT_MESSAGE("(%d,%d): %d\n",x,y,pValue);
+
+        PRINT_MESSAGE("Node id=%d, Source=%f, Sink=%f\n",m_node_ids[idNode1],weightToSource,weightToSink);
+
+        //printf("add weights\n");
+        m_graph->add_tweights(m_node_ids[idNode1],weightToSource,weightToSink);
+
+        // Compute boundary term
+        // B(p,q) = exp(-(Ip - Iq)^2 / 2*sigma)/dist(p,q)
+
+        // Set a weight for each edge
+
+        if(x+1 < img->width)
+          {
+            idNode2 = y * img->width + (x+1);
+            pValue2 = ((uchar*)(img->imageData + img->widthStep*y))[x+1];
+            weight = pow(pValue2-pValue,2.f)/(2*sigma);
+            weight *= beta;
+            m_graph->add_edge(m_node_ids[idNode1], m_node_ids[idNode2], weight, weight);
+
+            PRINT_MESSAGE("Edge id=(%d,%d) %f\n",m_node_ids[idNode1],m_node_ids[idNode2],weight);
+          }
+
+        if(y+1 < img->height)
+          {
+            idNode2 = (y+1) * img->width + x;
+            pValue2 = ((uchar*)(img->imageData + img->widthStep*(y+1)))[x];
+            weight = pow(pValue2-pValue,2.f)/(2*sigma);
+            weight *= beta;
+            m_graph->add_edge(m_node_ids[idNode1], m_node_ids[idNode2], weight, weight);
+
+            PRINT_MESSAGE("Edge id=(%d,%d) %f\n",m_node_ids[idNode1],m_node_ids[idNode2],weight);
+          }
+
+        idNode1++;
+      }
+
+  printf("[Graph-cuts] Computing max flow\n");
+  int flow = m_graph->maxflow();
+
+  // Save image
+  IplImage* out_img = cvCreateImage( cvSize(img->width, img->height), 8, 1 );
+
+  CvScalar colors[2];
+  colors[1] = CV_RGB(255,255,255);
+  colors[0] = CV_RGB(0,0,0);
+
+  CvPoint p;
+  int id = 0;
+  for(int y=0;y<out_img->height;y++)
+    for(int x=0;x<out_img->width;x++)
+      {
+        p.x = x;
+        p.y = y;
+
+        if(m_graph->what_segment(m_node_ids[id]) == GraphType::SOURCE)
+          cvSet2D(out_img,p.y,p.x,colors[0]); // background
+        else
+          cvSet2D(out_img,p.y,p.x,colors[1]); // mitochondria
+
+        id++;
+      }
+
+  std::string s;
+  //std::stringstream out;
+  //out << k;
+  s = "graphcut"; // + out.str();
+  s += ".jpg";
+  cvSaveImage(s.c_str(), out_img);
+  cvReleaseImage(&out_img);
+
+  // Cleaning
+  if(useHistogram)
+    {
+      for(int n=0;n<img->nChannels;n++)
+        {
+          delete[] histoSource[n];
+          delete[] histoSink[n];
+        }
+      delete[] histoSource;
+      delete[] histoSink;
+    }
+
+  printf("[Graph-cuts] Max flow algorithm has ended\n");
+  running_maxflow = false;
 }
 
 /*
