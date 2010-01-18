@@ -85,8 +85,10 @@ rayVector = unitvector(angle);
 
 %% Main loop: compute rays along scanline, adjust scanline, iterate
 
+imgangle = rad2deg(atan2(size(E,1), size(E,2)));
+
 % if S touches the top & bottom of the image
-if ((angle >= 45) && (angle <= 135))  || ((angle >= 225) && (angle <= 315))
+if ((angle >= imgangle) && (angle <= 180-imgangle))  || ((angle >= 180 + imgangle) && (angle <= 360-imgangle))
     
     % SCAN LEFT
     j = 0;
