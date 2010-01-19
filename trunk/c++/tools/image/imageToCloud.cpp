@@ -602,5 +602,49 @@ int main(int argc, char **argv) {
       cloud->saveToFile(args.name_cloud);
     }
 
+  // printf("Here we are: %s %s %i\n", args.name_scale, args.name_orientation, args.save_type);
+
+  // In case we want to save the orientation and the type
+  if( (args.name_scale != "") &&
+      (args.name_orientation != "") &&
+      args.save_type
+      )
+    {
+
+      const gsl_rng_type * T2;
+      gsl_rng * r;
+      gsl_rng_env_setup();
+      T2 = gsl_rng_default;
+      r = gsl_rng_alloc (T2);
+
+      printf("Creating the negative points for the Cloud<Point2Dotw>\n"); 
+      Image<float>* scaleImg = new Image<float>(args.name_scale);
+      Image<float>* thetaImg = new Image<float>(args.name_orientation);
+      Cloud<Point2Dotw>* cl = new Cloud<Point2Dotw>();
+
+      float orientation, scale;
+      int nNegativePoints = 0;
+      int x, y;
+      int limitNegative = args.number_negative_points;
+      while(nNegativePoints < limitNegative)
+        {
+          x = (int)floor(gsl_rng_uniform(r)*img->width);
+          y = (int)floor(gsl_rng_uniform(r)*img->height);
+          if(img->at(x,y) > 100){
+            indexes[0] = x;
+            indexes[1] = y;
+            img->indexesToMicrometers(indexes, micrometers);
+            orientation=thetaImg->at(x,y);
+            scale = gsl_rng_uniform(r);
+            cl->points.push_back
+              ( new Point2Dotw(micrometers[0],micrometers[1],
+                               orientation,-1, 5*pow(10,-scale)));
+            nNegativePoints++;
+          }
+        }
+      cl->saveToFile(args.name_cloud);
+    }//Point2Dotw
+
+
 
 }

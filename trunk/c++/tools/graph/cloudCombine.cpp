@@ -43,22 +43,25 @@ int main(int argc, char **argv) {
 //   }
 
 
-  printf("Heavy tuned for the results on the roads, please read the code!\n");
-  Cloud<Point3Dotw>* pos = new Cloud<Point3Dotw>(argv[1]);
-  Cloud<Point2Dot>*  neg = new Cloud<Point2Dot> (argv[2]);
+  printf("Heavy tuned for the results on the 2D imges, please read the code!\n");
+  Cloud<Point2Dotw>*  pos = new Cloud<Point2Dotw>(argv[1]);
+  Cloud<Point2Dotw>*  neg = new Cloud<Point2Dotw> (argv[2]);
 
-  Cloud_P* result = new Cloud<Point2Dot>();
+  Cloud_P* result = new Cloud<Point2Dotw>();
 
-  for(int i = 0; i < pos->points.size(); i++){
-    Point3Dot* pt = dynamic_cast<Point3Dot*>(pos->points[i]);
-    if(pt->type == 1){
-      result->points.push_back
-        (new Point2Dot(pt->coords[0],
-                       pt->coords[1],
-                       pt->theta,
-                       pt->type));
-    }
-  }
+  // for(int i = 0; i < pos->points.size(); i++){
+    // Point3Dot* pt = dynamic_cast<Point3Dot*>(pos->points[i]);
+    // if(pt->type == 1){
+      // result->points.push_back
+        // (new Point2Dot(pt->coords[0],
+                       // pt->coords[1],
+                       // pt->theta,
+                       // pt->type));
+    // }
+  // }
+  for(int i = 0; i < pos->points.size(); i++)
+    result->points.push_back(pos->points[i]);
+
   for(int i = 0; i < neg->points.size(); i++)
     result->points.push_back(neg->points[i]);
 
