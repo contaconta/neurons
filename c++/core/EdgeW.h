@@ -50,8 +50,11 @@ void EdgeW< P >::draw(){
   // glColor3f(w,
             // 0,
             // 1-w);
+  glColor3f(1,
+            0,
+            0);
   glEnable(GL_LINE_SMOOTH);
-  glLineWidth(2.0);
+  glLineWidth(1.0);
   Edge<P>::draw();
   glLineWidth(1.0);
 

@@ -98,6 +98,10 @@ public:
       glDisable(GL_DEPTH_TEST);
   }
 
+  //Simple crappy method to communicate with the object
+  virtual void listen(int action){
+  }
+
 };
 
 #endif
