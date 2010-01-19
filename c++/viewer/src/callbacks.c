@@ -15,6 +15,7 @@
 #include "CloudFactory.h"
 #include "GraphFactory.h"
 #include "TiffFactory.h"
+#include "ListOfObjects.h"
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
@@ -175,6 +176,10 @@ void addObjectFromString(string name)
       addObjectFromString(s);
     }
     printf("\n");
+  }
+  else if (extension == "lsto" ){
+    ListOfObjects* lsto = new ListOfObjects(name);
+    toDraw.push_back(lsto);
   }
   else if (extension == "stc") {
     Configuration* conf = new Configuration(name);
