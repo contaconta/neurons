@@ -424,17 +424,19 @@ void Neuron::drawSegmentAsLines(NeuronSegment* segment, vector< float > root, bo
           sprintf(prevPointName, "%s-P%02i", segment->name.c_str(), segment->points[i-1].pointNumber);
         }
 
-      glEnable(GL_LINE_SMOOTH);
-      glColor3f(140.0/255,40.0/255,40.0/255);
-      glLineWidth(6.0);
-      glBegin(GL_LINES);
-      glVertex3f(xyz0[0],xyz0[1],xyz0[2]);
-      glVertex3f(xyz[0],xyz[1],xyz[2]);
-      glEnd();
+      // glEnable(GL_LINE_SMOOTH);
+      // glColor3f(140.0/255,40.0/255,40.0/255);
+      // glLineWidth(6.0);
+      // glBegin(GL_LINES);
+      // glVertex3f(xyz0[0],xyz0[1],xyz0[2]);
+      // glVertex3f(xyz[0],xyz[1],xyz[2]);
+      // glEnd();
 
-      glColor3f(225.0/255,155.0/255,1.0);
-      glLineWidth(2.0);
+      // glColor3f(225.0/255,155.0/255,1.0);
+      // glLineWidth(2.0);
 //       Edge<P>::draw();
+
+      glLineWidth(1.0);
       glBegin(GL_LINES);
       glVertex3f(xyz0[0],xyz0[1],xyz0[2]);
       glVertex3f(xyz[0],xyz[1],xyz[2]);
@@ -442,11 +444,11 @@ void Neuron::drawSegmentAsLines(NeuronSegment* segment, vector< float > root, bo
 
       glLineWidth(1.0);
 
-//       glPushMatrix();
-//       glTranslatef(xyz[0], xyz[1], xyz[2]);
-//       glutSolidSphere(segment->points[i].coords[3], 10, 10);
-//       // glutWireSphere(1, 5, 5);
-//       glPopMatrix();
+      glPushMatrix();
+      glTranslatef(xyz[0], xyz[1], xyz[2]);
+      glutSolidSphere(2.0*segment->points[i].coords[3], 10, 10);
+      // glutWireSphere(1, 5, 5);
+      glPopMatrix();
 
     }
 
@@ -622,14 +624,14 @@ void Neuron::drawInOpenGlAsLines(bool includeCorrection)
   glEnd();
 
   //Draws balls in the points
-  if(0){
+  if(1){
     glColor3f(0,0,1);
     for(int i = 0; i < this->soma.points.size(); i++)
       {
         vector< float > xyz = this->soma.points[i].coords;
         glPushMatrix();
         glTranslatef(xyz[0], xyz[1], xyz[2]);
-        glutSolidSphere(0.5, 10, 10);
+        glutSolidSphere(1.5, 10, 10);
         glPopMatrix();
       }
   }

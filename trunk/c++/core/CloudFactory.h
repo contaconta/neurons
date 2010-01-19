@@ -38,6 +38,8 @@ public:
       return new Cloud<Point2Do>();
     else if( s == "Point2Dot")
       return new Cloud<Point2Dot>();
+    else if( s == "Point2Dotw")
+      return new Cloud<Point2Dotw>();
     else if( s == "Point3Do")
       return new Cloud<Point3Do>();
     else if( s == "Point3Dt")
@@ -60,6 +62,8 @@ public:
       pointType = "Point2Do";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point2Dot>))
       pointType = "Point2Dot";
+    else if(typeid(*cloudOrig) == typeid(Cloud<Point2Dotw>))
+      pointType = "Point2Dotw";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3D>))
       pointType = "Point3D";
     else if(typeid(*cloudOrig) == typeid(Cloud<Point3Do>))
@@ -84,7 +88,7 @@ public:
   static Cloud_P* newCloudWithType(Cloud_P* cloudOrig){
     string pointType = inferPointType(cloudOrig);
     string pointTypeR;
-    if (pointType == "Point3D") pointTypeR = "Point3Dt";
+    if      (pointType == "Point3D") pointTypeR = "Point3Dt";
     else if (pointType == "Point3Dt")  pointTypeR = "Point3Dt";
     else if (pointType == "Point3Do")  pointTypeR = "Point3Dot";
     else if (pointType == "Point3Dot") pointTypeR = "Point3Dot";

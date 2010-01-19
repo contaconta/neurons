@@ -1235,92 +1235,96 @@ bool ascParser2::parseProjectionMatrix(Neuron* neuron)
   string matrixName = filename.substr(0,found+1)
     + "matrixForNeuron.txt";
 
-  std::ifstream readMatrix(matrixName.c_str());
+  if(fileExists(matrixName)){
 
-  if(!readMatrix.good())
-    {
-      printf("Error while loading the projection matrix in the neuron: %s. The files will be created.\n", matrixName.c_str());
-      readMatrix.close();
-      std::ofstream out1(matrixName.c_str());
-      int found;
-      found = filename.find_last_of("/");
-      if(found == string::npos)
-        found = -1;
-      string matrixNameInv = filename.substr(0,found+1)
-        + "matrixForNeuronInv.txt";
-      std::ofstream out2(matrixNameInv.c_str());
-      for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 4; j++){
-          if(i==j){
-            out1 << "1.0 ";
-            out2 << "1.0 ";
+      std::ifstream readMatrix(matrixName.c_str());
+
+      if(!readMatrix.good())
+        {
+          printf("Error while loading the projection matrix in the neuron: %s. The files will be created.\n", matrixName.c_str());
+          readMatrix.close();
+          std::ofstream out1(matrixName.c_str());
+          int found;
+          found = filename.find_last_of("/");
+          if(found == string::npos)
+            found = -1;
+          string matrixNameInv = filename.substr(0,found+1)
+            + "matrixForNeuronInv.txt";
+          std::ofstream out2(matrixNameInv.c_str());
+          for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+              if(i==j){
+                out1 << "1.0 ";
+                out2 << "1.0 ";
+              }
+              else{
+                out1 << "0.0 ";
+                out2 << "0.0 ";
+              }
+            }
+            out1 << std::endl;
+            out2 << std::endl;
           }
-          else{
-            out1 << "0.0 ";
-            out2 << "0.0 ";
-          }
+          out1.close();
+          out2.close();
+          return false;
         }
-        out1 << std::endl;
-        out2 << std::endl;
-      }
-      out1.close();
-      out2.close();
-      return false;
+
+      neuron->projectionMatrix.resize(16);
+
+      for(int i = 0; i < 16; i++)
+        neuron->projectionMatrix[i] = 0;
+
+      std::cout << "Size of the projection matrix: " << neuron->projectionMatrix.size() << std::endl;
+
+
+      readMatrix >> neuron->projectionMatrix[0];
+      readMatrix >> neuron->projectionMatrix[4];
+      readMatrix >> neuron->projectionMatrix[8];
+      readMatrix >> neuron->projectionMatrix[12];
+      readMatrix >> neuron->projectionMatrix[1];
+      readMatrix >> neuron->projectionMatrix[5];
+      readMatrix >> neuron->projectionMatrix[9];
+      readMatrix >> neuron->projectionMatrix[13];
+      readMatrix >> neuron->projectionMatrix[2];
+      readMatrix >> neuron->projectionMatrix[6];
+      readMatrix >> neuron->projectionMatrix[10];
+      readMatrix >> neuron->projectionMatrix[14];
+      readMatrix >> neuron->projectionMatrix[3];
+      readMatrix >> neuron->projectionMatrix[7];
+      readMatrix >> neuron->projectionMatrix[11];
+      readMatrix >> neuron->projectionMatrix[15];
+
+      readMatrix.close();
     }
-
-  neuron->projectionMatrix.resize(16);
-
-  for(int i = 0; i < 16; i++)
-    neuron->projectionMatrix[i] = 0;
-
-  std::cout << "Size of the projection matrix: " << neuron->projectionMatrix.size() << std::endl;
-
-
-  readMatrix >> neuron->projectionMatrix[0];
-  readMatrix >> neuron->projectionMatrix[4];
-  readMatrix >> neuron->projectionMatrix[8];
-  readMatrix >> neuron->projectionMatrix[12];
-  readMatrix >> neuron->projectionMatrix[1];
-  readMatrix >> neuron->projectionMatrix[5];
-  readMatrix >> neuron->projectionMatrix[9];
-  readMatrix >> neuron->projectionMatrix[13];
-  readMatrix >> neuron->projectionMatrix[2];
-  readMatrix >> neuron->projectionMatrix[6];
-  readMatrix >> neuron->projectionMatrix[10];
-  readMatrix >> neuron->projectionMatrix[14];
-  readMatrix >> neuron->projectionMatrix[3];
-  readMatrix >> neuron->projectionMatrix[7];
-  readMatrix >> neuron->projectionMatrix[11];
-  readMatrix >> neuron->projectionMatrix[15];
-
-  readMatrix.close();
-
 
   //Now reads the inverse matrix
   string matrixNameInv = filename.substr(0,filename.find_last_of("/")) + "/matrixForNeuronInv.txt";
 
-  readMatrix.open(matrixNameInv.c_str());
+  if(fileExists(matrixNameInv)){
+    std::ifstream readMatrix(matrixName.c_str());
+    readMatrix.open(matrixNameInv.c_str());
 
-  readMatrix >> neuron->projectionMatrixInv[0];
-  readMatrix >> neuron->projectionMatrixInv[4];
-  readMatrix >> neuron->projectionMatrixInv[8];
-  readMatrix >> neuron->projectionMatrixInv[12];
-  readMatrix >> neuron->projectionMatrixInv[1];
-  readMatrix >> neuron->projectionMatrixInv[5];
-  readMatrix >> neuron->projectionMatrixInv[9];
-  readMatrix >> neuron->projectionMatrixInv[13];
-  readMatrix >> neuron->projectionMatrixInv[2];
-  readMatrix >> neuron->projectionMatrixInv[6];
-  readMatrix >> neuron->projectionMatrixInv[10];
-  readMatrix >> neuron->projectionMatrixInv[14];
-  readMatrix >> neuron->projectionMatrixInv[3];
-  readMatrix >> neuron->projectionMatrixInv[7];
-  readMatrix >> neuron->projectionMatrixInv[11];
-  readMatrix >> neuron->projectionMatrixInv[15];
+    readMatrix >> neuron->projectionMatrixInv[0];
+    readMatrix >> neuron->projectionMatrixInv[4];
+    readMatrix >> neuron->projectionMatrixInv[8];
+    readMatrix >> neuron->projectionMatrixInv[12];
+    readMatrix >> neuron->projectionMatrixInv[1];
+    readMatrix >> neuron->projectionMatrixInv[5];
+    readMatrix >> neuron->projectionMatrixInv[9];
+    readMatrix >> neuron->projectionMatrixInv[13];
+    readMatrix >> neuron->projectionMatrixInv[2];
+    readMatrix >> neuron->projectionMatrixInv[6];
+    readMatrix >> neuron->projectionMatrixInv[10];
+    readMatrix >> neuron->projectionMatrixInv[14];
+    readMatrix >> neuron->projectionMatrixInv[3];
+    readMatrix >> neuron->projectionMatrixInv[7];
+    readMatrix >> neuron->projectionMatrixInv[11];
+    readMatrix >> neuron->projectionMatrixInv[15];
 
 
-  readMatrix.close();
-
+    readMatrix.close();
+  }
 
 
 #ifdef debug

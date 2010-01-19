@@ -7,6 +7,7 @@
 #include "Point2D.h"
 #include "Point2Do.h"
 #include "Point2Dot.h"
+#include "Point2Dotw.h"
 #include "Point3D.h"
 #include "Point3Dt.h"
 #include "Point3Do.h"

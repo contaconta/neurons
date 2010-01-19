@@ -19,7 +19,7 @@ Point2Do::Point2Do(float x, float y, float theta) : Point()
 void Point2Do::draw(){
   glPushMatrix();
   glTranslatef(coords[0], coords[1], 0);
-  glutSolidSphere(0.5, 10, 10);
+  glutSolidSphere(1.0, 10, 10);
   glBegin(GL_LINES);
   glVertex3f(0,0,0);
   glVertex3f(20*cos(theta), 20*sin(theta),0);
