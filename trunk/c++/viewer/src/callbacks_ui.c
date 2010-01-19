@@ -459,12 +459,27 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
            disp3DX,disp3DY,disp3DZ,rot3DX,rot3DY);
   }
 
-  if(event->keyval == 'n')
+  if(event->keyval == 'N')
     {
       flag_draw_neuron = !flag_draw_neuron;
       on_drawing3D_expose_event(drawing3D,NULL, NULL);
     }
-
+  if(event->keyval == 'n')
+    {
+      for(int i = 0; i < toDraw.size(); i++){
+        toDraw[i]->listen(1);
+      }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
+  if(event->keyval == 'p')
+    {
+      for(int i = 0; i < toDraw.size(); i++){
+        toDraw[i]->listen(-1);
+      }
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+      on_drawing3D_expose_event(drawing3D,NULL, NULL);
+    }
   if(event->keyval == 'e')
     {
       timeStep--;
@@ -531,6 +546,8 @@ on_drawing3D_key_press_event           (GtkWidget       *widget,
   if(p_key_press_event != NULL){
     p_key_press_event(widget, event, user_data);
   }
+
+  on_drawing3D_expose_event(drawing3D,NULL, NULL);
 
   return FALSE;
 }

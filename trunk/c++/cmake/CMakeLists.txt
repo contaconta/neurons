@@ -147,6 +147,7 @@ add_library (viva SHARED
 ../core/ascParser2.cpp
 ../core/Edge.cpp
 ../core/Point2Dot.cpp
+../core/Point2Dotw.cpp
 ../core/Cloud.cpp
 ../core/Point3Dt.cpp
 ../core/Graph.cpp
@@ -167,7 +168,6 @@ add_library (viva SHARED
 ../core/GraphCut.cpp
 ../core/Timer.cpp
 ../core/TiffFactory.cpp
-../core/Configuration.cpp
 )
 
 ################################################################################
@@ -296,6 +296,14 @@ ENDIF(${GLEW_FOUND})
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeFromImageStack-16bitTIFF ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack-16bitTIFF.cpp)
+target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
+
+
+add_executable(cubeCombineFromList ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList.cpp)
+target_link_libraries(cubeCombineFromList ${LINK_LIBRARIES_ALL})
+
+
 # add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
 # target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
 
@@ -324,8 +332,8 @@ target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 # add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
 # target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
 
-# add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
-# target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
+add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
+target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
@@ -358,8 +366,8 @@ target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 # target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
 # # add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
 # target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
-# add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
-# target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
+target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 # add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
 # target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
 
@@ -387,8 +395,8 @@ target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 # # add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
 # target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
 
-# add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
-# target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
+add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
+target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 
 # # add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
 # target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
@@ -402,11 +410,15 @@ target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 # add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
 # target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
 
-add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
-target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
+# add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
+# target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 
 # add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
 # target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
+
+# add_executable(cloudToText ${CMAKE_SOURCE_DIR}/../tools/graph/cloudToText.cpp)
+# target_link_libraries(cloudToText ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
 # target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
@@ -428,6 +440,9 @@ target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 # add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
 # target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
 
+# add_executable(neuronToCloudI ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloudI.cpp)
+# target_link_libraries(neuronToCloudI ${LINK_LIBRARIES_ALL})
+
 # add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
 # target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
 
@@ -442,8 +457,8 @@ target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 # target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
-target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
+# add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
+# target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
 
 # add_executable(idsToVolume ${CMAKE_SOURCE_DIR}/../tests/idsToVolume.cpp)
 # target_link_libraries(idsToVolume ${LINK_LIBRARIES_ALL})
