@@ -20,7 +20,7 @@ end
 [r c] = scanline(I, angle);
 
 % temp to visualize the scanline
-T = E; T(sub2ind(size(I),r,c)) = 1; figure(1); imagesc(T); colormap gray;
+%T = E; T(sub2ind(size(I),r,c)) = 1; figure(1); imagesc(T); colormap gray;
 
 
 %% determine the scanning direction (down or right, depending on angle and image size)
@@ -29,9 +29,7 @@ imgangle = rad2deg(atan2(size(E,1), size(E,2)));
 if ((angle >= imgangle) && (angle <= 180-imgangle))  || ((angle >= 180 + imgangle) && (angle <= 360-imgangle))
     % scan right
     c = c - max(c) + 1;
-    disp('have not handled the scan right case yet');
-    keyboard;
-    
+    scandown = 0;
 else
     % scan down
     r = r - max(r) + 1;
@@ -46,13 +44,21 @@ end
 
 %% compute the edge map using the gradient G
 
-scanr = r;
-%scanr = r - r(length(r));
-while min(scanr) <= size(I,1)
+if scandown
+    shift = r; S = size(I,1);
+else
+    shift = c; S = size(I,2);
+end
+
+while min(shift) <= S
     
     % this can be sped up by searching for searching for 1st valid, invalid
-    valid = (scanr <= size(I,1)) & (scanr > 0);
-    ra = scanr(valid); ca = c(valid);
+    valid = (shift <= S) & (shift > 0);
+    if scandown
+        ra = shift(valid); ca = c(valid);
+    else
+        ra = r(valid); ca = shift(valid);
+    end
     
     ind = sub2ind(size(I), ra,ca);
     gline = G(ind);
@@ -65,27 +71,9 @@ while min(scanr) <= size(I,1)
         edgeinds = ind(locs);
         E(edgeinds) = 1;
     end
-    scanr = scanr + 1;
+    shift = shift + 1;
 end
 
-% scanr = r - r(length(r));
-% while scanr(1) <= size(I,1)
-%     valid = (scanr <= size(I,1)) & (scanr > 0);
-%     ra = scanr(valid); ca = c(valid);
-%     
-%     ind = sub2ind(size(I), ra,ca);
-%     gline = G(ind);
-% 
-%     if length(gline) > 2
-%         
-%         % find the Edge map E by locating peaks in the gradient along the
-%         % ray
-%         [locs, pks] = peakfinder(gline); %#ok<NASGU>
-%         edgeinds = ind(locs);
-%         E(edgeinds) = 1;
-%     end
-%     scanr = scanr + 1;
-% end
 
 
 
@@ -103,11 +91,20 @@ end
 
 
 %% compute the ray features
-scanr = r;
-%scanr = r - r(length(r));
-while min(scanr) <= size(I,1)
-    valid = (scanr <= size(I,1)) & (scanr > 0);
-    ra = scanr(valid); ca = c(valid);
+
+if scandown
+    shift = r; S = size(I,1);
+else
+    shift = c; S = size(I,2);
+end
+
+while min(shift) <= S
+    valid = (shift <= S) & (shift > 0);
+    if scandown
+        ra = shift(valid); ca = c(valid);
+    else
+        ra = r(valid); ca = shift(valid);
+    end
     
     % traverse the scanline (ray) to compute the various ray features
     steps_since_edge = 0;
@@ -122,11 +119,11 @@ while min(scanr) <= size(I,1)
         %RAY4(r(i),c(i)) = lastGN;
         steps_since_edge = steps_since_edge +1;
     end
-    scanr = scanr + 1;
+    shift = shift + 1;
 end
 
-figure(2); imagesc(RAY1);
-keyboard;
+%figure(2); imagesc(RAY1);
+%keyboard;
 
 
 
@@ -252,3 +249,23 @@ end
 % end
 % START = START + 1;  END = END + 1;
 % [c,r] = intline(START(1), END(1), START(2), END(2));
+
+% scanr = r - r(length(r));
+% while scanr(1) <= size(I,1)
+%     valid = (scanr <= size(I,1)) & (scanr > 0);
+%     ra = scanr(valid); ca = c(valid);
+%     
+%     ind = sub2ind(size(I), ra,ca);
+%     gline = G(ind);
+% 
+%     if length(gline) > 2
+%         
+%         % find the Edge map E by locating peaks in the gradient along the
+%         % ray
+%         [locs, pks] = peakfinder(gline); %#ok<NASGU>
+%         edgeinds = ind(locs);
+%         E(edgeinds) = 1;
+%     end
+%     scanr = scanr + 1;
+% end
+
