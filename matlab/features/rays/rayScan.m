@@ -5,94 +5,52 @@ MINPKDIST = 5;
 MINPKHEIGHT = 22;   %1.7*mean(gline);
 MINAREA = 4;
 
+% allocate arrays for edge E, rays RAY1, ...
 E = zeros(size(I)); RAY1 = E;
 
+
+%% properly format the angle (between 0 and 360 degrees), flip y axis (matlab)
 angle = mod(angle,360);
 if angle < 0;  angle = angle + 360; end;
-% flip the sign of the angle (because matlab image y axis points down)
-% if angle ~= 0
-%     angle = 360-angle;
-% end
+if angle ~= 0  % flip the angle over x axis because matlab image y axis points down
+    angle = 360-angle;
+end
+
+%% create a scanline in direction given by the angle centered in the image
+[r c] = scanline(I, angle);
+
+% temp to visualize the scanline
+T = E; T(sub2ind(size(I),r,c)) = 1; figure(1); imagesc(T); colormap gray;
 
 
-% if ((0 <= angle) && (angle < 45) ) || (( angle <=315) && (angle < 360))
-%     START = [0 size(I,1)-1];  %[X Y] not [r c]
-%     END   = [size(I,2)-1  size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
-% elseif (angle <= 45) && (angle < 135)
-%     START = [size(I,2)-1 size(I,1)-1];
-%     END = [0 size(I,1)-1 - round( (size(I,2)-1)*tan(deg2rad(270-angle))
-% elseif (angle <=135) && (angle < 225)
-%     Q = 3;
-% elseif (angle <=225) && (angle < 315)
-%     Q = 4;
-% end
+%% determine the scanning direction (down or right, depending on angle and image size)
+imgangle = rad2deg(atan2(size(E,1), size(E,2)));
 
-START = [0 0]; 
-H = sqrt(size(I,1)^2 + size(I,2)^2);  H = H+(.02*H);
-END = round([ H*cosd(angle)   H*sind(angle)]);
-START = START + 1;  END = END + 1;
-[c,r] = intline(START(1), END(1), START(2), END(2));
-
-%keyboard;
-
-r =  r - round(median(r)) + round(size(I,1)/2);
-c =  c - round(median(c)) + round(size(I,2)/2);
-
-valid = r > 0 & r <=size(I,1) & c > 0  & c <=size(I,2);
-
-r = r(valid);
-c = c(valid);
+if ((angle >= imgangle) && (angle <= 180-imgangle))  || ((angle >= 180 + imgangle) && (angle <= 360-imgangle))
+    % scan right
+    c = c - max(c) + 1;
+    disp('have not handled the scan right case yet');
+    keyboard;
+    
+else
+    % scan down
+    r = r - max(r) + 1;
+    scandown = 1;
+end
 
 
-% line([START(1) END(1)], [START(2) END(2)]);
-% axis([-250 250 -200 200]);
-% keyboard;
-
-% if (0 <= angle) && (angle < 90)
-%     Q = 1;
-% elseif (angle <= 90) && (angle < 180)
-%     Q = 2;
-% elseif (angle <=180) && (angle < 270)
-%     Q = 3;
-% else 
-%     Q = 4;
-% end
-
-% switch Q
-%     case 1
-%         START = [0 size(I,1)-1 ];
-%         END = [size(I,2)-1 size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
-%     case 2
-%         START = [size(I,1)-1 size(I,2)-1];
-%         END = [0 0 ];  %[ round(    )  0];
-%     case 3
-%         START = [0 size(I,2)-1]; 
-%         END = [0 0];
-%     case 4
-%         START = [ 0 0 ];
-%         END = [size(I,2)-1 -round((size(I,1)-1)*tan(deg2rad(angle)))];    %[c r]
-% end
-% START = START + 1;  END = END + 1;
-% [c,r] = intline(START(1), END(1), START(2), END(2));
-
-T = E;
-T(sub2ind(size(I),r,c)) = 1;
-figure(1); imagesc(T); colormap gray;
 
 
-% determine if we need to scan down or right
 
 
-% case: scan down
-r = r - max(r) + 1;
-
-%return;
-%keyboard;
 
 %% compute the edge map using the gradient G
 
-scanr = r - r(length(r));
-while scanr(1) <= size(I,1)
+scanr = r;
+%scanr = r - r(length(r));
+while min(scanr) <= size(I,1)
+    
+    % this can be sped up by searching for searching for 1st valid, invalid
     valid = (scanr <= size(I,1)) & (scanr > 0);
     ra = scanr(valid); ca = c(valid);
     
@@ -110,6 +68,25 @@ while scanr(1) <= size(I,1)
     scanr = scanr + 1;
 end
 
+% scanr = r - r(length(r));
+% while scanr(1) <= size(I,1)
+%     valid = (scanr <= size(I,1)) & (scanr > 0);
+%     ra = scanr(valid); ca = c(valid);
+%     
+%     ind = sub2ind(size(I), ra,ca);
+%     gline = G(ind);
+% 
+%     if length(gline) > 2
+%         
+%         % find the Edge map E by locating peaks in the gradient along the
+%         % ray
+%         [locs, pks] = peakfinder(gline); %#ok<NASGU>
+%         edgeinds = ind(locs);
+%         E(edgeinds) = 1;
+%     end
+%     scanr = scanr + 1;
+% end
+
 
 
 
@@ -126,8 +103,9 @@ end
 
 
 %% compute the ray features
-scanr = r - r(length(r));
-while scanr(1) <= size(I,1)
+scanr = r;
+%scanr = r - r(length(r));
+while min(scanr) <= size(I,1)
     valid = (scanr <= size(I,1)) & (scanr > 0);
     ra = scanr(valid); ca = c(valid);
     
@@ -158,9 +136,25 @@ keyboard;
 %Sr = round(r); Sc = round(c);
 
 
+%% ================== SCANLINE ============================================
+% SCANLINE returns row, column locations of scanline in direction angle
+function [r c] = scanline(I, angle)
 
+% draw a line from 0,0 to the limits of I (+ some extra buffer pixels)
+START = [0 0]; 
+H = sqrt(size(I,1)^2 + size(I,2)^2);  H = H+(.02*H);
+END = round([ H*cosd(angle)   H*sind(angle)]);
+START = START + 1;  END = END + 1;
+[c,r] = intline(START(1), END(1), START(2), END(2));
 
- 
+% move the line so that it is centered in I
+r =  r - round(median(r)) + round(size(I,1)/2);
+c =  c - round(median(c)) + round(size(I,2)/2);
+
+% get rid of any r,c that are out of the image boundaries
+valid = r > 0 & r <=size(I,1) & c > 0  & c <=size(I,2);
+r = r(valid);
+c = c(valid);
 
 
 %% ================== INTLINE =============================================
@@ -211,9 +205,50 @@ if (flip)
   r = flipud(r);
 end
 
-
-
-
 % alternative to finding peaks
-
 %[pks, locs] = findpeaks(gline, 'minpeakheight', MINPKHEIGHT, 'minpeakdistance', MINPKDIST);
+
+
+
+% if ((0 <= angle) && (angle < 45) ) || (( angle <=315) && (angle < 360))
+%     START = [0 size(I,1)-1];  %[X Y] not [r c]
+%     END   = [size(I,2)-1  size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
+% elseif (angle <= 45) && (angle < 135)
+%     START = [size(I,2)-1 size(I,1)-1];
+%     END = [0 size(I,1)-1 - round( (size(I,2)-1)*tan(deg2rad(270-angle))
+% elseif (angle <=135) && (angle < 225)
+%     Q = 3;
+% elseif (angle <=225) && (angle < 315)
+%     Q = 4;
+% end
+
+% line([START(1) END(1)], [START(2) END(2)]);
+% axis([-250 250 -200 200]);
+% keyboard;
+
+% if (0 <= angle) && (angle < 90)
+%     Q = 1;
+% elseif (angle <= 90) && (angle < 180)
+%     Q = 2;
+% elseif (angle <=180) && (angle < 270)
+%     Q = 3;
+% else 
+%     Q = 4;
+% end
+
+% switch Q
+%     case 1
+%         START = [0 size(I,1)-1 ];
+%         END = [size(I,2)-1 size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
+%     case 2
+%         START = [size(I,1)-1 size(I,2)-1];
+%         END = [0 0 ];  %[ round(    )  0];
+%     case 3
+%         START = [0 size(I,2)-1]; 
+%         END = [0 0];
+%     case 4
+%         START = [ 0 0 ];
+%         END = [size(I,2)-1 -round((size(I,1)-1)*tan(deg2rad(angle)))];    %[c r]
+% end
+% START = START + 1;  END = END + 1;
+% [c,r] = intline(START(1), END(1), START(2), END(2));
