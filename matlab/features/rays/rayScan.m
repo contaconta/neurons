@@ -10,29 +10,91 @@ E = zeros(size(I)); RAY1 = E;
 angle = mod(angle,360);
 if angle < 0;  angle = angle + 360; end;
 % flip the sign of the angle (because matlab image y axis points down)
-if angle ~= 0
-    angle = 360-angle;
-end
+% if angle ~= 0
+%     angle = 360-angle;
+% end
 
 
-%if 0 <= angle
+% if ((0 <= angle) && (angle < 45) ) || (( angle <=315) && (angle < 360))
+%     START = [0 size(I,1)-1];  %[X Y] not [r c]
+%     END   = [size(I,2)-1  size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
+% elseif (angle <= 45) && (angle < 135)
+%     START = [size(I,2)-1 size(I,1)-1];
+%     END = [0 size(I,1)-1 - round( (size(I,2)-1)*tan(deg2rad(270-angle))
+% elseif (angle <=135) && (angle < 225)
+%     Q = 3;
+% elseif (angle <=225) && (angle < 315)
+%     Q = 4;
+% end
 
-START = [ 0 0 ];
-END = [size(I,2)-1 round((size(I,1)-1)*tan(deg2rad(angle)))];    %[c r]
+START = [0 0]; 
+H = sqrt(size(I,1)^2 + size(I,2)^2);  H = H+(.02*H);
+END = round([ H*cosd(angle)   H*sind(angle)]);
 START = START + 1;  END = END + 1;
 [c,r] = intline(START(1), END(1), START(2), END(2));
 
+%keyboard;
+
+r =  r - round(median(r)) + round(size(I,1)/2);
+c =  c - round(median(c)) + round(size(I,2)/2);
+
+valid = r > 0 & r <=size(I,1) & c > 0  & c <=size(I,2);
+
+r = r(valid);
+c = c(valid);
 
 
-% first, compute the edge map
-rup = r - r(length(r));
-%rdn = r - r(length(r));
-% scan down
-while rup(1) <= size(I,1)
-    rup = rup + 1;
-    valid = rup < size(I,1);
-    valid = (rup < size(I,1)) & (rup > 0);
-    ra = rup(valid); ca = c(valid);
+% line([START(1) END(1)], [START(2) END(2)]);
+% axis([-250 250 -200 200]);
+% keyboard;
+
+% if (0 <= angle) && (angle < 90)
+%     Q = 1;
+% elseif (angle <= 90) && (angle < 180)
+%     Q = 2;
+% elseif (angle <=180) && (angle < 270)
+%     Q = 3;
+% else 
+%     Q = 4;
+% end
+
+% switch Q
+%     case 1
+%         START = [0 size(I,1)-1 ];
+%         END = [size(I,2)-1 size(I,1)-1 - round((size(I,2)-1)*tan(deg2rad(angle)))];
+%     case 2
+%         START = [size(I,1)-1 size(I,2)-1];
+%         END = [0 0 ];  %[ round(    )  0];
+%     case 3
+%         START = [0 size(I,2)-1]; 
+%         END = [0 0];
+%     case 4
+%         START = [ 0 0 ];
+%         END = [size(I,2)-1 -round((size(I,1)-1)*tan(deg2rad(angle)))];    %[c r]
+% end
+% START = START + 1;  END = END + 1;
+% [c,r] = intline(START(1), END(1), START(2), END(2));
+
+T = E;
+T(sub2ind(size(I),r,c)) = 1;
+figure(1); imagesc(T); colormap gray;
+
+
+% determine if we need to scan down or right
+
+
+% case: scan down
+r = r - max(r) + 1;
+
+%return;
+%keyboard;
+
+%% compute the edge map using the gradient G
+
+scanr = r - r(length(r));
+while scanr(1) <= size(I,1)
+    valid = (scanr <= size(I,1)) & (scanr > 0);
+    ra = scanr(valid); ca = c(valid);
     
     ind = sub2ind(size(I), ra,ca);
     gline = G(ind);
@@ -45,52 +107,31 @@ while rup(1) <= size(I,1)
         edgeinds = ind(locs);
         E(edgeinds) = 1;
     end
-end
-
-keyboard;
-
-% scan up
-while rdn(length(rdn)) >= 1
-    valid = rdn > 0;
-    ra = rdn(valid); ca = c(valid);
-    
-    ind = sub2ind(size(I), ra,ca);
-    gline = G(ind);
-
-    if length(gline) > 2
-        [locs, pks] = peakfinder(gline);
-        edgeinds = ind(locs);
-        E(edgeinds) = 1;
-    end
-    rdn = rdn - 1;
+    scanr = scanr + 1;
 end
 
 
 
 
-
-% remove small isolated edges
+%% clean edges -> remove small isolated edges
 STATS = regionprops(bwlabel(logical(E)), 'PixelIdxList', 'Area'); %#ok<MRPBW>
 for l = 1:length(STATS)
     if STATS(l).Area < MINAREA;
         E(STATS(l).PixelIdxList) = 0;
     end
 end
-%keyboard;
 
 
 
-% second pass, compute the ray features
-rup = r;
-rdn = rup;
-%cflip = flipud(c);
-% scan down
-while rup(1) <= size(I,1)
-    rup = rup + 1;
-    valid = rup < size(I,1);
-    ra = rup(valid); ca = c(valid);
+
+
+%% compute the ray features
+scanr = r - r(length(r));
+while scanr(1) <= size(I,1)
+    valid = (scanr <= size(I,1)) & (scanr > 0);
+    ra = scanr(valid); ca = c(valid);
     
-    % traverse the ray to compute the various ray features
+    % traverse the scanline (ray) to compute the various ray features
     steps_since_edge = 0;
     for i = length(ra):-1:1
         if E(ra(i),ca(i)) == 1
@@ -103,40 +144,16 @@ while rup(1) <= size(I,1)
         %RAY4(r(i),c(i)) = lastGN;
         steps_since_edge = steps_since_edge +1;
     end
+    scanr = scanr + 1;
 end
 
-
-
-% scan up
-while rdn(length(rdn)) >= 1
-    valid = rdn > 0;
-    ra = rdn(valid); ca = c(valid);
-    
-    % traverse the ray to compute the various ray features
-    steps_since_edge = 0;
-    for i = length(ra):-1:1
-        if E(ra(i),ca(i)) == 1
-            steps_since_edge = 0;
-            %lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-            %lastGN = GN(r(i),c(i));
-        end
-        RAY1(ra(i),ca(i)) = steps_since_edge;
-        %RAY3(r(i),c(i)) = lastGA;
-        %RAY4(r(i),c(i)) = lastGN;
-        steps_since_edge = steps_since_edge +1;
-    end
-    rdn = rdn - 1;
-end
-
-
-
-
-
-
-
-
-
+figure(2); imagesc(RAY1);
 keyboard;
+
+
+
+
+
 
 %Sr = round(r); Sc = round(c);
 
