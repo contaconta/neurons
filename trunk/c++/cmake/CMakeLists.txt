@@ -168,6 +168,7 @@ add_library (viva SHARED
 ../core/GraphCut.cpp
 ../core/Timer.cpp
 ../core/TiffFactory.cpp
+../core/Configuration.cpp
 )
 
 ################################################################################
