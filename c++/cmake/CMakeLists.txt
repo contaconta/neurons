@@ -165,7 +165,7 @@ add_library (viva SHARED
 ../core/Cube_T.cpp
 ../core/Cube_C.cpp
 ../core/CubeFactory.cpp
-../core/GraphCut.cpp
+#../core/GraphCut.cpp
 ../core/Timer.cpp
 ../core/TiffFactory.cpp
 ../core/Configuration.cpp
@@ -196,11 +196,11 @@ ENDIF(${GLEW_FOUND})
 ################################################################################
 
 IF(${GLEW_FOUND})
- add_library (example MODULE ../plugins/src/example/example.cpp)
- add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
- add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
- add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
- add_library (LoadSeeds MODULE ../plugins/src/LoadSeeds/LoadSeeds.cpp)
+# add_library (example MODULE ../plugins/src/example/example.cpp)
+# add_library (CubeDijkstra2 MODULE ../plugins/src/CubeDijkstra2/CubeDijkstra2.cpp)
+# add_library (CubeLiveWire MODULE ../plugins/src/CubeLiveWire/cubeLiveWire.cpp)
+# add_library (GraphCuts MODULE ../plugins/src/Graphcuts/GraphCuts.cpp)
+# add_library (LoadSeeds MODULE ../plugins/src/LoadSeeds/LoadSeeds.cpp)
 ENDIF(${GLEW_FOUND})
 
 ################################################################################
@@ -304,6 +304,8 @@ target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
 add_executable(cubeCombineFromList ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList.cpp)
 target_link_libraries(cubeCombineFromList ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeCombineFromList-16bit ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList-16bit.cpp)
+target_link_libraries(cubeCombineFromList-16bit ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
 # target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
