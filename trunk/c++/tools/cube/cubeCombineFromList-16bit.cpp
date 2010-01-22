@@ -56,11 +56,11 @@ int main(int argc, char **argv) {
 
 
   //Gets the min and max coordinates
-  int Xmin = 1e6;
+  int Xmin = 100000;
   int Xmax = 0;
-  int Ymin = 1e6;
+  int Ymin = 100000;
   int Ymax = 0;
-  int Zmin = 1e6;
+  int Zmin = 10000;
   int Zmax = 0;
   for(int i = 0 ; i < cubeNames.size(); i++){
     std::cout << cubeNames[i] << " " << offsetX[i] << " " << offsetY[i]
