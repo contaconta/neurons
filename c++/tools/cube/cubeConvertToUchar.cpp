@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     exit(0);
   }
 
-  Cube<float, double>* orig  = new Cube<float, double>(argv[1]);
+  Cube<int, long>* orig  = new Cube<int, long>(argv[1]);
   Cube<uchar, ulong>* flts = orig->create_blank_cube_uchar(argv[2]);
 
   float min_value = 1e8;
