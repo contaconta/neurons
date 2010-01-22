@@ -271,8 +271,8 @@ target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 # add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
 # target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
-# target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
+add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
+target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
@@ -291,8 +291,8 @@ target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 # # add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
 # target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
-# target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
+add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
+target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
 add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})

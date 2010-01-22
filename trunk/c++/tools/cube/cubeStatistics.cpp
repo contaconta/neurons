@@ -102,6 +102,10 @@ int main(int argc, char **argv) {
   if(cube_test->type == "float"){
     cube = new Cube<float,double>(volume_str);
   }
+  if(cube_test->type == "int"){
+    cube = new Cube<int,ulong>(volume_str);
+  }
+
 
   cube->print_statistics();
   cube->histogram(arguments.histogramFile);

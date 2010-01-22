@@ -65,6 +65,8 @@ int main(int argc, char **argv) {
   for(int i = 0 ; i < cubeNames.size(); i++){
     std::cout << cubeNames[i] << " " << offsetX[i] << " " << offsetY[i]
               << " " << offsetZ[i] << std::endl;
+    cubes.push_back
+      (new Cube<int, ulong>(directory + cubeNames[i]));
     if(offsetX[i] <= Xmin)
       Xmin = offsetX[i];
     if(offsetY[i] <= Ymin)
@@ -77,8 +79,6 @@ int main(int argc, char **argv) {
       Ymax = offsetY[i] + cubes[i]->cubeHeight-1;
     if(Zmax <= offsetZ[i] + cubes[i]->cubeDepth-1)
       Zmax = offsetZ[i] + cubes[i]->cubeDepth-1;
-    cubes.push_back
-      (new Cube<int, ulong>(directory + cubeNames[i]));
 
   }
 
