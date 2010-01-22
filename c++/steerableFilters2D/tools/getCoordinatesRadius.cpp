@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
   int x, y;
   for(int i = 0; i < cl->points.size(); i++){
     Point2Dot* pt = dynamic_cast<Point2Dot*>(cl->points[i]);
-    img->micromtersToIndexes(pt->coords[0], pt->coords[1], x, y);
+    img->micrometersToIndexes(pt->coords[0], pt->coords[1], x, y);
     coords = stf->getDerivativeCoordinatesRotated(x, y, pt->theta);
     for(int j = 0; j < coords.size(); j++)
       out << coords[j] << " ";

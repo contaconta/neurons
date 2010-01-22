@@ -247,8 +247,8 @@ ENDIF(${GLEW_FOUND})
 # # add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
 # target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
-# target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
+add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
+target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
 # target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
@@ -384,6 +384,9 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 ## graph tools
 ################################################################################
 
+add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
+target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
+
 # add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 # target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
@@ -413,6 +416,10 @@ target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 
 # add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
 # target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
+
+add_executable(cloudEliminateWidth ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminateWidth.cpp)
+target_link_libraries(cloudEliminateWidth ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
 # target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})

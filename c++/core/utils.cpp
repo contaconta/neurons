@@ -35,6 +35,11 @@ string getNameFromPathWithoutExtension(string path){
   return nameWithout;
 }
 
+string getPathWithoutExtension(string path){
+  string nameWithout = path.substr(0,path.find_last_of("."));
+  return nameWithout;
+}
+
 
 string getExtension(string path){
   return path.substr(path.find_last_of(".")+1);

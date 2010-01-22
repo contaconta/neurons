@@ -154,6 +154,7 @@ void Graph<P,E>::draw(){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
     eset.draw();
+    // cloud->draw();
 
     //Standard drawing proccedure
     if(0){

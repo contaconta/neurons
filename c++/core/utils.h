@@ -56,6 +56,8 @@ string getNameFromPath(string path);
 
 string getNameFromPathWithoutExtension(string path);
 
+string getPathWithoutExtension(string path);
+
 string getExtension(string path);
 
 int get_files_in_dir(string dir, vector<string> &files);
