@@ -46,11 +46,11 @@ int main(int argc, char **argv) {
     ss >> cubeName;
     ss >> X;
     ss >> Y;
-    ss >> Z;
+    //    ss >> Z;
     cubeNames.push_back(cubeName);
     offsetX.push_back(X);
     offsetY.push_back(Y);
-    offsetZ.push_back(Z);
+    offsetZ.push_back(0);
   }
   in.close();
 
