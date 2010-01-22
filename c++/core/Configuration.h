@@ -29,7 +29,7 @@ public:
 
   static void setInstance(Configuration* aInstance) 
   {
-    pInstance = aInstance;
+//     pInstance = aInstance;
   }
 
   Configuration()
