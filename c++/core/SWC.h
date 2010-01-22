@@ -36,7 +36,7 @@ public:
       offset = readVectorDouble(offsetTXT);
     }
     else {
-      offset.resize(0); offset.push_back(0); offset.push_back(0); offset.push_back(0);n
+      offset.resize(0); offset.push_back(0); offset.push_back(0); offset.push_back(0);
     }
 
     allPoints = new Cloud<Point3Dw>();
