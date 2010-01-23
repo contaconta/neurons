@@ -23,13 +23,20 @@
 using namespace std;
 
 int main(int argc, char **argv) {
+  int inverted;
 
-  if(argc!=4){
-    printf("Usage: cubeCalculateAguet cube sigma_xy sigma_z\n");
+  if(!(argc==4 || argc==5)){
+    printf("Usage: cubeCalculateAguet cube sigma_xy sigma_z inverted=1\n");
     exit(0);
   }
+  if(argc==4)
+    inverted = 1;
+  else
+    inverted = atoi(argv[4]);
+
+  printf("The last argument should be < 0 if the image is white over gray\n");
 
   Cube<uchar, ulong>* cube = new Cube<uchar, ulong>(argv[1]);
   cube->calculate_second_derivates(atof(argv[2]), atof(argv[3]));
-  cube->calculate_aguet(atof(argv[2]), atof(argv[3]));
+  cube->calculate_aguet(atof(argv[2]), atof(argv[3]), inverted);
 }

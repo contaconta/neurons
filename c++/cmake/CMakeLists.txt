@@ -227,8 +227,10 @@ install(FILES ../assets/viva.desktop   DESTINATION /usr/share/applications/)
 IF(${GLEW_FOUND})
 # add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
 # target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
-# add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
-# target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
+add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
+target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
+add_executable(cubeCalculateFrangi ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateFrangi.cpp)
+target_link_libraries(cubeCalculateFrangi ${LINK_LIBRARIES_ALL})
 # add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
 # target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
@@ -268,11 +270,11 @@ target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 # # add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
 # target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
-# target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
+add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
+target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
-target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
+# add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
+# target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
@@ -291,21 +293,21 @@ target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
 # # add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
 # target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
-target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
+# add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
+# target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
-target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
+# add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
+# target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeFromImageStack-16bitTIFF ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack-16bitTIFF.cpp)
-target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
+# add_executable(cubeFromImageStack-16bitTIFF ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack-16bitTIFF.cpp)
+# target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
 
 
-add_executable(cubeCombineFromList ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList.cpp)
-target_link_libraries(cubeCombineFromList ${LINK_LIBRARIES_ALL})
+# add_executable(cubeCombineFromList ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList.cpp)
+# target_link_libraries(cubeCombineFromList ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeCombineFromList-16bit ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList-16bit.cpp)
-target_link_libraries(cubeCombineFromList-16bit ${LINK_LIBRARIES_ALL})
+# add_executable(cubeCombineFromList-16bit ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList-16bit.cpp)
+# target_link_libraries(cubeCombineFromList-16bit ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
 # target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
