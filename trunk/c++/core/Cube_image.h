@@ -756,7 +756,7 @@ void Cube<T,U>::calculate_second_derivates_memory(float sigma_xy, float sigma_z)
 #ifdef WITH_GSL
 template <class T, class U>
 void Cube<T,U>::calculate_eigen_values
-(float sigma_xy, float sigma_z, bool calculate_eigne_vectors)
+(float sigma_xy, float sigma_z, bool calculate_eigne_vectors, int imageColor)
 {
 
   vector< float > Mask0, Mask1;
@@ -852,6 +852,7 @@ void Cube<T,U>::calculate_eigen_values
     for(int y = margin; y < cubeHeight-margin; y++){
       for(int x = margin; x < cubeWidth-margin; x++){
 
+        if(imageColor > 0){
         data[0] = gxx->at(x,y,z);
         data[1] = gxy->at(x,y,z);
         data[2] = gxz->at(x,y,z);
@@ -861,6 +862,18 @@ void Cube<T,U>::calculate_eigen_values
         data[6] = data[2];
         data[7] = data[5];
         data[8] = gzz->at(x,y,z);
+        }
+        else{
+        data[0] = -gxx->at(x,y,z);
+        data[1] = -gxy->at(x,y,z);
+        data[2] = -gxz->at(x,y,z);
+        data[3] = data[1];
+        data[4] = -gyy->at(x,y,z);
+        data[5] = -gyz->at(x,y,z);
+        data[6] = data[2];
+        data[7] = data[5];
+        data[8] = -gzz->at(x,y,z);
+        }
 
         gsl_matrix_view M
           = gsl_matrix_view_array (data, 3, 3);
@@ -919,10 +932,10 @@ void Cube<T,U>::calculate_eigen_values
 //The third eigenvalue will be scaled by 4 to account for the ellipsis of the filament, it is not a tube in the 
 // subsampled images, but an ellipsoid
 template <class T, class U>
-void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
+void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z, int color)
 {
 
-  vector< float > Mask0, Mask1;
+ vector< float > Mask0, Mask1;
   gaussian_mask_second(sigma_xy, Mask0, Mask1);
   int margin = Mask0.size()/2;
 
@@ -947,8 +960,6 @@ void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
 //  new Cube<float,double>(buff);
   sprintf(buff, "./frangi_l3_%02.2f_%02.2f.nfo",  sigma_xy, sigma_z);
   Cube<float,double>* eign3_s =create_blank_cube(buff);
-
-
 
   float max_s = 0;
   float s;
@@ -1030,7 +1041,7 @@ void Cube<T,U>::calculate_f_measure(float sigma_xy, float sigma_z)
 
 #ifdef WITH_GSL
 template <class T, class U>
-void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
+void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z, int negated)
 {
 
   if(sigma_z == 0) sigma_z = sigma_xy;
@@ -1125,25 +1136,42 @@ void Cube<T,U>::calculate_aguet(float sigma_xy, float sigma_z)
           // + gyy->at(x,y,z)
           // + gxx->at(x,y,z);
 
-        //There is an screwed sign in the computation of gy, therefore
+        // There is an screwed sign in the computation of gy, therefore
         // the inversion of all the coefficients with one derivative
         // in y
-
-        data[0] = -2.0*gxx->at(x,y,z)/3.0
-          + gyy->at(x,y,z)
-          + gzz->at(x,y,z);
-        data[1] = 5.0*gxy->at(x,y,z)/3.0;
-        data[2] = -5.0*gxz->at(x,y,z)/3.0;
-        data[3] = data[1];
-        data[4] = gxx->at(x,y,z)
-          - 2.0*gyy->at(x,y,z)/3.0
-          + gzz->at(x,y,z);
-        data[5] = 5.0*gyz->at(x,y,z)/3.0;
-        data[6] = data[2];
-        data[7] = data[5];
-        data[8] = -2.0*gzz->at(x,y,z)/3.0
-          + gyy->at(x,y,z)
-          + gxx->at(x,y,z);
+        if(negated > 0){
+          data[0] = -2.0*gxx->at(x,y,z)/3.0
+            + gyy->at(x,y,z)
+            + gzz->at(x,y,z);
+          data[1] = 5.0*gxy->at(x,y,z)/3.0;
+          data[2] = -5.0*gxz->at(x,y,z)/3.0;
+          data[3] = data[1];
+          data[4] = gxx->at(x,y,z)
+            - 2.0*gyy->at(x,y,z)/3.0
+            + gzz->at(x,y,z);
+          data[5] = 5.0*gyz->at(x,y,z)/3.0;
+          data[6] = data[2];
+          data[7] = data[5];
+          data[8] = -2.0*gzz->at(x,y,z)/3.0
+            + gyy->at(x,y,z)
+            + gxx->at(x,y,z);
+        }else {
+          data[0] = 2.0*gxx->at(x,y,z)/3.0
+            - gyy->at(x,y,z)
+            - gzz->at(x,y,z);
+          data[1] = -5.0*gxy->at(x,y,z)/3.0;
+          data[2] = 5.0*gxz->at(x,y,z)/3.0;
+          data[3] = data[1];
+          data[4] = -gxx->at(x,y,z)
+            + 2.0*gyy->at(x,y,z)/3.0
+            - gzz->at(x,y,z);
+          data[5] = -5.0*gyz->at(x,y,z)/3.0;
+          data[6] = data[2];
+          data[7] = data[5];
+          data[8] = +2.0*gzz->at(x,y,z)/3.0
+            - gyy->at(x,y,z)
+            - gxx->at(x,y,z);
+        }
 
 
         gsl_matrix_view M

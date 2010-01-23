@@ -34,10 +34,13 @@ public:
     string offsetTXT     = getPathWithoutExtension(filename) + ".txt";
     if(fileExists(offsetTXT)){
       offset = readVectorDouble(offsetTXT);
+      printf("Offset read from %s: [%f, %f, %f]\n",
+             offsetTXT.c_str(), offset[0], offset[1], offset[2]);
     }
     else {
       offset.resize(0); offset.push_back(0); offset.push_back(0); offset.push_back(0);
     }
+
 
     allPoints = new Cloud<Point3Dw>();
     soma = new Cloud<Point3Dw>();
@@ -46,10 +49,16 @@ public:
       double width = orig[i][5];
       if (width == 0) width = 1.0;
       allPoints->points.push_back
-        (new Point3Dw(orig[i][2], orig[i][3], orig[i][4], width));
+        (new Point3Dw(orig[i][2] + offset[0],
+                      orig[i][3] + offset[1],
+                      orig[i][4] + offset[2],
+                      width));
       if(orig[i][6] == -1){
         soma->points.push_back
-          (new Point3Dw(orig[i][2], orig[i][3], orig[i][4], width*3));
+          (new Point3Dw(orig[i][2] + offset[0],
+                        orig[i][3] + offset[1],
+                        orig[i][4] + offset[2],
+                        width));
       }
     }
     gr = new Graph<Point3Dw, Edge<Point3Dw> >(allPoints);

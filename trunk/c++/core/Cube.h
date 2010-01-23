@@ -490,16 +490,17 @@ public:
   void calculate_eigen_values(string directory_name);
 
   /** Calculates the eigenvalues of the cube using the information in the directory name.*/
-  void calculate_eigen_values(float sigma_xy, float sigma_z, bool calculate_eigen_vectors);
+  void calculate_eigen_values(float sigma_xy, float sigma_z, bool calculate_eigen_vectors = 0
+                              , int color = 1);
 
   /** Calculates the eigenvectors of the cube using the information in the directory name.*/
   void calculate_eigen_vector_lower_eigenvalue(string directory_name);
 
   /** Calculates the f-measure of the cube using the information in the directory name.*/
-  void calculate_f_measure(float sigma_xy, float sigma_z);
+  void calculate_f_measure(float sigma_xy, float sigma_z, int color);
 
   /** Calculates the measure of Aguet05.*/
-  void calculate_aguet(float sigma_xy, float sigma_z = 0);
+  void calculate_aguet(float sigma_xy, float sigma_z = 0, int negated = 1);
   void calculate_aguet_flat(float sigma_xy, float sigma_z = 0);
   void calculate_aguet_f_(float sigma_xy, float sigma_z);
   void calculate_hessian(float sigma_xy, float sigma_z);
