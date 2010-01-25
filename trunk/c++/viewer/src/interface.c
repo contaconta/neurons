@@ -37,13 +37,11 @@ create_main_window (void)
   GtkWidget *menuitem4;
   GtkWidget *menuitem4_menu;
   GtkWidget *open_stc_file;
-  GtkWidget *image8;
   GtkWidget *separatormenuitem1;
   GtkWidget *quit1;
   GtkWidget *menuitem5;
   GtkWidget *menuitem5_menu;
   GtkWidget *screenshot;
-  GtkWidget *image9;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *_3dmenu;
@@ -51,6 +49,7 @@ create_main_window (void)
   GtkWidget *xzmenu;
   GtkWidget *yzmenu;
   GtkWidget *combomenu;
+  GtkWidget *mip1;
   GtkWidget *menu_plugins;
   GtkWidget *menuitem7;
   GtkWidget *menuitem7_menu;
@@ -77,6 +76,7 @@ create_main_window (void)
   GtkWidget *layer_YZ_spin;
   GtkWidget *label36;
   GtkWidget *projectionComboBox;
+  GtkWidget *Clear;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -84,7 +84,6 @@ create_main_window (void)
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (main_window, 1024, 702);
   gtk_widget_set_events (main_window, GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK);
-  gtk_widget_set_extension_events (main_window, GDK_EXTENSION_EVENTS_ALL);
   gtk_window_set_title (GTK_WINDOW (main_window), _("VIVA 0.0"));
   main_window_icon_pixbuf = create_pixbuf ("icon.png");
   if (main_window_icon_pixbuf)
@@ -114,16 +113,12 @@ create_main_window (void)
   menuitem4_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem4), menuitem4_menu);
 
-  open_stc_file = gtk_image_menu_item_new_with_mnemonic (_("_Open File"));
+  open_stc_file = gtk_menu_item_new_with_mnemonic (_("_Open File"));
   gtk_widget_show (open_stc_file);
   gtk_container_add (GTK_CONTAINER (menuitem4_menu), open_stc_file);
   gtk_widget_add_accelerator (open_stc_file, "activate", accel_group,
                               GDK_o, (GdkModifierType) GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
-
-  image8 = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
-  gtk_widget_show (image8);
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (open_stc_file), image8);
 
   separatormenuitem1 = gtk_separator_menu_item_new ();
   gtk_widget_show (separatormenuitem1);
@@ -141,13 +136,9 @@ create_main_window (void)
   menuitem5_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem5), menuitem5_menu);
 
-  screenshot = gtk_image_menu_item_new_with_mnemonic (_("Screenshot"));
+  screenshot = gtk_menu_item_new_with_mnemonic (_("Screenshot"));
   gtk_widget_show (screenshot);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), screenshot);
-
-  image9 = gtk_image_new_from_stock ("gtk-media-record", GTK_ICON_SIZE_MENU);
-  gtk_widget_show (image9);
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (screenshot), image9);
 
   menuitem6 = gtk_menu_item_new_with_mnemonic (_("_View"));
   gtk_widget_show (menuitem6);
@@ -168,13 +159,17 @@ create_main_window (void)
   gtk_widget_show (xzmenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), xzmenu);
 
-  yzmenu = gtk_menu_item_new_with_mnemonic (_("_YZ"));
+  yzmenu = gtk_menu_item_new_with_mnemonic (_("Y_Z"));
   gtk_widget_show (yzmenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), yzmenu);
 
   combomenu = gtk_menu_item_new_with_mnemonic (_("_combo"));
   gtk_widget_show (combomenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), combomenu);
+
+  mip1 = gtk_menu_item_new_with_mnemonic (_("_MIP"));
+  gtk_widget_show (mip1);
+  gtk_container_add (GTK_CONTAINER (menuitem6_menu), mip1);
 
   menu_plugins = gtk_menu_item_new_with_mnemonic (_("_Plugins"));
   gtk_widget_show (menu_plugins);
@@ -202,7 +197,6 @@ create_main_window (void)
   GTK_WIDGET_SET_FLAGS (drawing3D, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (drawing3D, GTK_CAN_DEFAULT);
   gtk_widget_set_events (drawing3D, GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK);
-  gtk_widget_set_extension_events (drawing3D, GDK_EXTENSION_EVENTS_ALL);
   gtk_widget_add_accelerator (drawing3D, "grab-focus", accel_group,
                               GDK_d, (GdkModifierType) 0,
                               GTK_ACCEL_VISIBLE);
@@ -234,20 +228,21 @@ create_main_window (void)
   view_entry = gtk_combo_box_entry_new_text ();
   gtk_widget_show (view_entry);
   gtk_table_attach (GTK_TABLE (table1), view_entry, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("3D"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XY"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XZ"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("YZ"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("MIP"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
   g_object_set (view_entry, "has_frame", FALSE, NULL);
 
   label4 = gtk_label_new (_("Cube Row"));
   gtk_widget_show (label4);
   gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   cube_row_spin_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
@@ -260,7 +255,7 @@ create_main_window (void)
   label3 = gtk_label_new (_("Cube Col"));
   gtk_widget_show (label3);
   gtk_table_attach (GTK_TABLE (table1), label3, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   cube_col_spin_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
@@ -273,13 +268,13 @@ create_main_window (void)
   label7 = gtk_label_new (_("Layer XZ"));
   gtk_widget_show (label7);
   gtk_table_attach (GTK_TABLE (table1), label7, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label8 = gtk_label_new (_("Layer YZ"));
   gtk_widget_show (label8);
   gtk_table_attach (GTK_TABLE (table1), label8, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   layerXZ_spin_adj = gtk_adjustment_new (0, 0, 512, 1, 10, 10);
@@ -299,17 +294,23 @@ create_main_window (void)
   label36 = gtk_label_new (_("Projection"));
   gtk_widget_show (label36);
   gtk_table_attach (GTK_TABLE (table1), label36, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
 
   projectionComboBox = gtk_combo_box_entry_new_text ();
   gtk_widget_show (projectionComboBox);
   gtk_table_attach (GTK_TABLE (table1), projectionComboBox, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MIN"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MAX"));
+
+  Clear = gtk_button_new_with_mnemonic (_("Clear"));
+  gtk_widget_show (Clear);
+  gtk_table_attach (GTK_TABLE (table1), Clear, 1, 2, 7, 8,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
@@ -341,41 +342,44 @@ create_main_window (void)
   g_signal_connect ((gpointer) combomenu, "activate",
                     G_CALLBACK (on_combomenu_activate),
                     NULL);
+  g_signal_connect ((gpointer) mip1, "activate",
+                    G_CALLBACK (on_mip1_activate),
+                    NULL);
   g_signal_connect ((gpointer) menu_plugins, "activate",
                     G_CALLBACK (on_menu_plugins_activate),
                     NULL);
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
                     NULL);
-  g_signal_connect ((gpointer) drawing3D, "button_press_event",
-                    G_CALLBACK (on_drawing3D_button_press_event),
-                    NULL);
   g_signal_connect ((gpointer) drawing3D, "configure_event",
                     G_CALLBACK (on_drawing3D_configure_event),
-                    NULL);
-  g_signal_connect ((gpointer) drawing3D, "expose_event",
-                    G_CALLBACK (on_drawing3D_expose_event),
-                    NULL);
-  g_signal_connect ((gpointer) drawing3D, "motion_notify_event",
-                    G_CALLBACK (on_drawing3D_motion_notify_event),
-                    NULL);
-  g_signal_connect ((gpointer) drawing3D, "key_press_event",
-                    G_CALLBACK (on_drawing3D_key_press_event),
                     NULL);
   g_signal_connect ((gpointer) drawing3D, "realize",
                     G_CALLBACK (on_drawing3D_realize),
                     NULL);
-  g_signal_connect ((gpointer) drawing3D, "button_release_event",
-                    G_CALLBACK (on_drawing3D_button_release_event),
+  g_signal_connect ((gpointer) drawing3D, "expose_event",
+                    G_CALLBACK (on_drawing3D_expose_event),
                     NULL);
-  g_signal_connect ((gpointer) drawing3D, "scroll_event",
-                    G_CALLBACK (on_drawing3D_scroll_event),
+  g_signal_connect ((gpointer) drawing3D, "button_press_event",
+                    G_CALLBACK (on_drawing3D_button_press_event),
+                    NULL);
+  g_signal_connect ((gpointer) drawing3D, "motion_notify_event",
+                    G_CALLBACK (on_drawing3D_motion_notify_event),
                     NULL);
   g_signal_connect ((gpointer) drawing3D, "drag_drop",
                     G_CALLBACK (on_drawing3D_drag_drop),
                     NULL);
+  g_signal_connect ((gpointer) drawing3D, "button_release_event",
+                    G_CALLBACK (on_drawing3D_button_release_event),
+                    NULL);
   g_signal_connect ((gpointer) drawing3D, "drag_data_received",
                     G_CALLBACK (on_drawing3D_drag_data_received),
+                    NULL);
+  g_signal_connect ((gpointer) drawing3D, "key_press_event",
+                    G_CALLBACK (on_drawing3D_key_press_event),
+                    NULL);
+  g_signal_connect ((gpointer) drawing3D, "scroll_event",
+                    G_CALLBACK (on_drawing3D_scroll_event),
                     NULL);
   g_signal_connect ((gpointer) layer_XY_spin, "value_changed",
                     G_CALLBACK (on_layer_XY_spin_value_changed),
@@ -398,6 +402,9 @@ create_main_window (void)
   g_signal_connect ((gpointer) projectionComboBox, "changed",
                     G_CALLBACK (on_projectionComboBox_changed),
                     NULL);
+  g_signal_connect ((gpointer) Clear, "clicked",
+                    G_CALLBACK (on_Clear_Stage_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
@@ -407,13 +414,11 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, menuitem4, "menuitem4");
   GLADE_HOOKUP_OBJECT (main_window, menuitem4_menu, "menuitem4_menu");
   GLADE_HOOKUP_OBJECT (main_window, open_stc_file, "open_stc_file");
-  GLADE_HOOKUP_OBJECT (main_window, image8, "image8");
   GLADE_HOOKUP_OBJECT (main_window, separatormenuitem1, "separatormenuitem1");
   GLADE_HOOKUP_OBJECT (main_window, quit1, "quit1");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5, "menuitem5");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5_menu, "menuitem5_menu");
   GLADE_HOOKUP_OBJECT (main_window, screenshot, "screenshot");
-  GLADE_HOOKUP_OBJECT (main_window, image9, "image9");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (main_window, _3dmenu, "_3dmenu");
@@ -421,6 +426,7 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, xzmenu, "xzmenu");
   GLADE_HOOKUP_OBJECT (main_window, yzmenu, "yzmenu");
   GLADE_HOOKUP_OBJECT (main_window, combomenu, "combomenu");
+  GLADE_HOOKUP_OBJECT (main_window, mip1, "mip1");
   GLADE_HOOKUP_OBJECT (main_window, menu_plugins, "menu_plugins");
   GLADE_HOOKUP_OBJECT (main_window, menuitem7, "menuitem7");
   GLADE_HOOKUP_OBJECT (main_window, menuitem7_menu, "menuitem7_menu");
@@ -442,6 +448,7 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, layer_YZ_spin, "layer_YZ_spin");
   GLADE_HOOKUP_OBJECT (main_window, label36, "label36");
   GLADE_HOOKUP_OBJECT (main_window, projectionComboBox, "projectionComboBox");
+  GLADE_HOOKUP_OBJECT (main_window, Clear, "Clear");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);
@@ -495,163 +502,163 @@ create_ascEditControls (void)
   new_dendrite_button = gtk_button_new_with_mnemonic (_("New Dendrite"));
   gtk_widget_show (new_dendrite_button);
   gtk_table_attach (GTK_TABLE (table2), new_dendrite_button, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   branch_button = gtk_button_new_with_mnemonic (_("New Branch"));
   gtk_widget_show (branch_button);
   gtk_table_attach (GTK_TABLE (table2), branch_button, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   Erase_Point = gtk_button_new_with_mnemonic (_("Erase Point"));
   gtk_widget_show (Erase_Point);
   gtk_table_attach (GTK_TABLE (table2), Erase_Point, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   continue_segment_button = gtk_button_new_with_mnemonic (_("Continue Segment"));
   gtk_widget_show (continue_segment_button);
   gtk_table_attach (GTK_TABLE (table2), continue_segment_button, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   delete_segment = gtk_button_new_with_mnemonic (_("Delete Segment"));
   gtk_widget_show (delete_segment);
   gtk_table_attach (GTK_TABLE (table2), delete_segment, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label5 = gtk_label_new (_("ASC Creation"));
   gtk_widget_show (label5);
   gtk_table_attach (GTK_TABLE (table2), label5, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   release_asc_action = gtk_button_new_with_mnemonic (_("noAction"));
   gtk_widget_show (release_asc_action);
   gtk_table_attach (GTK_TABLE (table2), release_asc_action, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label10 = gtk_label_new (_("e"));
   gtk_widget_show (label10);
   gtk_table_attach (GTK_TABLE (table2), label10, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label10), 0, 0.5);
 
   label11 = gtk_label_new (_("w"));
   gtk_widget_show (label11);
   gtk_table_attach (GTK_TABLE (table2), label11, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label11), 0, 0.5);
 
   label12 = gtk_label_new (_("r"));
   gtk_widget_show (label12);
   gtk_table_attach (GTK_TABLE (table2), label12, 1, 2, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label12), 0, 0.5);
 
   label13 = gtk_label_new (_("t"));
   gtk_widget_show (label13);
   gtk_table_attach (GTK_TABLE (table2), label13, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label13), 0, 0.5);
 
   label14 = gtk_label_new (_("g"));
   gtk_widget_show (label14);
   gtk_table_attach (GTK_TABLE (table2), label14, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label14), 0, 0.5);
 
   label15 = gtk_label_new (_("b\n"));
   gtk_widget_show (label15);
   gtk_table_attach (GTK_TABLE (table2), label15, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label15), 0, 0.5);
 
   label16 = gtk_label_new (_("Asc Modification"));
   gtk_widget_show (label16);
   gtk_table_attach (GTK_TABLE (table2), label16, 0, 1, 8, 9,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label16), 0, 0.5);
 
   select_point = gtk_button_new_with_mnemonic (_("Select Point"));
   gtk_widget_show (select_point);
   gtk_table_attach (GTK_TABLE (table2), select_point, 0, 1, 9, 10,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   recursive_offset_closer_point = gtk_button_new_with_mnemonic (_("Recursive Offset Closer Point"));
   gtk_widget_show (recursive_offset_closer_point);
   gtk_table_attach (GTK_TABLE (table2), recursive_offset_closer_point, 0, 1, 13, 14,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   recursive_offset_selected_point = gtk_button_new_with_mnemonic (_("Recursive Offet Selected Point"));
   gtk_widget_show (recursive_offset_selected_point);
   gtk_table_attach (GTK_TABLE (table2), recursive_offset_selected_point, 0, 1, 11, 12,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   move_selected_point = gtk_button_new_with_mnemonic (_("Move Selected Point"));
   gtk_widget_show (move_selected_point);
   gtk_table_attach (GTK_TABLE (table2), move_selected_point, 0, 1, 10, 11,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   move_closer_point = gtk_button_new_with_mnemonic (_("Move Closer Point"));
   gtk_widget_show (move_closer_point);
   gtk_table_attach (GTK_TABLE (table2), move_closer_point, 0, 1, 12, 13,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label17 = gtk_label_new (_("z"));
   gtk_widget_show (label17);
   gtk_table_attach (GTK_TABLE (table2), label17, 1, 2, 9, 10,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label17), 0, 0.5);
 
   label18 = gtk_label_new (_("f"));
   gtk_widget_show (label18);
   gtk_table_attach (GTK_TABLE (table2), label18, 1, 2, 10, 11,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label18), 0, 0.5);
 
   label19 = gtk_label_new (_("x"));
   gtk_widget_show (label19);
   gtk_table_attach (GTK_TABLE (table2), label19, 1, 2, 11, 12,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label19), 0, 0.5);
 
   label20 = gtk_label_new (_("v"));
   gtk_widget_show (label20);
   gtk_table_attach (GTK_TABLE (table2), label20, 1, 2, 12, 13,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label20), 0, 0.5);
 
   label21 = gtk_label_new (_("c"));
   gtk_widget_show (label21);
   gtk_table_attach (GTK_TABLE (table2), label21, 1, 2, 13, 14,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label21), 0, 0.5);
 
   label9 = gtk_label_new (_("Width"));
   gtk_widget_show (label9);
   gtk_table_attach (GTK_TABLE (table2), label9, 0, 1, 14, 15,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label9), 0, 0.5);
 
@@ -665,13 +672,13 @@ create_ascEditControls (void)
   delete_segment_from_point = gtk_button_new_with_mnemonic (_("Delete Segment From Point"));
   gtk_widget_show (delete_segment_from_point);
   gtk_table_attach (GTK_TABLE (table2), delete_segment_from_point, 0, 1, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label22 = gtk_label_new (_("h\n"));
   gtk_widget_show (label22);
   gtk_table_attach (GTK_TABLE (table2), label22, 1, 2, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label22), 0, 0.5);
 
@@ -797,7 +804,6 @@ GtkWidget*
 create_ascEditControlsSelect (void)
 {
   GtkWidget *ascEditControlsSelect;
-  AtkObject *atko;
   GtkWidget *table3;
   GtkWidget *label_a;
   GtkWidget *create_selection;
@@ -838,85 +844,85 @@ create_ascEditControlsSelect (void)
   label_a = gtk_label_new (_("a"));
   gtk_widget_show (label_a);
   gtk_table_attach (GTK_TABLE (table3), label_a, 1, 2, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_a), 0, 0.5);
 
   create_selection = gtk_button_new_with_mnemonic (_("Create new selection"));
   gtk_widget_show (create_selection);
   gtk_table_attach (GTK_TABLE (table3), create_selection, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_c = gtk_label_new (_("c"));
   gtk_widget_show (label_c);
   gtk_table_attach (GTK_TABLE (table3), label_c, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_c), 0, 0.5);
 
   save_selection = gtk_button_new_with_mnemonic (_("Save"));
   gtk_widget_show (save_selection);
   gtk_table_attach (GTK_TABLE (table3), save_selection, 0, 1, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_s = gtk_label_new (_("s"));
   gtk_widget_show (label_s);
   gtk_table_attach (GTK_TABLE (table3), label_s, 1, 2, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_s), 0, 0.5);
 
   clear_selection = gtk_button_new_with_mnemonic (_("Clear"));
   gtk_widget_show (clear_selection);
   gtk_table_attach (GTK_TABLE (table3), clear_selection, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_e = gtk_label_new (_("e"));
   gtk_widget_show (label_e);
   gtk_table_attach (GTK_TABLE (table3), label_e, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_e), 0, 0.5);
 
   list_selections = gtk_combo_box_entry_new_text ();
   gtk_widget_show (list_selections);
   gtk_table_attach (GTK_TABLE (table3), list_selections, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
   remove_selection = gtk_button_new_with_mnemonic (_("Remove"));
   gtk_widget_show (remove_selection);
   gtk_table_attach (GTK_TABLE (table3), remove_selection, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_r = gtk_label_new (_("r"));
   gtk_widget_show (label_r);
   gtk_table_attach (GTK_TABLE (table3), label_r, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_r), 0, 0.5);
 
   run_graph_cuts = gtk_button_new_with_mnemonic (_("Run Graph cuts"));
   gtk_widget_show (run_graph_cuts);
   gtk_table_attach (GTK_TABLE (table3), run_graph_cuts, 0, 1, 10, 11,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_g = gtk_label_new (_("g"));
   gtk_widget_show (label_g);
   gtk_table_attach (GTK_TABLE (table3), label_g, 1, 2, 10, 11,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_g), 0, 0.5);
 
   selection_type = gtk_combo_box_entry_new_text ();
   gtk_widget_show (selection_type);
   gtk_table_attach (GTK_TABLE (table3), selection_type, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (selection_type), _("Simple contour"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (selection_type), _("GraphCut"));
@@ -924,20 +930,20 @@ create_ascEditControlsSelect (void)
   load_selection = gtk_button_new_with_mnemonic (_("Load"));
   gtk_widget_show (load_selection);
   gtk_table_attach (GTK_TABLE (table3), load_selection, 0, 1, 8, 9,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label_l = gtk_label_new (_("l"));
   gtk_widget_show (label_l);
   gtk_table_attach (GTK_TABLE (table3), label_l, 1, 2, 8, 9,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label_l), 0, 0.5);
 
   selection_mode = gtk_toolbar_new ();
   gtk_widget_show (selection_mode);
   gtk_table_attach (GTK_TABLE (table3), selection_mode, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_toolbar_set_style (GTK_TOOLBAR (selection_mode), GTK_TOOLBAR_BOTH);
   tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (selection_mode));
@@ -966,7 +972,7 @@ create_ascEditControlsSelect (void)
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
   gtk_table_attach (GTK_TABLE (table3), hbox2, 0, 1, 11, 12,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
   label23 = gtk_label_new (_("Brush size"));
@@ -982,7 +988,7 @@ create_ascEditControlsSelect (void)
   drawing_mode = gtk_toolbar_new ();
   gtk_widget_show (drawing_mode);
   gtk_table_attach (GTK_TABLE (table3), drawing_mode, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_toolbar_set_style (GTK_TOOLBAR (drawing_mode), GTK_TOOLBAR_BOTH);
   tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (drawing_mode));
@@ -995,7 +1001,7 @@ create_ascEditControlsSelect (void)
   load_seeds = gtk_button_new_with_mnemonic (_("Load seeds"));
   gtk_widget_show (load_seeds);
   gtk_table_attach (GTK_TABLE (table3), load_seeds, 0, 1, 9, 10,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   g_signal_connect ((gpointer) create_selection, "clicked",
@@ -1031,10 +1037,6 @@ create_ascEditControlsSelect (void)
   g_signal_connect ((gpointer) load_seeds, "pressed",
                     G_CALLBACK (on_load_seeds_pressed),
                     NULL);
-
-  atko = gtk_widget_get_accessible (ascEditControlsSelect);
-  atk_object_set_name (atko, _("Select tools"));
-
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (ascEditControlsSelect, ascEditControlsSelect, "ascEditControlsSelect");
@@ -1094,7 +1096,7 @@ create_Alpha (void)
   label24 = gtk_label_new (_("Min alpha"));
   gtk_widget_show (label24);
   gtk_table_attach (GTK_TABLE (table4), label24, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label24), 0, 0.5);
 
@@ -1108,7 +1110,7 @@ create_Alpha (void)
   label25 = gtk_label_new (_("Max alpha"));
   gtk_widget_show (label25);
   gtk_table_attach (GTK_TABLE (table4), label25, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label25), 0, 0.5);
 
@@ -1122,15 +1124,15 @@ create_Alpha (void)
   label26 = gtk_label_new (_("Blend function"));
   gtk_widget_show (label26);
   gtk_table_attach (GTK_TABLE (table4), label26, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label26), 0, 0.5);
 
   cbBlendFunction = gtk_combo_box_entry_new_text ();
   gtk_widget_show (cbBlendFunction);
   gtk_table_attach (GTK_TABLE (table4), cbBlendFunction, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (cbBlendFunction), _("MIN_MAX"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (cbBlendFunction), _("ALPHA_TEST"));
 
@@ -1186,43 +1188,43 @@ create_window1 (void)
   draw_neuron = gtk_toggle_button_new_with_mnemonic (_("Draw Neuron"));
   gtk_widget_show (draw_neuron);
   gtk_table_attach (GTK_TABLE (table5), draw_neuron, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   draw_cube_toggle = gtk_toggle_button_new_with_mnemonic (_("Draw Cube"));
   gtk_widget_show (draw_cube_toggle);
   gtk_table_attach (GTK_TABLE (table5), draw_cube_toggle, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   get_matrix_button = gtk_button_new_with_mnemonic (_("Get_Matrix"));
   gtk_widget_show (get_matrix_button);
   gtk_table_attach (GTK_TABLE (table5), get_matrix_button, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   shaders = gtk_button_new_with_mnemonic (_("Shaders"));
   gtk_widget_show (shaders);
   gtk_table_attach (GTK_TABLE (table5), shaders, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   cube_transparency = gtk_toggle_button_new_with_mnemonic (_("Cube Transparency"));
   gtk_widget_show (cube_transparency);
   gtk_table_attach (GTK_TABLE (table5), cube_transparency, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   buttonViewOnlyCube = gtk_toggle_button_new_with_mnemonic (_("OnlyCube"));
   gtk_widget_show (buttonViewOnlyCube);
   gtk_table_attach (GTK_TABLE (table5), buttonViewOnlyCube, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   label6 = gtk_label_new (_("LayerSpanViewZ"));
   gtk_widget_show (label6);
   gtk_table_attach (GTK_TABLE (table5), label6, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
 
@@ -1236,25 +1238,25 @@ create_window1 (void)
   open_4d_stack1 = gtk_menu_item_new_with_mnemonic (_("Open 4D stack"));
   gtk_widget_show (open_4d_stack1);
   gtk_table_attach (GTK_TABLE (table5), open_4d_stack1, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
 
   videolayers = gtk_menu_item_new_with_mnemonic (_("VideoLayers"));
   gtk_widget_show (videolayers);
   gtk_table_attach (GTK_TABLE (table5), videolayers, 1, 2, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
   videorotation = gtk_menu_item_new_with_mnemonic (_("VIdeoRotation"));
   gtk_widget_show (videorotation);
   gtk_table_attach (GTK_TABLE (table5), videorotation, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
 
   videorotationtime = gtk_menu_item_new_with_mnemonic (_("VideoRotationTime"));
   gtk_widget_show (videorotationtime);
   gtk_table_attach (GTK_TABLE (table5), videorotationtime, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
   g_signal_connect ((gpointer) draw_neuron, "toggled",
