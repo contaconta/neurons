@@ -134,7 +134,7 @@
 		      <child>
 			<widget class="GtkMenuItem" id="xymenu">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">X_Y</property>
+			  <property name="label" translatable="yes">_XY</property>
 			  <property name="use_underline">True</property>
 			  <signal name="activate" handler="on_xymenu_activate"/>
 			</widget>
@@ -152,7 +152,7 @@
 		      <child>
 			<widget class="GtkMenuItem" id="yzmenu">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Y_Z</property>
+			  <property name="label" translatable="yes">_YZ</property>
 			  <property name="use_underline">True</property>
 			  <signal name="activate" handler="on_yzmenu_activate"/>
 			</widget>

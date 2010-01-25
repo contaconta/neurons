@@ -151,7 +151,7 @@ create_main_window (void)
   gtk_widget_show (_3dmenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), _3dmenu);
 
-  xymenu = gtk_menu_item_new_with_mnemonic (_("X_Y"));
+  xymenu = gtk_menu_item_new_with_mnemonic (_("_XY"));
   gtk_widget_show (xymenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), xymenu);
 
@@ -159,7 +159,7 @@ create_main_window (void)
   gtk_widget_show (xzmenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), xzmenu);
 
-  yzmenu = gtk_menu_item_new_with_mnemonic (_("Y_Z"));
+  yzmenu = gtk_menu_item_new_with_mnemonic (_("_YZ"));
   gtk_widget_show (yzmenu);
   gtk_container_add (GTK_CONTAINER (menuitem6_menu), yzmenu);
 
