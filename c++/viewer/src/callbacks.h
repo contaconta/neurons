@@ -484,3 +484,11 @@ on_drawing3D_drag_data_received        (GtkWidget       *widget,
                                         guint            info,
                                         guint            time,
                                         gpointer         user_data);
+
+void
+on_mip1_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_Clear_Stage_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);
