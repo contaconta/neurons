@@ -39,7 +39,8 @@ enum MOD_DISPLAY{
   MOD_DISPLAY_XZ,
   MOD_DISPLAY_YZ,
   MOD_DISPLAY_COMBO,
-  MOD_DISPLAY_DUAL
+  MOD_DISPLAY_DUAL,
+  MOD_DISPLAY_MIP
 };
 extern int  mod_display;
 extern bool flag_drawing_combo;

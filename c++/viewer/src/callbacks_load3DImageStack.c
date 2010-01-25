@@ -248,13 +248,16 @@ void
 on_open_stc_file_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+  printf("Here0\n");
   GtkWidget *dialog;
   dialog = gtk_file_chooser_dialog_new ("Choose file",
-                                        (GtkWindow*)_3DLIS,
-                                        GTK_FILE_CHOOSER_ACTION_OPEN,
+                                        NULL,
+                                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                                        /* NULL); */
                                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
                                         NULL);
+  gtk_widget_show (dialog);
   char *filename;
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
@@ -275,8 +278,6 @@ on_open_stc_file_activate              (GtkMenuItem     *menuitem,
 
   addObjectFromString(filename);
   on_drawing3D_expose_event(drawing3D,NULL, NULL);
-
-
   g_free (filename);
 }
 
