@@ -147,6 +147,87 @@ void setUpMatricesXY(int layerSpan)
     }
 }
 
+void setUpMatricesMIP()
+{
+  //Aurelien part of the code to deal with images
+  if(cube->dummy)
+    {
+      for(vector< VisibleE* >::iterator itObj = toDraw.begin();
+          itObj != toDraw.end(); itObj++)
+        {
+          if((*itObj)->className()=="Image")
+            {
+              Image<float>* img = (Image<float>*)*itObj;
+
+              //Gets the cube coordinates
+              GLfloat widthStep = float(img->width/2);
+              GLfloat heightStep = float(img->height/2);
+              GLfloat depthStep = -1.0f;
+              //GLint max_texture_size = 0;
+              //glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+              //max_texture_size = D_MAX_TEXTURE_SIZE;
+              glMatrixMode(GL_PROJECTION);
+              glLoadIdentity();
+
+              glOrtho (-widthStep, widthStep, -heightStep, heightStep, depthStep, 100.0f);
+              //glScalef(1.0,1.0,-1.0);
+              glMatrixMode(GL_MODELVIEW);
+              glLoadIdentity();
+              //glTranslatef(0,0,depthStep);
+
+              if(!flag_drawing_combo)
+                glViewport ((GLsizei)0,(GLsizei)0,
+                (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+
+              break;
+            }
+        }
+    }
+  //In case there is a real cube in the toDraw objects
+  else
+    {
+      //Gets the cube coordinates
+      GLfloat widthStep = float(cube->cubeWidth)*cube->voxelWidth/2;
+      GLfloat heightStep = float(cube->cubeHeight)*cube->voxelHeight/2;
+      GLfloat depthStep = float(cube->cubeDepth)*cube->voxelDepth/2;
+      GLint max_texture_size = 0;
+      glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);
+      max_texture_size = D_MAX_TEXTURE_SIZE;
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+
+      float step_x = 1.0;
+      float step_y = 1.0;
+
+      if(cube->cubeWidth < max_texture_size){
+        step_x = float(cube->cubeWidth)/max_texture_size;
+      }
+      if(cube->cubeHeight < max_texture_size){
+        step_y = float(cube->cubeHeight)/max_texture_size;
+      }
+
+      glOrtho(-widthStep + cubeColToDraw*max_texture_size*cube->voxelWidth,
+              -widthStep + (cubeColToDraw+step_x)*max_texture_size*cube->voxelWidth,
+              heightStep - (cubeRowToDraw+step_y)*max_texture_size*cube->voxelHeight,
+              heightStep - cubeRowToDraw*max_texture_size*cube->voxelHeight,
+              0,
+              1000000000);
+
+      glScalef(1.0,1.0,-1.0);
+      glMatrixMode(GL_MODELVIEW);
+      glLoadIdentity();
+      glTranslatef(0,0,depthStep);
+
+      //float tileWidth = min(float(cube->cubeWidth - max_texture_size*cubeColToDraw), float(max_texture_size));
+      //float tileHeight = min(float(cube->cubeHeight - max_texture_size*cubeRowTDraw), float(max_texture_size));
+
+      if(!flag_drawing_combo)
+        glViewport ((GLsizei)0,(GLsizei)0,
+                    (GLsizei)widgetWidth, (GLsizei)widgetHeight);
+    }
+}
+
+
 
 void setUpMatricesYZ(int layerSpan)
 {
@@ -301,7 +382,8 @@ void draw_objects()
         /* if(!drawCube_flag) continue; */
         Cube_P* cubeDraw = dynamic_cast<Cube_P*>(*itObj);
         if((mod_display == MOD_DISPLAY_3D) ||
-           (mod_display == MOD_DISPLAY_COMBO) ){
+           (mod_display == MOD_DISPLAY_COMBO) || 
+           (mod_display == MOD_DISPLAY_MIP)){
           cubeDraw->draw();
           /* std::cout << "I should be drawing a " << (*itObj)->className() << std::endl; */
           setUpVolumeMatrices();
@@ -541,6 +623,20 @@ on_drawing3D_expose_event              (GtkWidget       *widget,
     /* printf("p_expose %d %d %d\n",aPoint3d.x,aPoint3d.y,aPoint3d.z); */
     p_expose(widget, event, &aPoint3d);
   }
+
+
+  //Draws the XY view
+  if(mod_display == MOD_DISPLAY_MIP)
+    {
+      setUpMatricesMIP();
+      if(flag_cube_transparency)
+        glDisable(GL_DEPTH_TEST);
+      else
+        glEnable(GL_DEPTH_TEST);
+      draw_objects();
+      glDisable(GL_DEPTH_TEST);
+    }
+
 
 
   //Show what has been drawn

@@ -150,3 +150,10 @@ on_combomenu_activate                  (GtkMenuItem     *menuitem,
 }
 
 
+void
+on_mip1_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  mod_display = MOD_DISPLAY_MIP;
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
+}

@@ -96,6 +96,9 @@ void addObjectFromString(string name)
       cube->v_b = 1.0;
       nCubes++;
     }
+    cube->v_r = 1.0;
+    cube->v_g = 1.0;
+    cube->v_b = 1.0;
     toDraw.push_back(cube);
   }
   else if (extension == "nfc")  {
@@ -299,6 +302,9 @@ on_view_entry_changed                  (GtkComboBox     *combobox,
           mod_display = MOD_DISPLAY_COMBO;
           break;
         case 5:
+          mod_display = MOD_DISPLAY_MIP;
+          break;
+        case 6:
           mod_display = MOD_DISPLAY_DUAL;
           break;
         }
@@ -732,18 +738,18 @@ on_drawing3D_drag_data_received        (GtkWidget       *widget,
 }
 
 
-void
-on_mip1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
 
 
 void
 on_Clear_Stage_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+  printf("The objects will be deleted\n");
+  objectNames.resize(0);
+  for(int i = 0; i < toDraw.size(); i++)
+    delete toDraw[i];
+  toDraw.resize(0);
+  cube = new Cube<uchar, ulong>();
+  on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 

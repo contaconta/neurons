@@ -920,14 +920,15 @@ void Cube_P::draw_orientation_grid(bool include_split, bool min_max)
 {
 
   // We will put a sphere in the origin of indexes of the cube.
-  float mx, my, mz;
-  indexesToMicrometers3(0,0,0,mx,my,mz);
-  glColor3f(1.0,1.0,0.0);
-  glPushMatrix();
-  glTranslatef(mx,my,mz);
-  glutSolidSphere(5, 10, 10);
-  glPopMatrix();
-
+  if(0){
+    float mx, my, mz;
+    indexesToMicrometers3(0,0,0,mx,my,mz);
+    glColor3f(1.0,1.0,0.0);
+    glPushMatrix();
+    glTranslatef(mx,my,mz);
+    glutSolidSphere(5, 10, 10);
+    glPopMatrix();
+  }
 
   GLint max_texture_size = 0;
 //   glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &max_texture_size);

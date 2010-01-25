@@ -135,7 +135,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
 void init_GUI()
 {
   GtkComboBox* view_entry=GTK_COMBO_BOX(lookup_widget(GTK_WIDGET(ascEditor),"view_entry"));
-  gtk_combo_box_set_active(view_entry,1);
+  gtk_combo_box_set_active(view_entry,0);
 
   static GtkTargetEntry drop_types[1] =
     {
