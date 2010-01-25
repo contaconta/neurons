@@ -61,7 +61,6 @@ create_main_window (void)
   GtkWidget *label1;
   GtkObject *layer_XY_spin_adj;
   GtkWidget *layer_XY_spin;
-  GtkWidget *view_entry;
   GtkWidget *label4;
   GtkObject *cube_row_spin_adj;
   GtkWidget *cube_row_spin;
@@ -75,8 +74,9 @@ create_main_window (void)
   GtkObject *layer_YZ_spin_adj;
   GtkWidget *layer_YZ_spin;
   GtkWidget *label36;
-  GtkWidget *projectionComboBox;
   GtkWidget *Clear;
+  GtkWidget *view_entry;
+  GtkWidget *projectionComboBox;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -225,20 +225,6 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  view_entry = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (view_entry);
-  gtk_table_attach (GTK_TABLE (table1), view_entry, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("3D"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XY"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XZ"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("YZ"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("MIP"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
-  g_object_set (view_entry, "has_frame", FALSE, NULL);
-
   label4 = gtk_label_new (_("Cube Row"));
   gtk_widget_show (label4);
   gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 5, 6,
@@ -298,19 +284,33 @@ create_main_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
 
-  projectionComboBox = gtk_combo_box_entry_new_text ();
-  gtk_widget_show (projectionComboBox);
-  gtk_table_attach (GTK_TABLE (table1), projectionComboBox, 1, 2, 6, 7,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MIN"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MAX"));
-
   Clear = gtk_button_new_with_mnemonic (_("Clear"));
   gtk_widget_show (Clear);
   gtk_table_attach (GTK_TABLE (table1), Clear, 1, 2, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+
+  view_entry = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (view_entry);
+  gtk_table_attach (GTK_TABLE (table1), view_entry, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("3D"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XY"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("XZ"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("YZ"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Combo"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("MIP"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (view_entry), _("Dual"));
+  g_object_set (view_entry, "has_frame", FALSE, NULL);
+
+  projectionComboBox = gtk_combo_box_entry_new_text ();
+  gtk_widget_show (projectionComboBox);
+  gtk_table_attach (GTK_TABLE (table1), projectionComboBox, 1, 2, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MIN"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (projectionComboBox), _("MAX"));
 
   g_signal_connect ((gpointer) main_window, "destroy",
                     G_CALLBACK (on_ascEditor_destroy),
@@ -384,9 +384,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) layer_XY_spin, "value_changed",
                     G_CALLBACK (on_layer_XY_spin_value_changed),
                     NULL);
-  g_signal_connect ((gpointer) view_entry, "changed",
-                    G_CALLBACK (on_view_entry_changed),
-                    NULL);
   g_signal_connect ((gpointer) cube_row_spin, "value_changed",
                     G_CALLBACK (on_cube_row_spin_value_changed),
                     NULL);
@@ -399,11 +396,14 @@ create_main_window (void)
   g_signal_connect ((gpointer) layer_YZ_spin, "value_changed",
                     G_CALLBACK (on_layer_YZ_spin_value_changed),
                     NULL);
-  g_signal_connect ((gpointer) projectionComboBox, "changed",
-                    G_CALLBACK (on_projectionComboBox_changed),
-                    NULL);
   g_signal_connect ((gpointer) Clear, "clicked",
                     G_CALLBACK (on_Clear_Stage_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) view_entry, "changed",
+                    G_CALLBACK (on_view_entry_changed),
+                    NULL);
+  g_signal_connect ((gpointer) projectionComboBox, "changed",
+                    G_CALLBACK (on_projectionComboBox_changed),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -437,7 +437,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label2, "label2");
   GLADE_HOOKUP_OBJECT (main_window, label1, "label1");
   GLADE_HOOKUP_OBJECT (main_window, layer_XY_spin, "layer_XY_spin");
-  GLADE_HOOKUP_OBJECT (main_window, view_entry, "view_entry");
   GLADE_HOOKUP_OBJECT (main_window, label4, "label4");
   GLADE_HOOKUP_OBJECT (main_window, cube_row_spin, "cube_row_spin");
   GLADE_HOOKUP_OBJECT (main_window, label3, "label3");
@@ -447,8 +446,9 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, layerXZ_spin, "layerXZ_spin");
   GLADE_HOOKUP_OBJECT (main_window, layer_YZ_spin, "layer_YZ_spin");
   GLADE_HOOKUP_OBJECT (main_window, label36, "label36");
-  GLADE_HOOKUP_OBJECT (main_window, projectionComboBox, "projectionComboBox");
   GLADE_HOOKUP_OBJECT (main_window, Clear, "Clear");
+  GLADE_HOOKUP_OBJECT (main_window, view_entry, "view_entry");
+  GLADE_HOOKUP_OBJECT (main_window, projectionComboBox, "projectionComboBox");
 
   gtk_widget_grab_focus (vbox1);
   gtk_widget_grab_default (vbox1);
