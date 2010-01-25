@@ -143,7 +143,7 @@ template <class T, class U>
 void Cube<T,U>::load_tiff_file(string filename)
 {
   int dircount = 0;
-  uint16 bps;
+  uint16 bps, photometric;
   uint32 w,h;
   TIFF* tif = TIFFOpen(filename.c_str(), "r");
   if(!tif){
@@ -155,6 +155,7 @@ void Cube<T,U>::load_tiff_file(string filename)
         TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
         TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
         TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
+        TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric);
       } while (TIFFReadDirectory(tif));
   }
   TIFFClose(tif);
@@ -175,58 +176,126 @@ void Cube<T,U>::load_tiff_file(string filename)
   // In the case it is a uchar file
   printf("The bps = %i anf the number of directories is %i\n", bps, dircount);
   // exit(0);
-  if(bps==8){
-    uint32 px;
-    uint32 mask = 0x000000FF;
-    uint32* raster;
 
-    for(int z = 0; z < dircount; z++){
-      //Prepare the raster
-      raster = (uint32*) _TIFFmalloc(w*h * sizeof (uint32));
-      if (TIFFReadRGBAImage(tif, w, h, raster, 0)) {
+  if(photometric==1){
+    if(bps==8){
+      uint32 px;
+      uint32 mask = 0x000000FF;
+      uint32* raster;
+
+      for(int z = 0; z < dircount; z++){
+        //Prepare the raster
+        raster = (uint32*) _TIFFmalloc(w*h * sizeof (uint32));
+        if (TIFFReadRGBAImage(tif, w, h, raster, 0)) {
+          for(int y = 0; y < h; y++){
+            for(int x = 0; x < w; x++){
+              px = raster[y*w+x];
+              put(x,h-1-y,z, (uchar)(mask & px));
+            }//x
+          }//y
+          TIFFReadDirectory(tif);
+          printf("#"); fflush(stdout);
+        }//TIFFread
+        else{
+          printf("Cube::load_tiff_image::error loading the raster for directory %i\n", z);
+        }//TIFFread
+        _TIFFfree(raster);
+      }
+    } else if (bps == 16){
+      //that seems to be the magic word
+      // TIFFReadScanline();
+      uint16 array[w*h];
+      for(int z = 0; z < dircount; z++){
+        for (int j = 0; j < h; j++)
+          TIFFReadScanline(tif, &array[j * w], j, 0);
         for(int y = 0; y < h; y++){
           for(int x = 0; x < w; x++){
-            px = raster[y*w+x];
-            put(x,h-1-y,z, (uchar)(mask & px));
+            put(x,y,z, (T)array[y*w+x]);
           }//x
         }//y
         TIFFReadDirectory(tif);
-        printf("#"); fflush(stdout);
-      }//TIFFread
-      else{
-        printf("Cube::load_tiff_image::error loading the raster for directory %i\n", z);
-      }//TIFFread
-      _TIFFfree(raster);
+      }//z
+    } //16 bbp
+    else if (bps == 32){
+      float array[w*h];
+      for(int z = 0; z < dircount; z++){
+        for (int j = 0; j < h; j++)
+          TIFFReadScanline(tif, &array[j * w], j, 0);
+        for(int y = 0; y < h; y++){
+          for(int x = 0; x < w; x++){
+            put(x,y,z, (T)array[y*w+x]);
+          }//x
+        }//y
+        TIFFReadDirectory(tif);
+      }//z
     }
-  } else if (bps == 16){
-    //that seems to be the magic word
-    // TIFFReadScanline();
-    uint16 array[w*h];
-    for(int z = 0; z < dircount; z++){
-      for (int j = 0; j < h; j++)
-        TIFFReadScanline(tif, &array[j * w], j, 0);
-      for(int y = 0; y < h; y++){
-        for(int x = 0; x < w; x++){
-          put(x,y,z, (T)array[y*w+x]);
-        }//x
-      }//y
-      TIFFReadDirectory(tif);
-    }//z
-  } //16 bbp
-  else if (bps == 32){
-    float array[w*h];
-    for(int z = 0; z < dircount; z++){
-      for (int j = 0; j < h; j++)
-        TIFFReadScanline(tif, &array[j * w], j, 0);
-      for(int y = 0; y < h; y++){
-        for(int x = 0; x < w; x++){
-          put(x,y,z, (T)array[y*w+x]);
-        }//x
-      }//y
-      TIFFReadDirectory(tif);
-    }//z
   }
+  else{ //Images in color -> convert them to b/w
+    uint16 planarconfiguration;
+    uint32 px;
+    uint32 mask = 0x000000FF;
+    uint32 w; uint32 h; uint32 depth;
+    uint16 bps, samplesPerPixel, photometric; 
 
+    // tdata_t raster;
+    printf("Loading the layers[");
+
+    for(int z = 0; z < dircount; z++){
+      TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+      TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+      TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bps);
+      TIFFGetField(tif, TIFFTAG_IMAGEDEPTH, &depth);
+      TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesPerPixel);
+      TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric);
+      TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarconfiguration);
+      //Read by lines
+      int linesize = TIFFScanlineSize(tif);
+      uchar raster[linesize];
+
+      //In the case we using a color palette image
+      if(photometric == 3){
+        // we need the colormap
+        uint16 *b_colormap; uint16* r_colormap; uint16* g_colormap;
+        TIFFGetField(tif, TIFFTAG_COLORMAP, &r_colormap,  &g_colormap,  &b_colormap);
+        //and now we scan the image
+        for(int y = 0; y < h; y++){
+          TIFFReadScanline(tif, &raster, y);
+          if(bps==8){
+            for(int x = 0; x < w; x++){
+              put(x,y,z,
+                  r_colormap[((uchar*)raster)[x]]/(256) +
+                  g_colormap[((uchar*)raster)[x]]/(256) +
+                  b_colormap[((uchar*)raster)[x]]/(256));
+            }
+          }
+          else{
+            printf("Cube_C::load_from_tiff trying to load a palette"
+                   " image with more than %i bps\n", bps);
+          }
+        }//y
+      } //case of palette image
+
+      if(photometric == 2){
+        if(planarconfiguration == 1){ //it is a chunky image
+          for(int y = 0; y < h; y++){
+            TIFFReadScanline(tif, &raster, y);
+              for(int x = 0; x < w*samplesPerPixel; x+=samplesPerPixel){
+                put(x/3,y,z, (raster[x+0] + raster[x+1] + raster[x+2])/3);
+              }
+            }
+        } // planarconfiguration
+        else {
+          printf("Cube_C::load_from_tiff not yet ready for planar configuration\n");
+          exit(0);
+        }
+      }
+
+      TIFFReadDirectory(tif);
+      printf("#"); fflush(stdout);
+    }
+
+
+  }// End color images
 
   TIFFClose(tif);
 

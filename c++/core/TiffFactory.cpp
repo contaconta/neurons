@@ -101,7 +101,8 @@ static VisibleE* TiffFactory::load(string filename){
       } else if (bps == 32) {
         printf(" ->t he cube is float\n");
       }
-      return new Cube_C(filename);
+      // return new Cube_C(filename); //!!!! TIFFF NO COLOR!!!!
+      return CubeFactory::load(filename);
     }//RGB or ColorMap
   }
 
