@@ -52,7 +52,7 @@ Cube_P* CubeFactory::load(string volume_name){
       printf("Loading cube from tiff. SamplesPerPixel = %i, bitsPerSample = %i\n",
              samplesPerPixel, bitsPerSample);
       // exit(0);
-      if(photometric == 1){
+      // if(photometric == 1){ // Do not treat color!
         if(bitsPerSample == 16){
           cube =  new Cube<int,long>   (volume_name,0);
         } else if (bitsPerSample == 8) {
@@ -60,9 +60,9 @@ Cube_P* CubeFactory::load(string volume_name){
         } else if (bitsPerSample == 32) {
           cube =  new Cube<float, double>(volume_name,0);
         }
-      } else {
-        cube = new Cube_C(volume_name);
-      }
+      // } else {
+        // cube = new Cube_C(volume_name);
+      // }
   }
 
   return cube;
