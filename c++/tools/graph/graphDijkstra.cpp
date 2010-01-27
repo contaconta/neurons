@@ -13,7 +13,7 @@
 // Contact <german.gonzalez@epfl.ch> for comments & bug reports        //
 /////////////////////////////////////////////////////////////////////////
 
-// Code done at Cornell Universityn
+// Code done at Cornell University
 
 #include <iostream>
 #include <fstream>
@@ -191,13 +191,14 @@ void traceBack
 }
 
 //Computes the cost of a path. Includes image and geometrical information
-float computePathCost
+// this function computes the distance from each point to the line between the first
+// and ending points of the graph. Not very smart
+float computePathCostLine
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< int >& path,
   float imageCost
   )
 {
-  float cost = 0;
   float geomCost = 0;
   // Computes the unit vector of the line
   vector< float > p0 = gr->cloud->points[path[0]]->coords;
@@ -218,9 +219,39 @@ float computePathCost
   }
 
   return (imageCost + geomCost*0.1 + 250)/(path.size()+1);
-
-
 }
+
+
+// The geometrical cost will increase heavily with the angle
+
+float computePathCost
+( Graph<Point3D, EdgeW<Point3D> >* gr,
+  vector< int >& path,
+  float imageCost
+  )
+{
+  float geomCost = 0;
+  // Computes the unit vector of the line
+
+  for(int i = 1; i < path.size()-1 ; i++){
+    vector< float > p0 = gr->cloud->points[path[i-1]]->coords;
+    vector< float > p1 = gr->cloud->points[path[i  ]]->coords;
+    vector< float > p2 = gr->cloud->points[path[i+1]]->coords;
+    vector< float > p1p0 = v_subs(p1, p0);
+    vector< float > p1p0n = v_scale(p1p0, v_norm(p1p0));
+    vector< float > p2p1 = v_subs(p2, p1);
+    vector< float > p2p1n = v_scale(p2p1, v_norm(p2p1));
+    float cos_alpha = v_dot(p1p0n,p2p1n);
+    if(cos_alpha < 0){
+      //We do not allow that
+      return FLT_MAX;
+    }
+    geomCost += (1/cos_alpha);
+  }
+
+  return (imageCost + geomCost*0.001 + 250)/(path.size()+1);
+}
+
 
 
 // Computes all the shortest paths between all pairs of points and assign them a cost
@@ -491,5 +522,4 @@ int main(int argc, char **argv) {
   Graph<Point3D, EdgeW<Point3D> >* sol =
     solutionToGraph(gr, S);
   sol->saveToFile(argv[2]);
-  
 }

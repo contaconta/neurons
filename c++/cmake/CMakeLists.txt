@@ -225,8 +225,8 @@ install(FILES ../assets/viva.desktop   DESTINATION /usr/share/applications/)
 ## cube tools
 
 IF(${GLEW_FOUND})
-# add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
-# target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
+add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
+target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
 add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
 target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
 add_executable(cubeCalculateFrangi ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateFrangi.cpp)
@@ -388,8 +388,8 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 ## graph tools
 ################################################################################
 
-add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
-target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
+# add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
+# target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
 
 # add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 # target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
@@ -421,12 +421,12 @@ target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 # add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
 # target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
 
-add_executable(cloudEliminateWidth ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminateWidth.cpp)
-target_link_libraries(cloudEliminateWidth ${LINK_LIBRARIES_ALL})
+# add_executable(cloudEliminateWidth ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminateWidth.cpp)
+# target_link_libraries(cloudEliminateWidth ${LINK_LIBRARIES_ALL})
 
 
-# add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
-# target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
+add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
+target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
 
 # add_executable(cloudToText ${CMAKE_SOURCE_DIR}/../tools/graph/cloudToText.cpp)
 # target_link_libraries(cloudToText ${LINK_LIBRARIES_ALL})

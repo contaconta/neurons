@@ -446,7 +446,7 @@ void Neuron::drawSegmentAsLines(NeuronSegment* segment, vector< float > root, bo
 
       glPushMatrix();
       glTranslatef(xyz[0], xyz[1], xyz[2]);
-      glutSolidSphere(2.0*segment->points[i].coords[3], 10, 10);
+      // glutSolidSphere(segment->points[i].coords[3], 10, 10);
       // glutWireSphere(1, 5, 5);
       glPopMatrix();
 

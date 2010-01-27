@@ -29,6 +29,10 @@ public:
   }
 
   void draw(float width){
+
+    Point3Dot::draw(width);
+
+    if(0){
     if(weight == 0.4)
       glColor3f(1.0,0.0,0.0);
     if(weight == 0.8)
@@ -59,6 +63,7 @@ public:
 //     glScalef(weight, weight, weight);
 //     Point3Do::draw(width);
 //     glPopMatrix();
+    }
   }
 
   void save(ostream &out){

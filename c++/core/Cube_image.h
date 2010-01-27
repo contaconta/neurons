@@ -854,11 +854,11 @@ void Cube<T,U>::calculate_eigen_values
 
         if(imageColor > 0){
         data[0] = gxx->at(x,y,z);
-        data[1] = gxy->at(x,y,z);
-        data[2] = gxz->at(x,y,z);
+        data[1] = -gxy->at(x,y,z);
+        data[2] = -gxz->at(x,y,z);
         data[3] = data[1];
         data[4] = gyy->at(x,y,z);
-        data[5] = gyz->at(x,y,z);
+        data[5] = -gyz->at(x,y,z);
         data[6] = data[2];
         data[7] = data[5];
         data[8] = gzz->at(x,y,z);
