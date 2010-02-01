@@ -26,7 +26,7 @@
 using namespace std;
 
 Cube<float,double>* param;
-Cloud<Point3Dotw>* cl;
+Cloud<Point3Dot>* cl;
 vector<double> t;
 vector<double> xv;
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
   param  = new Cube<float,double>(cubeDataName);
 //     ("/media/neurons/steerableFilters3D/resultVolumes/result-4-e-2-2-groundTruth-1-estimated.nfo");
 
-  cl = new Cloud<Point3Dotw>(cloudName);
+  cl = new Cloud<Point3Dot>(cloudName);
 //     ("/media/neurons/steerableFilters3D/test.cl");
 
   Cube<float,double>* orig  = new Cube<float,double>(cubeName);
@@ -136,9 +136,26 @@ int main(int argc, char **argv) {
 
   int nPp = 0;
   int nPn = 0;
+  int lastCoolPoint = 0;
   for(int i = 0; i<cl->points.size(); i++){
 //   for(int i = 0; i<5000; i++){
-    Point3Dot* pp = dynamic_cast<Point3Dotw*>(cl->points[i]);
+    Point3Dot* pp = dynamic_cast<Point3Dot*>(cl->points[i]);
+    mic[0] = cl->points[i]->coords[0];
+    mic[1] = cl->points[i]->coords[1];
+    mic[2] = cl->points[i]->coords[2];
+    param->micrometersToIndexes(mic, idx);
+    if( (idx[0] >= 0) && (idx[1] >= 0) && (idx[2] >= 0) && 
+        (idx[0] < param->cubeWidth) && (idx[1] < param->cubeHeight) &&
+        (idx[2] < param->cubeDepth) ){
+      lastCoolPoint = i;
+    } else {
+      pp = dynamic_cast<Point3Dot*>(cl->points[lastCoolPoint]);
+      mic[0] = cl->points[lastCoolPoint]->coords[0];
+      mic[1] = cl->points[lastCoolPoint]->coords[1];
+      mic[2] = cl->points[lastCoolPoint]->coords[2];
+      param->micrometersToIndexes(mic, idx);
+    }
+
     if(pp->type == 1){
       t[i] = 1;
       nPp++;
@@ -147,10 +164,6 @@ int main(int argc, char **argv) {
       t[i] = 0;
       nPn++;
     }
-    mic[0] = cl->points[i]->coords[0];
-    mic[1] = cl->points[i]->coords[1];
-    mic[2] = cl->points[i]->coords[2];
-    param->micrometersToIndexes(mic, idx);
     xv[i] = param->at(idx[0], idx[1], idx[2]);
   }
 
@@ -164,7 +177,7 @@ int main(int argc, char **argv) {
   gsl_multimin_fdfminimizer *s;
 
   /* Position of the minimum (1,2), scale factors
-     10,20, height 30. */
+     10,20, height 30.*/
   double par[5] = { 1.0, 2.0, 10.0, 20.0, 30.0 };
 
   gsl_vector *x;
@@ -246,7 +259,7 @@ int main(int argc, char **argv) {
   for(int z=0; z < orig->cubeDepth; z++){
     for(int y = 0; y < orig->cubeHeight; y++)
       for(int x = 0; x < orig->cubeWidth; x++)
-        flts->put(x,y,z,0.1 + 0.8/(1+exp(-orig->at(x,y,z)*a -b)) );
+        flts->put(x,y,z,1.0/(1+exp(-orig->at(x,y,z)*a -b)) );
     printf("#");fflush(stdout);
   }
   printf("]\n");

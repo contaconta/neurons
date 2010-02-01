@@ -231,8 +231,8 @@ add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculat
 target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
 add_executable(cubeCalculateFrangi ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateFrangi.cpp)
 target_link_libraries(cubeCalculateFrangi ${LINK_LIBRARIES_ALL})
-# add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
-# target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
+add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
+target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
 ENDIF(${GLEW_FOUND})
 
@@ -280,8 +280,8 @@ target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 # add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
 # target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
-# target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
+add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
+target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
 # # add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
 # target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
@@ -391,8 +391,8 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 # add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
 # target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
 
-# add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
-# target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
+add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
+target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
 # # add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
 # target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
@@ -400,8 +400,8 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 # # add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
 # target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
 
-# # add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
-# target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
+add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
+target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
 
 add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
 target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
@@ -409,8 +409,8 @@ target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 # # add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
 # target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
 
-# add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
-# target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
+add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
+target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 
 # add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
 # target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
