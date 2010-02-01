@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'CubeDialog.ui'
 **
-** Created: Thu Jan 7 02:16:08 2010
+** Created: Thu Jan 28 17:40:32 2010
 **      by: Qt User Interface Compiler version 4.5.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
