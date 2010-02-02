@@ -406,8 +406,8 @@ target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
 add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
 target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
 
-# # add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
-# target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
+add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
+target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
 
 add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
 target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
@@ -468,6 +468,9 @@ target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
 
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 # target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})
+
+# add_executable(cubeMemmoryDeletion ${CMAKE_SOURCE_DIR}/../tests/cubeMemmoryDeletion.cpp)
+# target_link_libraries(cubeMemmoryDeletion ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeTIFF ${CMAKE_SOURCE_DIR}/../tests/cubeTIFF.cpp)
 # target_link_libraries(cubeTIFF ${LINK_LIBRARIES_ALL})
