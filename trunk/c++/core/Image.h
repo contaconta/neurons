@@ -148,6 +148,12 @@ public:
   /** Reload the OpenGL texture associated to the image */
   void reloadTexture();
 
+  /** Gets the information between the limits as an image and pads it for convolutions.*/
+  Image<T>* get_padded_tile(int x0, int y0, int x1, int z1,
+                            int pad_x, int pad_y);
+
+  void put_padded_tile(Image<T>* tile, int x0, int y0, int pad_x, int pad_y);
+
   virtual string className(){
     return "Image";
   }
@@ -157,6 +163,7 @@ template<class T>
 Image<T>::Image() : VisibleE()
 {
 
+  reflectToFile  = false;
   img = NULL;
   texture_loaded = false;
   texels = NULL;
@@ -168,8 +175,10 @@ Image<T>::~Image()
   if(fildes != -1){
     munmap(pixels_origin, width*height*sizeof(T));
     close(fildes);
+  } else {
+    delete pixels_origin;
   }
-  save();
+  // save();
   delete[] texels;
   // cvReleaseImage(&img);
 }
@@ -275,6 +284,7 @@ Image<T>::Image(int width, int height, string filename) : VisibleE()
   this->height = height;
 
   if(filename!= ""){
+    reflectToFile  = true;
     if(sizeof(T)==1)
       create_blank_image(filename);
     else
@@ -282,6 +292,7 @@ Image<T>::Image(int width, int height, string filename) : VisibleE()
     load_file(filename);
   }
   else{
+    reflectToFile  = false;
     pixels_origin = (T*) malloc(width*height*sizeof(T));
     pixels = (T**)malloc(height*sizeof(T*));
 
@@ -1111,5 +1122,37 @@ Image<float>* Image<T>::distanceTransform
   dtf->save();
   delete [] f;
 }
+
+template<class T>
+Image<T>*
+Image<T>::get_padded_tile
+(int x0, int y0, int x1, int y1,
+ int pad_x, int pad_y)
+{
+  Image<T>* toRet = new Image<T>
+    (x1-x0 + 1 + 2*pad_x,
+     y1-y0 + 1 + 2*pad_y);
+
+  for(int y = y0-pad_y; y <= y1+pad_y; y++) 
+      for(int x = x0-pad_x; x <= x1+pad_x; x++)
+        toRet->put(x - x0 + pad_x,
+                   y - y0 + pad_y,
+                   at(min(abs(x), 2*width  -x -2 ) ,
+                      min(abs(y), 2*height -y -2 ) )  );
+  return toRet;
+}
+
+template<class T>
+void
+Image<T>::put_padded_tile
+(Image<T>* tile, int x0, int y0, int pad_x, int pad_y)
+{
+  for(int y = pad_y; y < tile->height - pad_y; y++)
+    for(int x = pad_x; x < tile->width - pad_x; x++)
+      put(x0+x-pad_x,
+          y0+y-pad_y,
+          tile->at(x,y));
+}
+
 
 #endif

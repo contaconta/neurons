@@ -138,7 +138,7 @@ public:
   ( string directory, string format, int layer_init, int layer_end,
     float voxelWidth, float voxelHeight, float voxelDepth, string volume_name = "volume",
     bool invert = true);
-  
+
 
   /** Creates a cube from a directory matrix.*/
   void create_cube_from_directory_matrix
@@ -229,7 +229,7 @@ public:
 
   /** Creates the MIP image of the cube.*/
   void createMIPImage(string filename = "", bool minMax = 0); //0 stands for minimum intensity projection
-  
+
   /** Converts from coordinates in micrometers to a position in indexes.*/
   // void micrometersToIndexes(vector<float>& micrometers, vector< int >& indexes);
 
@@ -576,7 +576,13 @@ Cube<T,U>::~Cube()
   if(fildes != -1){
     munmap(voxels_origin, cubeWidth*cubeHeight*cubeDepth*sizeof(T));
     close(fildes);
+  } else {
+    free(voxels_origin);
   }
+  for(int z = 0; z < cubeDepth; z++){
+    free(voxels[z]);
+  }
+  free(voxels);
 }
 
 template <class T, class U>
