@@ -13,6 +13,7 @@
 
 #include <assert.h>
 #include <cutil_inline.h>
+#include <math_functions.h>
 // #include <vector>
 
 
@@ -321,6 +322,15 @@ extern "C" void convolutionDepthGPU(
 ////////////////////////////////////////////////////////////////////////////////
 // Computes the higher eigenvalue of the hessian
 ////////////////////////////////////////////////////////////////////////////////
+__device__ float computeDeterminant
+(float e00, float e01, float e02,
+ float e10, float e11, float e12,
+ float e20, float e21, float e22)
+{
+  return e00*e11*e22-e00*e12*e21+e10*e21*e02-e10*e01*e22+e20*e01*e12-e20*e11*e02;
+}
+
+
 __global__ void hessianKernel
 (
  float *d_output,
@@ -332,18 +342,64 @@ __global__ void hessianKernel
  float *d_gzz,
  int imageW,
  int imageH,
- int imageD,
-){
-  int z = ceil(blockIdx.x/ROWS_BLOCKDIM_X);
+ int imageD
+)
+{
+  int n_blocks_per_width = imageW/blockDim.x;
+  int z = (int)ceilf(blockIdx.x/n_blocks_per_width);
   int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int x = (blockIdx.x - z*ROWS_BLOCKDIM_X)*blockDim.x + threadIdx.x;
-  int i = z*imageW*imageH + y*imageW + x
-  float a, b, c;
-  a = d_gxx[i];
-  b = d_gxy[i];
-  c = d_gyy[i];
-  d_output[i] = (a+c)/2 + sqrt( (a-c)*(a-c) + 4*b*b)/2;
-  // d_output[i] = b;
+  int x = (blockIdx.x - z*n_blocks_per_width)*blockDim.x + threadIdx.x;
+  int i = z*imageW*imageH + y*imageW + x;
+
+  // // //Brute force eigen-values computation
+  float a0, b0, c0, e0, f0, k0;
+  a0 = d_gxx[i]; b0 = d_gxy[i]; c0 = d_gxz[i];
+  e0 = d_gyy[i]; f0 = d_gxz[i]; k0 = d_gzz[i];
+
+
+  // http://en.wikipedia.org/wiki/Eigenvalue_algorithm
+  //Oliver K. Smith: Eigenvalues of a symmetric 3 × 3 matrix. Commun. ACM 4(4): 168 (1961) 
+  float m = (a0+e0+k0)/3;
+  float q = computeDeterminant
+    (a0-m, b0, c0, b0, e0-m, f0, c0, f0, k0-m)/2;
+  float p = (a0-m)*(a0-m) + b0*b0 + c0*c0 + b0*b0 + (e0-m)*(e0-m) + 
+    f0*f0 + c0*c0 + f0*f0 + (k0-m)*(k0-m);
+  p = p / 6;
+  float phi = 1/3*atan(sqrt(p*p*p-q*q)/q);
+  if(phi<0)
+    phi=phi+3.14159/3;
+
+  float eig1 = m + 2*sqrt(p)*cos(phi);
+  float eig2 = m - sqrt(p)*(cos(phi) + sqrt(3.0)*sin(phi));
+  float eig3 = m - sqrt(p)*(cos(phi) - sqrt(3.0)*sin(phi));
+
+  if( (eig1 > eig2) & (eig1 > eig3))
+    d_output[i] = eig1;
+  if( (eig2 > eig1) & (eig2 > eig3))
+        d_output[i] = eig2;
+  if( (eig3 > eig2) & (eig3 > eig1))
+    d_output[i] = eig3;
+
+  //The coesfficients of the characteristic polynomial of the determinant of the hessian are:
+  // (x*3 + ax^2 + bx + c = 0) are:
+  // float o = 1;
+  // float a = -(a0+e0+k0);
+  // float b = -(-a0*e0 - a0*k0 - e0*k0 + f0*f0 + b0*b0 + c0*c0);
+  // float c = -(a0*e0*k0 - a0*f0*f0 + 2*b0*c0*f0 - c0*c0*e0 - b0*b0*k0);
+
+  //Solutions taken from wikipedia
+  // float p = b - a*a/3;
+  // float q = c + (2*a*a*a - 9*a*b)/27;
+  // float u0 = powf( -q/2 + sqrt(q*q/4 + p*p*p/27) , 1.0/3.0);
+  // float u1 = powf( -q/2 - sqrt(q*q/4 + p*p*p/27) , 1.0/3.0);
+
+  // float x0 = u0 -p/(3*u0) - a/3;
+  // float x1 = u1 -p/(3*u1) - a/3;
+
+  // if(x0 > x1)
+  // d_output[i] = max(eig1, max(eig2, eig3));
+  // else
+    // d_output[i] = x1;
 }
 
 
@@ -359,10 +415,10 @@ extern "C" void hessianGPU
  float *d_gzz,
  int imageW,
  int imageH,
- int imageD,
+ int imageD
  )
 {
-  dim3 gird (imageD*ceil(float(imageW)/ROWS_BLOCKDIM_X),ceil(float(imageH)/ROWS_BLOCKDIM_Y));
+  dim3 gird (imageD*imageW/ROWS_BLOCKDIM_X,imageH/ROWS_BLOCKDIM_Y);
   dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
   hessianKernel<<<gird, block>>>( d_output, d_gxx, d_gxy, d_gxz,
                                   d_gyy, d_gyz, d_gzz, imageW, imageH, imageD );
