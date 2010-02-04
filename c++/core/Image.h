@@ -179,7 +179,7 @@ Image<T>::~Image()
     delete pixels_origin;
   }
   // save();
-  delete[] texels;
+  // delete[] texels;
   // cvReleaseImage(&img);
 }
 

@@ -549,6 +549,22 @@ public:
                     bool putHigherValuesTo = false, bool putLowerValuesTo = true,
                     float highValue = 1, float lowValue = 0);
 
+
+  /**********************************************************************
+   **           PADDING FOR EXTERNAL CUDA CONVOLUTIONS                **
+   **********************************************************************/
+  Cube<T,U>* get_padded_tile
+  (int x0, int y0, int z0,
+   int x1, int y1, int z1,
+   int pad_x, int pad_y, int pad_z);
+
+  void put_padded_tile
+  (Cube<T, U>* tile,
+   int x0, int y0, int z0,
+   int pad_x, int pad_y, int pad_z);
+
+
+
 };
 
 

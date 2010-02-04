@@ -66,9 +66,13 @@ extern "C" void hessianGPU
  float *d_output,
  float *d_gxx,
  float *d_gxy,
+ float *d_gxz,
  float *d_gyy,
+ float *d_gyz,
+ float *d_gzz,
  int imageW,
- int imageH
+ int imageH,
+ int imageD
  );
 
 
@@ -145,25 +149,22 @@ extern "C" void hessian
 ( float* d_Buffer,
   float* d_Input,
   float sigma,
+  float *d_gxx,
+  float *d_gxy,
+  float *d_gxz,
+  float *d_gyy,
+  float *d_gyz,
+  float *d_gzz,
   int sizeX,
   int sizeY,
   int sizeZ
   )
 {
-  float *d_gxx, *d_gxy, *d_gxz, *d_gyy, *d_gyz, *d_gzz;
-
-  cutilSafeCall( cudaMalloc((void **)&d_gxx,   sizeZ * sizeX * sizeY * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxy,   sizeZ * sizeX * sizeY * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxz,   sizeZ * sizeX * sizeY * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gyy,   sizeZ * sizeX * sizeY * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gyz,   sizeZ * sizeX * sizeY * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gzz,   sizeZ * sizeX * sizeY * sizeof(float)) );
 
   vector<float> kernel_0 = Mask::gaussian_mask(0, sigma, 1);
   vector<float> kernel_1 = Mask::gaussian_mask(1, sigma, 1);
   vector<float> kernel_2 = Mask::gaussian_mask(2, sigma, 1);
 
-  printf("  ->computing convolutions\n");
   convolution_separable( d_gxx, d_Input, kernel_2, kernel_0, kernel_0,
                          sizeX, sizeY, sizeZ, d_Buffer );
   convolution_separable( d_gxy, d_Input, kernel_1, kernel_1, kernel_0,
@@ -177,17 +178,7 @@ extern "C" void hessian
   convolution_separable( d_gzz, d_Input, kernel_0, kernel_0, kernel_2,
                          sizeX, sizeY, sizeZ, d_Buffer );
 
-
-  printf("  ->computing the hessian\n");
   hessianGPU(d_Buffer, d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
-
-  cutilSafeCall( cudaFree(d_gxx ) );
-  cutilSafeCall( cudaFree(d_gxy ) );
-  cutilSafeCall( cudaFree(d_gxz ) );
-  cutilSafeCall( cudaFree(d_gyy ) );
-  cutilSafeCall( cudaFree(d_gyz ) );
-  cutilSafeCall( cudaFree(d_gzz ) );
-
 }
 
 
@@ -204,7 +195,9 @@ int main(int argc, char **argv){
   float
     *d_Input,
     *d_Output,
-    *d_Buffer;
+    *d_Buffer,
+    *d_gxx, *d_gxy, *d_gxz, *d_gyy, *d_gyz, *d_gzz
+    ;
 
   printf("Initializing CUDA\n");
   unsigned int hTimer;
@@ -234,6 +227,12 @@ int main(int argc, char **argv){
   cutilSafeCall( cudaMalloc((void **)&d_Input, maxLinearSize * sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_Output,maxLinearSize * sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_Buffer,maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gxx,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gxy,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gxz,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gyy,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gyz,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gzz,   maxLinearSize *sizeof(float)) );
 
   // Here should come the loop
   // Variables required to split the image into tiles
@@ -293,7 +292,9 @@ int main(int argc, char **argv){
         // convolution_separable( d_Output, d_Input, kernel_1, kernel_1, kernel_0,
                                // maxTileSizeX, maxTileSizeY, maxTileSizeZ, d_Buffer );
 
-        hessian(d_Buffer, d_Input, sigma, maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        hessian(d_Output, d_Input, sigma,
+                d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
+                maxTileSizeX, maxTileSizeY, maxTileSizeZ);
 
 
         cutilSafeCall( cudaThreadSynchronize() );
@@ -318,6 +319,13 @@ int main(int argc, char **argv){
   printf("Shutting down...\n");
   cutilSafeCall( cudaFree(d_Buffer ) );
   cutilSafeCall( cudaFree(d_Input) );
+  cutilSafeCall( cudaFree(d_gxx ) );
+  cutilSafeCall( cudaFree(d_gxy ) );
+  cutilSafeCall( cudaFree(d_gxz ) );
+  cutilSafeCall( cudaFree(d_gyy ) );
+  cutilSafeCall( cudaFree(d_gyz ) );
+  cutilSafeCall( cudaFree(d_gzz ) );
+
   free(h_OutputGPU);
   free(h_Buffer);
   free(h_Input);

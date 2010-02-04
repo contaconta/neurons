@@ -2479,3 +2479,48 @@ double Cube<T,U>::productOverCloud(Cloud_P* cloud)
 
   return toReturn;
 }
+
+
+template <class T, class U>
+Cube<T,U>* Cube<T,U>::get_padded_tile
+(int x0, int y0, int z0,
+ int x1, int y1, int z1,
+ int pad_x, int pad_y, int pad_z)
+{
+  Cube<T,U>* toRet =
+    new Cube<T,U>(x1-x0 + 1 + 2*pad_x,
+                  y1-y0 + 1 + 2*pad_y,
+                  z1-z0 + 1 + 2*pad_z);
+
+  // First simple things, add the innerside of the padding
+#ifdef WITH_OPENMP
+#pragma omp parallel for
+#endif
+  for(int z = z0-pad_z; z <= z1+pad_z; z++)
+    for(int y = y0-pad_y; y <= y1+pad_y; y++)
+      for(int x = x0-pad_x; x <= x1+pad_x; x++)
+        toRet->put(x - x0 + pad_x,
+                   y - y0 + pad_y,
+                   z - z0 + pad_z,
+                   at
+                   (min(abs(x), 2*cubeWidth  -x -2 ) ,
+                    min(abs(y), 2*cubeHeight -y -2 ) ,
+                    min(abs(z), 2*cubeDepth  -z -2 ) )
+                   );
+  return toRet;
+}
+
+template <class T, class U>
+void Cube<T,U>::put_padded_tile
+( Cube<T, U>* tile,
+ int x0, int y0, int z0,
+ int pad_x, int pad_y, int pad_z)
+{
+  for(int z = pad_z; z < tile->cubeDepth - pad_z; z++)
+    for(int y = pad_y; y < tile->cubeHeight - pad_y; y++)
+      for(int x = pad_x; x < tile->cubeWidth - pad_x; x++)
+        put(x0+x-pad_x,
+                  y0+y-pad_y,
+                  z0+z-pad_z,
+                  tile->at(x,y,z));
+}
