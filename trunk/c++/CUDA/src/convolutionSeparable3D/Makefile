@@ -34,9 +34,9 @@
 ################################################################################
 
 # Add source files here
-EXECUTABLE	:= imageDerivative
+EXECUTABLE	:= convolution3D
 # CUDA source files (compiled with cudacc)
-CUFILES		:= convolutionSeparable.cu
+CUFILES		:= convolutionSeparable3D.cu
 # CUDA dependency files
 CU_DEPS		:= #convolutionSeparable_common.h
 # C/C++ source files (compiled with gcc / c++)
