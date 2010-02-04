@@ -29,6 +29,9 @@ ENDIF(WIN32)
 
 IF(APPLE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -D _APPLE")
+include_directories(/usr/x11/include/)
+include_directories(/sw/include/)
+include_directories(/sw2/include/)
 ##gray80 LINK_DIRECTORIES(c:/windows/system32 c:/MinGW/lib)
 ENDIF(APPLE)
 

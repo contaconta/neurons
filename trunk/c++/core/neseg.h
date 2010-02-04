@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 #ifdef _APPLE
 #include <OpenGL/gl.h>
+#define ulong unsigned long
 #else
 #include <GL/gl.h>
 #endif
