@@ -57,6 +57,7 @@ SET (OpenCV_POSSIBLE_ROOT_DIRS
   /usr/local/share
   /usr/local
   /usr
+  /
   )
 
 

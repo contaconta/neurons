@@ -49,6 +49,7 @@ message("Hostname = " ${HOST} ", using the following CXX compiler: "
 ## REQUIRED
 find_package(OpenCV REQUIRED)
 include_directories(${OPENCV_INCLUDE_DIR})
+include_directories(/usr/include/opencv)
 message("OpenCV directories = ${OPENCV_INCLUDE_DIR}")
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
@@ -428,8 +429,8 @@ target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 # target_link_libraries(cloudEliminateWidth ${LINK_LIBRARIES_ALL})
 
 
-add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
-target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
+#add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
+#target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
 
 # add_executable(cloudToText ${CMAKE_SOURCE_DIR}/../tools/graph/cloudToText.cpp)
 # target_link_libraries(cloudToText ${LINK_LIBRARIES_ALL})
