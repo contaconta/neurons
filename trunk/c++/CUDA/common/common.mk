@@ -284,8 +284,8 @@ NVCCFLAGS += $(COMMONFLAGS)
 CXXFLAGS  += $(COMMONFLAGS)
 CFLAGS    += $(COMMONFLAGS)
 
-#use gcc-4.3
-NVCCFLAGS+=--compiler-bindir=${HOME}/tmp/CUDA/C/mygcc
+#use gcc-4.3 and force not to use /usr/bin/gcc
+NVCCFLAGS+=--compiler-bindir=../../common/mygcc/
 
 ifeq ($(nvcc_warn_verbose),1)
 	NVCCFLAGS += $(addprefix --compiler-options ,$(CXXWARN_FLAGS)) 

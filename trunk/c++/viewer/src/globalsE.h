@@ -59,6 +59,7 @@ extern bool drawCube_flag;
 extern bool drawOnlyCube_flag;
 extern bool flag_minMax;
 extern bool flag_cube_transparency;
+extern bool flag_elliminate_rotation;
 
 extern bool flag_save_neuron_coordinate;
 extern bool flag_save_cube_coordinate;

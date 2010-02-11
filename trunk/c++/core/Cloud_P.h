@@ -26,7 +26,7 @@ class Cloud_P : public VisibleE
 
   vector< Point* > points;
 
-  Cloud_P() : VisibleE(){}
+  Cloud_P( ) : VisibleE(){}
 
   virtual string className(){
     return "Cloud_P";

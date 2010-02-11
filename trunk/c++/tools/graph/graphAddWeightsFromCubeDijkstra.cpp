@@ -138,12 +138,12 @@ int main(int argc, char **argv) {
     cubes[nth]->micrometersToIndexes(micsOrig, idxsOrig);
 
     //Finding the region of interest to compute dijkstra
-    int xInit= idxsOrig[0]-1;
-    int xEnd = idxsOrig[0]+1;
-    int yInit= idxsOrig[1]-1;
-    int yEnd = idxsOrig[1]+1;
-    int zInit= idxsOrig[2]-1;
-    int zEnd = idxsOrig[2]+1;
+    int xInit= max(idxsOrig[0]-1, 0);
+    int xEnd = min(idxsOrig[0]+1, (int)cubes[nth]->cubeWidth -1) ;
+    int yInit= max(idxsOrig[1]-1, 0);
+    int yEnd = min(idxsOrig[1]+1, (int)cubes[nth]->cubeHeight -1);
+    int zInit= max(idxsOrig[2]-1, 0);
+    int zEnd = min(idxsOrig[2]+1, (int)cubes[nth]->cubeDepth-1);
     //We might be doing some extra computations in here
     for(int i = 0; i < neighbors[nP].size(); i++){
       micsDest[0] = orig->cloud->points[neighbors[nP][i]]->coords[0];
@@ -164,8 +164,23 @@ int main(int argc, char **argv) {
     cubeLiveWires[nth]->eROIy = min((int)cubes[nth]->cubeHeight-1, yEnd);
     cubeLiveWires[nth]->eROIz = min((int)cubes[nth]->cubeDepth -1, zEnd);
 
-    printf("Analyzing point %04i, thread %04i y positions [%04i,%04i,%04i]\n", nP, nth,
-           xEnd-xInit, yEnd-yInit, zEnd-zInit);
+    printf("Analyzing point %04i, thread %02i\n"
+           "  - pointPos-> [%i,%i,%i]\n"
+           "  - ROI size -> [%i,%i,%i]\n"
+           "  - ROI coordinates [%i,%i,%i]-[%i,%i,%i]\n"
+           "  - xCoordinates = [%i,%i,%i]-[%i,%i,%i]\n",
+           nP, nth,
+           idxsOrig[0], idxsOrig[1], idxsOrig[2], 
+           cubeLiveWires[nth]->eROIx - cubeLiveWires[nth]->iROIx,
+           cubeLiveWires[nth]->eROIy - cubeLiveWires[nth]->iROIy,
+           cubeLiveWires[nth]->eROIz - cubeLiveWires[nth]->iROIz,
+           cubeLiveWires[nth]->iROIx,  cubeLiveWires[nth]->iROIy,
+           cubeLiveWires[nth]->iROIz,  cubeLiveWires[nth]->eROIx,
+           cubeLiveWires[nth]->eROIy,  cubeLiveWires[nth]->eROIz,
+           xInit, yInit, zInit, xEnd, yEnd, zEnd);
+
+    // continue;
+
     cubeLiveWires[nth]->computeDistances(idxsOrig[0], idxsOrig[1], idxsOrig[2]);
 
     printf("and cubelivewire should be done\n");
@@ -186,7 +201,6 @@ int main(int argc, char **argv) {
              cubeLiveWires[nth]->eROIx,
              cubeLiveWires[nth]->eROIy,
              cubeLiveWires[nth]->eROIz);
-             
       Graph<Point3D, EdgeW<Point3D> >* shortestPath =
         cubeLiveWires[nth]->findShortestPathG(idxsOrig[0] ,idxsOrig[1] ,idxsOrig[2],
                                               idxsDest[0], idxsDest[1], idxsDest[2]);
@@ -204,7 +218,7 @@ int main(int argc, char **argv) {
       shortestPath->cloud->v_b = 0;
       // shortestPath->cloud->v_b = gsl_rng_uniform(r);
       shortestPath->cloud->v_radius = 0.4;
-      printf("saving path in %s\n", graphName);
+      // printf("saving path in %s\n", graphName);
       shortestPath->saveToFile(graphName);
       double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +
                            (microm2[1]-microm[1])*(microm2[1]-microm[1]) +

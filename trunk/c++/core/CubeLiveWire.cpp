@@ -43,12 +43,13 @@ CubeLiveWire::computeDistances
   // printf("  computing the distances from [%i,%i,%i]\n", x0,y0,z0);
 
   // Algorithm (finally)
-  while(nPoints < cubeSizeTotal){
+  while(nPoints < cubeSizeTotal-1){
     // if(distances[zN][yN][xN] == FLT_MAX)
       // break;
-    // if(nIterations%1000000 == 0)
-      // printf("nIterations: %i and point [%i,%i,%i], with distance: %f and the distance calculated of it is %f\n",
+    // if(nIterations%100 == 0)
+      // // printf("nIterations: %i and point [%i,%i,%i], with distance: %f and the distance calculated of it is %f\n",
              // nIterations, xN, yN, zN, distances[zN][yN][xN], distance->distance(xN,yN,zN,xN,yN,zN));
+    // printf("nPoints = %i, nIterations = %i limit = %i\n", nPoints, nIterations, cubeSizeTotal);
     nIterations +=1;
     itb = boundary.begin();
     boundary.erase(itb);

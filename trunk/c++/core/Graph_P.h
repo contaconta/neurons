@@ -24,7 +24,10 @@ class Graph_P : public VisibleE
 
   // EdgeSet<Point, Edge< Point > >* esetp;
 
-  Graph_P() : VisibleE(){}
+  Graph_P() : VisibleE()
+  {
+    cloud = new Cloud<Point3D>();
+  }
 
   virtual void prim()=0;
 
