@@ -23,6 +23,8 @@
 #include "Graph.h"
 #include <float.h>
 #include <omp.h>
+#include "SWC.h"
+#include "CubeFactory.h"
 
 using namespace std;
 
@@ -223,7 +225,6 @@ float computePathCostLine
 
 
 // The geometrical cost will increase heavily with the angle
-
 float computePathCost
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< int >& path,
@@ -242,14 +243,26 @@ float computePathCost
     vector< float > p2p1 = v_subs(p2, p1);
     vector< float > p2p1n = v_scale(p2p1, v_norm(p2p1));
     float cos_alpha = v_dot(p1p0n,p2p1n);
-    if(cos_alpha < 0){
+    // if(cos_alpha < 0){
       //We do not allow that
-      return FLT_MAX;
-    }
-    geomCost += (1/cos_alpha);
+      // return FLT_MAX;
+    // }
+    geomCost -= log10(fabs(cos_alpha));
   }
+  return (imageCost + geomCost + 50)/(path.size()+1);
+}
 
-  return (imageCost + geomCost*0.001 + 250)/(path.size()+1);
+float computePathCost
+( Graph<Point3D, EdgeW<Point3D> >* gr,
+  vector< int >& path,
+  float imageCost,
+  vector< vector< Graph3D* > >& v2v_paths,
+  Cube<float, double>* probs
+  )
+{
+  //HERE IT COMES THE COST ESTIMATION. DO IT TOMORROW
+  
+
 }
 
 
@@ -258,7 +271,10 @@ float computePathCost
 void allShortestPaths
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< vector< vector< int   > > >& paths,
-  vector< vector< float > >& costs)
+  vector< vector< float > >& costs,
+  vector< vector< Graph3D* > >& v2v_paths,
+  Cube<float, double>* probs
+)
 {
   // Temporal variables
   vector< vector< float > > distanceMatrix;
@@ -284,14 +300,16 @@ void allShortestPaths
     for(int j = 0; j < nPoints; j++){
       traceBack(i, j, previous, path);
       //creates all the possible point to point pahts
-      for(int nP = 0; nP < path.size(); nP++)
-        (paths[i][j]).push_back(path[nP]);
+      for(int nP = 0; nP < path.size(); nP++){
+        paths[i][j].push_back(path[nP]);
+      }
       //###################################### HERE #####################################
-      //Here is the cost put
+      //Here is the cost
       // costs[i][j] = (distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
       // costs[i][j] = (distances[j]+10)/(paths[i][j].size()+1);
       // costs[i][j] = 4*(distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
-      costs[i][j] = computePathCost(gr, paths[i][j], distances[j]);
+      // costs[i][j] = computePathCost(gr, paths[i][j], distances[j]);
+      costs[i][j] = computePathCost(gr, paths[i][j], v2v_paths, probs);
 
     }
   }
@@ -307,9 +325,84 @@ void printVector(vector<int>& s){
 void printSolution(vector<int>& s){
   for(int i = 0; i < s.size(); i++)
     if(s[i] > -1)
-      printf("%i ", i);
+      printf("%i %i\n", i, s[i]);
   printf("\n");
 }
+
+
+bool checkSolutionForLoopsAux
+(vector<int>& solution,
+ vector< vector< int > >& kids,
+ vector< int >& visited,
+ int np)
+{
+  //The point has already visited -> loop
+  if(visited[np] == 1)
+    return false;
+
+  // Mark the point as visited
+  visited[np] = 1;
+
+  //If it is a leaf, then it is ok
+  if( kids[np].size() == 0){
+    return true;
+  }
+
+  // If not recursively traverse the treer
+  bool toReturn = true;
+  for(int i = 0; i < kids[np].size(); i++){
+    bool kidCreatesLoops = checkSolutionForLoopsAux
+      (solution, kids, visited, kids[np][i]);
+    toReturn = toReturn & kidCreatesLoops;
+  }
+  return toReturn;
+
+}
+
+bool checkSolutionForLoops(vector<int>& solution)
+{
+  vector< vector< int > > kids(solution.size());
+  for(int i = 0; i < solution.size(); i++){
+    if( (solution[i] != -1) && (solution[i]!=i))
+      kids[solution[i]].push_back(i);
+  }
+  vector< int > visited(solution.size());
+  return checkSolutionForLoopsAux
+    (solution, kids, visited, 0);
+
+}
+
+bool checkSolutionIsBinaryTree(vector< int >& solution)
+{
+  vector< vector< int > > kids(solution.size());
+  for(int i = 0; i < solution.size(); i++){
+    if( (solution[i] != -1) && (solution[i]!=i))
+      kids[solution[i]].push_back(i);
+  }
+  for(int i = 0; i < kids.size(); i++)
+    if(kids[i].size() > 2)
+      return false;
+  return true;
+}
+
+bool checkSolution(vector<int>& solution){
+
+  // printf("checkSolution: solutionSize: %i\n", solution.size());
+  // vector< int > numberOfTimesVisited(solution.size());
+  // for(int i = 1; i < solution.size(); i++){
+    // if(solution[i] != -1)
+      // numberOfTimesVisited[solution[i]]++;
+  // }
+  // printf("SolutionCheck: ");
+  // printVector(numberOfTimesVisited);
+  bool noLoops = checkSolutionForLoops(solution);
+  bool isBinary = checkSolutionIsBinaryTree(solution);
+  // printf("SolutionHasLoopsPassed: %i\n", noLoops);
+  // printf("SolutionIsBinaryTree: %i\n", isBinary);
+  return noLoops & isBinary;
+}
+
+
 
 bool solutionContains(vector<int>& solution, int n){
   if(solution[n] >= 0)
@@ -320,34 +413,76 @@ bool solutionContains(vector<int>& solution, int n){
 //The return value is:  0 (none of the starting / end points are in the graph
 //                      1 the path is compatible
 //                     -1 the path has one of the middle elements in
-int isCompatible(vector<int>& S, vector< int>& path)
+int isCompatible(vector<int>& S, vector< int>& path, vector< int >& kids)
 {
+  //if any middle point is part of the solution, then the path is not compatible
   for(int i = 1; i < path.size()-1; i++)
     if(solutionContains(S, path[i]))
       return -1;
-  if(! (solutionContains(S, path[0]) ^
-        solutionContains(S, path[path.size()-1]) )
-     )
+
+  // if no point is part of the solution, then we have no idea
+  if( !(solutionContains(S, path[0])) &&
+        !(solutionContains(S, path[path.size()-1])) )
     return 0;
-  return 1;
+
+  //if both ends are part of the solution, it is not compatible
+  if((solutionContains(S, path[0]) &&
+      solutionContains(S, path[path.size()-1]) )
+     )
+    return -1;
+
+  //If the end point links somewhere with two edges already, the solution is incompatible
+  if( (solutionContains(S, path[path.size()-1]) &&
+       kids[path[path.size()-1]] >= 2) )
+    return -1;
+  if( (solutionContains(S, path[0]) &&
+       kids[path[0]]>= 2) )
+    return -1;
+
+  if( (solutionContains(S, path[0]) &&
+       kids[path[0]]< 2) )
+    return 1;
+  if( (solutionContains(S, path[path.size()-1]) &&
+       kids[path[path.size()-1]] < 2) )
+    return 1;
+
+  printf("isCompatible failed\n");
+  exit(0);
+  return -1;
 }
 
 
 
-void addToSolution(vector< int >& S, vector<int>& path){
+void addToSolution(vector< int >& S, vector<int>& path, vector< int >& kids){
   if(solutionContains(S, path[0])){
-    for(int i = 1; i < path.size(); i++)
+    for(int i = 1; i < path.size(); i++){
+      kids[path[i-1]]++;
+      if(S[path[i]]!=-1){
+        printf("We are adding a node that already has been visited, exit\n");
+        exit(0);
+      }
       S[path[i]] = path[i-1];
+    }
   }
   else if(solutionContains(S, path[path.size()-1])){
-    for(int i = path.size()-2; i >= 0; i--)
+    for(int i = path.size()-2; i >= 0; i--){
+      kids[path[i+1]]++;
+      if(S[path[i]]!=-1){
+        printf("We are adding a node that already has been visited, exit\n");
+        exit(0);
+      }
       S[path[i]] = path[i+1];
+    }
   }
   else{
-    S[path[0]] = path[0]; //defines the root
-    for(int i = 1; i < path.size(); i++)
-      S[path[i]] = path[i-1];
+    printf("The path added to the solution does is not compatible with the solution\n");
+    exit(0);
   }
+  // else{
+    // S[path[0]] = path[0]; //defines the root
+    // for(int i = 1; i < path.size(); i++)
+      // S[path[i]] = path[i-1];
+  // }
 }
 
 
@@ -360,15 +495,69 @@ solutionToGraph
   Graph<Point3D, EdgeW<Point3D> >* toRet =
     new Graph<Point3D, EdgeW<Point3D> >(cpt->cloud);
   for(int i = 0; i < solution.size(); i++){
-    if((solution[i]!=i) && (solution[i] > -1)){
+    if((solution[i]!=i) && (solution[i] != -1)){
       int nE = cpt->eset.findEdgeBetween(i, solution[i]);
       toRet->eset.edges.push_back
-        ( new EdgeW<Point3D>(&cpt->cloud->points, i, solution[i],
-                             cpt->eset.edges[nE]->w));
+        ( new EdgeW<Point3D>(&toRet->cloud->points, i, solution[i],
+                             1.0));
     }
   }
   return toRet;
 }
+
+// Translates a solution to an SWC file
+SWC*
+solutionToSWC
+(Graph<Point3D, EdgeW<Point3D> >* cpt,
+ Cube_P* cp,
+ vector< int > solution)
+{
+
+  //Obtains the graph for the
+  Graph<Point3D, EdgeW<Point3D> >* toRet =
+    solutionToGraph(cpt, solution);
+
+  int somaIdx;
+  for(int i = 0; i < solution.size(); i++){
+    if(solution[i]!=i) somaIdx = i;
+  }
+
+  Graph<Point3Dw, Edge<Point3Dw> >* forSWC =
+    new Graph<Point3Dw, Edge<Point3Dw> >();
+  int x, y, z;
+  for(int i = 0; i < toRet->cloud->points.size(); i++){
+    cp->micrometersToIndexes3
+      (toRet->cloud->points[i]->coords[0],
+       toRet->cloud->points[i]->coords[1],
+       toRet->cloud->points[i]->coords[2], x, y, z);
+    forSWC->cloud->points.push_back
+      (new Point3Dw
+       (x, y, z, 1));
+  }
+  for(int i = 0; i < toRet->eset.edges.size(); i++)
+    forSWC->eset.edges.push_back
+      (new Edge<Point3Dw>
+       (&forSWC->cloud->points,
+        toRet->eset.edges[i]->p0,
+        toRet->eset.edges[i]->p1));
+
+  SWC* swc = new SWC();
+  swc->gr = forSWC;
+  swc->idxSoma = 0;
+  return swc;
+}
+
+
+
+
+
+// void addPointSomaToSolution
+// (Graph3D* gr, float xS, float yS, float zS, vector< int >& solution)
+// {
+  // int   pointSoma = gr->cloud->findPointClosestTo(xS,yS,zS);
+  // S[pointSoma] = pointSoma;
+// }
+
 
 // Adds the some to the complete graph and creates a star graph arround it
 void addSomaToCptGraphAndInitializeSolution
@@ -396,6 +585,43 @@ void addSomaToCptGraphAndInitializeSolution
     }
 }
 
+void loadAllv2vPaths
+(string pathsDirectory,
+ Graph3D* gr,
+ vector< vector< Graph3D* > >& v2v_paths)
+{
+  v2v_paths.resize(gr->cloud->points.size());
+ for(int i = 0; i < gr->cloud->points.size(); i++){
+    v2v_paths[i].resize(gr->cloud->points.size());
+    for(int j = 0; j < v2v_paths[i].size(); j++)
+      v2v_paths[i][j] = NULL;
+  }
+ for(int nE = 0; nE < gr->eset.edges.size(); nE++){
+   int p0 = gr->eset.edges[nE]->p0;
+   int p1 = gr->eset.edges[nE]->p1;
+   printf("Loading the path between vertex %i and %i in directory %s, quit\n",
+          p0, p1, pathsDirectory.c_str());
+
+   Graph3D* graph;
+   char buff[1024];
+   sprintf(buff, "%s/path_%04i_%04i.gr", pathsDirectory.c_str(), p0, p1);
+   if(fileExists(buff)){
+     graph = new Graph3D(buff);}
+   else{
+     sprintf(buff, "%s/path_%04i_%04i.gr", pathsDirectory.c_str(), p1, p0);
+     if(fileExists(buff)){
+       graph = new Graph3D(buff);}
+     else{
+       printf("I can not find the path between vertex %i and %i in directory %s, quit\n",
+              p0, p1, pathsDirectory.c_str());
+       exit(0);
+     }
+   }
+   v2v_paths[p0][p1] = graph;
+   v2v_paths[p1][p0] = graph;
+ }
+}
+
 
 /*******************************************************************************
  * S is the tree that is the solution of the problem. Stored as a vector of ints
@@ -410,59 +636,72 @@ void addSomaToCptGraphAndInitializeSolution
  *******************************************************************************/
 int main(int argc, char **argv) {
 
-  string solsDirectory;
   bool saveAllSolutions = false;
-  if(!(argc==4 || argc==3)){
-    printf("graphDijkstra complete.gr out.gr <solsDirectory>\n");
+  if(argc!=9){
+    printf("graphDijkstra complete.gr out.gr somaX somaY somaZ"
+           " cubeProbs solsDirectory pathsDirectory\n");
     exit(0);
   }
-  if(argc == 4){
-    solsDirectory = (argv[3]);
-    saveAllSolutions = true;
-    if(!directoryExists(solsDirectory))
-      makeDirectory(solsDirectory);
-  }
-
-  // string solsDirectory(argv[3]);
-
-  float xS = 27.7;
-  float yS = -64.7;
-  float zS = 30.4;
-  float R  = 20;
 
   Graph<Point3D, EdgeW<Point3D> >* gr =
     new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
+    string nameOut(argv[2]);
 
+  float xS = atof(argv[3]);
+  float yS = atof(argv[4]);
+  float zS = atof(argv[5]);
+  float R  = 20;
+  Cube<float, double>* cp = new Cube<float, double>(argv[6]);
+  string solsDirectory(argv[7]);
+  string pathsDirectory(argv[8]);
+  saveAllSolutions = true;
+  if(!directoryExists(solsDirectory))
+    makeDirectory(solsDirectory);
+  printf("I should save all solutions\n");
+
+
+  // float xS = -1822.71;
+  // float yS = 373.92;
+  // float zS = 2.00;
+  // float R  = 20;
+
+  // float xS = 27.7;
+  // float yS = -64.7;
+  // float zS = 30.4;
+  // float R  = 20;
+
+
+
+  //Initialization of the solution and auxiliary structures
   int nPoints = gr->cloud->points.size();
   vector< int >   S(nPoints); //solution
-  for(int i = 0; i < nPoints; i++)
-    S[i] = -1;
+  vector< int >   kids(nPoints); //stores the number of kids per point
+  for(int i = 0; i < nPoints; i++){
+    S[i] = -1; kids[i] = 0;
+  }
 
-  // Initialization of the solution
-  addSomaToCptGraphAndInitializeSolution
-    (gr, xS, yS, zS, R, S);
+  // addSomaToCptGraphAndInitializeSolution
+    // (gr, xS, yS, zS, R, S);
+  // addPointSomaToSolution
+    // (gr, xS, yS, zS, S);
+  S[0]=0;
 
-  //paths is going to be the main data structure
+
+  //paths is going to be the main data structure. Stores the shortest connection among all points.
   vector< vector< vector< int   > > > paths;
   vector< vector< float > > costs;
-  allShortestPaths(gr, paths, costs);
+  vector< vector< Graph3D* > > v2v_paths;
+  loadAllv2vPaths(pathsDirectory, gr, v2v_paths);
+
+  allShortestPaths(gr, paths, costs, v2v_paths, cp);
 
   printf("And now merging stuff\n");
   multimap<float, int> Q; //Priority queue
 
-  //Initialization - all paths into Q with their costs Q
+  //Initialization - all paths into Q with their costs
   for(int i = 0; i < nPoints; i++)
     for(int j = i+1; j < nPoints; j++)
       Q.insert(pair<float, int>(costs[i][j], i*nPoints+j));
-
-
-  //Puts the most probable path as the solution already
-  //old.  Not needed since the solution is already the soma
-  // addToSolution(S, paths[it->second/nPoints]
-                // [it->second - nPoints*floor(it->second/nPoints)]);
-  // Q.erase(it);
-
-  //Puts the soma into the solution
 
 
   multimap<float, int>::iterator it = Q.begin();
@@ -474,6 +713,7 @@ int main(int argc, char **argv) {
   bool weAreDone=false;
   int nComponentsAdded = 0;
   Graph3D* sols;
+  SWC* sols_swc;
   char solsName[512];
   while(!Q.empty()){
     bool thereIsSomethingCompatible = false;
@@ -481,23 +721,41 @@ int main(int argc, char **argv) {
     int elementNumber = 0;
     for(it = Q.begin(); it != Q.end(); ++it){
       int isCompatibleN = isCompatible(S,paths[floor(it->second/nPoints)]
-                                      [it->second - nPoints*floor(it->second/nPoints)]);
+                                       [it->second - nPoints*floor(it->second/nPoints)],
+                                       kids);
       if( isCompatibleN == 1)
         {
-          if(nComponentsAdded == 1000)
-            weAreDone = true;
+
+          printf("nComponentsAdded=%i, kids[1]=%i\n", nComponentsAdded, kids[1]);
           addToSolution(S,paths[floor(it->second/nPoints)]
-                        [it->second - nPoints*floor(it->second/nPoints)]);
+                        [it->second - nPoints*floor(it->second/nPoints)],
+                        kids);
+
           // printf("%i: ",nComponentsAdded);
           // printVector(paths[floor(it->second/nPoints)]
                       // [it->second - nPoints*floor(it->second/nPoints)]);
           // printf("S: ");
           // printSolution(S);
           if(saveAllSolutions){
+            if(nComponentsAdded > 100) continue;
+            printf("Saving solution %i\n", nComponentsAdded);
             sols = solutionToGraph(gr, S);
             sprintf(solsName, "%s/sol_%03i.gr",solsDirectory.c_str(), nComponentsAdded);
             sols->saveToFile(solsName);
+            sprintf(solsName, "%s/sol_%03i.swc",solsDirectory.c_str(), nComponentsAdded);
+            sols_swc = solutionToSWC(gr, cp, S);
+            sols_swc->saveToFile(solsName);
           }
+
+          if(!checkSolution(S)){
+            printf("Kids=");
+            printVector(kids);
+            printf("Sol=");
+            printSolution(S);
+            exit(0);
+          }
+
+
           Q.erase(it);
           nComponentsAdded++;
           thereIsSomethingCompatible = true;
@@ -508,6 +766,7 @@ int main(int argc, char **argv) {
       }
       elementNumber++;
     }//for
+
     //Elliminate the elements of Q
     for(int i = markedForDeletion.size()-1; i >= 0; i--)
       Q.erase(markedForDeletion[i]);
@@ -521,5 +780,8 @@ int main(int argc, char **argv) {
   // printVector(S);
   Graph<Point3D, EdgeW<Point3D> >* sol =
     solutionToGraph(gr, S);
-  sol->saveToFile(argv[2]);
+  sol->saveToFile(nameOut);
+
+  printf("Kids=");
+  printVector(kids);
 }

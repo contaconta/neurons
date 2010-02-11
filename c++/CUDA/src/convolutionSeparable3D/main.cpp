@@ -187,6 +187,12 @@ extern "C" void hessian
 // Main program
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv){
+
+  if(argc!=4){
+    printf("Usage: cubeHessian volume.nfo sigma out.nfo\n");
+    exit(0);
+  }
+
   float
     *h_Input,
     *h_Buffer,

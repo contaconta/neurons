@@ -64,6 +64,10 @@ public:
 
   virtual void save_as_image_stack(string dirname="")=0;
 
+  int size(){
+    return cubeWidth*cubeHeight*cubeDepth;
+  }
+
   ~Cube_P(){}
 
   virtual string className(){

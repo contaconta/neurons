@@ -34,7 +34,7 @@
 ################################################################################
 
 # Add source files here
-EXECUTABLE	:= convolution3D
+EXECUTABLE	:= cubeHessian
 # CUDA source files (compiled with cudacc)
 CUFILES		:= convolutionSeparable3D.cu
 # CUDA dependency files

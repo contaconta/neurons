@@ -147,6 +147,7 @@ bool drawOnlyCube_flag = false;
 bool flag_minMax   = true;
 bool flag_verbose = false;
 bool flag_cube_transparency = true;
+bool flag_elliminate_rotation = false;
 
 
 bool flag_save_neuron_coordinate = false;

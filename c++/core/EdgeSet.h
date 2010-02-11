@@ -112,7 +112,7 @@ void EdgeSet<P,E>::save(ostream &out){
 template< class P, class E>
 void EdgeSet<P,E>::draw()
 {
-  VisibleE::draw();
+  // VisibleE::draw();
   glLineWidth(this->v_radius);
   for(int i = 0; i < edges.size(); i++)
     edges[i]->draw();

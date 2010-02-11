@@ -275,6 +275,9 @@ public:
   /** Returns the value of the voxel at indexes x,y,z.*/
   T at(int x, int y, int z);
 
+  /** Returns the value at the microemters position.*/
+  T at_m(float x, float y, float z);
+
   /** Returns a float with the value of the cube at a position.*/
   float get(int x, int y, int z);
 

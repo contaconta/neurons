@@ -14,8 +14,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-set(CMAKE_BUILD_TYPE release) #debug none release distribution
+set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+# set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
@@ -287,6 +287,9 @@ target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
 target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeRescale ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRescale.cpp)
+target_link_libraries(cubeRescale ${LINK_LIBRARIES_ALL})
+
 # # add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
 # target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
 
@@ -297,8 +300,8 @@ target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 # # add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
 # target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
-# target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
+add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
+target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 # target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
@@ -340,6 +343,10 @@ target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
 # add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
 # target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
+
+add_executable(SWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/graph/SWCisBinaryTree.cpp)
+target_link_libraries(SWCisBinaryTree ${LINK_LIBRARIES_ALL})
+
 
 add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
 target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
@@ -395,11 +402,14 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 # add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
 # target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
 
+add_executable(graphtoSWC ${CMAKE_SOURCE_DIR}/../tools/graph/graphtoSWC.cpp)
+target_link_libraries(graphtoSWC ${LINK_LIBRARIES_ALL})
+
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
-# # add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
-# target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
+add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
+target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
 
 # # add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
 # target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
@@ -469,6 +479,10 @@ target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 ################################################################################
 ## Test examples
 ################################################################################
+
+add_executable(testSWC ${CMAKE_SOURCE_DIR}/../tests/testSWC.cpp)
+target_link_libraries(testSWC ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)
 # target_link_libraries(tryManyPathsCloud ${LINK_LIBRARIES_ALL})

@@ -1451,6 +1451,22 @@ template <class T, class U>
 T Cube<T,U>::at(int x, int y, int z) {return voxels[z][y][x];}
 
 template <class T, class U>
+T Cube<T,U>::at_m(float mx, float my, float mz)
+{
+  int x, y, z;
+  micrometersToIndexes3(mx, my, mz, x, y, z);
+  if(x<0) x=0;
+  if(y<0) y=0;
+  if(z<0) z=0;
+  if(x>=cubeWidth) x=cubeWidth-1;
+  if(y>=cubeHeight) y=cubeHeight-1;
+  if(z>=cubeDepth) z=cubeDepth-1;
+
+return voxels[z][y][x];
+}
+
+
+template <class T, class U>
 float Cube<T,U>::get(int x, int y, int z) {return voxels[z][y][x];}
 
 

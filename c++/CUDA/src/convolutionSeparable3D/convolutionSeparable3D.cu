@@ -353,8 +353,8 @@ __global__ void hessianKernel
 
   // // //Brute force eigen-values computation
   float a0, b0, c0, e0, f0, k0;
-  a0 = d_gxx[i]; b0 = d_gxy[i]; c0 = d_gxz[i];
-  e0 = d_gyy[i]; f0 = d_gxz[i]; k0 = d_gzz[i];
+  a0 = -d_gxx[i]; b0 = -d_gxy[i]; c0 = -d_gxz[i];
+  e0 = -d_gyy[i]; f0 = -d_gxz[i]; k0 = -d_gzz[i];
 
 
   // http://en.wikipedia.org/wiki/Eigenvalue_algorithm

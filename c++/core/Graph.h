@@ -153,7 +153,10 @@ void Graph<P,E>::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
+    glColor3f(1.0,0.0,0.0);
     eset.draw();
+    glColor3f(1.0,1.0,0.0);
+    cloud->points[0]->draw();
     // cloud->draw();
 
     //Standard drawing proccedure

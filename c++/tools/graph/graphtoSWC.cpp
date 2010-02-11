@@ -26,24 +26,36 @@ using namespace std;
 int main(int argc, char **argv) {
 
   if(argc!=4){
-    printf("Usage: SWCtoGraph SWC.swc cubeToTranslate.nfo out.gr\n");
+    printf("Usage: graphtoSWC graph.gr cubeToTranslate.nfo out.swc\n");
     exit(0);
   }
 
-  SWC* swc     = new SWC(argv[1]);
-  Cube_P* cube = CubeFactory::load(argv[2]);
-  Graph<Point3Dw>* out = new Graph<Point3Dw>();
+  Graph<Point3D, EdgeW<Point3D> >* in = new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
+  Cube_P* cube        = CubeFactory::load(argv[2]);
+  SWC* swc            = new SWC();
+  Graph<Point3Dw, Edge<Point3Dw> >* gr = new Graph<Point3Dw, Edge<Point3Dw> >();
 
-  float mx, my, mz;
-  for(int i = 0; i < swc->gr->cloud->points.size(); i++){
-    Point3Dw* pt = dynamic_cast<Point3Dw*>(swc->gr->cloud->points[i]);
-    cube->indexesToMicrometers3((int)pt->coords[0], (int)pt->coords[1],
-                                (int)pt->coords[2], mx, my, mz);
-    out->cloud->points.push_back
-      (new Point3Dw(mx, my, mz, pt->weight));
+  for(int i = 0; i < in->cloud->points.size(); i++){
+    //    printf("Adding point %i\n", i);
+    int x, y, z;
+    cube->micrometersToIndexes3
+      (in->cloud->points[i]->coords[0],
+       in->cloud->points[i]->coords[1],
+       in->cloud->points[i]->coords[2],
+       x, y, z);
+    gr->cloud->points.push_back(new Point3Dw(x, y, z, 1));
   }
-  out->eset = swc->gr->eset;
 
-  out->saveToFile(argv[3]);
+  for(int i = 0; i < in->eset.edges.size(); i++){
+    //printf("Adding edge %i\n", i);
+    if(in->eset.edges[i]->p0 != in->eset.edges[i]->p1)
+      gr->eset.addEdge(in->eset.edges[i]->p0, in->eset.edges[i]->p1);
+  }
 
-} 
+
+  swc->gr = gr;
+  swc->idxSoma = 0;
+  swc->saveToFile(argv[3]);
+
+
+}

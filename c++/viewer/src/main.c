@@ -58,6 +58,7 @@ static struct argp_option options[] = {
   {"disp3DX",   'x', "value", 0, "Tells the X stage position"},
   {"disp3DY",   'y', "value", 0, "Tells the Y stage position"},
   {"disp3DZ",   'z', "value", 0, "Tells the Z stage position"},
+  {"elliminateRotation",   'q', "value", 0, "elliminates the rotation"},
   {"rot3DX",    'X', "value", 0, "Tells the X rotation"},
   {"rot3DY",    'Y', "value", 0, "Tells the Y rotation"},
   {"fullscreen",'f', 0, 0, "Turns full screen on"},
@@ -78,6 +79,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
     {
     case 'c':
       configurationFile = arg;
+      break;
+    case 'q':
+      flag_elliminate_rotation = true;
       break;
     case 'v':
       flag_verbose = 1;

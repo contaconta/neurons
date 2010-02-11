@@ -70,7 +70,7 @@ template <class T>
     // for(float i = 0; i < points.size(); i+=step){
     for(float i = 0; i < points.size(); i++){
       points[(int)i]->draw(v_radius);
-      if(0){
+      if(1){
         glPushMatrix();
         glTranslatef(points[(int)i]->coords[0],
                      points[(int)i]->coords[1],
