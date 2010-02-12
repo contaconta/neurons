@@ -14,8 +14,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-# set(CMAKE_BUILD_TYPE release) #debug none release distribution
+# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
@@ -253,8 +253,8 @@ ENDIF(${GLEW_FOUND})
 # # add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
 # target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
-target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
+# add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
+# target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
 # target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
@@ -274,8 +274,8 @@ target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
 # # add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
 # target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
-target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
+# add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
+# target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
 # target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
@@ -287,8 +287,8 @@ target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
 add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
 target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 
-add_executable(cubeRescale ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRescale.cpp)
-target_link_libraries(cubeRescale ${LINK_LIBRARIES_ALL})
+# add_executable(cubeRescale ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRescale.cpp)
+# target_link_libraries(cubeRescale ${LINK_LIBRARIES_ALL})
 
 # # add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
 # target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
@@ -344,16 +344,12 @@ target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 # add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
 # target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
 
-add_executable(SWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/graph/SWCisBinaryTree.cpp)
-target_link_libraries(SWCisBinaryTree ${LINK_LIBRARIES_ALL})
-
-
 add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
 target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
 
 
-# add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
-# target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
+add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
+target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 
 # add_executable(imageFindSoma ${CMAKE_SOURCE_DIR}/../tools/image/imageFindSoma.cpp)
 # target_link_libraries(imageFindSoma ${LINK_LIBRARIES_ALL})
@@ -382,8 +378,10 @@ target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
 # target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
 # # add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
 # target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
-add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
-target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+
+# add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
+# target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
+
 # add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
 # target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
 
@@ -398,12 +396,6 @@ target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
 ################################################################################
 ## graph tools
 ################################################################################
-
-# add_executable(SWCtoGraph ${CMAKE_SOURCE_DIR}/../tools/graph/SWCtoGraph.cpp)
-# target_link_libraries(SWCtoGraph ${LINK_LIBRARIES_ALL})
-
-add_executable(graphtoSWC ${CMAKE_SOURCE_DIR}/../tools/graph/graphtoSWC.cpp)
-target_link_libraries(graphtoSWC ${LINK_LIBRARIES_ALL})
 
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
@@ -477,11 +469,28 @@ target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
+## Diadem tools
+################################################################################
+
+add_executable(diademCloudFromGt ${CMAKE_SOURCE_DIR}/../tools/diadem/diademCloudFromGt.cpp)
+target_link_libraries(diademCloudFromGt ${LINK_LIBRARIES_ALL})
+
+add_executable(diademGraphToSWC ${CMAKE_SOURCE_DIR}/../tools/diadem/diademGraphToSWC.cpp)
+target_link_libraries(diademGraphToSWC ${LINK_LIBRARIES_ALL})
+
+add_executable(diademSWCToGraph ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCToGraph.cpp)
+target_link_libraries(diademSWCToGraph ${LINK_LIBRARIES_ALL})
+
+add_executable(diademSWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCisBinaryTree.cpp)
+target_link_libraries(diademSWCisBinaryTree ${LINK_LIBRARIES_ALL})
+
+
+################################################################################
 ## Test examples
 ################################################################################
 
-add_executable(testSWC ${CMAKE_SOURCE_DIR}/../tests/testSWC.cpp)
-target_link_libraries(testSWC ${LINK_LIBRARIES_ALL})
+# add_executable(testSWC ${CMAKE_SOURCE_DIR}/../tests/testSWC.cpp)
+# target_link_libraries(testSWC ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)

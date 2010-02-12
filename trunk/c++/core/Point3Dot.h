@@ -28,7 +28,8 @@ public:
 
   Point3Dot();
 
-  Point3Dot(float x, float y, float z,  float theta=0, float phi = 0, Type type = TrainingNegative);
+  Point3Dot(float x, float y, float z,  float theta=0, float phi = 0,
+            Type type = TrainingNegative);
 
   void draw();
 

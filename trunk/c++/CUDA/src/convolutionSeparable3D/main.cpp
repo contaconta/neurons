@@ -76,6 +76,23 @@ extern "C" void hessianGPU
  );
 
 
+extern "C" void hessianGPU_orientation
+(
+ float *d_output,
+ float *d_output_theta,
+ float *d_output_phi,
+ float *d_gxx,
+ float *d_gxy,
+ float *d_gxz,
+ float *d_gyy,
+ float *d_gyz,
+ float *d_gzz,
+ int imageW,
+ int imageH,
+ int imageD
+ );
+
+
 extern "C" void set_horizontal_kernel(vector<float>& kernel){
   float h_kernel_h[kernel.size()];
   for(unsigned int i = 0; i < kernel.size(); i++)
@@ -182,6 +199,49 @@ extern "C" void hessian
 }
 
 
+extern "C" void hessian_orientation
+( float* d_Buffer,
+  float* d_Output_theta,
+  float* d_Output_phi,
+  float* d_Input,
+  float sigma,
+  float *d_gxx,
+  float *d_gxy,
+  float *d_gxz,
+  float *d_gyy,
+  float *d_gyz,
+  float *d_gzz,
+  int sizeX,
+  int sizeY,
+  int sizeZ
+  )
+{
+
+  vector<float> kernel_0 = Mask::gaussian_mask(0, sigma, 1);
+  vector<float> kernel_1 = Mask::gaussian_mask(1, sigma, 1);
+  vector<float> kernel_2 = Mask::gaussian_mask(2, sigma, 1);
+
+  convolution_separable( d_gxx, d_Input, kernel_2, kernel_0, kernel_0,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+  convolution_separable( d_gxy, d_Input, kernel_1, kernel_1, kernel_0,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+  convolution_separable( d_gxz, d_Input, kernel_1, kernel_0, kernel_1,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+  convolution_separable( d_gyy, d_Input, kernel_0, kernel_2, kernel_0,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+  convolution_separable( d_gyz, d_Input, kernel_0, kernel_1, kernel_1,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+  convolution_separable( d_gzz, d_Input, kernel_0, kernel_0, kernel_2,
+                         sizeX, sizeY, sizeZ, d_Buffer );
+
+  // printf("H orientation: o: %i, t: %i p: %i\n",
+         // d_Buffer, d_Output_theta, d_Output_phi);
+  hessianGPU_orientation
+    (d_Buffer, d_Output_theta, d_Output_phi,
+     d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Main program
@@ -195,13 +255,15 @@ int main(int argc, char **argv){
 
   float
     *h_Input,
-    *h_Buffer,
-    *h_OutputGPU;
+    *h_OutputGPU,
+    *h_OutputGPU_phi,
+    *h_OutputGPU_theta;
 
   float
     *d_Input,
     *d_Output,
-    *d_Buffer,
+    *d_Output_theta,
+    *d_Output_phi,
     *d_gxx, *d_gxy, *d_gxz, *d_gyy, *d_gyz, *d_gzz
     ;
 
@@ -215,6 +277,10 @@ int main(int argc, char **argv){
   Cube<uchar, ulong>*  cube = new Cube<uchar, ulong>(argv[1]);
   float sigma = atof(argv[2]);
   Cube<float, double>* res = cube->create_blank_cube(argv[3]);
+  string nameTheta(argv[3]); nameTheta = nameTheta + "_theta";
+  string namePhi(argv[3]);   namePhi = namePhi + "_phi";
+  Cube<float, double>* res_theta = res->create_blank_cube(nameTheta);
+  Cube<float, double>* res_phi   = res_theta->create_blank_cube(namePhi);
   int imageW = cube->cubeWidth;
   int imageH = cube->cubeHeight;
   int imageD = cube->cubeDepth;
@@ -225,15 +291,17 @@ int main(int argc, char **argv){
 
   printf("Allocating and intializing host arrays...\n");
   h_Input     = (float *)malloc( maxLinearSize * sizeof(float));
-  h_Buffer    = (float *)malloc( maxLinearSize * sizeof(float));
   h_OutputGPU = (float *)malloc( maxLinearSize * sizeof(float));
+  h_OutputGPU_theta = (float *)malloc( maxLinearSize * sizeof(float));
+  h_OutputGPU_phi   = (float *)malloc( maxLinearSize * sizeof(float));
   srand(200);
 
   printf("Allocating CUDA arrays...\n");
-  cutilSafeCall( cudaMalloc((void **)&d_Input, maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_Output,maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_Buffer,maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxx,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_Input,        maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_Output,       maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_Output_theta, maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_Output_phi,   maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_gxx,          maxLinearSize *sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_gxy,   maxLinearSize *sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_gxz,   maxLinearSize *sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_gyy,   maxLinearSize *sizeof(float)) );
@@ -295,12 +363,18 @@ int main(int argc, char **argv){
                                   maxLinearSize * sizeof(float),
                                   cudaMemcpyHostToDevice) );
 
-        // convolution_separable( d_Output, d_Input, kernel_1, kernel_1, kernel_0,
-                               // maxTileSizeX, maxTileSizeY, maxTileSizeZ, d_Buffer );
-
-        hessian(d_Output, d_Input, sigma,
-                d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
-                maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        // printf("Main loop: o: %i, t: %i p: %i\n",
+               // d_Output, d_Output_theta, d_Output_phi);
+        hessian_orientation
+          (d_Output, d_Output_theta, d_Output_phi,
+           d_Input, sigma,
+           d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
+           maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        // hessian
+          // (d_Output,
+           // d_Input, sigma,
+           // d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
+           // maxTileSizeX, maxTileSizeY, maxTileSizeZ);
 
 
         cutilSafeCall( cudaThreadSynchronize() );
@@ -308,12 +382,24 @@ int main(int argc, char **argv){
         cutilSafeCall( cudaMemcpy(h_OutputGPU, d_Output,
                                   maxLinearSize * sizeof(float),
                                   cudaMemcpyDeviceToHost) );
+        cutilSafeCall( cudaMemcpy(h_OutputGPU_theta, d_Output_theta,
+                                  maxLinearSize * sizeof(float),
+                                  cudaMemcpyDeviceToHost) );
+        cutilSafeCall( cudaMemcpy(h_OutputGPU_phi, d_Output_phi,
+                                  maxLinearSize * sizeof(float),
+                                  cudaMemcpyDeviceToHost) );
+
 
         for(int z = pad_z; z < padded->cubeDepth-pad_z; z++)
           for(int y = pad_y; y < padded->cubeHeight-pad_y; y++)
-            for(int x = pad_x; x < padded->cubeWidth-pad_x; x++)
+            for(int x = pad_x; x < padded->cubeWidth-pad_x; x++){
               res->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
                      h_OutputGPU[(z*maxTileSizeY + y)*maxTileSizeX + x]);
+              res_theta->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
+                             h_OutputGPU_theta[(z*maxTileSizeY + y)*maxTileSizeX + x]);
+              res_phi->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
+                             h_OutputGPU_phi[(z*maxTileSizeY + y)*maxTileSizeX + x]);
+            }
 
         delete padded;
       }
@@ -323,8 +409,10 @@ int main(int argc, char **argv){
 
 
   printf("Shutting down...\n");
-  cutilSafeCall( cudaFree(d_Buffer ) );
   cutilSafeCall( cudaFree(d_Input) );
+  cutilSafeCall( cudaFree(d_Output) );
+  cutilSafeCall( cudaFree(d_Output_theta) );
+  cutilSafeCall( cudaFree(d_Output_phi) );
   cutilSafeCall( cudaFree(d_gxx ) );
   cutilSafeCall( cudaFree(d_gxy ) );
   cutilSafeCall( cudaFree(d_gxz ) );
@@ -333,7 +421,8 @@ int main(int argc, char **argv){
   cutilSafeCall( cudaFree(d_gzz ) );
 
   free(h_OutputGPU);
-  free(h_Buffer);
+  free(h_OutputGPU_theta);
+  free(h_OutputGPU_phi);
   free(h_Input);
 
   cutilCheckError(cutDeleteTimer(hTimer));
@@ -342,3 +431,4 @@ int main(int argc, char **argv){
 
   exit(0);
 }
+

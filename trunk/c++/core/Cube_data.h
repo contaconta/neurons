@@ -1618,7 +1618,7 @@ Cube<float,double>*  Cube<T,U>::create_blank_cube(string name, bool reflectToFil
 }
 
 template <class T, class U>
-Cube<uchar,ulong>* Cube<T,U>::create_blank_cube_uchar(string name)
+Cube<uchar,ulong>* Cube<T,U>::create_blank_cube_uchar(string name, bool reflectToFile)
 {
   string vl = ".vl";
   string nfo = ".nfo";
@@ -1636,9 +1636,11 @@ Cube<uchar,ulong>* Cube<T,U>::create_blank_cube_uchar(string name)
   toReturn->directory = directory;
   toReturn->type = "uchar";
   toReturn->filenameVoxelData = name + vl;
-  toReturn->save_parameters(this->directory + name + nfo);
-  toReturn->create_volume_file(this->directory + name + vl);
-  toReturn->load_volume_data(this->directory + name + vl);
+  if(reflectToFile){
+    toReturn->save_parameters(this->directory + name + nfo);
+    toReturn->create_volume_file(this->directory + name + vl);
+  }
+  toReturn->load_volume_data(this->directory + name + vl, reflectToFile);
 
   return toReturn;
 

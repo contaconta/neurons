@@ -57,6 +57,7 @@ extern "C" void hessianGPU
  );
 
 
+
 extern "C" void set_horizontal_kernel(vector<float>& kernel){
   float h_kernel_h[kernel.size()];
   for(unsigned int i = 0; i < kernel.size(); i++)

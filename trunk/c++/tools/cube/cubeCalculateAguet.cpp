@@ -130,11 +130,17 @@ void compute_aguet
           higher_eival = 2;
           res->put(x,y,z,l3);
         }
-
+        bool forceAngle = false;
+        if(fabs(data[0]) + fabs(data[1]) + fabs(data[2]) +
+           fabs(data[3]) + fabs(data[4]) + fabs(data[5]) +
+           fabs(data[6]) + fabs(data[7]) + fabs(data[8]) <
+           1e-4)
+          forceAngle = true;
         if(aguet_theta!= NULL){
           theta = atan(gsl_matrix_get(evec[tn],1,higher_eival)/
-                        gsl_matrix_get(evec[tn],0,higher_eival));
-          aguet_theta->put(x,y,z,theta);
+                       gsl_matrix_get(evec[tn],0,higher_eival));
+          if(!forceAngle)
+            aguet_theta->put(x,y,z,theta);
         }
         if(aguet_phi!=NULL){
           r = sqrt(gsl_matrix_get(evec[tn],0,higher_eival) *
@@ -145,7 +151,8 @@ void compute_aguet
                    gsl_matrix_get(evec[tn],2,higher_eival)
                    );
           phi   = acos(gsl_matrix_get(evec[tn],2,higher_eival)/r);
-          aguet_phi->put(x,y,z,phi);
+          if(!forceAngle)
+            aguet_phi->put(x,y,z,phi);
         }
       }
     }
@@ -261,8 +268,8 @@ int main(int argc, char **argv) {
   sprintf(aguetNamePhi, "aguet_%02.2f_%02.2f_phi", sigma_xy, sigma_z);
 
   Cube<float, double>* res   = cube->create_blank_cube(aguetName);
-  // Cube<float, double>* theta = cube->create_blank_cube(aguetNameTheta);
-  // Cube<float, double>* phi   = cube->create_blank_cube(aguetNamePhi);
+  Cube<float, double>* theta = cube->create_blank_cube(aguetNameTheta);
+  Cube<float, double>* phi   = cube->create_blank_cube(aguetNamePhi);
 
   // Padded execution of the command
   int pad_xy = ceil(Mask::gaussian_mask(2, sigma_xy,true).size()/2);
@@ -302,18 +309,20 @@ int main(int argc, char **argv) {
                                   derivatives[0]->cubeHeight,
                                   derivatives[0]->cubeDepth);
 
-        // Cube<float, double>* theta_pad =
-          // new Cube<float, double>(derivatives[0]->cubeWidth,
-                                  // derivatives[0]->cubeHeight,
-                                  // derivatives[0]->cubeDepth);
-        // Cube<float, double>* theta_pad =
-          // new Cube<float, double>(derivatives[0]->cubeWidth,
-                                  // derivatives[0]->cubeHeight,
-                                  // derivatives[0]->cubeDepth);
+        Cube<float, double>* theta_pad =
+          new Cube<float, double>(derivatives[0]->cubeWidth,
+                                  derivatives[0]->cubeHeight,
+                                  derivatives[0]->cubeDepth);
+        Cube<float, double>* phi_pad =
+          new Cube<float, double>(derivatives[0]->cubeWidth,
+                                  derivatives[0]->cubeHeight,
+                                  derivatives[0]->cubeDepth);
 
-        // compute_aguet(derivatives, res_pad, theta_pad, phi_pad, inverted);
-        compute_aguet(derivatives, res_pad, NULL, NULL, inverted);
+        compute_aguet(derivatives, res_pad, theta_pad, phi_pad, inverted);
+        // compute_aguet(derivatives, res_pad, NULL, NULL, inverted);
         put_padded_tile(res, res_pad, x0,y0,z0, pad_xy, pad_xy, pad_z);
+        put_padded_tile(theta, theta_pad, x0,y0,z0, pad_xy, pad_xy, pad_z);
+        put_padded_tile(phi, phi_pad, x0,y0,z0, pad_xy, pad_xy, pad_z);
         for(int i = 0; i < derivatives.size(); i++)
           delete derivatives[i];
         delete res_pad;

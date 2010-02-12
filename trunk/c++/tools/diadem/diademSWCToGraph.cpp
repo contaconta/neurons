@@ -32,17 +32,7 @@ int main(int argc, char **argv) {
 
   SWC* swc     = new SWC(argv[1]);
   Cube_P* cube = CubeFactory::load(argv[2]);
-  Graph<Point3Dw>* out = new Graph<Point3Dw>();
-
-  float mx, my, mz;
-  for(int i = 0; i < swc->gr->cloud->points.size(); i++){
-    Point3Dw* pt = dynamic_cast<Point3Dw*>(swc->gr->cloud->points[i]);
-    cube->indexesToMicrometers3((int)pt->coords[0], (int)pt->coords[1],
-                                (int)pt->coords[2], mx, my, mz);
-    out->cloud->points.push_back
-      (new Point3Dw(mx, my, mz, pt->weight));
-  }
-  out->eset = swc->gr->eset;
+  Graph<Point3Dw>* out = swc->toGraphInMicrometers(cube);
 
   out->saveToFile(argv[3]);
 
