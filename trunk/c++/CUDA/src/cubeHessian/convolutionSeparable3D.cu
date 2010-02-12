@@ -498,9 +498,10 @@ extern "C" void hessianGPU_orientation
 {
   dim3 gird (imageD*imageW/ROWS_BLOCKDIM_X,imageH/ROWS_BLOCKDIM_Y);
   dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
-  hessianKernelO<<<gird, block>>>( d_Output, d_Output_theta, d_Output_phi, 
+  hessianKernelO<<<gird, block>>>( d_Output, d_Output_theta, d_Output_phi,
                                    d_gxx, d_gxy, d_gxz,
-                                   d_gyy, d_gyz, d_gzz,
-                                   imageW, imageH, imageD );
+                                  d_gyy, d_gyz, d_gzz, imageW, imageH, imageD );
+  cutilCheckMsg("hessianKernel() execution failed\n");
+
   cutilCheckMsg("hessianKernel() execution failed\n");
 }
