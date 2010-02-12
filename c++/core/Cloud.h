@@ -57,20 +57,12 @@ template <class T>
   VisibleE::draw();
 
   if(v_glList == 0){
-    // Reduces the number of points to 2000
-    float step = points.size() / 2000;
-    if(step < 1)
-      step = 1;
-    else
-      printf("Cloud::draw there is a subsampling of the points\n");
-    // float step = 1;
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
     glColor3f(v_r, v_g, v_b);
-    // for(float i = 0; i < points.size(); i+=step){
     for(float i = 0; i < points.size(); i++){
       points[(int)i]->draw(v_radius);
-      if(1){
+      if(0){
         glPushMatrix();
         glTranslatef(points[(int)i]->coords[0],
                      points[(int)i]->coords[1],

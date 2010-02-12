@@ -34,11 +34,12 @@ static char doc[] =
   "imageMask masks an image with another one";
 
 /* A description of the arguments we accept. */
-static char args_doc[] = "image mask";
+static char args_doc[] = "image mask output";
 
 /* The options we understand. */
 static struct argp_option options[] = {
   {"value",   't',  "float", 0, "value to put the points outside the mask"},
+  {"alpha",   'a',  "float", 0, "value to put the points outside the mask"},
   {"invert",  'i',  0 , 0, "wether the important points in the mask are the dark ones"},
   { 0 }
 };
@@ -46,7 +47,9 @@ static struct argp_option options[] = {
 struct arguments
 {
   float value;
+  float alpha;
   bool flag_max;
+  bool flag_alpha_blending;
   char* args[2];
 };
 
@@ -64,12 +67,16 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 't':
       argments->value = atof(arg);
       break;
+    case 'a':
+      argments->flag_alpha_blending = true;
+      argments->alpha = atof(arg);
+      break;
     case 'i':
       argments->flag_max = 0;
       break;
 
     case ARGP_KEY_ARG:
-      if (state->arg_num >= 2)
+      if (state->arg_num >= 3)
       /* Too many arguments. */
         argp_usage (state);
       argments->args[state->arg_num] = arg;
@@ -77,7 +84,7 @@ parse_opt (int key, char *arg, struct argp_state *state)
 
     case ARGP_KEY_END:
       /* Not enough arguments. */
-      if (state->arg_num < 1)
+      if (state->arg_num < 2)
         argp_usage (state);
       break;
 
@@ -107,7 +114,11 @@ int main(int argc, char **argv) {
 
   Image< float >* img  = new Image< float >(arguments.args[0]);
   Image< float >* mask = new Image< float >(arguments.args[1]);
+  Image< float >* out  = img->copy(arguments.args[2]);
 
-  img->applyMask(mask, arguments.value, arguments.flag_max);
-  img->save();
+  if(arguments.flag_alpha_blending)
+    out->applyMaskAlphaBlending(mask, arguments.value, arguments.flag_max, arguments.alpha);
+  else
+    out->applyMask(mask, arguments.value, arguments.flag_max);
+  out->save();
 }

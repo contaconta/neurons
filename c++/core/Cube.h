@@ -43,6 +43,9 @@ Y s                    |/            |/
 #define CUBE_MAX_Y 10000
 #define CUBE_MAX_Z 1000
 
+#define CubeF Cube<float, double>
+#define CubeU Cube<uchar, ulong>
+
 #ifdef _WIN32
 typedef unsigned long ulong;
 #endif
@@ -89,6 +92,10 @@ public:
   Cube(string filenameParams, bool load_volume_file = true);
   Cube(string filenameParams, string _filenameVoxelData);
   Cube(string filenameParams, string _filenameVoxelData, string filenameIntegralData);
+
+  int size(){
+    return cubeWidth*cubeHeight*cubeDepth;
+  }
 
 
   ~Cube();
@@ -306,7 +313,7 @@ public:
   Cube<float,double>* create_blank_cube(string filename, bool reflectToFile = true);
 
   /** Creates a blanck cube with the same dimensions and uchar type*/
-  Cube<uchar,ulong>*  create_blank_cube_uchar(string filename);
+  Cube<uchar,ulong>*  create_blank_cube_uchar(string filename, bool reflectToFile = true);
 
   /** Creates a gaussian pyramid of the cube.*/
   void create_gaussian_pyramid();

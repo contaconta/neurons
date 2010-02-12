@@ -2361,7 +2361,7 @@ void Cube<T,U>::render_cylinder(vector<int> idx1, vector<int> idx2, float radius
   int dot_p1p0p2p1;
   float r2 = radius_micrometers*radius_micrometers;
 
-  printf("Generating edge [");
+  // printf("Generating edge [");
 
   for(int z = max(0,z_min-window_z);
       z < min((int)cubeDepth, z_max + window_z);
@@ -2389,9 +2389,9 @@ void Cube<T,U>::render_cylinder(vector<int> idx1, vector<int> idx2, float radius
             this->put(x,y,z,(T)0);
         }
       }
-      printf("#");fflush(stdout);
+      // printf("#");fflush(stdout);
   }
-  printf("]\n");
+  // printf("]\n");
 }
 
 

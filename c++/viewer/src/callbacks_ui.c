@@ -296,8 +296,8 @@ on_drawing3D_motion_notify_event       (GtkWidget       *widget,
     if( mouse_buttons[0] )
       {
         if(!flag_elliminate_rotation){
-          /* rot3DX -= (float) 0.5f * diffy; */
-          /* rot3DY -= (float) 0.5f * diffx; */
+          rot3DX -= (float) 0.5f * diffy;
+          rot3DY -= (float) 0.5f * diffx;
         }
         on_drawing3D_expose_event(widget, NULL, user_data);
       }

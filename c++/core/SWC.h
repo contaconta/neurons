@@ -211,6 +211,23 @@ public:
 
   }
 
+  Graph<Point3Dw>* toGraphInMicrometers(Cube_P* cube)
+  {
+    Graph<Point3Dw>* out = new Graph<Point3Dw>();
+    float mx, my, mz;
+    for(int i = 0; i < gr->cloud->points.size(); i++){
+      Point3Dw* pt = dynamic_cast<Point3Dw*>(gr->cloud->points[i]);
+      cube->indexesToMicrometers3((int)pt->coords[0], (int)pt->coords[1],
+                                  (int)pt->coords[2], mx, my, mz);
+      out->cloud->points.push_back
+        (new Point3Dw(mx, my, mz, pt->weight));
+    }
+    out->eset = gr->eset;
+    return out;
+  }
+
+
+
   bool load(istream &in){};
 
   string className(){return "SWC";}

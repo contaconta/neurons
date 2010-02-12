@@ -537,8 +537,8 @@ void Neuron::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-//     drawInOpenGl(false, 1e6);
-    drawInOpenGlAsLines(false);
+    drawInOpenGl(false, 1e6);
+    // drawInOpenGlAsLines(false);
     glEndList();
   }
   else{
@@ -1610,7 +1610,7 @@ void Neuron::renderEdgeInImage
     (p1->coords[2]-p2->coords[2])*(p1->coords[2]-p2->coords[2]) );
 
   double width_microm = (p1->coords[3] + p2->coords[3])/2;
-  double radius = 2*sqrt((seglen/2)*(seglen/2) + (width_microm/2)*(width_microm/2));
+  double radius = 4*sqrt((seglen/2)*(seglen/2) + (width_microm/2)*(width_microm/2));
 
   //Calculates the medium point
   vector< float > micrometers(3);
@@ -1667,9 +1667,9 @@ void Neuron::renderEdgeInImage
                 dist_calc = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
 
                 // Calculates the distance from the point to the middle of the edge
-                d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0]) + 
+                d_p_indexes_origin = sqrt( (double)(x-indexes_orig[0]) * (x-indexes_orig[0])+ 
                                            (y-indexes_orig[1]) * (y-indexes_orig[1]) );
-                if((dist_calc <= width) && (d_p_indexes_origin < p2p1length_2*1.2) )
+                if((dist_calc <= width) && (d_p_indexes_origin < p2p1length_2*1.5) )
                   {
                     img->put(x,y,0);
                     // printf("x=%i y=%i\n", x, y);

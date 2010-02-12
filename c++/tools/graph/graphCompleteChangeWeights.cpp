@@ -27,7 +27,6 @@
 using namespace std;
 
 typedef Graph<Point3D, EdgeW<Point3D> > Graph3D;
-typedef Cube<float, double> CubeF;
 
 float computeCost(Graph3D* gr, CubeF* cube){
   int x,y,z;

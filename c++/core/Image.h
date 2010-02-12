@@ -111,6 +111,8 @@ public:
   /** Applies a mask to this image. The pixels are put to value. The selected pixels are: if(high_mask) > mean(mask), otherwhise.*/
   void applyMask(Image<float>* mask, T value, bool high_mask = true);
 
+  void applyMaskAlphaBlending(Image<float>* mask, T value, bool high_mask = true, float alpha = 0.5);
+
   void histogram(int nbins, vector<int>& n_points, vector<float>& range, bool ignoreLowerValue = false);
 
   /** Calculate Hessian. Computes the hessian of the image at a given scale and saves the eigenvalues in an image */
@@ -1031,6 +1033,21 @@ void Image<T>::applyMask(Image<float>* mask, T value, bool high_mask)
     }
   }
 }
+
+template<class T>
+void Image<T>::applyMaskAlphaBlending(Image<float>* mask, T value, bool high_mask, float alpha)
+{
+  double m_m = mask->getMean();
+  for(int y = 0; y < height; y++){
+    for(int x = 0; x < width; x++){
+      if(high_mask && (mask->at(x,y) > m_m))
+        put(x,y,alpha*value + alpha*at(x,y));
+      if(!high_mask && (mask->at(x,y) < m_m))
+        put(x,y,alpha*value + alpha*at(x,y));
+    }
+  }
+}
+
 
 
 /* ADAPTED FROM:

@@ -169,7 +169,7 @@ void runDijkstra
       }
     }
   }
-  printf("Path for point %03i done\r", sourceNode);
+  printf("Path for point %03i done\n", sourceNode);
 }
 
 // Traces the shortest path between the sourceNode and a terminal node
@@ -252,16 +252,81 @@ float computePathCost
   return (imageCost + geomCost + 50)/(path.size()+1);
 }
 
+
+float edgeLogProb
+(Point* _p0, Point* _p1, Cube<float, double>* probs)
+{
+  int x0, y0, z0, x1, y1, z1;
+  probs->micrometersToIndexes3
+    (_p0->coords[0], _p0->coords[1], _p0->coords[2], x0, y0, z0);
+  probs->micrometersToIndexes3
+    (_p1->coords[0], _p1->coords[1], _p1->coords[2], x1, y1, z1);
+  float dist = sqrt((double)
+                    (x0-x1)*(x0-x1) +
+                    (y0-y1)*(y0-y1) +
+                    (z0-z1)*(z0-z1));
+  float p1 = probs->at(x0,y0,z0);
+  float p2 = probs->at(x1,y1,z1);
+  if(fabs(p1-p2) < 1e-4) return -dist*log10(p1);
+  return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
+}
+
+float edgeGeomLogProb(Point* _p0, Point* _p1, Point* _p2){
+    vector< float > p0 = _p0->coords;
+    vector< float > p1 = _p1->coords;
+    vector< float > p2 = _p2->coords;
+    vector< float > p1p0 = v_subs(p1, p0);
+    vector< float > p1p0n = v_scale(p1p0, v_norm(p1p0));
+    vector< float > p2p1 = v_subs(p2, p1);
+    vector< float > p2p1n = v_scale(p2p1, v_norm(p2p1));
+    float cos_alpha = v_dot(p1p0n,p2p1n);
+    // if(cos_alpha < 0){
+      //We do not allow that
+      // return FLT_MAX;
+    // }
+    return -log10(fabs(cos_alpha));
+
+}
+
+
 float computePathCost
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< int >& path,
-  float imageCost,
   vector< vector< Graph3D* > >& v2v_paths,
   Cube<float, double>* probs
   )
 {
-  //HERE IT COMES THE COST ESTIMATION. DO IT TOMORROW
-  
+  float imageEvidence = 0;
+  float geometryEvidence = 0;
+  int nElements = 0;
+  Graph3D* dsp1;
+  Graph3D* dsp2;
+
+  //Loops for all the edges of the path
+  // Computes the image evidence
+  for(int nep = 0; nep < path.size()-1; nep++){
+    dsp2 = v2v_paths[path[nep]][path[nep+1]];
+    nElements += dsp2->cloud->points.size()-1;
+    if(nep >= 1) dsp1 = v2v_paths[path[nep-1]][path[nep]];
+    for(int nP = 0; nP < dsp2->cloud->points.size()-1; nP++){
+      imageEvidence +=
+        edgeLogProb
+        (dsp2->cloud->points[nP], dsp2->cloud->points[nP+1], probs);
+      // if(nP > 0)
+        // geometryEvidence +=
+          // edgeGeomLogProb(dsp2->cloud->points[nP-1],
+                          // dsp2->cloud->points[nP],
+                        // dsp2->cloud->points[nP+1]);
+      if((nP == 0) && (nep > 0)){
+        geometryEvidence +=
+          edgeGeomLogProb(dsp1->cloud->points[dsp1->cloud->points.size()-1],
+                          dsp2->cloud->points[nP],
+                          dsp2->cloud->points[nP+1]);
+      }
+    }
+  }
+
+  return (imageEvidence + geometryEvidence + 200)/nElements;
 
 }
 
@@ -310,7 +375,6 @@ void allShortestPaths
       // costs[i][j] = 4*(distances[j]+maxEdgeVal)/(paths[i][j].size()+1);
       // costs[i][j] = computePathCost(gr, paths[i][j], distances[j]);
       costs[i][j] = computePathCost(gr, paths[i][j], v2v_paths, probs);
-
     }
   }
   printf("\n");
