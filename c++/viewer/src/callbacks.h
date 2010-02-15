@@ -492,3 +492,7 @@ on_mip1_activate                       (GtkMenuItem     *menuitem,
 void
 on_Clear_Stage_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_videolayers_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
