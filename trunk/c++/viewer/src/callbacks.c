@@ -753,3 +753,11 @@ on_Clear_Stage_clicked                 (GtkButton       *button,
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 
+
+void
+on_videolayers_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+

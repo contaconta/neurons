@@ -108,6 +108,15 @@
 			  <signal name="activate" handler="on_screenshot_activate"/>
 			</widget>
 		      </child>
+
+		      <child>
+			<widget class="GtkMenuItem" id="video_layers1">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Video Layers</property>
+			  <property name="use_underline">True</property>
+			  <signal name="activate" handler="on_videolayers_activate" last_modification_time="Mon, 15 Feb 2010 03:37:43 GMT"/>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 		</widget>

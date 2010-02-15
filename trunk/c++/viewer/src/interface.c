@@ -42,6 +42,7 @@ create_main_window (void)
   GtkWidget *menuitem5;
   GtkWidget *menuitem5_menu;
   GtkWidget *screenshot;
+  GtkWidget *video_layers1;
   GtkWidget *menuitem6;
   GtkWidget *menuitem6_menu;
   GtkWidget *_3dmenu;
@@ -139,6 +140,10 @@ create_main_window (void)
   screenshot = gtk_menu_item_new_with_mnemonic (_("Screenshot"));
   gtk_widget_show (screenshot);
   gtk_container_add (GTK_CONTAINER (menuitem5_menu), screenshot);
+
+  video_layers1 = gtk_menu_item_new_with_mnemonic (_("Video Layers"));
+  gtk_widget_show (video_layers1);
+  gtk_container_add (GTK_CONTAINER (menuitem5_menu), video_layers1);
 
   menuitem6 = gtk_menu_item_new_with_mnemonic (_("_View"));
   gtk_widget_show (menuitem6);
@@ -327,6 +332,9 @@ create_main_window (void)
   g_signal_connect ((gpointer) screenshot, "activate",
                     G_CALLBACK (on_screenshot_activate),
                     NULL);
+  g_signal_connect ((gpointer) video_layers1, "activate",
+                    G_CALLBACK (on_videolayers_activate),
+                    NULL);
   g_signal_connect ((gpointer) _3dmenu, "activate",
                     G_CALLBACK (on_3dmenu_activate),
                     NULL);
@@ -419,6 +427,7 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, menuitem5, "menuitem5");
   GLADE_HOOKUP_OBJECT (main_window, menuitem5_menu, "menuitem5_menu");
   GLADE_HOOKUP_OBJECT (main_window, screenshot, "screenshot");
+  GLADE_HOOKUP_OBJECT (main_window, video_layers1, "video_layers1");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6, "menuitem6");
   GLADE_HOOKUP_OBJECT (main_window, menuitem6_menu, "menuitem6_menu");
   GLADE_HOOKUP_OBJECT (main_window, _3dmenu, "_3dmenu");
