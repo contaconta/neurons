@@ -37,4 +37,6 @@ int main(int argc, char **argv) {
   grp = GraphFactory::load("data/graph_p.gr");
   grp->saveToFile("data/graph_p.gr");
   printf("Check manually that the files data/graph.gr and data/graph_p.gr represent the same graph\n");
+  delete gr;
+  // delete grp;
 }

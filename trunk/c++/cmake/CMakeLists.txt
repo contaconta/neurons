@@ -240,8 +240,12 @@ target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
 
 ENDIF(${GLEW_FOUND})
 
-# # add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
+# add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
 # target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeAverage ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAverage.cpp)
+target_link_libraries(cubeAverage ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 # target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
@@ -250,8 +254,8 @@ ENDIF(${GLEW_FOUND})
 # target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
 
 
-# # add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
-# target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
+add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
+target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
 # target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
@@ -268,8 +272,8 @@ ENDIF(${GLEW_FOUND})
 # add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
 # target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
-# target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
+add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
+target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
 
 # # add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
 # target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
@@ -290,8 +294,8 @@ target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
 # add_executable(cubeRescale ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRescale.cpp)
 # target_link_libraries(cubeRescale ${LINK_LIBRARIES_ALL})
 
-# # add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
-# target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
+add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
+target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(cubeDerivative ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivative.cpp)
@@ -491,6 +495,9 @@ target_link_libraries(diademSWCisBinaryTree ${LINK_LIBRARIES_ALL})
 
 # add_executable(testSWC ${CMAKE_SOURCE_DIR}/../tests/testSWC.cpp)
 # target_link_libraries(testSWC ${LINK_LIBRARIES_ALL})
+
+add_executable(graph ${CMAKE_SOURCE_DIR}/../tests/graph.cpp)
+target_link_libraries(graph ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(tryManyPathsCloud ${CMAKE_SOURCE_DIR}/../tests/tryManyPathsCloud.cpp)

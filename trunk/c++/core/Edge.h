@@ -27,6 +27,8 @@ public:
     return "Edge";
   }
 
+  ~Edge(){}
+
 };
 
 template< class P>

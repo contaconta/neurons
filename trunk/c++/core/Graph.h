@@ -87,7 +87,6 @@ template< class P, class E>
 Graph<P,E>::~Graph()
 {
   delete (cloud);
-  delete (&eset);
 }
 
 template< class P, class E>

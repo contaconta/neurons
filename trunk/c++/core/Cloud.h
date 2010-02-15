@@ -47,6 +47,7 @@ template <class T>
 template <class T>
  Cloud<T>::~Cloud()
 {
+  printf("Cloud:: freeing points\n");
   for(int i = 0; i < points.size(); i++)
     delete(points[i]);
 }
