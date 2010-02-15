@@ -435,8 +435,8 @@ __global__ void hessianKernelO
   // http://en.wikipedia.org/wiki/Eigenvalue_algorithm
   //Oliver K. Smith: Eigenvalues of a symmetric 3 × 3 matrix. Commun. ACM 4(4): 168 (1961) 
   float a0, b0, c0, d0, e0, f0;
-  a0 = d_gxx[i]; b0 = d_gxy[i]; c0 = d_gxz[i];
-  d0 = d_gyy[i]; e0 = d_gyz[i]; f0 = d_gzz[i];
+  a0 = -d_gxx[i]; b0 = -d_gxy[i]; c0 = -d_gxz[i];
+  d0 = -d_gyy[i]; e0 = -d_gyz[i]; f0 = -d_gzz[i];
 
   float m = (a0+d0+f0)/3;
   float q = computeDeterminant

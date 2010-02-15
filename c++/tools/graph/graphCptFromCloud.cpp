@@ -124,8 +124,9 @@ int main(int argc, char **argv) {
   }
   if(args.compute_k){
     int k = args.k;
-    char visited[cloud->points.size()][cloud->points.size()];
-    for(int i = 0; i < cloud->points.size(); i++){
+    int nPoints = cloud->points.size();
+    vector< vector< double > >  visited = allocateMatrix(nPoints,nPoints);
+    for(int i = 0; i < nPoints; i++){
       Point* pt1 = cloud->points[i];
 
       std::multimap<float, int> map;
@@ -153,7 +154,9 @@ int main(int argc, char **argv) {
           visited[j][i] = 1;
         }
       }
-
+      if(i%100 == 0){
+        printf("Analyzing point %i \n", i);
+      }
     } // loop for point i
   }//compute k
 

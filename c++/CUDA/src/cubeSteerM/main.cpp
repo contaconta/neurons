@@ -14,223 +14,205 @@
 #include "Cube.h"
 #include "Mask.h"
 
-// extern "C" void set_horizontal_kernel(vector<float>& kernel);
-// extern "C" void set_vertical_kernel(vector<float>& kernel);
+// Torch3 files
 
-extern "C" void setConvolutionKernel_horizontal(float *h_Kernel, int kernel_length);
 
-extern "C" void setConvolutionKernel_vertical(float *h_Kernel, int kernel_length);
 
-extern "C" void setConvolutionKernel_depth(float *h_Kernel, int kernel_length);
-
-extern "C" void convolutionRowsGPU(
-    float *d_Dst,
-    float *d_Src,
-    int imageW,
-    int imageH,
-    int imageD,
-    int kernel_radiusw
+#include "GPUfunctions.h"
+extern "C" void rtfSVM
+(float*  d_output,
+ float*  d_theta,
+ float*  d_phi,
+ float*  d_sv,
+ float*  d_alphas,
+ float   sk,
+ int     n_sv,
+ int     imageW,
+ int     imageH,
+ int     imageD
 );
 
-extern "C" void convolutionColumnsGPU(
-    float *d_Dst,
-    float *d_Src,
-    int imageW,
-    int imageH,
-    int imageD,
-    int kernel_radius
-);
-
-extern "C" void convolutionDepthGPU(
-    float *d_Dst,
-    float *d_Src,
-    int imageW,
-    int imageH,
-    int imageD,
-    int kernel_radius
-);
-
-
-extern "C" void hessianGPU
-(
- float *d_output,
- float *d_gxx,
- float *d_gxy,
- float *d_gxz,
- float *d_gyy,
- float *d_gyz,
- float *d_gzz,
- int imageW,
- int imageH,
- int imageD
- );
-
-
-extern "C" void hessianGPU_orientation
-(
- float *d_output,
- float *d_output_theta,
- float *d_output_phi,
- float *d_gxx,
- float *d_gxy,
- float *d_gxz,
- float *d_gyy,
- float *d_gyz,
- float *d_gzz,
- int imageW,
- int imageH,
- int imageD
- );
-
-
-extern "C" void set_horizontal_kernel(vector<float>& kernel){
-  float h_kernel_h[kernel.size()];
-  for(unsigned int i = 0; i < kernel.size(); i++)
-    h_kernel_h[i] = kernel[i];
-  setConvolutionKernel_horizontal(h_kernel_h, kernel.size());
-}
-
-extern "C" void set_vertical_kernel(vector<float>& kernel){
-  float h_kernel_h[kernel.size()];
-  for(unsigned int i = 0; i < kernel.size(); i++)
-    h_kernel_h[i] = kernel[i];
-  setConvolutionKernel_vertical(h_kernel_h, kernel.size());
-}
-
-extern "C" void set_depth_kernel(vector<float>& kernel){
-  float h_kernel_h[kernel.size()];
-  for(unsigned int i = 0; i < kernel.size(); i++)
-    h_kernel_h[i] = kernel[i];
-  setConvolutionKernel_depth(h_kernel_h, kernel.size());
-}
-
-
-extern "C" void convolution_separable
-( float* d_Dst,
-  float* d_Src,
-  vector< float >& kernel_h,
-  vector< float >& kernel_v,
-  vector< float >& kernel_d,
-  int sizeX,
-  int sizeY,
-  int sizeZ,
-  float* d_tmp
-  )
+////////////////////////////////////////////////////////////////////////////////
+// Torch3 SVM output file extraction. Kansal code
+////////////////////////////////////////////////////////////////////////////////
+void get_svm_features
+(string svm_file,
+ int& n_support_vectors,
+ int& no_dimensions,
+ float **alphas,
+ float **support_vec)
 {
-  set_horizontal_kernel(kernel_h);
-  set_vertical_kernel  (kernel_v);
-  set_depth_kernel     (kernel_d);
+  // printf("Init read of %s\n", svm_file.c_str());
+  int tag_size,block_size,n_blocks;
+  int n_support_vectors_bound;
+  char tag[10];
+  float b;
+  FILE *f=fopen(svm_file.c_str(),"rb");
+  if(!f){
+    cout<<"out.svm doest not exist"<<endl;
+    exit(0);
+  }
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
+  fread( &b, sizeof(float), 1, f );
+  // printf("b is %f\n", b);
 
-  cutilSafeCall( cudaThreadSynchronize() );
-  convolutionRowsGPU(d_Dst,
-                     d_Src,
-                     sizeX,
-                     sizeY,
-                     sizeZ,
-                     floor(kernel_h.size()/2)
-                     );
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
+  fread( &n_support_vectors, sizeof(int), 1, f );
+  // printf("n_support_vectors is %i\n", n_support_vectors);
 
-  convolutionColumnsGPU(
-                        d_tmp,
-                        d_Dst,
-                        sizeX,
-                        sizeY,
-                        sizeZ,
-                        floor(kernel_v.size()/2)
-                        );
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
+  fread( &n_support_vectors_bound, sizeof(int), 1, f );
 
-  convolutionDepthGPU(
-                        d_Dst,
-                        d_tmp,
-                        sizeX,
-                        sizeY,
-                        sizeZ,
-                        floor(kernel_d.size()/2)
-                        );
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
 
-  cutilSafeCall( cudaThreadSynchronize() );
+  *alphas=new float[n_support_vectors];
+  for(int n=0;n<n_support_vectors;n++){
+    fread( &((*alphas)[n]), sizeof(float), 1, f );
+  }
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
+  fread( &n_support_vectors_bound, sizeof(int), 1, f );
+  fread( &tag_size, sizeof(int), 1, f );
+  fread( tag, sizeof(char), tag_size, f );
+  fread( &block_size, sizeof(int), 1, f );
+  fread( &n_blocks, sizeof(int), 1, f );
+  fread( &no_dimensions, sizeof(int), 1, f );
+  printf("n_dimensions is %i\n", no_dimensions);
+
+  *support_vec=new float[(n_support_vectors)*(no_dimensions)];
+  for(int i=0;i<n_support_vectors;i++){
+    fread( &tag_size, sizeof(int), 1, f );
+    fread( tag, sizeof(char), tag_size, f );
+    fread( &block_size, sizeof(int), 1, f );
+    fread( &n_blocks, sizeof(int), 1, f );
+    fread( &n_support_vectors_bound, sizeof(int), 1, f );
+    fread( &tag_size, sizeof(int), 1, f );
+    fread( tag, sizeof(char), tag_size, f );
+    fread( &block_size, sizeof(int), 1, f );
+    fread( &n_blocks, sizeof(int), 1, f );
+    for(int j=0;j<no_dimensions;j++){
+      fread( &((*(support_vec))[i*(no_dimensions) + j]), sizeof(float), 1, f );
+    }
+  }
 }
 
-
-extern "C" void hessian
-( float* d_Buffer,
-  float* d_Input,
-  float sigma,
-  float *d_gxx,
-  float *d_gxy,
-  float *d_gxz,
-  float *d_gyy,
-  float *d_gyz,
-  float *d_gzz,
-  int sizeX,
-  int sizeY,
-  int sizeZ
-  )
+void printSupportVectors
+(float* alphas, float* suppotVectors, int nVectors, int nDimensions)
 {
+  for(int i = 0; i < nVectors; i++){
+    printf("%i: %f ", i, alphas[i]);;
+    for(int j = 0; j < nDimensions; j++){
+      printf("%f ", suppotVectors[i*nDimensions + j]);
+    }
+    printf("\n");
+  }
 
-  vector<float> kernel_0 = Mask::gaussian_mask(0, sigma, 1);
-  vector<float> kernel_1 = Mask::gaussian_mask(1, sigma, 1);
-  vector<float> kernel_2 = Mask::gaussian_mask(2, sigma, 1);
-
-  convolution_separable( d_gxx, d_Input, kernel_2, kernel_0, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gxy, d_Input, kernel_1, kernel_1, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gxz, d_Input, kernel_1, kernel_0, kernel_1,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gyy, d_Input, kernel_0, kernel_2, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gyz, d_Input, kernel_0, kernel_1, kernel_1,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gzz, d_Input, kernel_0, kernel_0, kernel_2,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-
-  hessianGPU(d_Buffer, d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
 }
 
+/*****
+//Order of the derivatives
+Abs   Ret  Meaning
+0     0    -> xx
+1     1    -> xy
+2     2    -> xz
+3     3    -> yy
+4     4    -> yz
+5     5    -> zz
+6     0    -> xxxx
+7     1    -> xxxy
+8     2    -> xxxz
+9     3    -> xxyy
+10    4    -> xxyz
+11    5    -> xxzz
+12    6    -> xyyy
+13    7    -> yyyy
+14    8    -> yyyz
+15    9    -> xyyz
+16    10   -> yyzz
+17    11   -> xzzz
+18    12   -> yzzz
+19    13   -> zzzz
+20    14   -> xyzz
+****/
 
-extern "C" void hessian_orientation
-( float* d_Buffer,
-  float* d_Output_theta,
-  float* d_Output_phi,
-  float* d_Input,
-  float sigma,
-  float *d_gxx,
-  float *d_gxy,
-  float *d_gxz,
-  float *d_gyy,
-  float *d_gyz,
-  float *d_gzz,
-  int sizeX,
-  int sizeY,
-  int sizeZ
-  )
+extern "C" void set_derivatives_pointer(float **h_deriv);
+
+void compute_derivatives
+(float** h_deriv,
+ float*  d_Input,
+ float   sigma_images,
+ float*  d_buffer,
+ int sizeX,
+ int sizeY,
+ int sizeZ
+)
 {
+  vector<float> kernel_0 = Mask::gaussian_mask(0, sigma_images, 1);
+  vector<float> kernel_1 = Mask::gaussian_mask(1, sigma_images, 1);
+  vector<float> kernel_2 = Mask::gaussian_mask(2, sigma_images, 1);
+  vector<float> kernel_3 = Mask::gaussian_mask(3, sigma_images, 1);
+  vector<float> kernel_4 = Mask::gaussian_mask(4, sigma_images, 1);
 
-  vector<float> kernel_0 = Mask::gaussian_mask(0, sigma, 1);
-  vector<float> kernel_1 = Mask::gaussian_mask(1, sigma, 1);
-  vector<float> kernel_2 = Mask::gaussian_mask(2, sigma, 1);
+  convolution_separable( h_deriv[0 ], d_Input, kernel_2, kernel_0, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[1 ], d_Input, kernel_1, kernel_1, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[2 ], d_Input, kernel_1, kernel_0, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[3 ], d_Input, kernel_0, kernel_2, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[4 ], d_Input, kernel_0, kernel_1, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[5 ], d_Input, kernel_0, kernel_0, kernel_2,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[6 ], d_Input, kernel_4, kernel_0, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[7 ], d_Input, kernel_3, kernel_1, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[8 ], d_Input, kernel_3, kernel_0, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[9 ], d_Input, kernel_2, kernel_2, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[10], d_Input, kernel_2, kernel_1, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[11], d_Input, kernel_2, kernel_0, kernel_2,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[12], d_Input, kernel_1, kernel_3, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[13], d_Input, kernel_0, kernel_4, kernel_0,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[14], d_Input, kernel_0, kernel_3, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[15], d_Input, kernel_1, kernel_2, kernel_1,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[16], d_Input, kernel_0, kernel_2, kernel_2,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[17], d_Input, kernel_1, kernel_0, kernel_3,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[18], d_Input, kernel_0, kernel_1, kernel_3,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[19], d_Input, kernel_0, kernel_0, kernel_4,
+                         sizeX, sizeY, sizeZ, d_buffer );
+  convolution_separable( h_deriv[20], d_Input, kernel_1, kernel_1, kernel_2,
+                         sizeX, sizeY, sizeZ, d_buffer );
 
-  convolution_separable( d_gxx, d_Input, kernel_2, kernel_0, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gxy, d_Input, kernel_1, kernel_1, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gxz, d_Input, kernel_1, kernel_0, kernel_1,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gyy, d_Input, kernel_0, kernel_2, kernel_0,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gyz, d_Input, kernel_0, kernel_1, kernel_1,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-  convolution_separable( d_gzz, d_Input, kernel_0, kernel_0, kernel_2,
-                         sizeX, sizeY, sizeZ, d_Buffer );
-
-  // printf("H orientation: o: %i, t: %i p: %i\n",
-         // d_Buffer, d_Output_theta, d_Output_phi);
-  hessianGPU_orientation
-    (d_Buffer, d_Output_theta, d_Output_phi,
-     d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
+  // and now we need to pass the pointers to the constant memmory of the GPU
+  set_derivatives_pointer(h_deriv);
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,23 +220,40 @@ extern "C" void hessian_orientation
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv){
 
-  if(argc!=4){
-    printf("Usage: cubeHessian volume.nfo sigma out\n");
+  if(argc!=6){
+    printf("Usage: cubeSteerM volume.nfo sigma_images svm.svm sigma_svm_kernel out\n");
     exit(0);
   }
+
+  Cube<uchar, ulong>*  cube = new Cube<uchar, ulong>(argv[1]);
+  float sigma_images = atof(argv[2]);
+  string svm_file(argv[3]);
+  float sigma_kernel = atof(argv[4]);
+  string outName(argv[5]);
+
+  Cube<float, double>* res = cube->create_blank_cube(outName);
+
+  // strips the svm file
+  int n_sv;
+  int n_dim;
+  float *h_alphas, *h_sv;
+  get_svm_features
+    (svm_file, n_sv, n_dim, &h_alphas, &h_sv);
+
 
   float
     *h_Input,
     *h_OutputGPU,
-    *h_OutputGPU_phi,
-    *h_OutputGPU_theta;
+    **h_deriv;
 
+  //The derivatives are stored in one vector of vectors of derivatives.
   float
     *d_Input,
     *d_Output,
-    *d_Output_theta,
-    *d_Output_phi,
-    *d_gxx, *d_gxy, *d_gxz, *d_gyy, *d_gyz, *d_gzz
+    *d_theta,
+    *d_phi,
+    *d_sv,
+    *d_alphas
     ;
 
   printf("Initializing CUDA\n");
@@ -262,45 +261,47 @@ int main(int argc, char **argv){
   cudaSetDevice( cutGetMaxGflopsDeviceId() );
   cutilCheckError(cutCreateTimer(&hTimer));
 
-
-  printf("Initializing image and result image\n");
-  Cube<uchar, ulong>*  cube = new Cube<uchar, ulong>(argv[1]);
-  float sigma = atof(argv[2]);
-  Cube<float, double>* res = cube->create_blank_cube(argv[3]);
-  string nameTheta(argv[3]); nameTheta = nameTheta + "_theta";
-  string namePhi(argv[3]);   namePhi = namePhi + "_phi";
-  Cube<float, double>* res_theta = res->create_blank_cube(nameTheta);
-  Cube<float, double>* res_phi   = res_theta->create_blank_cube(namePhi);
   int imageW = cube->cubeWidth;
   int imageH = cube->cubeHeight;
   int imageD = cube->cubeDepth;
+  // const int maxTileSizeX = 128;
+  // const int maxTileSizeY = 128;
+
   const int maxTileSizeX = 128;
   const int maxTileSizeY = 128;
   const int maxTileSizeZ = 64;
+
   int  maxLinearSize = maxTileSizeX * maxTileSizeY * maxTileSizeZ;
+
 
   printf("Allocating and intializing host arrays...\n");
   h_Input     = (float *)malloc( maxLinearSize * sizeof(float));
   h_OutputGPU = (float *)malloc( maxLinearSize * sizeof(float));
-  h_OutputGPU_theta = (float *)malloc( maxLinearSize * sizeof(float));
-  h_OutputGPU_phi   = (float *)malloc( maxLinearSize * sizeof(float));
+  h_deriv     = (float **)malloc(21 * sizeof(float*));
   srand(200);
 
   printf("Allocating CUDA arrays...\n");
   cutilSafeCall( cudaMalloc((void **)&d_Input,        maxLinearSize * sizeof(float)) );
   cutilSafeCall( cudaMalloc((void **)&d_Output,       maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_Output_theta, maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_Output_phi,   maxLinearSize * sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxx,          maxLinearSize *sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxy,   maxLinearSize *sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gxz,   maxLinearSize *sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gyy,   maxLinearSize *sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gyz,   maxLinearSize *sizeof(float)) );
-  cutilSafeCall( cudaMalloc((void **)&d_gzz,   maxLinearSize *sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_theta, maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_phi,   maxLinearSize * sizeof(float)) );
+  for(int i = 0; i < 21; i++)
+    cutilSafeCall( cudaMalloc((void **)&h_deriv[i],   maxLinearSize * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_sv,  n_sv * n_dim * sizeof(float)) );
+  cutilSafeCall( cudaMalloc((void **)&d_alphas,  n_sv * sizeof(float)) );
 
-  // Here should come the loop
-  // Variables required to split the image into tiles
-  vector< float > kernelSample = Mask::gaussian_mask(0, sigma, 1);
+  // copy the values of the svm to the memmory of the device
+  cutilSafeCall( cudaMemcpy(d_sv, h_sv,
+                            n_dim * n_sv * sizeof(float),
+                            cudaMemcpyHostToDevice) );
+  cutilSafeCall( cudaMemcpy(d_alphas, h_alphas,
+                             n_sv * sizeof(float),
+                            cudaMemcpyHostToDevice) );
+
+
+  // // Here should come the loop
+  // // Variables required to split the image into tiles
+  vector< float > kernelSample = Mask::gaussian_mask(0, sigma_images, 1);
   int pad_x = ceil(kernelSample.size()/2);
   int pad_y = ceil(kernelSample.size()/2);
   int pad_z = ceil(kernelSample.size()/2);
@@ -312,7 +313,7 @@ int main(int argc, char **argv){
   int n_tiles_depth = ceil(float(imageD) /tile_size_z);
 
   printf("Sigma = %f, kernel size: %i, Tiles pads be: [%i,%i,%i]\n",
-         sigma, kernelSample.size(), pad_x, pad_y, pad_z);
+         sigma_images, kernelSample.size(), pad_x, pad_y, pad_z);
 
   printf("Tiles sizes be: [%i,%i,%i]\n",
          tile_size_x, tile_size_y, tile_size_z);
@@ -321,14 +322,15 @@ int main(int argc, char **argv){
   printf("The number of tiles should be: [%i,%i,%i]\n",
          n_tiles_horiz, n_tiles_vert, n_tiles_depth);
 
-  vector<float> kernel_0 = Mask::gaussian_mask(0, sigma, 1);
-  vector<float> kernel_1 = Mask::gaussian_mask(1, sigma, 1);
-  vector<float> kernel_2 = Mask::gaussian_mask(2, sigma, 1);
-
   // for the tiles in horizontal
-  for(int tz = 0; tz < n_tiles_depth; tz++){
-    for(int ty = 0; ty < n_tiles_vert; ty++){
-      for(int tx = 0; tx < n_tiles_horiz; tx++){
+  // for(int tz = 0; tz < n_tiles_depth; tz++){
+    // for(int ty = 0; ty < n_tiles_vert; ty++){
+      // for(int tx = 0; tx < n_tiles_horiz; tx++){
+
+  for(int tz = 0; tz < 1; tz++){
+    for(int ty = 0; ty < 1; ty++){
+      // for(int tx = 0; tx < n_tiles_horiz; tx++){
+      for(int tx = 0; tx < 1; tx++){
 
         int x0, y0, z0, x1, y1, z1;
         x0 = tx*tile_size_x;
@@ -349,35 +351,55 @@ int main(int argc, char **argv){
             for(int x = 0; x < padded->cubeWidth; x++)
               h_Input[(z*maxTileSizeX + y)*maxTileSizeY + x] = padded->at(x,y,z);
 
-        cutilSafeCall( cudaMemcpy(d_Input, h_Input,
-                                  maxLinearSize * sizeof(float),
-                                  cudaMemcpyHostToDevice) );
+        // cutilSafeCall( cudaMemcpy(d_Input, h_Input,
+                                  // maxLinearSize * sizeof(float),
+                                  // cudaMemcpyHostToDevice) );
+        cudaMemcpy(d_Input, h_Input,
+                   maxLinearSize * sizeof(float),
+                   cudaMemcpyHostToDevice);
 
-        // printf("Main loop: o: %i, t: %i p: %i\n",
-               // d_Output, d_Output_theta, d_Output_phi);
+
+        // Computes the set of 21 derivatives
+        compute_derivatives(h_deriv, d_Input, sigma_images, d_Output,
+                            maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        // cutilSafeCall( cudaThreadSynchronize() );
+        if(cudaSuccess != cudaThreadSynchronize()){
+          printf("Error computing the derivatives\n");
+        }
+
         hessian_orientation
-          (d_Output, d_Output_theta, d_Output_phi,
-           d_Input, sigma,
-           d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
+          (d_Output, d_theta, d_phi,
+           d_Input, sigma_images,
+           h_deriv[0], h_deriv[1], h_deriv[2], h_deriv[3], h_deriv[4], h_deriv[5],
            maxTileSizeX, maxTileSizeY, maxTileSizeZ);
-        // hessian
-          // (d_Output,
-           // d_Input, sigma,
-           // d_gxx, d_gxy, d_gxz, d_gyy, d_gyz, d_gzz,
-           // maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        // cutilSafeCall( cudaThreadSynchronize() );
+        cudaError err = cudaThreadSynchronize();
+        if(cudaSuccess != err){
+          printf("Error computing the orienatations: %s\n", cudaGetErrorString(err));
+        }
 
+        // And now the big stuff is done
+        rtfSVM
+          (d_Output,
+           d_theta, d_phi,
+           d_sv, d_alphas, sigma_kernel, n_sv,
+           maxTileSizeX, maxTileSizeY, maxTileSizeZ);
+        // cutilSafeCall( cudaThreadSynchronize() );
+        err = cudaThreadSynchronize();
+        if(cudaSuccess != err){
+          printf("Error computing the SVM: %s\n", cudaGetErrorString(err));
+        }
 
-        cutilSafeCall( cudaThreadSynchronize() );
+        // cudaThreadSynchronize();
 
-        cutilSafeCall( cudaMemcpy(h_OutputGPU, d_Output,
-                                  maxLinearSize * sizeof(float),
-                                  cudaMemcpyDeviceToHost) );
-        cutilSafeCall( cudaMemcpy(h_OutputGPU_theta, d_Output_theta,
-                                  maxLinearSize * sizeof(float),
-                                  cudaMemcpyDeviceToHost) );
-        cutilSafeCall( cudaMemcpy(h_OutputGPU_phi, d_Output_phi,
-                                  maxLinearSize * sizeof(float),
-                                  cudaMemcpyDeviceToHost) );
+        // cutilSafeCall( cudaMemcpy(h_OutputGPU, d_Output,
+                                  // maxLinearSize * sizeof(float),
+                                  // cudaMemcpyDeviceToHost) );
+
+        cudaMemcpy(h_OutputGPU, d_Output,
+                   maxLinearSize * sizeof(float),
+                   cudaMemcpyDeviceToHost);
+
 
 
         for(int z = pad_z; z < padded->cubeDepth-pad_z; z++)
@@ -385,35 +407,38 @@ int main(int argc, char **argv){
             for(int x = pad_x; x < padded->cubeWidth-pad_x; x++){
               res->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
                      h_OutputGPU[(z*maxTileSizeY + y)*maxTileSizeX + x]);
-              res_theta->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
-                             h_OutputGPU_theta[(z*maxTileSizeY + y)*maxTileSizeX + x]);
-              res_phi->put(x0+x-pad_x, y0+y-pad_y, z0+z-pad_z,
-                             h_OutputGPU_phi[(z*maxTileSizeY + y)*maxTileSizeX + x]);
+
             }
 
         delete padded;
       }
     }
   }
-  printf("Done with the computations\n");
+  // printf("Done with the computations\n");
 
 
   printf("Shutting down...\n");
-  cutilSafeCall( cudaFree(d_Input) );
-  cutilSafeCall( cudaFree(d_Output) );
-  cutilSafeCall( cudaFree(d_Output_theta) );
-  cutilSafeCall( cudaFree(d_Output_phi) );
-  cutilSafeCall( cudaFree(d_gxx ) );
-  cutilSafeCall( cudaFree(d_gxy ) );
-  cutilSafeCall( cudaFree(d_gxz ) );
-  cutilSafeCall( cudaFree(d_gyy ) );
-  cutilSafeCall( cudaFree(d_gyz ) );
-  cutilSafeCall( cudaFree(d_gzz ) );
-
   free(h_OutputGPU);
-  free(h_OutputGPU_theta);
-  free(h_OutputGPU_phi);
   free(h_Input);
+
+  printf("Freeing CUDA arrays...\n");
+  cudaFree(d_Input) ;
+  cudaFree(d_Output) ;
+  cudaFree(d_theta) ;
+  cudaFree(d_phi) ;
+  for(int i = 0; i < 21; i++)
+    cudaFree(h_deriv[i] ) ;
+  cudaFree(d_alphas ) ;
+  cudaFree(d_sv ) ;
+
+  // cutilSafeCall( cudaFree(d_Input) );
+  // cutilSafeCall( cudaFree(d_Output) );
+  // cutilSafeCall( cudaFree(d_theta) );
+  // cutilSafeCall( cudaFree(d_phi) );
+  // for(int i = 0; i < 21; i++)
+    // cutilSafeCall( cudaFree(h_deriv[i] ) );
+  // cutilSafeCall( cudaFree(d_alphas ) );
+  // cutilSafeCall( cudaFree(d_sv ) );
 
   cutilCheckError(cutDeleteTimer(hTimer));
 

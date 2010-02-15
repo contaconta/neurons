@@ -165,33 +165,74 @@ int main(int argc, char **argv) {
           arguments.saveAsCloud
           );
 
+  // Cube<float, double>* c1 = new Cube<float, double>
+    // (directory + "/1/bf_2_3162.nfo");
+  // Cube<float, double>* c2 = new Cube<float, double>
+    // (directory + "/2/bf_2_3162.nfo");
+  // Cube<float, double>* c4 = new Cube<float, double>
+    // (directory + "/4/bf_2_3162.nfo");
+  // Cube<float, double>* c8 = new Cube<float, double>
+    // (directory + "/8/bf_2_3162.nfo");
+
+  // vector<Cube<float, double>*> thetas;
+  // vector<Cube<float, double>*> phis;
+  // thetas.push_back(new Cube<float, double>
+                   // (directory + "/1/aguet_2.00_2.00_theta.nfo"));
+  // thetas.push_back(new Cube<float, double>
+                   // (directory + "/2/aguet_2.00_2.00_theta.nfo"));
+  // thetas.push_back(new Cube<float, double>
+                   // (directory + "/4/aguet_2.00_2.00_theta.nfo"));
+  // thetas.push_back(new Cube<float, double>
+                   // (directory + "/8/aguet_2.00_2.00_theta.nfo"));
+  // phis.push_back(new Cube<float, double>
+                   // (directory + "/1/aguet_2.00_2.00_phi.nfo"));
+  // phis.push_back(new Cube<float, double>
+                   // (directory + "/2/aguet_2.00_2.00_phi.nfo"));
+  // phis.push_back(new Cube<float, double>
+                   // (directory + "/4/aguet_2.00_2.00_phi.nfo"));
+  // phis.push_back(new Cube<float, double>
+                   // (directory + "/8/aguet_2.00_2.00_phi.nfo"));
+
+
+
   Cube<float, double>* c1 = new Cube<float, double>
-    (directory + "/1/bf_2_3162.nfo");
+    (directory + "/C14_4_1-d.nfo");
   Cube<float, double>* c2 = new Cube<float, double>
-    (directory + "/2/bf_2_3162.nfo");
+    (directory + "/C14_4_2-d.nfo");
+    // (directory + "/2/bf_2_3162.nfo");
   Cube<float, double>* c4 = new Cube<float, double>
-    (directory + "/4/bf_2_3162.nfo");
+    (directory + "/C14_4_4-d.nfo");
+    // (directory + "/4/bf_2_3162.nfo");
   Cube<float, double>* c8 = new Cube<float, double>
-    (directory + "/8/bf_2_3162.nfo");
+    (directory + "/C14_4_4-d.nfo");
+    // (directory + "/8/bf_2_3162.nfo");
 
   vector<Cube<float, double>*> thetas;
   vector<Cube<float, double>*> phis;
   thetas.push_back(new Cube<float, double>
-                   (directory + "/1/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/C14_4_1-d_theta.nfo"));
+                   // (directory + "/1/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   (directory + "/2/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/C14_4_2-d_theta.nfo"));
+                   // (directory + "/2/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   (directory + "/4/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/C14_4_4-d_theta.nfo"));
+                   // (directory + "/4/aguet_2.00_2.00_theta.nfo"));
   thetas.push_back(new Cube<float, double>
-                   (directory + "/8/aguet_2.00_2.00_theta.nfo"));
+                   (directory + "/C14_4_4-d_theta.nfo"));
+                   // (directory + "/8/aguet_2.00_2.00_theta.nfo"));
   phis.push_back(new Cube<float, double>
-                   (directory + "/1/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/C14_4_1-d_phi.nfo"));
+                   // (directory + "/1/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   (directory + "/2/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/C14_4_2-d_phi.nfo"));
+                   // (directory + "/2/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   (directory + "/4/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/C14_4_4-d_phi.nfo"));
+                   // (directory + "/4/aguet_2.00_2.00_phi.nfo"));
   phis.push_back(new Cube<float, double>
-                   (directory + "/8/aguet_2.00_2.00_phi.nfo"));
+                   (directory + "/C14_4_4-d_phi.nfo"));
+                   // (directory + "/8/aguet_2.00_2.00_phi.nfo"));
 
 
 

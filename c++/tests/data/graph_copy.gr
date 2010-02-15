@@ -5,6 +5,7 @@ v_g 0
 v_b 1
 v_radius 1.5
 v_enable_depth_test 0
+v_blend 1
 </VisibleE>
 <Cloud Point3D>
 <VisibleE>
@@ -13,6 +14,7 @@ v_g 0
 v_b 1
 v_radius 1.5
 v_enable_depth_test 0
+v_blend 1
 </VisibleE>
 0 0 0
 10 10 5
@@ -29,8 +31,9 @@ v_enable_depth_test 0
 v_r 1
 v_g 0
 v_b 0
-v_radius 1.5
+v_radius 3.5
 v_enable_depth_test 0
+v_blend 1
 </VisibleE>
 0 1
 1 2

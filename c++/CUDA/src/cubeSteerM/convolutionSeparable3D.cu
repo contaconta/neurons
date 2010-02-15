@@ -1,19 +1,7 @@
-/*
- * Copyright 1993-2009 NVIDIA Corporation.  All rights reserved.
- *
- * NVIDIA Corporation and its licensors retain all intellectual property and 
- * proprietary rights in and to this software and related documentation and 
- * any modifications thereto.  Any use, reproduction, disclosure, or distribution 
- * of this software and related documentation without an express license 
- * agreement from NVIDIA Corporation is strictly prohibited.
- * 
- */
- 
- 
-
 #include <assert.h>
 #include <cutil_inline.h>
 #include <math_functions.h>
+#include "GPUcommon.h"
 // #include <vector>
 
 
@@ -35,21 +23,6 @@ extern "C" void setConvolutionKernel_depth(float *h_Kernel, int kernel_length){
   cudaMemcpyToSymbol(c_Kernel_d, h_Kernel, kernel_length * sizeof(float));
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Constants
-////////////////////////////////////////////////////////////////////////////////
-#define   ROWS_BLOCKDIM_X 16
-#define   ROWS_BLOCKDIM_Y 16
-#define   ROWS_RESULT_STEPS 8
-#define   ROWS_HALO_STEPS 3
-#define   COLUMNS_BLOCKDIM_X 16
-#define   COLUMNS_BLOCKDIM_Y 16
-#define   COLUMNS_RESULT_STEPS 8
-#define   COLUMNS_HALO_STEPS 3
-#define   DEPTH_BLOCKDIM_Y 16
-#define   DEPTH_BLOCKDIM_Z 16
-#define   DEPTH_RESULT_STEPS 4
-#define   DEPTH_HALO_STEPS 3
 
 
 

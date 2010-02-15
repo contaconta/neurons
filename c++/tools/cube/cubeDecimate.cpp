@@ -202,7 +202,8 @@ int main(int argc, char **argv) {
 
       cd->points.push_back( pt );
     }
-    cd->v_radius = cube->voxelWidth;
+    // cd->v_radius = cube->voxelWidth;
+    cd->v_radius = 0.5;
     cd->saveToFile(arguments.args[1]);
   }
 

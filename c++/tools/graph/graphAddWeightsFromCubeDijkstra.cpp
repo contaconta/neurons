@@ -227,6 +227,7 @@ int main(int argc, char **argv) {
         (new EdgeW< Point3D>
          (&cptGraphs[nth]->cloud->points, nP,neighbors[nP][i],
           cost ) );
+      delete shortestPath;
     }//end of finding the path
     printf("Point completed  %04i, thread %04i.\n", nP, nth);
   }//end of the loops

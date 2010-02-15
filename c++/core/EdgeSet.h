@@ -53,9 +53,10 @@ EdgeSet<P,E>::EdgeSet(string filename)
 template< class P, class E>
 EdgeSet<P,E>::~EdgeSet()
 {
+  // printf("EdgeSet::freeing edges\n");
   for(int i = 0; i < edges.size(); i++)
     delete (edges[i]);
-  delete (points);
+  // delete (points);
 }
 
 template< class P, class E>
