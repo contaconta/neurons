@@ -22,7 +22,7 @@ function varargout = annotator3D(varargin)
 
 % Edit the above text to modify the response to help annotator3D
 
-% Last Modified by GUIDE v2.5 19-Feb-2010 01:20:11
+% Last Modified by GUIDE v2.5 19-Feb-2010 14:48:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,7 @@ handles.clipboard = [];
 handles.IMSIZE = [];
 handles.polys =[];
 handles.hline = [];
+handles.show = 1;
 set(handles.hSP,'Units','normalized','Position',[0 0 1 1])
 set(handles.hFig,'KeyPressFcn',{@keypresshandler, handles}); % set an event listener for keypresses
 handles.hov = imoverviewpanel(handles.ovpanel, handles.hIm);
@@ -163,6 +164,17 @@ else
     sliderstep(1) = 1/(Zmax - Zmin); sliderstep(2) = sliderstep(1);
     set(handles.zslider,'sliderstep',sliderstep, 'max', Zmax,'min', Zmin,'Value',Zmin);
 
+    % delete the current annotations
+    if ~isempty(handles.hline)
+        for i = 1:length(handles.hline);
+            delete(handles.hline{i});
+        end
+    end
+    handles.hline = [];
+    handles.polys = [];
+    
+    % check to see if we can load an annotation
+    handles = checkIMloadXML(handles);
     
     %set(handles.hIm, 'CData', handles.I);%ch = get(handles.ovpanel, 'Children'); chch = get(ch, 'Children');%chchch = get(chch, 'Children'); set(chchch(2), 'CData', handle.I);
 end
@@ -277,12 +289,15 @@ if ~isempty(handles.selected)
     delete(handles.selected);
     handles.selected = [];
     % add the old selected poly to the set of lines and draw it
-    p = length(handles.hline) + 1;
-    axes(handles.hFigAxis); %#ok<MAXES>
-    hold on;
-    handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
-    hold off;
-    handles.polys{p} = pol;
+    if handles.show == 1
+        p = length(handles.hline) + 1;
+        axes(handles.hFigAxis); %#ok<MAXES>
+        hold on;
+        handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+        hold off;
+    end
+    pol_ind = length(handles.polys);
+    handles.polys{pol_ind} = pol;
 end
 
 % --- Executes on button press in unselectbutton.
@@ -395,9 +410,17 @@ function savebutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if ~isempty(handles.polys)
+    
+    [pathstr, name1, ext, versn] = fileparts(handles.Ifilename); %#ok<NASGU>
+    [pathstr, name2, ext, versn] = fileparts(handles.XMLfilename); %#ok<NASGU>
+    
+    if strcmp(name1, name2)
 
-    polys2xml(handles.polys, handles.Ifilename, handles.XMLfilename, handles.imagefolder, handles.xmlfolder, 'mitochondria', handles.IMSIZE);
+        polys2xml(handles.polys, handles.Ifilename, handles.XMLfilename, handles.imagefolder, handles.xmlfolder, 'mitochondria', handles.IMSIZE);
 
+    else
+        warning(['Image and XML filenames did not match -- did not save annotation to ' handles.XMLfilename]); %#ok<WNTAG>
+    end
 end
 
 
@@ -507,13 +530,15 @@ if exist(xmlfullfile, 'file')
     
     disp(['reading ' xmlfullfile]);
     [handles, polys] = getpolysfromxml(handles, xmlfullfile);
-    axes(handles.hFigAxis); %#ok<MAXES>
-    hold on; 
-    for p = 1:length(polys)
-        pol = polys{p};
-        handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+    if handles.show == 1
+        axes(handles.hFigAxis); %#ok<MAXES>
+        hold on; 
+        for p = 1:length(polys)
+            pol = polys{p};
+            handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+        end
+        hold off;
     end
-    hold off;
     handles.polys = polys; 
     handles.XMLfilename = xmlfile;
 else
@@ -563,35 +588,255 @@ switch evnt.Key
         set(handles.zslider, 'Value', zvalue);
         zslider_Callback(handles.zslider, [ ], handles);
     case 'delete'
-        deletepoly_Callback(handles.deletepoly, [ ], handles)
+        deletepoly_Callback(handles.deletepoly, [ ], handles);
     case 'return'
-        newpolybutton_Callback(handles.newpolybutton, [], handles)
+        newpolybutton_Callback(handles.newpolybutton, [], handles);
     case 'c'
-        copybutton_Callback(handles.copybutton, [], handles)
+        copybutton_Callback(handles.copybutton, [], handles);
     case 'v'
-        pastebutton_Callback(handles.pastebutton, [], handles)
+        pastebutton_Callback(handles.pastebutton, [], handles);
     case 'space'
         if isempty(handles.selected)
-            selectbutton_Callback(handles.selectbutton, [], handles)
+            selectbutton_Callback(handles.selectbutton, [], handles);
         else
-            unselectbutton_Callback(handles.unselectbutton, [], handles)
+            unselectbutton_Callback(handles.unselectbutton, [], handles);
         end
+    case 'shift'
+        showhidebutton_Callback(handles.showhidebutton, [], handles);
     case 's'
-        savebutton_Callback(handles.savebutton, [], handles)
+        savebutton_Callback(handles.savebutton, [], handles);
     case 'h'
-        disp(' ');
-        disp('------keyboard shortcut help-------')
-        disp('up      up arrow increases the Z slice');
-        disp('down    down arrow decreases the Z slice');
-        disp('space   selects/unselects an annotation');
-        disp('enter   adds a new annotation');
-        disp('delete  deletes a selected annotation');
-        disp('c       copies a selected annotation');
-        disp('v       pastes annotation(s)');
-        disp('s       saves annotations to an XML file');
-        disp('-----------------------------------')
-        disp(' ');
+        helpbutton_Callback(handles.helpbutton, [ ], handles);
     otherwise
         disp('unrecognized key command');
 end
 %guidata(src, handles);
+
+
+% --- Executes on button press in helpbutton.
+function helpbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to helpbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+disp(' ');
+disp('------keyboard shortcut help-------')
+disp('up      up arrow increases the Z slice');
+disp('down    down arrow decreases the Z slice');
+disp('space   selects/unselects an annotation');
+disp('enter   adds a new annotation');
+disp('delete  deletes a selected annotation');
+disp('shift   shows/hides the annotations');
+disp('c       copies a selected annotation');
+disp('v       pastes annotation(s)');
+disp('s       saves annotations to an XML file');
+disp('h       shows help information');
+disp('-----------------------------------')
+disp(' ');
+
+
+
+% --- Executes on button press in showhidebutton.
+function showhidebutton_Callback(hObject, eventdata, handles)
+% hObject    handle to showhidebutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if handles.show == 1
+    % hide all the annotations
+    
+    % delete the current annotations
+    if ~isempty(handles.hline)
+        for i = 1:length(handles.hline);
+            delete(handles.hline{i});
+        end
+    end
+    handles.hline = [];
+    disp('Hiding the annotations.');
+%     if ~isempty(handles.selected)
+%         unselectbutton_Callback(handles.unselectbutton, [], handles)
+%     end
+    handles.show = 0;
+else
+    % show all the annotations
+    polys = handles.polys;
+    axes(handles.hFigAxis); %#ok<MAXES>
+    hold on; 
+    for p = 1:length(polys)
+        pol = polys{p};
+        handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+    end
+    hold off;
+    disp('Showing the annotations.');
+    handles.show = 1;
+end
+guidata(hObject, handles);
+
+
+% --- Executes on button press in interpolatebutton.
+function interpolatebutton_Callback(hObject, eventdata, handles)
+% hObject    handle to interpolatebutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% check if annotation files above exist
+Zval = round(get(handles.zslider, 'Value'));
+Zmax = get(handles.zslider,'Max');
+Zmin = get(handles.zslider,'Min');
+Ztarget = Zval + 1;
+if Zval < Zmax
+    file_ind = Zval - Zmin + 2;
+    filenm = handles.d_image(file_ind).name;
+    
+    [pathstr, name, ext, versn] = fileparts(filenm); %#ok<NASGU>
+    xmlupfile = [handles.xmlfolder name '.xml'];
+    if exist(xmlupfile, 'file')
+        [handles, polysA] = getpolysfromxml(handles, xmlupfile);
+        disp(['reading ' xmlupfile]);
+    else
+        disp(['No annotations found for '  num2str(Ztarget) ]);
+        return;
+    end
+else
+   disp(['No annotations found for '  num2str(Ztarget) ]);
+   return;
+end
+
+% check if annotation files below exist
+Ztarget = Zval - 1;
+if Zval > Zmin
+    file_ind = Zval - Zmin;
+    filenm = handles.d_image(file_ind).name;
+    
+    [pathstr, name, ext, versn] = fileparts(filenm); %#ok<NASGU>
+    xmldnfile = [handles.xmlfolder name '.xml'];
+    if exist(xmldnfile, 'file')
+        [handles, polysB] = getpolysfromxml(handles, xmldnfile);
+        disp(['reading ' xmldnfile]);
+    else
+        disp(['No annotations found for '  num2str(Ztarget) ]);
+        return;
+    end
+else
+   disp(['No annotations found for '  num2str(Ztarget) ]);
+   return;
+end
+
+
+% check to see if we have any annotations on the current slice
+if ~isempty(handles.polys)
+    r = input(['\nChoose an action: (1) Delete or (2) keep current annotations for slice ' num2str(Zval) '?\n']);
+    if r==2
+        disp('You have decided to keep the annotations!');
+    else
+        disp('Annotations deleted!');
+        handles.polys = [];    
+        if ~isempty(handles.hline)
+            for i = 1:length(handles.hline);
+                delete(handles.hline{i});
+            end
+        end
+        handles.hline = [];
+    end
+end
+
+INTERP_POLYS = {};
+
+% loop through A polys
+for a = 1:length(polysA)
+    % select interior points
+    pol = polysA{a};
+    NPOINTS = 15;
+    
+    p1 = randsample(1:size(pol,1), NPOINTS, 1);
+    p2 = randsample(1:size(pol,1), NPOINTS, 1);
+    
+    pts = (pol(p1,:) + pol(p2,:) )/2;
+%     axes(handles.hFigAxis); %#ok<MAXES>
+%     hold on; 
+%     plot(pts(:,1),pts(:,2),'r*');
+%     hold off;
+    
+    % find best matching poly from B
+    blist = zeros(size(polysB));
+    for b = 1:length(polysB)
+        x = pts(:,1); y = pts(:,2);
+        blist(b) = sum(inpoly([x y], polysB{b}));
+        %blist(b) = sum(in);
+    end
+    bmatch = find(blist == max(blist));
+    polyb = polysB{bmatch}; %#ok<FNDSB>
+    bw = poly2mask(polyb(:,1),polyb(:,2),handles.IMSIZE(1),handles.IMSIZE(2));
+    bw = bwperim(bw);
+    [Br Bc] = find(bw);
+    
+    %keyboard;
+    
+    % sample points from A and interpolate to B
+    pol = [pol; pol(1,:)];
+    DIST = 8;
+    poly_interp = [];
+    for p = 1:size(pol,1)-1  % loop through vertices in the poly of A
+        
+        d = euclidean(pol(p,:), pol(p+1,:));
+        
+        alist = 0:max(0, round(d/DIST));
+        alist = alist/(length(alist));
+        a1 = pol(p,:);
+        a2 = pol(p+1,:);
+        alist = ((a2-a1)'*alist)' + (a1'*ones(size(alist)))';
+        
+        for apt = 1:size(alist,1)
+            ca = alist(apt,1);
+            ra = alist(apt,2);
+            dists = sqrt((Br - repmat(ra,size(Br,1), size(Br,2))).^2 + (Bc - repmat(ca, size(Bc,1), size(Bc,2))).^2);
+            ind = find(dists == min(dists),1, 'first');
+                
+            %int = [ca ra];
+            %int = [Bc(ind) Br(ind)];
+            %int = [((ra + Br(ind))/2) ((ca + Bc(ind))/2)];
+            int = [round((ca + Bc(ind))/2) round((ra + Br(ind))/2)];
+            poly_interp = [poly_interp; int]; %#ok<AGROW>
+            %keyboard;
+        end
+        %keyboard;
+    end
+    INTERP_POLYS{a} = poly_interp; %#ok<AGROW>
+end
+
+% add the polys to the master list
+m = 1;
+for n = length(handles.polys)+1 : length(handles.polys)+length(INTERP_POLYS)
+    handles.polys{n} = INTERP_POLYS{m}; m = m + 1;
+end
+
+
+
+% delete all shown annotations
+if ~isempty(handles.hline)
+    for i = 1:length(handles.hline);
+        delete(handles.hline{i});
+    end
+end
+handles.hline = [];
+
+% now draw all the annotations
+polys = handles.polys;
+axes(handles.hFigAxis); %#ok<MAXES>
+hold on; 
+for p = 1:length(polys)
+    pol = polys{p};
+    handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+end
+hold off;
+
+handles.show = 1;
+guidata(hObject, handles);
+
+
+
+
+function d = euclidean(p1, p2)
+
+d = sqrt( (p1(1) - p2(1))^2 + (p1(2) - p2(2))^2); 
