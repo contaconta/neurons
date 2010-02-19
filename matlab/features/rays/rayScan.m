@@ -1,4 +1,4 @@
-function [r c] = rayScan(I, G, angle)
+function [E RAY1 RAY3 RAY4] = rayScan(I, G, angle)
 
 % edge finding parameters
 MINPKDIST = 5;
@@ -6,7 +6,7 @@ MINPKHEIGHT = 22;   %1.7*mean(gline);
 MINAREA = 4;
 
 % allocate arrays for edge E, rays RAY1, ...
-E = zeros(size(I)); RAY1 = E;
+E = zeros(size(I)); RAY1 = E; RAY3 = E; RAY4 = E;
 
 
 %% properly format the angle (between 0 and 360 degrees), flip y axis (matlab)
@@ -86,9 +86,11 @@ for l = 1:length(STATS)
     end
 end
 
+figure(11); imagesc(E); colormap gray;
 
 
 
+rayVector = unitvector(angle);
 
 %% compute the ray features
 
@@ -108,21 +110,23 @@ while min(shift) <= S
     
     % traverse the scanline (ray) to compute the various ray features
     steps_since_edge = 0;
+    lastGN = 0;
+    lastGA = 1;
     for i = length(ra):-1:1
         if E(ra(i),ca(i)) == 1
             steps_since_edge = 0;
-            %lastGA = rayVector * [G(r(i),c(i),1); G(r(i),c(i),2)]; 
-            %lastGN = GN(r(i),c(i));
+            lastGA = rayVector * [G(ra(i),ca(i),1); G(ra(i),ca(i),2)]; 
+            lastGN = GN(ra(i),ca(i));
         end
         RAY1(ra(i),ca(i)) = steps_since_edge;
-        %RAY3(r(i),c(i)) = lastGA;
-        %RAY4(r(i),c(i)) = lastGN;
+        RAY3(ra(i),ca(i)) = lastGA;
+        RAY4(ra(i),ca(i)) = lastGN;
         steps_since_edge = steps_since_edge +1;
     end
     shift = shift + 1;
 end
 
-%figure(2); imagesc(RAY1);
+figure(2); imagesc(RAY1);
 %keyboard;
 
 
