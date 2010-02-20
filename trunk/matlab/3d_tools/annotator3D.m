@@ -288,16 +288,39 @@ if ~isempty(handles.selected)
     pol = getPosition(handles.selected);
     delete(handles.selected);
     handles.selected = [];
-    % add the old selected poly to the set of lines and draw it
-    if handles.show == 1
-        p = length(handles.hline) + 1;
-        axes(handles.hFigAxis); %#ok<MAXES>
-        hold on;
-        handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
-        hold off;
-    end
-    pol_ind = length(handles.polys);
+    
+    % add the old selected poly to the set of polys
+    pol_ind = length(handles.polys)+1;
     handles.polys{pol_ind} = pol;
+    
+    
+    % delete all shown annotations
+    if ~isempty(handles.hline)
+        for i = 1:length(handles.hline);
+            delete(handles.hline{i});
+        end
+    end
+    handles.hline = [];
+
+    % now draw all the annotations
+    polys = handles.polys;
+    axes(handles.hFigAxis); %#ok<MAXES>
+    hold on; 
+    for p = 1:length(polys)
+        pol = polys{p};
+        handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+    end
+    hold off;
+    handles.show = 1;
+
+%     if handles.show == 1
+%         p = length(handles.hline) + 1;
+%         axes(handles.hFigAxis); %#ok<MAXES>
+%         hold on;
+%         handles.hline{p} = plot([pol(:,1); pol(1,1)],[pol(:,2); pol(1,2)],'r','LineWidth',2);
+%         hold off;
+%     end
+
 end
 
 % --- Executes on button press in unselectbutton.
