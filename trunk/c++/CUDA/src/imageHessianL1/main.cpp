@@ -145,6 +145,11 @@ extern "C" void hessian
 // Main program
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv){
+  if(argc!=4){
+    printf("Usage: imageHessianL1 image sigma output\n");
+    exit(0);
+  }
+
   float
     *h_Input,
     *h_Buffer,

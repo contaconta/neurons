@@ -770,13 +770,13 @@ void Cube<T,U>::create_cube_from_raw_files
     {
       fflush(stdout);
       sprintf(buff, image_format, z);
-      printf(" -> adding image: %s multiplied by %f\n", buff,
-             (float)z*z*z*z);
+      printf(" -> adding raw image: %s multiplied by %f\n", buff,
+             (float)1);
       Image< float>* pepe = new Image<float>(buff);
       for(int x = 0; x < pepe->width; x++)
         for(int y = 0; y < pepe->height; y++)
           this->put(x,y,z-layer_begin,
-                    pepe->at(x,y)*z*z*z*z);
+                    pepe->at(x,y));
     }
 }
 
@@ -1472,6 +1472,23 @@ float Cube<T,U>::get(int x, int y, int z) {return voxels[z][y][x];}
 
 template <class T, class U>
 void Cube<T,U>::put(int x, int y, int z, T value) {voxels[z][y][x] = value;}
+
+
+template <class T, class U>
+void Cube<T,U>::put_m(float mx, float my, float mz, T value)
+{
+  int x, y, z;
+  micrometersToIndexes3(mx, my, mz, x, y, z);
+  if(x<0) x=0;
+  if(y<0) y=0;
+  if(z<0) z=0;
+  if(x>=cubeWidth) x=cubeWidth-1;
+  if(y>=cubeHeight) y=cubeHeight-1;
+  if(z>=cubeDepth) z=cubeDepth-1;
+
+  put(x,y,z,value);
+}
+
 
 template <class T, class U>
 void Cube<T,U>::put_all(T value) {

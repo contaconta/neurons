@@ -58,6 +58,7 @@ extern "C" void hessianGPU
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -75,6 +76,7 @@ extern "C" void hessianGPU_orientation
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -183,7 +185,7 @@ extern "C" void hessian
   convolution_separable( d_gzz, d_Input, kernel_0, kernel_0, kernel_2,
                          sizeX, sizeY, sizeZ, d_Buffer );
 
-  hessianGPU(d_Buffer, d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
+  hessianGPU(d_Buffer, d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sigma, sizeX, sizeY, sizeZ);
 }
 
 
@@ -226,7 +228,8 @@ extern "C" void hessian_orientation
          // d_Buffer, d_Output_theta, d_Output_phi);
   hessianGPU_orientation
     (d_Buffer, d_Output_theta, d_Output_phi,
-     d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz, sizeX, sizeY, sizeZ);
+     d_gxx, d_gxy, d_gxy, d_gyy, d_gyz, d_gzz,
+     sigma, sizeX, sizeY, sizeZ);
 }
 
 

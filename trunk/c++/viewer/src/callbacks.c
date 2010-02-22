@@ -16,6 +16,7 @@
 #include "GraphFactory.h"
 #include "TiffFactory.h"
 #include "ListOfObjects.h"
+#include "ListToDraw.h"
 #include "utils.h"
 #include "functions.h"
 #include "Axis.h"
@@ -165,20 +166,22 @@ void addObjectFromString(string name)
 #endif
   //Text file with a lot of objects to draw
   else if( extension == "lst"){
-    std::ifstream in(name.c_str());
-    if(!in.good())
-      {
-        printf("vivaView::addObjectFromString does not recognize %s\n",name.c_str());
-        exit(0);
-      }
-    string s;
-    while(getline(in,s))
-    {
-      printf("%s\n", s.c_str());
-      fflush(stdout);
-      addObjectFromString(s);
-    }
-    printf("\n");
+    ListToDraw* lst = new ListToDraw(name);
+    toDraw.push_back(lst);
+    /* std::ifstream in(name.c_str()); */
+    /* if(!in.good()) */
+      /* { */
+        /* printf("vivaView::addObjectFromString does not recognize %s\n",name.c_str()); */
+        /* exit(0); */
+      /* } */
+    /* string s; */
+    /* while(getline(in,s)) */
+    /* { */
+      /* printf("%s\n", s.c_str()); */
+      /* fflush(stdout); */
+      /* addObjectFromString(s); */
+    /* } */
+    /* printf("\n"); */
   }
   else if (extension == "lsto" ){
     ListOfObjects* lsto = new ListOfObjects(name);
@@ -499,7 +502,7 @@ on_videolayers_activate                (GtkMenuItem     *menuitem,
      /* flag_draw_YZ = false; */
      /* flag_draw_combo = false; */
      /* flag_draw_dual = false; */
-      mod_display = MOD_DISPLAY_3D;
+      mod_display = MOD_DISPLAY_XY;
      on_drawing3D_expose_event(drawing3D,NULL, user_data);
      char imageName[1024];
      int error = system("rm -rf /tmp/img*.jpg");
@@ -753,11 +756,4 @@ on_Clear_Stage_clicked                 (GtkButton       *button,
   on_drawing3D_expose_event(drawing3D,NULL, user_data);
 }
 
-
-void
-on_videolayers_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
 

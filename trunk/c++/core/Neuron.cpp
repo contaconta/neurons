@@ -2247,6 +2247,7 @@ void Neuron::toCloud(NeuronSegment* segment,
       radius = sqrt( (mcnext[2]-mcoords[2])*(mcnext[2]-mcoords[2]) +
                      (mcnext[1]-mcoords[1])*(mcnext[1]-mcoords[1]) +
                      (mcnext[0]-mcoords[0])*(mcnext[0]-mcoords[0]) );
+      if(radius < 1e-6) radius = 1;
       phi = acos( (mcnext[2]-mcoords[2])/radius);
     }
 

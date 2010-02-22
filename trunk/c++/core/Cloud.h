@@ -61,6 +61,7 @@ template <class T>
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
     glColor3f(v_r, v_g, v_b);
+    // glScalef(2.0,2.0,2.0);
     for(float i = 0; i < points.size(); i++){
       points[(int)i]->draw(v_radius);
       if(0){

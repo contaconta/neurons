@@ -340,6 +340,7 @@ __global__ void hessianKernel
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -374,11 +375,11 @@ __global__ void hessianKernel
   float eig3 = m - sqrt(p)*(cos(phi) - sqrt(3.0)*sin(phi));
 
   if( (eig1 > eig2) & (eig1 > eig3))
-    d_output[i] = eig1;
+    d_output[i] = eig1*sigma*sigma;
   if( (eig2 > eig1) & (eig2 > eig3))
-        d_output[i] = eig2;
+        d_output[i] = eig2*sigma*sigma;
   if( (eig3 > eig2) & (eig3 > eig1))
-    d_output[i] = eig3;
+    d_output[i] = eig3*sigma*sigma;
 }
 
 
@@ -392,6 +393,7 @@ extern "C" void hessianGPU
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -400,7 +402,7 @@ extern "C" void hessianGPU
   dim3 gird (imageD*imageW/ROWS_BLOCKDIM_X,imageH/ROWS_BLOCKDIM_Y);
   dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
   hessianKernel<<<gird, block>>>( d_output, d_gxx, d_gxy, d_gxz,
-                                  d_gyy, d_gyz, d_gzz, imageW, imageH, imageD );
+                                  d_gyy, d_gyz, d_gzz, sigma, imageW, imageH, imageD );
   cutilCheckMsg("hessianKernel() execution failed\n");
 }
 
@@ -420,6 +422,7 @@ __global__ void hessianKernelO
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -453,15 +456,15 @@ __global__ void hessianKernelO
   float eig3 = m - sqrt(p)*(cos(phi) - sqrt(3.0)*sin(phi));
 
   if( (eig1 > eig2) & (eig1 > eig3))
-    d_output[i] = eig1;
+    d_output[i] = eig1*sigma*sigma;
   if( (eig2 > eig1) & (eig2 > eig3))
-        d_output[i] = eig2;
+        d_output[i] = eig2*sigma*sigma;
   if( (eig3 > eig2) & (eig3 > eig1))
-    d_output[i] = eig3;
+    d_output[i] = eig3*sigma*sigma;
 
 
   // // Now it comes to compute the eigenvector
-  float l = d_output[i];
+  float l = d_output[i]/(sigma*sigma);
   a0 = a0 - l;
   d0 = d0 - l;
   f0 = f0 - l;
@@ -491,6 +494,7 @@ extern "C" void hessianGPU_orientation
  float *d_gyy,
  float *d_gyz,
  float *d_gzz,
+ float sigma,
  int imageW,
  int imageH,
  int imageD
@@ -500,7 +504,8 @@ extern "C" void hessianGPU_orientation
   dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
   hessianKernelO<<<gird, block>>>( d_Output, d_Output_theta, d_Output_phi,
                                    d_gxx, d_gxy, d_gxz,
-                                  d_gyy, d_gyz, d_gzz, imageW, imageH, imageD );
+                                  d_gyy, d_gyz, d_gzz,
+                                   sigma, imageW, imageH, imageD );
   cutilCheckMsg("hessianKernel() execution failed\n");
 
   cutilCheckMsg("hessianKernel() execution failed\n");

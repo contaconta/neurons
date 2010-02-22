@@ -58,11 +58,12 @@ public:
     float p1 = cubeFloat->at(x0,y0,z0);
     float p2 = cubeFloat->at(x1,y1,z1);
     //Cost Pascal
-    if(fabs(p1-p2) < 1e-4) return -dist*log10(p1);
-    return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
+    // if(fabs(p1-p2) < 1e-4) return -dist*log10(p1);
+    // return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
 
     //Standard cost that works
-    //return -dist*log10((p1+p2)/2);
+    // return -dist*log10((p1+p2)/2);
+    return (dist*(1-p1));
   }
 };
 
@@ -123,6 +124,8 @@ int main(int argc, char **argv) {
 #pragma omp parallel for
 #endif
    for(int nP = 0; nP < endPoint-1; nP ++){
+   // for(int nP = 0; nP < 1; nP ++){
+   // for(int nP = 6; nP < 7; nP ++){
     int nth = 0;
 #ifdef WITH_OPENMP
     nth = omp_get_thread_num();

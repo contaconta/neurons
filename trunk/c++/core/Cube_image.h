@@ -2386,7 +2386,7 @@ void Cube<T,U>::render_cylinder(vector<int> idx1, vector<int> idx2, float radius
           d = float(p1p0mod*p2p1mod - dot_p1p0p2p1*dot_p1p0p2p1)/p2p1mod;
 
           if(d < r2)
-            this->put(x,y,z,(T)0);
+            this->put(x,y,z,(T)0.0);
         }
       }
       // printf("#");fflush(stdout);
