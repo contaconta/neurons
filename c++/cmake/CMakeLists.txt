@@ -250,8 +250,8 @@ target_link_libraries(cubeAverage ${LINK_LIBRARIES_ALL})
 # add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
 # target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
-# target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
+add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
+target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
 
 
 add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
@@ -266,8 +266,8 @@ target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
 # add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
 # target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
-# target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
+add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
+target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
 
 # add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
 # target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
@@ -307,8 +307,15 @@ target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
 add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
 target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 
+add_executable(cubeFixNans ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixNans.cpp)
+target_link_libraries(cubeFixNans ${LINK_LIBRARIES_ALL})
+
 # add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
 # target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
+
+add_executable(cubeFromImageStackRaw ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStackRaw.cpp)
+target_link_libraries(cubeFromImageStackRaw ${LINK_LIBRARIES_ALL})
+
 
 # add_executable(cubeFromImageStack-16bitTIFF ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack-16bitTIFF.cpp)
 # target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
@@ -320,8 +327,8 @@ target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
 # add_executable(cubeCombineFromList-16bit ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList-16bit.cpp)
 # target_link_libraries(cubeCombineFromList-16bit ${LINK_LIBRARIES_ALL})
 
-# add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
-# target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
+add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
+target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
 
 # # add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
 # target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
@@ -401,6 +408,9 @@ target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 ## graph tools
 ################################################################################
 
+add_executable(graphToCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphToCloud.cpp)
+target_link_libraries(graphToCloud ${LINK_LIBRARIES_ALL})
+
 add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
 target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
 
@@ -459,8 +469,8 @@ target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 # # add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
 # target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
 
-# add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
-# target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
+add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
+target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
 
 # add_executable(neuronToCloudI ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloudI.cpp)
 # target_link_libraries(neuronToCloudI ${LINK_LIBRARIES_ALL})
@@ -475,18 +485,29 @@ target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
 ################################################################################
 ## Diadem tools
 ################################################################################
+set( DIADEM_TOOLS
+  diademCloudFromGt
+  diademGraphToMatlabList
+  diademGraphToMatlabList-GT
+  diademGraphToSWC
+  diademSWCToGraph
+  diademSWCisBinaryTree
+  diademAddScaleFromImage
+)
 
-add_executable(diademCloudFromGt ${CMAKE_SOURCE_DIR}/../tools/diadem/diademCloudFromGt.cpp)
-target_link_libraries(diademCloudFromGt ${LINK_LIBRARIES_ALL})
+foreach( diadem_tool ${DIADEM_TOOLS})
+  add_executable(${diadem_tool} ${CMAKE_SOURCE_DIR}/../tools/diadem/${diadem_tool}.cpp)
+  target_link_libraries(${diadem_tool} ${LINK_LIBRARIES_ALL})
+endforeach(diadem_tool)
 
-add_executable(diademGraphToSWC ${CMAKE_SOURCE_DIR}/../tools/diadem/diademGraphToSWC.cpp)
-target_link_libraries(diademGraphToSWC ${LINK_LIBRARIES_ALL})
+# add_executable(diademGraphToSWC ${CMAKE_SOURCE_DIR}/../tools/diadem/diademGraphToSWC.cpp)
+# target_link_libraries(diademGraphToSWC ${LINK_LIBRARIES_ALL})
 
-add_executable(diademSWCToGraph ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCToGraph.cpp)
-target_link_libraries(diademSWCToGraph ${LINK_LIBRARIES_ALL})
+# add_executable(diademSWCToGraph ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCToGraph.cpp)
+# target_link_libraries(diademSWCToGraph ${LINK_LIBRARIES_ALL})
 
-add_executable(diademSWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCisBinaryTree.cpp)
-target_link_libraries(diademSWCisBinaryTree ${LINK_LIBRARIES_ALL})
+# # add_executable(diademSWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCisBinaryTree.cpp)
+# target_link_libraries(diademSWCisBinaryTree ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################

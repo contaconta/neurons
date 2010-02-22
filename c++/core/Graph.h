@@ -92,7 +92,7 @@ Graph<P,E>::~Graph()
 template< class P, class E>
 Graph<P,E>::Graph(string filename) : Graph_P(){
   v_saveVisibleAttributes = true;
-  printf("Loading the graph %s\n", filename.c_str());
+  // printf("Loading the graph %s\n", filename.c_str());
   cloud = new Cloud<P>();
   loadFromFile(filename);
 }
@@ -102,7 +102,7 @@ Graph<P,E>::Graph(Cloud_P* cl) : Graph_P(){
   v_saveVisibleAttributes = true;
   changeCloud(cl);
   string className = cloud->className();
-  printf("Graph created with a: %s\n", className.c_str());
+  // printf("Graph created with a: %s\n", className.c_str());
 }
 
 template< class P, class E>
@@ -152,10 +152,10 @@ void Graph<P,E>::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-    glColor3f(1.0,0.0,0.0);
+    glColor3f(v_r,v_g,v_b);
     eset.draw();
     glColor3f(1.0,1.0,0.0);
-    cloud->points[0]->draw();
+    // cloud->points[0]->draw();
     // cloud->draw();
 
     //Standard drawing proccedure
@@ -178,8 +178,6 @@ void Graph<P,E>::draw(){
         }
         glColor3f(1.0,1.0,1.0);
       }
-      else
-        eset.draw();
     }
 
 

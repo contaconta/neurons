@@ -222,10 +222,11 @@ __global__ void hessianKernel(
   int i = (blockDim.y*blockIdx.y + threadIdx.y)*imageW +
     blockDim.x*blockIdx.x+threadIdx.x;
   float a, b, c;
-  a = d_gxx[i];
-  b = d_gxy[i];
-  c = d_gyy[i];
+  a = -d_gxx[i];
+  b = -d_gxy[i];
+  c = -d_gyy[i];
   d_output[i] = (a+c)/2 + sqrt( (a-c)*(a-c) + 4*b*b)/2;
+  // d_output[i] = (a-c)*(a-c) + 4*b*b;
   // d_output[i] = b;
 }
 

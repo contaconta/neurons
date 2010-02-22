@@ -3,7 +3,7 @@ Version: 0.01
 Architecture: all
 Maintainer: German Gonzalez <german.gonzalez@epfl.ch>
 Installed-Size: 232
-Depends: libglew1.5, freeglut3, libgsl0ldbl, libgtkglext1, libhighgui1, libcvaux1, libtiff4
+Depends: libglew1.5-dev, freeglut3-dev, libgsl0-dev, libgtkglext1-dev, libhighgui-dev, libcvaux-dev, libtiff4-dev, cmake
 Section: math
 Priority: optional
 Homepage: http://code.google.com/p/neurons/

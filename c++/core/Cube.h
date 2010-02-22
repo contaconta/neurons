@@ -291,6 +291,9 @@ public:
   /** Changes the value of the voxel at indexes x,y,z.*/
   void put(int x, int y, int z, T value);
 
+  /** Changes the value of the voxel at indexes x,y,z in micrometers.*/
+  void put_m(float x, float y, float z, T value);
+
   /** Puts all the voxels to a given value.*/
   void put_all(T value);
 

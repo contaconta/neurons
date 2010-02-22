@@ -34,4 +34,4 @@ cd ..
 cp control package/DEBIAN
 cp debian-binary package
 
-dpkg -b package/ viva_0.01_i386.deb
+dpkg -b package/ viva_0.01_x86_64.deb

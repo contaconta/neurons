@@ -10,6 +10,7 @@
 #include "Point2Dotw.h"
 #include "Point3D.h"
 #include "Point3Dt.h"
+#include "Point3Dw.h"
 #include "Point3Do.h"
 #include "Point3Dot.h"
 #include "Point3Dotw.h"

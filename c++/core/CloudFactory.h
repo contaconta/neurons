@@ -44,6 +44,8 @@ public:
       return new Cloud<Point3Do>();
     else if( s == "Point3Dt")
       return new Cloud<Point3Dt>();
+    else if( s == "Point3Dw")
+      return new Cloud<Point3Dw>();
     else if( s == "Point3Dot")
       return new Cloud<Point3Dot>();
     else if( s == "Point3Dotw")
