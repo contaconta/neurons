@@ -14,6 +14,8 @@ public:
 
   Cloud(string filename);
 
+  void draw(bool colorIsPreset);
+
   void draw();
 
   bool load(istream &in);
@@ -52,10 +54,15 @@ template <class T>
     delete(points[i]);
 }
 
+template <class T>
+void Cloud<T>::draw(){
+  draw(false);
+}
 
 template <class T>
- void Cloud<T>::draw(){
-  VisibleE::draw();
+ void Cloud<T>::draw(bool colorIsPreset){
+  if(!colorIsPreset)
+    VisibleE::draw();
 
   if(v_glList == 0){
     v_glList = glGenLists(1);

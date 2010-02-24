@@ -62,8 +62,8 @@ public:
     // return fabs(dist*((log10(p1) * p1 - p1- log10(p2) * p2 + p2) / (-p2 + p1)));
 
     //Standard cost that works
-    // return -dist*log10((p1+p2)/2);
-    return (dist*(1-p1));
+    return -dist*log10((p1+p2)/2);
+    // return (dist*(1-p1));
   }
 };
 
@@ -207,8 +207,6 @@ int main(int argc, char **argv) {
       Graph<Point3D, EdgeW<Point3D> >* shortestPath =
         cubeLiveWires[nth]->findShortestPathG(idxsOrig[0] ,idxsOrig[1] ,idxsOrig[2],
                                               idxsDest[0], idxsDest[1], idxsDest[2]);
-      sprintf(graphName,
-              "%s/path_%04i_%04i.gr", destGraphsPaths.c_str(), nP, neighbors[nP][i]);
       double cost = 0;
       for(int nedge=0; nedge < shortestPath->eset.edges.size(); nedge++){
         EdgeW<Point3D>* edge = dynamic_cast<EdgeW<Point3D>*>
@@ -221,6 +219,8 @@ int main(int argc, char **argv) {
       shortestPath->cloud->v_b = 0;
       // shortestPath->cloud->v_b = gsl_rng_uniform(r);
       shortestPath->cloud->v_radius = 0.4;
+      sprintf(graphName,
+              "%s/path_%04i_%04i.gr", destGraphsPaths.c_str(), nP, neighbors[nP][i]);
       // printf("saving path in %s\n", graphName);
       shortestPath->saveToFile(graphName);
       double length = sqrt((microm2[0]-microm[0])*(microm2[0]-microm[0]) +

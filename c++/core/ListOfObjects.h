@@ -51,8 +51,21 @@ public:
   }
 
   void draw(){
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendColor(0.8,0.0,0.0,0.5);
+    // glBlendFunc(GL_SRC_COLOR,
+                // GL_SRC_COLOR);
+    glBlendFunc(
+                // GL_ONE_MINUS_SRC_COLOR,
+                GL_SRC_COLOR,
+                // GL_ONE_MINUS_SRC_COLOR
+                GL_CONSTANT_COLOR
+                // GL_SRC_COLOR,
+);
+    glEnable(GL_BLEND);
     if(object_loaded[objectToDraw]==1)
       objects[objectToDraw]->draw();
+    glDisable(GL_BLEND);
   }
 
   void load_objects(){

@@ -35,6 +35,8 @@ class Cloud_P : public VisibleE
 
   virtual vector<double> spread() = 0;
 
+  virtual void draw(bool pepe) = 0;
+
   /** Splits the cloud in two clouds, one with the odd points and the other one with the
       even ones*/
   virtual void split(Cloud_P* &cl1, Cloud_P* &cl2) = 0;

@@ -68,20 +68,20 @@ public:
     }
     else if(pointType == "Point3Dw"){
       if(edgeType == "Edge"){
-        printf("GraphFactory:: returning Graph<Point3Dw,Edge<Point3Dw> >\n");
+        // printf("GraphFactory:: returning Graph<Point3Dw,Edge<Point3Dw> >\n");
         return new Graph<Point3Dw,Edge<Point3Dw> >();
       }
       else if(edgeType == "EdgeW"){
-        printf("GraphFactory:: returning Graph<Point3Dw,EdgeW<Point3Dw> >\n");
+        // printf("GraphFactory:: returning Graph<Point3Dw,EdgeW<Point3Dw> >\n");
         return new Graph<Point3Dw,EdgeW<Point3Dw> >();
       }
       else if(edgeType == "Edge2W"){
-        printf("GraphFactory:: returning Graph<Point3Dw,Edge2W<Point3Dw> >\n");
+        // printf("GraphFactory:: returning Graph<Point3Dw,Edge2W<Point3Dw> >\n");
         return new Graph<Point3Dw,Edge2W<Point3Dw> >();
       }
       else{
-        printf("GraphFactory::graphFromTypes error: no idea what kind of edge it is %s\n",
-               edgeType.c_str());
+        // printf("GraphFactory::graphFromTypes error: no idea what kind of edge it is %s\n",
+               // edgeType.c_str());
         return NULL;
       }
     }

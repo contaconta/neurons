@@ -407,56 +407,31 @@ target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
 ################################################################################
 ## graph tools
 ################################################################################
+set( GRAPH_TOOLS
+  # graphToCloud
+  # graphPrim
+  graphCompleteChangeWeights
+  # graphCompleteAddSoma
+  graphAddWeightsFromCubeDijkstra
+  graphDijkstra
+  # graphPrimFromCptGraph
+  # graphCptFromCloud
+  # graphFindLeaves
+  # graphPrune
+  graphAddScale
+  # cloudSplit
+  # cloudEliminateWidth
+  # cloudCombine
+  # cloudToText
+  # cloudEvaluate
+  # cloudEliminatePointsFromImage
+)
 
-add_executable(graphToCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphToCloud.cpp)
-target_link_libraries(graphToCloud ${LINK_LIBRARIES_ALL})
+foreach( graph_tool ${GRAPH_TOOLS})
+  add_executable(${graph_tool} ${CMAKE_SOURCE_DIR}/../tools/graph/${graph_tool}.cpp)
+  target_link_libraries(${graph_tool} ${LINK_LIBRARIES_ALL})
+endforeach(graph_tool)
 
-add_executable(graphPrim ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrim.cpp)
-target_link_libraries(graphPrim ${LINK_LIBRARIES_ALL})
-
-add_executable(graphCompleteChangeWeights ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteChangeWeights.cpp)
-target_link_libraries(graphCompleteChangeWeights ${LINK_LIBRARIES_ALL})
-
-# # add_executable(graphCompleteAddSoma ${CMAKE_SOURCE_DIR}/../tools/graph/graphCompleteAddSoma.cpp)
-# target_link_libraries(graphCompleteAddSoma ${LINK_LIBRARIES_ALL})
-
-add_executable(graphAddWeightsFromCubeDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphAddWeightsFromCubeDijkstra.cpp)
-target_link_libraries(graphAddWeightsFromCubeDijkstra ${LINK_LIBRARIES_ALL})
-
-add_executable(graphDijkstra ${CMAKE_SOURCE_DIR}/../tools/graph/graphDijkstra.cpp)
-target_link_libraries(graphDijkstra ${LINK_LIBRARIES_ALL})
-
-add_executable(graphPrimFromCptGraph ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrimFromCptGraph.cpp)
-target_link_libraries(graphPrimFromCptGraph ${LINK_LIBRARIES_ALL})
-
-add_executable(graphCptFromCloud ${CMAKE_SOURCE_DIR}/../tools/graph/graphCptFromCloud.cpp)
-target_link_libraries(graphCptFromCloud ${LINK_LIBRARIES_ALL})
-
-# add_executable(graphFindLeaves ${CMAKE_SOURCE_DIR}/../tools/graph/graphFindLeaves.cpp)
-# target_link_libraries(graphFindLeaves ${LINK_LIBRARIES_ALL})
-
-# add_executable(graphPrune ${CMAKE_SOURCE_DIR}/../tools/graph/graphPrune.cpp)
-# target_link_libraries(graphPrune ${LINK_LIBRARIES_ALL})
-
-# add_executable(cloudSplit ${CMAKE_SOURCE_DIR}/../tools/graph/cloudSplit.cpp)
-# target_link_libraries(cloudSplit ${LINK_LIBRARIES_ALL})
-
-# add_executable(cloudEliminateWidth ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminateWidth.cpp)
-# target_link_libraries(cloudEliminateWidth ${LINK_LIBRARIES_ALL})
-
-
-#add_executable(cloudCombine ${CMAKE_SOURCE_DIR}/../tools/graph/cloudCombine.cpp)
-#target_link_libraries(cloudCombine ${LINK_LIBRARIES_ALL})
-
-# add_executable(cloudToText ${CMAKE_SOURCE_DIR}/../tools/graph/cloudToText.cpp)
-# target_link_libraries(cloudToText ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cloudEvaluate ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEvaluate.cpp)
-# target_link_libraries(cloudEvaluate ${LINK_LIBRARIES_ALL})
-
-# # add_executable(cloudEliminatePointsFromImage ${CMAKE_SOURCE_DIR}/../tools/graph/cloudEliminatePointsFromImage.cpp)
-# target_link_libraries(cloudEliminatePointsFromImage ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
@@ -500,14 +475,6 @@ foreach( diadem_tool ${DIADEM_TOOLS})
   target_link_libraries(${diadem_tool} ${LINK_LIBRARIES_ALL})
 endforeach(diadem_tool)
 
-# add_executable(diademGraphToSWC ${CMAKE_SOURCE_DIR}/../tools/diadem/diademGraphToSWC.cpp)
-# target_link_libraries(diademGraphToSWC ${LINK_LIBRARIES_ALL})
-
-# add_executable(diademSWCToGraph ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCToGraph.cpp)
-# target_link_libraries(diademSWCToGraph ${LINK_LIBRARIES_ALL})
-
-# # add_executable(diademSWCisBinaryTree ${CMAKE_SOURCE_DIR}/../tools/diadem/diademSWCisBinaryTree.cpp)
-# target_link_libraries(diademSWCisBinaryTree ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
