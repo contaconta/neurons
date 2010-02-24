@@ -135,7 +135,7 @@ bool Graph<P,E>::load(istream &in){
 
 template< class P, class E>
 void Graph<P,E>::save(ostream &out){
-  // printf("Saving the graph\n");
+  // printf("Saving the graph!!!!!\n");
   P* p = new P();
   E* e = new E();
   out << "<Graph " << p->className() << " " << e->className() << ">\n";
@@ -154,9 +154,9 @@ void Graph<P,E>::draw(){
     glNewList(v_glList, GL_COMPILE);
     glColor3f(v_r,v_g,v_b);
     eset.draw();
-    glColor3f(1.0,1.0,0.0);
     // cloud->points[0]->draw();
-    // cloud->draw();
+    // glColor4f(0.5, 0.5 ,0.0,0.5);
+    // cloud->draw(true);
 
     //Standard drawing proccedure
     if(0){

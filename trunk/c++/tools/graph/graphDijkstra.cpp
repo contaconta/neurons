@@ -28,7 +28,8 @@
 
 using namespace std;
 
-typedef Graph<Point3D, EdgeW<Point3D> > Graph3D;
+typedef Graph<Point3D,  EdgeW<Point3D>  > Graph3D;
+typedef Graph<Point3Dw, EdgeW<Point3Dw> > Graph3Dw;
 
 //Here are most of the shortest path computation
 #include "graphDijkstra_aux.cpp"
@@ -95,75 +96,93 @@ int isCompatible(vector<int>& S, vector< int>& path, vector< int >& kids)
 
 
 
+
+  // Adding a path is not a simple task. First, the connecting point between the
+  // path and the solution can be at the beginning or end of the path, then the
+  // subpaths that compose the solution can be ordered left-to-right or
+  // otherwise. All points that are close to the path should be included into
+  // the solution splitting the path into two sub-paths. We will call a path the
+  // connection we want to make and a sub-path the connection between two anchor
+  // points
+
+
 void addToSolution
 (vector< int >& S,
  vector<int>& path,
  vector< int >& kids,
  Graph3D* cpt,
- vector< vector< Graph3D* > >& v2v_paths,
+ vector< vector< Graph3Dw* > >& v2v_paths,
  Cube<uchar, ulong>* notvisited
 ){
-  if(solutionContains(S, path[0])){
-    for(int i = 1; i < path.size(); i++){
-      kids[path[i-1]]++;
-      if(S[path[i]] >= 0){
-        printf("We are adding a node that already has been visited, exit\n");
-        exit(0);
-      }
-      S[path[i]] = path[i-1];
+    int pathDirection  = 1;  //point 0 is part of the path
+    int pathPointBegin = 1;
+    int pathPointLimit = path.size()-1;
+    if(!solutionContains(S, path[0])){ //in case we reverse the direction
+      pathDirection  = -1;
+      pathPointBegin = path.size()-2;
+      pathPointLimit = 0;
     }
-  }
-  else if(solutionContains(S, path[path.size()-1])){
-    for(int i = path.size()-2; i >= 0; i--){
-      kids[path[i+1]]++;
-      if(S[path[i]] >= 0){
-        printf("We are adding a node that already has been visited, exit\n");
-        exit(0);
-      }
-      S[path[i]] = path[i+1];
-    }
-  }
-  else{
-    printf("The path added to the solution does is not compatible with the solution\n");
-    exit(0);
-  }
+    for(int nPointPath = pathPointBegin;
+        pathDirection*nPointPath <= pathDirection*pathPointLimit;
+        nPointPath += pathDirection)
+      {
+        int currentParent = path[nPointPath - pathDirection];
+        int pathChild     = path[nPointPath];
+        printf("nPointPath = %i: -> [%i, %i]\n", nPointPath,
+               pathChild, currentParent);
+
+
+        // now it comes the loop for the sub-path points
+        Graph3Dw* s_path = v2v_paths[pathChild] [currentParent];
+        int s_pathDirection = 1;
+        int s_pathPointBegin  = 0;
+        int s_pathPointEnd    = s_path->cloud->points.size()-1;
+        // check if we go back to front
+        Point* seedPtOriginPath = cpt->cloud->points[currentParent];
+        Point* s_path_init  = s_path->cloud->points[0];
+        Point* s_path_end   = s_path->cloud->points[s_path->cloud->points.size() -1];
+        vector< float > s_p_i_o = v_subs(s_path_init->coords, seedPtOriginPath->coords);
+        vector< float > s_p_e_o = v_subs(s_path_end->coords , seedPtOriginPath->coords);
+        //if the end path is closer to the origin point
+        if(v_norm(s_p_i_o) > v_norm(s_p_e_o)){
+          s_pathDirection   = -1;
+          s_pathPointBegin  = s_path->cloud->points.size()-1;
+          s_pathPointEnd    = 0;
+        }
+
+        //same loop as before
+        for(int s_pointPath = s_pathPointBegin;
+            s_pathDirection*s_pointPath <= s_pathDirection*s_pathPointEnd;
+            s_pointPath += s_pathDirection)
+          {
+            Point3Dw* pt = dynamic_cast<Point3Dw*>(s_path->cloud->points[s_pointPath]);
+            for(int nS = 0; nS < S.size(); nS++){
+              if(S[nS]==-1){
+                Point* pts = cpt->cloud->points[nS];
+                vector< float > d_v = v_subs(pt->coords, pts->coords);
+                float d = v_norm(d_v);
+                if(d < pt->weight*1.2){  //PARAMETER
+                  kids[currentParent]++;
+                  S[nS] = currentParent;
+                  currentParent = nS;
+                }
+              }
+            }//nS
+          }
+      } // through the anchor points
+
 
   //mark all the points visited in notvisited as 0
   vector< int > p0;
   vector< int > p1;
   for(int i = 0; i < path.size()-1; i++){
-    Graph3D* grpath = v2v_paths[path[i]][path[i+1]];
+    Graph3Dw* grpath = v2v_paths[path[i]][path[i+1]];
     for(int np = 0; np < grpath->cloud->points.size(); np++){
+      Point3Dw* pt = dynamic_cast<Point3Dw*>(grpath->cloud->points[np]);
       notvisited->micrometersToIndexes(grpath->cloud->points[np  ]->coords, p0);
-      notvisited->put_value_in_ellipsoid(0, p0[0], p0[1], p0[2], 5.0, 5.0, 5.0);
-      printf("Drawing\n");
-    }
-
-      // notvisited->put_m(grpath->cloud->points[np]->coords[0],
-                        // grpath->cloud->points[np]->coords[1],
-                        // grpath->cloud->points[np]->coords[2], 0);
-    // for(int np = 0; np < grpath->cloud->points.size()-1; np++){
-      // notvisited->micrometersToIndexes(grpath->cloud->points[np  ]->coords, p0);
-      // notvisited->micrometersToIndexes(grpath->cloud->points[np+1]->coords, p1);
-      // notvisited->render_cylinder(p0, p1, 5, 0);
-    // }
-  }
-
-  // And now elliminates from the solutio all those candidate points too close to the
-  //  path. It can be heavy, since it is done only few times
-  for(int nS = 0; nS < S.size(); nS++){
-    if(S[nS]==-1){
-      vector< float > p_c = cpt->cloud->points[nS]->coords;
-      for(int npe = 0; npe < path.size()-1; npe++){
-        int p0 = path[npe];
-        int p1 = path[npe+1];
-        Graph3D* path_v2v = v2v_paths[p0][p1];
-        for(int npp = 0; npp < path_v2v->cloud->points.size(); npp++){
-          vector< float > v_dist = v_subs(p_c, path_v2v->cloud->points[npp]->coords);
-          if(v_norm(v_dist) < 5.0) //THRESHOLD
-            S[nS] = -2;
-        }
-      }
+      notvisited->put_value_in_ellipsoid(0, p0[0], p0[1], p0[2], pt->weight,
+                                         pt->weight, pt->weight);
+      // printf("Drawing\n");
     }
   }
 
@@ -216,7 +235,7 @@ float edgeGeomLogProb(Point* _p0, Point* _p1, Point* _p2){
 
 void computeTortuosities
 (
- vector< vector< Graph3D* > >& v2v_paths,
+ vector< vector< Graph3Dw* > >& v2v_paths,
  vector< vector< float > >& tortuosities,
  float sigma
  )
@@ -231,7 +250,7 @@ void computeTortuosities
   for(int i = 0; i < tortuosities.size(); i++)
     for(int j = i+1; j < tortuosities.size(); j++){
       float tortuosity = 0;
-      Graph3D* path = v2v_paths[i][j];
+      Graph3Dw* path = v2v_paths[i][j];
       if(path == NULL) continue;
       vector< float > p0 = path->cloud->points[0]->coords;
       vector< float > p1 = path->cloud->points[path->cloud->points.size()-1]->coords;
@@ -257,13 +276,13 @@ void computeTortuosities
 float computePathCost
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< int >& path,
-  vector< vector< Graph3D* > >& v2v_paths,
+  vector< vector< Graph3Dw* > >& v2v_paths,
   Cube<float, double>* probs
   )
 {
   float imageEvidence = 0;
   float tortuosityEvidence = 0;
-  Graph3D* dsp2;
+  Graph3Dw* dsp2;
 
   Point* p0 = v2v_paths[path[0]][path[1]]->cloud->points[0];
   dsp2 = v2v_paths[path[path.size()-2]][path[path.size()-1]];
@@ -291,7 +310,7 @@ float computePathCost
   imageEvidence += edgeLogProb(dsp2->cloud->points[dsp2->cloud->points.size()-1], probs);
 
   // printf("path: image %f tortuosity %f\n", imageEvidence, tortuosityEvidence);
-  return (imageEvidence + 0.0*tortuosityEvidence/10000 + 4.0);
+  return (imageEvidence + 1.0*tortuosityEvidence/10000 + 4.0);
 }
 
 
@@ -301,7 +320,7 @@ void findCostOfPaths
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< vector< vector< int   > > >& paths,
   vector< vector< float > >& costs,
-  vector< vector< Graph3D* > >& v2v_paths,
+  vector< vector< Graph3Dw* > >& v2v_paths,
   Cube<float, double>* probs
 )
 {
@@ -317,14 +336,92 @@ void findCostOfPaths
 }
 
 
+void pathBoundingBox
+(vector< int >& path,
+ vector< vector< Graph3Dw* > >& v2v_paths,
+ Cube<uchar, ulong>* notVisited,
+ int& x0, int& y0, int& z0,
+ int& x1, int& y1, int& z1
+ )
+{
+  x0 = notVisited->cubeWidth;
+  y0 = notVisited->cubeHeight;
+  z0 = notVisited->cubeDepth;
+  x1 = 0;
+  y1 = 0;
+  z1 = 0;
+
+  int xt, yt, zt;
+  Graph3Dw* gr;
+  Point3Dw* pt;
+  float w;
+  for(int nPP = 1; nPP < path.size(); nPP++){
+    gr = v2v_paths[path[nPP]][path[nPP-1]];
+    for(int nP = 0; nP < gr->cloud->points.size(); nP++){
+      pt = dynamic_cast<Point3Dw*>(gr->cloud->points[nP]);
+      w = pt->weight;
+      notVisited->micrometersToIndexes3
+        (pt->coords[0], pt->coords[1], pt->coords[2],
+         xt, yt, zt);
+      if(max(0, (int)(xt-w)) <= x0)
+        x0 = max(0, (int)(xt-w));
+      if(max(0, (int)(yt-w)) <= y0)
+        y0 = max(0, (int)(yt-w));
+      if(max(0, (int)(zt-w)) <= z0)
+        z0 = max(0, (int)(zt-w));
+      if(min(notVisited->cubeWidth-1, (int)(xt+w)) >= x1)
+        x1 = min(notVisited->cubeWidth-1, (int)(xt+w));
+      if(min(notVisited->cubeHeight-1, (int)(yt+w)) >= y1)
+        y1 = min(notVisited->cubeHeight-1, (int)(yt+w));
+      if(min(notVisited->cubeDepth-1, (int)(zt+w)) >= z1)
+        z1 = min(notVisited->cubeDepth-1, (int)(zt+w));
+    }//np
+  }//npp
+}
+
 int computePathLength
 ( vector< int >& path,
-  vector< vector< Graph3D* > >& v2v_paths,
-  Cube<uchar, ulong>* notVisited
+  vector< vector< Graph3Dw* > >& v2v_paths,
+  Cube<uchar, ulong>* notVisited,
+  Cube<uchar, ulong>* blackboard
   )
 {
+  if(0){
+    //Erases the blackboard
+    int x0, y0, z0, x1, y1, z1;
+    pathBoundingBox(path, v2v_paths, notVisited, x0, y0, z0, x1, y1, z1);
+    for(int z = z0; z<=z1; z++)
+      for(int y = y0; y<=y1; y++)
+        for(int x = x0; x<=x1; x++)
+          blackboard->put(x,y,z,0);
+
+    //Draws the path in the blackboard
+    Graph3Dw* gr;
+    Point3Dw* pt;
+    int xt, yt, zt;
+    for(int nPP = 1; nPP < path.size(); nPP++){
+      gr = v2v_paths[path[nPP]][path[nPP-1]];
+      for(int nP = 0; nP < gr->cloud->points.size(); nP++){
+        pt = dynamic_cast<Point3Dw*>(gr->cloud->points[nP]);
+        blackboard->micrometersToIndexes3
+          (pt->coords[0], pt->coords[1], pt->coords[2],
+           xt, yt, zt);
+        blackboard->put_value_in_ellipsoid(1, xt, yt, zt, pt->weight,
+                                           pt->weight, pt->weight);
+      }//nPP
+    }//np
+
+    int length = 0;
+    for(int z = z0; z<=z1; z++)
+      for(int y = y0; y<=y1; y++)
+        for(int x = x0; x<=x1; x++)
+          length += notVisited->at(x,y,z)*blackboard->at(x,y,z);
+  }
+
+
+
   int length = 0;
-  Graph3D* dsp2;
+  Graph3Dw* dsp2;
   for(int nep = 0; nep < path.size()-1; nep++){
     dsp2 = v2v_paths[path[nep]][path[nep+1]];
     for(int nP = 0; nP < dsp2->cloud->points.size()-1; nP++){
@@ -341,17 +438,21 @@ void findLengthsOfPaths
 ( Graph<Point3D, EdgeW<Point3D> >* gr,
   vector< vector< vector< int   > > >& paths,
   vector< vector< int > >& lengths,
-  vector< vector< Graph3D* > >& v2v_paths,
-  Cube<uchar, ulong>* notvisited
+  vector< vector< Graph3Dw* > >& v2v_paths,
+  Cube<uchar, ulong>* notvisited,
+  Cube<uchar, ulong>* blackboard
 )
 {
   int nPoints = gr->cloud->points.size();
+  printf("Computing the paht length: ");
   for(int i = 0; i < nPoints; i++){
-    for(int j = 0; j < nPoints; j++){
-      lengths[i][j] = computePathLength(paths[i][j], v2v_paths, notvisited);
+    for(int j = i+1; j < nPoints; j++){
+      lengths[i][j] = computePathLength(paths[i][j], v2v_paths, notvisited, blackboard);
       lengths[j][i] = lengths[i][j];
     }
+    printf("%04i\r", i); fflush(stdout);
   }
+  printf("\n");
 }
 
 
@@ -372,20 +473,20 @@ void saveSolution
   sols->saveToFile(solsName);
   sprintf(solsName, "%s/sol_%03i.swc",solsDirectory.c_str(), nComponentsAdded);
 
-  // SWC* sols_swc = solutionToSWC(gr, cp, S);
-  // sols_swc->saveToFile(solsName);
+  SWC* sols_swc = solutionToSWC(gr, cp, S);
+  sols_swc->saveToFile(solsName);
 
   //Save it as a list of paths
   sprintf(solsName, "%s/sol_%03i.lst",solsDirectory.c_str(), nComponentsAdded);
   std::ofstream solsPaths(solsName);
   char pathName[1024];
   for(int nE = 0; nE < sols->eset.edges.size(); nE++){
-    sprintf(pathName, "%s/path_%04i_%04i.gr", pathsDirectory.c_str(),
+    sprintf(pathName, "%s/path_%04i_%04i-w.gr", pathsDirectory.c_str(),
             sols->eset.edges[nE]->p0, sols->eset.edges[nE]->p1);
     if(fileExists(pathName)){
       solsPaths << pathName << std::endl;
     } else {
-      sprintf(pathName, "%s/path_%04i_%04i.gr", pathsDirectory.c_str(),
+      sprintf(pathName, "%s/path_%04i_%04i-w.gr", pathsDirectory.c_str(),
               sols->eset.edges[nE]->p1, sols->eset.edges[nE]->p0);
       if(fileExists(pathName)){
         solsPaths << pathName << std::endl;
@@ -461,7 +562,10 @@ int main(int argc, char **argv) {
   float zS = atof(argv[5]);
   float R  = 20;
   Cube<float, double>* cp = new Cube<float, double>(argv[6]);
-  Cube<uchar, ulong>*  notvisited = cp->create_blank_cube_uchar("visited",1);
+  Cube<uchar, ulong>*  notvisited = cp->create_blank_cube_uchar("visited",0);
+  //used to compute temporal masks of paths
+  Cube<uchar, ulong>*  blackboard = cp->create_blank_cube_uchar("visited",0);
+
   notvisited->put_all(255);
 
   // notvisited->put_value_in_ellipsoid(0, 100, 100, 20, 5.0, 5.0, 5.0);
@@ -488,7 +592,7 @@ int main(int argc, char **argv) {
   vector< vector< vector< int   > > > paths;
   vector< vector< float > >    costs;
   vector< vector< int  > >     lengths;
-  vector< vector< Graph3D* > > v2v_paths;
+  vector< vector< Graph3Dw* > > v2v_paths;
   costs.resize(nPoints);
   lengths.resize(nPoints);
   v2v_paths.resize(nPoints);
@@ -519,7 +623,8 @@ int main(int argc, char **argv) {
       paths,
       lengths,
       v2v_paths,
-      notvisited
+      notvisited,
+      blackboard
       );
 
 
@@ -565,7 +670,7 @@ int main(int argc, char **argv) {
           i_j = it->second - nPoints*floor(it->second/nPoints);
           float value = it->first;
           int path_length = computePathLength(paths[i_i][i_j], v2v_paths,
-                                              notvisited);
+                                              notvisited, blackboard);
 
           // The value of the path is not up to date
           if(value != costs[i_i][i_j] / path_length){
@@ -603,7 +708,7 @@ int main(int argc, char **argv) {
         markedForDeletion.push_back(it);
       }
     } // for 
-    printf("sizeofQ = %i\n", Q.size());
+    printf("sizeofQ = %i\n", (int)Q.size());
     if(isThereSomethingCompatible == false)
       break;
   }//Iteration over Q
