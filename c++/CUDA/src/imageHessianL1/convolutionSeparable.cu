@@ -216,16 +216,18 @@ __global__ void hessianKernel(
        float *d_gxx,
        float *d_gxy,
        float *d_gyy,
+       float scale,
        int imageW,
-       int imageH
+       int imageH,
+       int invert
 ){
   int i = (blockDim.y*blockIdx.y + threadIdx.y)*imageW +
     blockDim.x*blockIdx.x+threadIdx.x;
   float a, b, c;
-  a = -d_gxx[i];
-  b = -d_gxy[i];
-  c = -d_gyy[i];
-  d_output[i] = (a+c)/2 + sqrt( (a-c)*(a-c) + 4*b*b)/2;
+  a = invert*d_gxx[i];
+  b = invert*d_gxy[i];
+  c = invert*d_gyy[i];
+  d_output[i] = ((a+c)/2 + sqrt( (a-c)*(a-c) + 4*b*b)/2)*scale*scale;
   // d_output[i] = (a-c)*(a-c) + 4*b*b;
   // d_output[i] = b;
 }
@@ -238,12 +240,115 @@ extern "C" void hessianGPU
  float *d_gxx,
  float *d_gxy,
  float *d_gyy,
+ float scale,
+ int imageW,
+ int imageH,
+ int invert
+ )
+{
+  dim3 gird (ceil(float(imageW)/ROWS_BLOCKDIM_X),ceil(float(imageH)/ROWS_BLOCKDIM_Y));
+  dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
+  hessianKernel<<<gird, block>>>( d_output, d_gxx, d_gxy, d_gyy, scale, imageW, imageH, int invert );
+  cutilCheckMsg("hessianKernel() execution failed\n");
+}
+
+//////////////// MAX /////////
+__global__ void maxKernel(
+       float *d_output,
+       float *d_isMaxThanOutput,
+       int imageW,
+       int imageH
+){
+  int i = (blockDim.y*blockIdx.y + threadIdx.y)*imageW +
+    blockDim.x*blockIdx.x+threadIdx.x;
+
+  if(d_isMaxThanOutput[i] >= d_output[i])
+    d_output[i] = d_isMaxThanOutput[i];
+}
+
+
+
+extern "C" void maxGPU
+(
+ float *d_output,
+ float *d_isMaxThanOutput,
  int imageW,
  int imageH
  )
 {
   dim3 gird (ceil(float(imageW)/ROWS_BLOCKDIM_X),ceil(float(imageH)/ROWS_BLOCKDIM_Y));
   dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
-  hessianKernel<<<gird, block>>>( d_output, d_gxx, d_gxy, d_gyy, imageW, imageH );
-  cutilCheckMsg("hessianKernel() execution failed\n");
+  maxKernel<<<gird, block>>>( d_output, d_isMaxThanOutput, imageW, imageH );
+  cutilCheckMsg("maxKernel() execution failed\n");
+}
+
+__global__ void maxKernel_scale(
+       float *d_output,
+       float *d_scale,
+       float *d_isMaxThanOutput,
+       float scale,
+       int imageW,
+       int imageH
+){
+  int i = (blockDim.y*blockIdx.y + threadIdx.y)*imageW +
+    blockDim.x*blockIdx.x+threadIdx.x;
+
+  if(d_isMaxThanOutput[i] > d_output[i]){
+    d_output[i] = d_isMaxThanOutput[i];
+    if(d_output[i] > 30)
+      d_scale[i]  = scale;
+  }
+}
+
+
+
+extern "C" void maxGPU_scale
+(
+ float *d_output,
+ float *d_scale,
+ float *d_isMaxThanOutput,
+ float scale,
+ int imageW,
+ int imageH
+ )
+{
+  dim3 gird (ceil(float(imageW)/ROWS_BLOCKDIM_X),ceil(float(imageH)/ROWS_BLOCKDIM_Y));
+  dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
+  maxKernel_scale<<<gird, block>>>( d_output, d_scale, d_isMaxThanOutput, scale,
+                                    imageW, imageH );
+  cutilCheckMsg("maxKernel() execution failed\n");
+
+}
+
+
+
+////////////////////////// PUT VALUE
+
+__global__ void putKernel(
+       float *d_output,
+       float value,
+       int imageW,
+       int imageH
+){
+  int i = (blockDim.y*blockIdx.y + threadIdx.y)*imageW +
+    blockDim.x*blockIdx.x+threadIdx.x;
+
+    d_output[i] = value;
+
+}
+
+
+
+extern "C" void putGPU
+(
+ float *d_output,
+ float value,
+ int imageW,
+ int imageH
+ )
+{
+  dim3 gird (ceil(float(imageW)/ROWS_BLOCKDIM_X),ceil(float(imageH)/ROWS_BLOCKDIM_Y));
+  dim3 block(ROWS_BLOCKDIM_X,ROWS_BLOCKDIM_Y);
+  putKernel<<<gird, block>>>( d_output, value, imageW, imageH );
+  cutilCheckMsg("maxKernel() execution failed\n");
 }
