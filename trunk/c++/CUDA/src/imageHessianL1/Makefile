@@ -34,7 +34,7 @@
 ################################################################################
 
 # Add source files here
-EXECUTABLE	:= imageHessianL1
+EXECUTABLE	:= imageHessianL1M
 # CUDA source files (compiled with cudacc)
 CUFILES		:= convolutionSeparable.cu
 # CUDA dependency files
