@@ -422,7 +422,7 @@ set( GRAPH_TOOLS
   # cloudSplit
   # cloudEliminateWidth
   # cloudCombine
-  # cloudToText
+  cloudToText
   # cloudEvaluate
   # cloudEliminatePointsFromImage
 )
@@ -437,24 +437,19 @@ endforeach(graph_tool)
 ################################################################################
 ## neuron tools
 ################################################################################
+set( NEURON_TOOLS
+  # neuronOutputAllEdgeLengths
+  # neuronFixDuplicatePoints
+  # neuronToCloud
+  neuronToCloudI
+  # neuronStatistics
+  # neuronFlat
+)
+foreach( neuron_tool ${NEURON_TOOLS})
+  add_executable(${neuron_tool} ${CMAKE_SOURCE_DIR}/../tools/neuron/${neuron_tool}.cpp)
+  target_link_libraries(${neuron_tool} ${LINK_LIBRARIES_ALL})
+endforeach(neuron_tool)
 
-# # add_executable(neuronOutputAllEdgeLengths ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronOutputAllEdgeLengths.cpp)
-# target_link_libraries(neuronOutputAllEdgeLengths ${LINK_LIBRARIES_ALL})
-
-# # add_executable(neuronFixDuplicatePoints ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFixDuplicatePoints.cpp)
-# target_link_libraries(neuronFixDuplicatePoints ${LINK_LIBRARIES_ALL})
-
-add_executable(neuronToCloud ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloud.cpp)
-target_link_libraries(neuronToCloud ${LINK_LIBRARIES_ALL})
-
-# add_executable(neuronToCloudI ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronToCloudI.cpp)
-# target_link_libraries(neuronToCloudI ${LINK_LIBRARIES_ALL})
-
-# add_executable(neuronStatistics ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronStatistics.cpp)
-# target_link_libraries(neuronStatistics ${LINK_LIBRARIES_ALL})
-
-# add_executable(neuronFlat ${CMAKE_SOURCE_DIR}/../tools/neuron/neuronFlat.cpp)
-# target_link_libraries(neuronFlat ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
@@ -468,12 +463,31 @@ set( DIADEM_TOOLS
   diademSWCToGraph
   diademSWCisBinaryTree
   diademAddScaleFromImage
+  diademOutputToCloud
+  diademTreeToHighResTree
 )
 
 foreach( diadem_tool ${DIADEM_TOOLS})
   add_executable(${diadem_tool} ${CMAKE_SOURCE_DIR}/../tools/diadem/${diadem_tool}.cpp)
   target_link_libraries(${diadem_tool} ${LINK_LIBRARIES_ALL})
 endforeach(diadem_tool)
+
+################################################################################
+## KMST tools
+################################################################################
+set( KMST_TOOLS
+  kMSTFileToGraph
+  kMSTgraphToHighResgraph
+  kMSTanalyzeDir
+  kMSTevaluateDir
+  kMSTgraphAddScale
+  kMSTGraphToFile
+)
+
+foreach( kmst_tool ${KMST_TOOLS})
+  add_executable(${kmst_tool} ${CMAKE_SOURCE_DIR}/../tools/kmst/${kmst_tool}.cpp)
+  target_link_libraries(${kmst_tool} ${LINK_LIBRARIES_ALL})
+endforeach(kmst_tool)
 
 
 
@@ -502,25 +516,6 @@ target_link_libraries(graph ${LINK_LIBRARIES_ALL})
 
 # add_executable(checkNonMaxSup ${CMAKE_SOURCE_DIR}/../tests/checkNonMaxSup.cpp)
 # target_link_libraries(checkNonMaxSup ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(kMSTFileToGraph ${CMAKE_SOURCE_DIR}/../tests/kMSTFileToGraph.cpp)
-# target_link_libraries(kMSTFileToGraph ${LINK_LIBRARIES_ALL})
-
-# # add_executable(kMSTgraphToHighResgraph ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphToHighResgraph.cpp)
-# target_link_libraries(kMSTgraphToHighResgraph ${LINK_LIBRARIES_ALL})
-
-# add_executable(kMSTanalyzeDir ${CMAKE_SOURCE_DIR}/../tests/kMSTanalyzeDir.cpp)
-# target_link_libraries(kMSTanalyzeDir ${LINK_LIBRARIES_ALL})
-
-# add_executable(kMSTevaluateDir ${CMAKE_SOURCE_DIR}/../tests/kMSTevaluateDir.cpp)
-# target_link_libraries(kMSTevaluateDir ${LINK_LIBRARIES_ALL})
-
-# add_executable(kMSTgraphAddScale ${CMAKE_SOURCE_DIR}/../tests/kMSTgraphAddScale.cpp)
-# target_link_libraries(kMSTgraphAddScale ${LINK_LIBRARIES_ALL})
-
-# add_executable(kMSTGraphToFile ${CMAKE_SOURCE_DIR}/../tests/kMSTGraphToFile.cpp)
-# target_link_libraries(kMSTGraphToFile ${LINK_LIBRARIES_ALL})
 
 
 # add_executable(convolutionsFast ${CMAKE_SOURCE_DIR}/../tests/convolutionsFast.cpp)
