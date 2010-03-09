@@ -28,8 +28,6 @@
 
 using namespace std;
 
-typedef Graph<Point3D,  EdgeW<Point3D>  > Graph3D;
-typedef Graph<Point3Dw, EdgeW<Point3Dw> > Graph3Dw;
 
 //Here are most of the shortest path computation
 #include "graphDijkstra_aux.cpp"
@@ -76,7 +74,7 @@ int isCompatible(vector<int>& S, vector< int>& path, vector< int >& kids)
 
   //If the end point links somewhere with two edges already, the solution is incompatible
   if( (solutionContains(S, path[path.size()-1]) &&
-       kids[path[path.size()-1]] >= 2) )
+       kids[path[path.size()-1]] >= 200) )
     return -1;
   if( (solutionContains(S, path[0]) &&
        kids[path[0]]>= 2) )
@@ -86,7 +84,7 @@ int isCompatible(vector<int>& S, vector< int>& path, vector< int >& kids)
        kids[path[0]]< 2) )
     return 1;
   if( (solutionContains(S, path[path.size()-1]) &&
-       kids[path[path.size()-1]] < 2) )
+       kids[path[path.size()-1]] < 200) )
     return 1;
 
   printf("isCompatible failed\n");
@@ -691,14 +689,14 @@ int main(int argc, char **argv) {
               saveSolution
                 ( S, gr, nComponentsAdded, solsDirectory, pathsDirectory, cp);
 
-            if(!checkSolution(S)){
-              printf("The solution found might have some errors\n");
-              printf("Kids=");
-              printVector(kids);
-              printf("Sol=");
-              printSolution(S);
-              exit(0);
-            }
+            // if(!checkSolution(S)){
+              // printf("The solution found might have some errors\n");
+              // printf("Kids=");
+              // printVector(kids);
+              // printf("Sol=");
+              // printSolution(S);
+              // exit(0);
+            // }
 
             nComponentsAdded++;
           }//add value to solution

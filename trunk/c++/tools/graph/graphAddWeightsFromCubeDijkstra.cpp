@@ -253,6 +253,4 @@ int main(int argc, char **argv) {
 
 
   dest->saveToFile(destGraphName);
-
-
 }

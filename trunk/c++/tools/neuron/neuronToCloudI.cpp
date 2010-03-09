@@ -31,6 +31,7 @@ void addNeuronSegmentToCloud(NeuronSegment* segment,
 {
   float theta, radius;
   vector< float > mcoords(3);
+  vector< float > mcoords2(3);
   vector< float > mcnext(3);
 
   // Gets the limits in micrometers of the images
@@ -39,7 +40,7 @@ void addNeuronSegmentToCloud(NeuronSegment* segment,
   vector< int > v_0(3);
   vector< int > v_6(3);
   v_0[0]=0;v_0[1]=0;v_0[2]=0;
-  v_6[0]=img->width; v_6[1]=img->height; v_6[2]=0;
+  v_6[0]=img->width-1; v_6[1]=img->height-1; v_6[2]=0;
   img->indexesToMicrometers(v_0, v_0m);
   img->indexesToMicrometers(v_6, v_6m);
 
@@ -47,26 +48,35 @@ void addNeuronSegmentToCloud(NeuronSegment* segment,
          // v_0m[0], v_0m[1], v_0m[2], v_6m[0], v_6m[1], v_6m[2]); 
 
   for(int i = 0; i < segment->points.size()-1; i++){
-    n->neuronToMicrometers(segment->points[i].coords, mcoords);
+    printf("   point %i: ", i);
+    vector< float > neuronMicrometers = segment->points[i].coords;
+    neuronMicrometers[0] += img->width/2;
+    neuronMicrometers[1] += img->height/2;
+    n->neuronToMicrometers(neuronMicrometers,
+                           mcoords2);
+    n->neuronToMicrometers(segment->points[i].coords,
+                           mcoords);
     //If the point is within the image, accept it
-    if ( (mcoords[0] > v_0m[0]) && (mcoords[0] < v_6m[0]) &&
-         (mcoords[1] < v_0m[1]) && (mcoords[1] > v_6m[1]) ){
+    if ( (mcoords2[0] > v_0m[0]) && (mcoords2[0] < v_6m[0]) &&
+         (mcoords2[1] < v_0m[1]) && (mcoords2[1] > v_6m[1]) ){
       //Computes thetea
       if(i!= segment->points.size()-1)
         n->neuronToMicrometers(segment->points[i+1].coords, mcnext);
       else if (i >= 1)
         n->neuronToMicrometers(segment->points[i-1].coords, mcnext);
       else continue;
-      theta = atan2(mcnext[1] - mcoords[1], mcnext[0]-mcoords[0]);
+      theta = atan2(+mcnext[1]- mcoords[1], mcnext[0]-mcoords[0]);
 
  //mcoords[0],mcoords[1],
-      cl->points.push_back(new Point2Dotw(mcoords[0], mcoords[1],
+      printf("[%f,%f]-%f", mcoords2[0], mcoords2[1], theta);
+      cl->points.push_back(new Point2Dotw(mcoords2[0], mcoords2[1],
                                           // segment->points[i].coords[0],
                                           // segment->points[i].coords[1],
                                           theta, 1,
-                                          0.8*segment->points[i].coords[3]));
+                                          segment->points[i].coords[3]));
 
     }
+    printf("\n");
   }
 
   for(int i = 0; i < segment->childs.size(); i++)
@@ -86,9 +96,11 @@ int main(int argc, char **argv) {
   Cloud<Point2Dotw>* cl = new Cloud<Point2Dotw>();
 
   for(int i = 0; i < n->dendrites.size(); i++){
+    printf("Parsing dendrite %i\n", i);
     addNeuronSegmentToCloud(n->dendrites[i], cl, img);
   }
   for(int i = 0; i < n->axon.size(); i++){
+    printf("Parsing axon %i\n", i);
     addNeuronSegmentToCloud(n->axon[i], cl, img);
   }
 
