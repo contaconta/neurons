@@ -537,8 +537,8 @@ void Neuron::draw(){
   if(v_glList == 0){
     v_glList = glGenLists(1);
     glNewList(v_glList, GL_COMPILE);
-    drawInOpenGl(false, 1e6);
-    // drawInOpenGlAsLines(false);
+    // drawInOpenGl(false, 1e6);
+    drawInOpenGlAsLines(false);
     glEndList();
   }
   else{
