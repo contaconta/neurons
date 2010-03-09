@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     exit(0);
   }
 
-  Graph<Point3D, EdgeW<Point3D> >* in = new Graph<Point3D, EdgeW<Point3D> >(argv[1]);
+  Graph<Point3Dw, EdgeW<Point3Dw> >* in = new Graph<Point3Dw, EdgeW<Point3Dw> >(argv[1]);
   Cube_P* cube        = CubeFactory::load(argv[2]);
   SWC* swc            = new SWC();
   Graph<Point3Dw, Edge<Point3Dw> >* gr = new Graph<Point3Dw, Edge<Point3Dw> >();
