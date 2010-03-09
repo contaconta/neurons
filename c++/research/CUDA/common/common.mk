@@ -151,11 +151,11 @@ ifeq ($(USEGLLIB),1)
 	else
 		OPENGLLIB := -lGL -lGLU -lX11 -lXi -lXmu
 
-		ifeq "$(strip $(HP_64))" ""
+#		ifeq "$(strip $(HP_64))" ""
 			OPENGLLIB += -lGLEW -L/usr/X11R6/lib
-		else
-			OPENGLLIB += -lGLEW_x86_64 -L/usr/X11R6/lib64
-		endif
+#		else
+#			OPENGLLIB += -lGLEW_x86_64 -L/usr/X11R6/lib64
+#		endif
 	endif
 
 	CUBIN_ARCH_FLAG := -m64
@@ -285,7 +285,7 @@ CXXFLAGS  += $(COMMONFLAGS)
 CFLAGS    += $(COMMONFLAGS)
 
 #use gcc-4.3 and force not to use /usr/bin/gcc
-NVCCFLAGS+=--compiler-bindir=../../common/mygcc/
+#NVCCFLAGS+=--compiler-bindir=../../common/mygcc/
 
 ifeq ($(nvcc_warn_verbose),1)
 	NVCCFLAGS += $(addprefix --compiler-options ,$(CXXWARN_FLAGS)) 
