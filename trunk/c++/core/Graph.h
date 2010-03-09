@@ -76,6 +76,10 @@ public:
 // FOR THE MOMENT THE DEFINITIONS GO HERE, BUT NEED TO BE TAKEN OUT
 
 typedef Graph<Point3D, Edge<Point3D> > g1;
+typedef Graph<Point3D,  EdgeW<Point3D>  > Graph3D;
+typedef Graph<Point3Dw, EdgeW<Point3Dw> > Graph3Dw;
+
+
 
 template< class P, class E>
 Graph<P,E>::Graph() : Graph_P(){

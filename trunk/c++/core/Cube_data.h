@@ -64,12 +64,12 @@ void Cube<T,U>::load_parameters(string filenameParams)
 
 
    //  #if debug
-   printf("Cube parameters:\n");
-   printf("  directory %s, parameters %s\n", directory.c_str(), filenameParameters.c_str());
-   printf("  cubeWidth %i cubeHeight %i cubeDepth %i\n", (int)cubeWidth,
-          (int)cubeHeight, (int)cubeDepth);
-   printf("  voxelWidth %f voxelHeight %f voxelDepth %f\n", voxelWidth, voxelHeight, voxelDepth);
-   printf("  x_offset %f y_offset %f z_offset %f\n", x_offset, y_offset, z_offset);
+   // printf("Cube parameters:\n");
+   // // printf("  directory %s, parameters %s\n", directory.c_str(), filenameParameters.c_str());
+   // printf("  cubeWidth %i cubeHeight %i cubeDepth %i\n", (int)cubeWidth,
+          // (int)cubeHeight, (int)cubeDepth);
+   // // printf("  voxelWidth %f voxelHeight %f voxelDepth %f\n", voxelWidth, voxelHeight, voxelDepth);
+   // printf("  x_offset %f y_offset %f z_offset %f\n", x_offset, y_offset, z_offset);
    //  #endif
  }
 

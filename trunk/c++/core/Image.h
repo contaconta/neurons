@@ -832,7 +832,7 @@ void Image<T>::draw()
     glEnd();
   }
 
-
+  glColor3f(1.0, 0.0, 0.0);
   glBegin(GL_LINE_STRIP);
   glVertex3f(0.0,height,0.0);
   glVertex3f(width,height,0.0);
@@ -1140,6 +1140,8 @@ Image<float>* Image<T>::distanceTransform
   delete [] f;
 }
 
+/** Returns an image between the points [x0, y0] and [x1,y1] with the margins of
+    pad_x and pad_y included.*/
 template<class T>
 Image<T>*
 Image<T>::get_padded_tile
