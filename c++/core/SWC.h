@@ -33,13 +33,12 @@ public:
   // Cloud<Point3Dw>* forkPoint;
   // Cloud<Point3Dw>* endPoint;
   // Cloud<Point3Dw>* custom;
+  Cloud<Point3Dw>* allPoints;
   vector<double>   offset;
 
   SWC(){}
 
   SWC(string filename){
-
-    Cloud<Point3Dw>* allPoints;
 
     string filenameNoExt = getPathWithoutExtension(filename);
     string offsetTXT     = getPathWithoutExtension(filename) + ".txt";

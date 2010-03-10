@@ -275,9 +275,9 @@ int main(int argc, char **argv){
   int imageW = cube->cubeWidth;
   int imageH = cube->cubeHeight;
   int imageD = cube->cubeDepth;
-  const int maxTileSizeX = 128;
-  const int maxTileSizeY = 128;
-  const int maxTileSizeZ = 64;
+  const int maxTileSizeX = 256;
+  const int maxTileSizeY = 256;
+  const int maxTileSizeZ = 124;
   int  maxLinearSize = maxTileSizeX * maxTileSizeY * maxTileSizeZ;
 
   printf("Allocating and intializing host arrays...\n");
