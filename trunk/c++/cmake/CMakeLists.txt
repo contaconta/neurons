@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 2.4)
 if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
@@ -14,8 +13,8 @@ project("VIVA - Volumetric Image Visualization and Analysis")
 ## Compiler and build type
 ################################################################################
 
-# set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
-set(CMAKE_BUILD_TYPE release) #debug none release distribution
+set(CMAKE_BUILD_TYPE debug)  #debug none release distribution
+#set(CMAKE_BUILD_TYPE release) #debug none release distribution
 
 set(CMAKE_C_COMPILER "g++")
 set(CMAKE_CXX_COMPILER "g++")
@@ -348,58 +347,30 @@ target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
 ## image tools
 ################################################################################
 
-# add_executable(imageConvolution2D ${CMAKE_SOURCE_DIR}/../tools/image/imageConvolution2D.cpp)
-# target_link_libraries(imageConvolution2D ${LINK_LIBRARIES_ALL})
+set( IMAGE_TOOLS
+  imageConvolution2D
+  imageRenderSWC
+  imageRenderNeuron
+  imageMask
+  imageFindSoma
+  imageGaussianPyramid
+  imageMergeAcrossScales
+  imageDerivative
+  imageThreshold
+  imageGradient
+  imageDistanceTransform
+  imageHistogram
+  imageToCloudWithWeights
+  imageToCloud
+  imageLogistic
+  imageCalculateHessian
+  imageFindBorders
+)
 
-
-# add_executable(imageRenderSWC ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderSWC.cpp)
-# target_link_libraries(imageRenderSWC ${LINK_LIBRARIES_ALL})
-
-add_executable(imageRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/image/imageRenderNeuron.cpp)
-target_link_libraries(imageRenderNeuron ${LINK_LIBRARIES_ALL})
-
-
-add_executable(imageMask ${CMAKE_SOURCE_DIR}/../tools/image/imageMask.cpp)
-target_link_libraries(imageMask ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageFindSoma ${CMAKE_SOURCE_DIR}/../tools/image/imageFindSoma.cpp)
-# target_link_libraries(imageFindSoma ${LINK_LIBRARIES_ALL})
-
-# # add_executable(imageGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/image/imageGaussianPyramid.cpp)
-# target_link_libraries(imageGaussianPyramid ${LINK_LIBRARIES_ALL})
-
-# # add_executable(imageMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/image/imageMergeAcrossScales.cpp)
-# target_link_libraries(imageMergeAcrossScales ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageDerivative ${CMAKE_SOURCE_DIR}/../tools/image/imageDerivative.cpp)
-# target_link_libraries(imageDerivative ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageThreshold ${CMAKE_SOURCE_DIR}/../tools/image/imageThreshold.cpp)
-# target_link_libraries(imageThreshold ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageGradient ${CMAKE_SOURCE_DIR}/../tools/image/imageGradient.cpp)
-# target_link_libraries(imageGradient ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageDistanceTransform
-  # ${CMAKE_SOURCE_DIR}/../tools/image/imageDistanceTransform.cpp)
-# target_link_libraries(imageDistanceTransform ${LINK_LIBRARIES_ALL})
-
-# IF(${GLEW_FOUND})
-# add_executable(imageHistogram ${CMAKE_SOURCE_DIR}/../tools/image/imageHistogram.cpp)
-# target_link_libraries(imageHistogram ${LINK_LIBRARIES_ALL})
-# # add_executable(imageToCloudWithWeights ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloudWithWeights.cpp)
-# target_link_libraries(imageToCloudWithWeights ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageToCloud ${CMAKE_SOURCE_DIR}/../tools/image/imageToCloud.cpp)
-# target_link_libraries(imageToCloud ${LINK_LIBRARIES_ALL})
-
-# add_executable(imageLogistic ${CMAKE_SOURCE_DIR}/../tools/image/imageLogistic.cpp)
-# target_link_libraries(imageLogistic ${LINK_LIBRARIES_ALL})
-
-# # add_executable(imageCalculateHessian ${CMAKE_SOURCE_DIR}/../tools/image/imageCalculateHessian.cpp)
-# target_link_libraries(imageCalculateHessian ${LINK_LIBRARIES_ALL})
-# ENDIF(${GLEW_FOUND})
-
+foreach( image_tool ${IMAGE_TOOLS})
+  add_executable(${image_tool} ${CMAKE_SOURCE_DIR}/../tools/image/${image_tool}.cpp)
+  target_link_libraries(${image_tool} ${LINK_LIBRARIES_ALL})
+endforeach(image_tool)
 
 
 

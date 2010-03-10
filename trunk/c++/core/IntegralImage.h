@@ -41,11 +41,11 @@ void IntegralImage::computeIntegralImage(Image<float>* img)
 {
   orig = img;
   put_all(0);
-  float accumulator = 0;
+  double accumulator = 0;
   //might not be the most efficient implementation, but it works
   for(int col = 0; col < width; col++){
     accumulator += orig->at(0,col);
-    put(col,0 ,accumulator);
+    put(col,0 ,(float)accumulator);
   }
   accumulator = at(0,0);
   for(int row = 1; row < height; row++){

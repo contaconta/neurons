@@ -218,7 +218,7 @@ int main(int argc, char **argv){
   Image<float>* scl = img->create_blank_image_float(argv[6]);
   const int imageW  = img->width;
   const int imageH  = img->height;
-  const int maxTileSize = 1024;
+  const int maxTileSize = 2048;
 
   printf("Allocating and intializing host arrays...\n");
   h_Input     = (float *)malloc(maxTileSize * maxTileSize * sizeof(float));
