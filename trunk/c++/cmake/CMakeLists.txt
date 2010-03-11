@@ -294,7 +294,7 @@ set( IMAGE_TOOLS
   imageToCloud
   imageLogistic
   imageCalculateHessian
-  imageFindBorders
+  imageFindConnectedComponents
 )
 
 foreach( image_tool ${IMAGE_TOOLS})
