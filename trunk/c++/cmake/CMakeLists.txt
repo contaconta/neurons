@@ -227,120 +227,50 @@ install(FILES ../assets/viva.desktop   DESTINATION /usr/share/applications/)
 ################################################################################
 ## cube tools
 
-IF(${GLEW_FOUND})
-add_executable(cubeToCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToCloud.cpp)
-target_link_libraries(cubeToCloud ${LINK_LIBRARIES_ALL})
-add_executable(cubeCalculateAguet ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateAguet.cpp)
-target_link_libraries(cubeCalculateAguet ${LINK_LIBRARIES_ALL})
-add_executable(cubeCalculateFrangi ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateFrangi.cpp)
-target_link_libraries(cubeCalculateFrangi ${LINK_LIBRARIES_ALL})
-add_executable(cubeLogistic ${CMAKE_SOURCE_DIR}/../tools/cube/cubeLogistic.cpp)
-target_link_libraries(cubeLogistic ${LINK_LIBRARIES_ALL})
+set( CUBE_TOOLS
+  cubeToCloud
+  cubeCalculateAguet
+  cubeCalculateFrangi
+  cubeLogistic
+  cubeMergeAcrossScales
+  cubeAverage
+  cubeAt
+  cubeRenderNeuron
+  cubeGaussianPyramid
+  cubeGaussianMask
+  cubeMultiply
+  cubeMax
+  cubeMIP
+  cubeMaxColor
+  cubeThreshold
+  cubeOutputValuesAtCloud
+  cubeCut
+  cubeConvertToUchar
+  cubeDijkstra2
+  cubeDecimate
+  cubeRescale
+  cubeDecimateAcrossScales
+  cubeDerivative
+  cubeDerivativesOrder
+  cubeStatistics
+  cubeFixNans
+  cubeFromImageStack
+  cubeFromImageStackRaw
+  cubeFromImageStack-16bitTIFF
+  cubeCombineFromList
+  cubeCombineFromList-16bit
+  cubeToImageStack
+  cubeCalculateDerivativesSecond
+  cubeHermiteMask
+  cube-log10
+  cubeFixAguetThreshold
+)
 
-ENDIF(${GLEW_FOUND})
+foreach( cube_tool ${CUBE_TOOLS})
+  add_executable(${cube_tool} ${CMAKE_SOURCE_DIR}/../tools/cube/${cube_tool}.cpp)
+  target_link_libraries(${cube_tool} ${LINK_LIBRARIES_ALL})
+endforeach(cube_tool)
 
-# add_executable(cubeMergeAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMergeAcrossScales.cpp)
-# target_link_libraries(cubeMergeAcrossScales ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeAverage ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAverage.cpp)
-target_link_libraries(cubeAverage ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cubeAt ${CMAKE_SOURCE_DIR}/../tools/cube/cubeAt.cpp)
-# target_link_libraries(cubeAt ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeRenderNeuron ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRenderNeuron.cpp)
-target_link_libraries(cubeRenderNeuron ${LINK_LIBRARIES_ALL})
-
-
-add_executable(cubeGaussianPyramid ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianPyramid.cpp)
-target_link_libraries(cubeGaussianPyramid ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeGaussianMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeGaussianMask.cpp)
-# target_link_libraries(cubeGaussianMask ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeMultiply ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMultiply.cpp)
-# target_link_libraries(cubeMultiply ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeMax ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMax.cpp)
-# target_link_libraries(cubeMax ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeMIP ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMIP.cpp)
-target_link_libraries(cubeMIP ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeMaxColor ${CMAKE_SOURCE_DIR}/../tools/cube/cubeMaxColor.cpp)
-# target_link_libraries(cubeMaxColor ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeThreshold.cpp)
-target_link_libraries(cubeThreshold ${LINK_LIBRARIES_ALL})
-
-# # add_executable(cubeOutputValuesAtCloud ${CMAKE_SOURCE_DIR}/../tools/cube/cubeOutputValuesAtCloud.cpp)
-# target_link_libraries(cubeOutputValuesAtCloud ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeCut ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCut.cpp)
-# target_link_libraries(cubeCut ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeConvertToUchar ${CMAKE_SOURCE_DIR}/../tools/cube/cubeConvertToUchar.cpp)
-# target_link_libraries(cubeConvertToUchar ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cubeDijkstra2 ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDijkstra2.cpp)
-# target_link_libraries(cubeDijkstra2 ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeDecimate ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimate.cpp)
-target_link_libraries(cubeDecimate ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeRescale ${CMAKE_SOURCE_DIR}/../tools/cube/cubeRescale.cpp)
-# target_link_libraries(cubeRescale ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeDecimateAcrossScales ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDecimateAcrossScales.cpp)
-target_link_libraries(cubeDecimateAcrossScales ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cubeDerivative ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivative.cpp)
-# target_link_libraries(cubeDerivative ${LINK_LIBRARIES_ALL})
-
-# # add_executable(cubeDerivativesOrder ${CMAKE_SOURCE_DIR}/../tools/cube/cubeDerivativesOrder.cpp)
-# target_link_libraries(cubeDerivativesOrder ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeStatistics ${CMAKE_SOURCE_DIR}/../tools/cube/cubeStatistics.cpp)
-target_link_libraries(cubeStatistics ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeFixNans ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixNans.cpp)
-target_link_libraries(cubeFixNans ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeFromImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack.cpp)
-# target_link_libraries(cubeFromImageStack ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeFromImageStackRaw ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStackRaw.cpp)
-target_link_libraries(cubeFromImageStackRaw ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cubeFromImageStack-16bitTIFF ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFromImageStack-16bitTIFF.cpp)
-# target_link_libraries(cubeFromImageStack-16bitTIFF ${LINK_LIBRARIES_ALL})
-
-
-# add_executable(cubeCombineFromList ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList.cpp)
-# target_link_libraries(cubeCombineFromList ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeCombineFromList-16bit ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCombineFromList-16bit.cpp)
-# target_link_libraries(cubeCombineFromList-16bit ${LINK_LIBRARIES_ALL})
-
-add_executable(cubeToImageStack ${CMAKE_SOURCE_DIR}/../tools/cube/cubeToImageStack.cpp)
-target_link_libraries(cubeToImageStack ${LINK_LIBRARIES_ALL})
-
-# # add_executable(cubeCalculateDerivativesSecond ${CMAKE_SOURCE_DIR}/../tools/cube/cubeCalculateDerivativesSecond.cpp)
-# target_link_libraries(cubeCalculateDerivativesSecond ${LINK_LIBRARIES_ALL})
-
-# add_executable(cubeHermiteMask ${CMAKE_SOURCE_DIR}/../tools/cube/cubeHermiteMask.cpp)
-# target_link_libraries(cubeHermiteMask ${LINK_LIBRARIES_ALL})
-
-# add_executable(cube-log10 ${CMAKE_SOURCE_DIR}/../tools/cube/cube-log10.cpp)
-# target_link_libraries(cube-log10 ${LINK_LIBRARIES_ALL})
-
-
-# # add_executable(cubeFixAguetThreshold ${CMAKE_SOURCE_DIR}/../tools/cube/cubeFixAguetThreshold.cpp)
-# target_link_libraries(cubeFixAguetThreshold ${LINK_LIBRARIES_ALL})
 
 
 ################################################################################
