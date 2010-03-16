@@ -1,0 +1,5 @@
+./aco -i SampleToyGraph.txt -t 5 -cardb 10 -carde 20 -o SampleToyGraph_t5_cardb10_carde20.txt -m SampleToyGraph_t5_card
+
+./ts -i SampleToyGraph.txt -t 5 -cardb 10 -carde 20 -m SampleToyGraph_t5_card
+
+./gg-ew-generator -o RandomToyGraph10x10.txt -rows 10 -cols 10 -max 255
