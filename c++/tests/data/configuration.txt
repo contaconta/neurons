@@ -1,6 +1,0 @@
-disp3DX 0
-disp3DY 0
-disp3DZ 500
-rot3DX  45
-obj1 /media/neurons/n7/3d/4/N7_4.nfo
-mod_display MOD_DISPLAY_COMBO
