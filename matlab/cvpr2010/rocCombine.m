@@ -33,16 +33,18 @@ Cols = [0.3137    0.3137    .3137;...
 load([rocFolder 'HistHist.mat']);
 fpr{1}(1) = 0; tpr{1}(1) = 0;  tpr{1}(length(tpr{1})); fpr{1}( length(fpr{1}+1)) = 1;  % corrections
 fpr{3}(1) = 0; tpr{3}(1) = 0; tpr{3}(length(tpr{3}+1)) = tpr{3}(length(tpr{3})); fpr{3}( length(fpr{3}+1)) = 1;  % corrections
-legnames{2} = 'Learned Histogram';
-legnames{1} = 'Standard Histogram';
+%legnames{2} = 'Learned Histogram';
+%legnames{1} = 'Standard Histogram';
+legnames{2} = 'Learned-f^{Hist}';
+legnames{1} = 'Standard-f^{Hist}';
 plot(fpr{1}, tpr{1}, 's--', 'Color', Cols(1,:), 'LineWidth', .75); hold on;
 plot(fpr{3}, tpr{3}, 's-', 'Color', Cols(1,:), 'LineWidth', 2.5, 'MarkerFaceColor', Cols(1,:)); hold on;
 
 load([rocFolder 'SteerSteer.mat']);
 fpr{1}(1) = 0; tpr{1}(1) = 0;  tpr{1}(length(tpr{1})); fpr{1}( length(fpr{1}+1)) = 1;  % corrections
 fpr{3}(1) = 0; tpr{3}(1) = 0;  tpr{3}(length(tpr{3}+1)) = tpr{3}(length(tpr{3})); fpr{3}( length(fpr{3}+1)) = 1; % corrections
-legnames{4} = 'Learned Steerable';
-legnames{3} = 'Standard Steerable';
+legnames{4} = 'Learned Rotational';
+legnames{3} = 'Standard Rotational';
 plot(fpr{1}, tpr{1}, 'v--', 'Color', Cols(2,:), 'LineWidth', .75); hold on;
 plot(fpr{3}, tpr{3}, 'v-', 'Color', Cols(2,:), 'LineWidth', 2.5, 'MarkerFaceColor', Cols(2,:)); hold on;
 
@@ -80,14 +82,16 @@ fpr{1}(1) = 0; tpr{1}(1) = 0;  tpr{1}(length(tpr{1})); fpr{1}( length(fpr{1}+1))
 fpr{3}(1) = 0; tpr{3}(1) = 0; tpr{3}(length(tpr{3}+1)) = tpr{3}(length(tpr{3})); fpr{3}( length(fpr{3}+1)) = 1;  % corrections
 legnames{2} = 'Learned Histogram';
 legnames{1} = 'Standard Histogram';
+legnames{2} = 'Learned-f^{Hist}';
+legnames{1} = 'Standard-f^{Hist}';
 plot(fpr{1}, tpr{1}, 's--', 'Color', Cols(1,:), 'LineWidth', .75); hold on;
 plot(fpr{3}, tpr{3}, 's-', 'Color', Cols(1,:), 'LineWidth', 2.5, 'MarkerFaceColor', Cols(1,:)); hold on;
 
 load([rocFolder 'SteerSteer.mat']);
 fpr{1}(1) = 0; tpr{1}(1) = 0;  tpr{1}(length(tpr{1})); fpr{1}( length(fpr{1}+1)) = 1;  % corrections
 fpr{3}(1) = 0; tpr{3}(1) = 0;  tpr{3}(length(tpr{3}+1)) = tpr{3}(length(tpr{3})); fpr{3}( length(fpr{3}+1)) = 1; % corrections
-legnames{4} = 'Learned Steerable';
-legnames{3} = 'Standard Steerable';
+legnames{4} = 'Learned Rotational';
+legnames{3} = 'Standard Rotational';
 plot(fpr{1}, tpr{1}, 'v--', 'Color', Cols(2,:), 'LineWidth', .75); hold on;
 plot(fpr{3}, tpr{3}, 'v-', 'Color', Cols(2,:), 'LineWidth', 2.5, 'MarkerFaceColor', Cols(2,:)); hold on;
 
