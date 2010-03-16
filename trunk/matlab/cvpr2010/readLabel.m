@@ -1,4 +1,4 @@
-function L = readRKLabel(labelFilenm, s)
+function L = readLabel(labelFilenm, s)
 %% READRKLABEL reads RK superpixels data files
 %   
 %   L = readRKLabel(labelFilenm, size) reads a superpixel label data file 

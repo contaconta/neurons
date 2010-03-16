@@ -8,7 +8,7 @@
 % I = imread([imgFolder fileRoot '.jpg']);  Ig = rgb2gray(I);
 % imshow(I);
 % SUPERMASK = ~imseg(zeros(size(Ig)), L) > 0;
-% 
+
 
 
 SUPERMASK2 = SUPERMASK.*~C  + C > 0;
