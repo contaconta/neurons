@@ -1,0 +1,40 @@
+<Graph Point3D EdgeW>
+<VisibleE>
+v_r 0
+v_g 0
+v_b 1
+v_radius 1.5
+v_enable_depth_test 0
+</VisibleE>
+<Cloud Point3D>
+<VisibleE>
+v_r 0
+v_g 0
+v_b 1
+v_radius 1.5
+v_enable_depth_test 0
+</VisibleE>
+0 0 0
+10 10 5
+20 20 10
+30 30 7
+-10 -10 4
+-10 20 21
+20 -10 12
+30 50 -4
+20 50 9
+</Cloud>
+<EdgeSet EdgeW>
+<VisibleE>
+v_r 1
+v_g 0
+v_b 0
+v_radius 100.5
+v_enable_depth_test 0
+</VisibleE>
+0 1 0.0 
+1 2 0.2
+2 3 0.5
+0 4 1.0
+</EdgeSet>
+</Graph>
