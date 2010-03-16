@@ -1,0 +1,55 @@
+In micrometers, the coordinates are the following:
+
+
+   Y
+   |
+   |
+   |_______ X
+   /
+  /
+ /
+Z
+
+the color convention is red for X, green for Y and blue for Z.
+
+The spherical coordinates convention is taken from:
+ http://mathworld.wolfram.com/SphericalCoordinates.html
+
+The conversion between cartesian and spherical coordinates is:
+
+r = \sqrt(x^2+y^2+z^2)
+theta = tan^{-1}\(\frac{y}{x}\)
+phi   = cos^{-1}\{\frac{z}{r}\)
+
+and the inverse conversion is:
+
+x = r cos(\theta)sin(\phi)
+y = r sin(\theta)sin(\phi)
+z = r cos(\phi)
+
+
+For a cube, the coordinates are the following:
+
+Cube/texture coordinates    Cube vertex
+  Z t                     1-------------2
+ /                       /|            /|
+/                       / |           / |
+0------ X r            0-------------3  |
+|                      |  |          |  |
+|                      |  5--------- |- 6
+|                      | /           | /
+Y s                    |/            |/
+                       4-------------7
+
+
+to convert from the coordinates of the cube to the ones of the world,
+the cube class provides the indexesToMicrometers and the
+micrometersToIndexes methods.
+
+For an image the coordinates are:
+
+-------X
+|
+|
+|
+Y
