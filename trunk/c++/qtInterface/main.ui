@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>VIVA - Viewer</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../.designer/assets/icon.png</normaloff>../../../.designer/assets/icon.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="Stage" name="graphicsView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionAdd_Object"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="action3D"/>
+    <addaction name="actionCombo"/>
+    <addaction name="actionXY"/>
+    <addaction name="actionXZ"/>
+    <addaction name="actionYZ"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionScreenShot"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+  </widget>
+  <action name="actionAdd_Object">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="action3D">
+   <property name="text">
+    <string>3D</string>
+   </property>
+  </action>
+  <action name="actionCombo">
+   <property name="text">
+    <string>Combo</string>
+   </property>
+  </action>
+  <action name="actionXY">
+   <property name="text">
+    <string>XY</string>
+   </property>
+  </action>
+  <action name="actionXZ">
+   <property name="text">
+    <string>XZ</string>
+   </property>
+  </action>
+  <action name="actionYZ">
+   <property name="text">
+    <string>YZ</string>
+   </property>
+  </action>
+  <action name="actionScreen_shot">
+   <property name="text">
+    <string>Screen-shot</string>
+   </property>
+  </action>
+  <action name="actionScreenShot">
+   <property name="text">
+    <string>ScreenShot</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Stage</class>
+   <extends>QGraphicsView</extends>
+   <header>Stage.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
