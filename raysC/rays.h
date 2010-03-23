@@ -1,6 +1,9 @@
 #include <list>
 #include "cv.h"
 
+#ifndef RAYS_H
+#define RAYS_H
+
 using namespace std;
 
 #define F_SOBEL 0
@@ -28,3 +31,5 @@ inline void intline(int x1, int x2, int y1, int y2, list<int>& xs, list<int>& ys
 
 void save32bitsimage(char* filename, IplImage* img);
 void savefloatimage(char* filename, IplImage* img);
+
+#endif //RAYS_H
