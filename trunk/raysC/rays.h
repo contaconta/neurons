@@ -1,8 +1,8 @@
-#include <list>
-#include "cv.h"
-
 #ifndef RAYS_H
 #define RAYS_H
+
+#include <list>
+#include "cv.h"
 
 using namespace std;
 
@@ -10,9 +10,9 @@ using namespace std;
 #define F_CANNY 1
 
 // Parameter for canny filter
-const float edge_low_thresh_default = 15000;
-const float edge_high_thresh_default = 30000;
-const int apertureSize = 7;
+#define edge_low_thresh_default 15000.0
+#define edge_high_thresh_default 30000.0
+#define apertureSize 7
 
 int computeDistanceDifferenceRays(const char *pImageName,
                                    int start_angle, int end_angle, int step_angle,
