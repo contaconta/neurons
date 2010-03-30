@@ -69,6 +69,7 @@ GN = sqrt(sum((G.^2),3));
 
 % convert the gradient images in G into unit vectors
 G = gnormalize(G);
+%keyboard;
 
 % get a scanline in direction 'angle'
 warning off MATLAB:nearlySingularMatrix; warning off MATLAB:singularMatrix;
