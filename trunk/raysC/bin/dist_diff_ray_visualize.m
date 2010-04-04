@@ -2,7 +2,7 @@
 im_dir = '/tmp/';
 im_name = 'FIBSLICE0002';
 
-img_name = {'/home/alboot/work/data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png'};
+img_name = {'/osshare/Work/Data/LabelMe/Images/FIBSLICE/FIBSLICE0002.png'};
 g = imread(img_name{1});
 
 ls_files=dir([im_dir im_name 'ray2_*.ppm']);

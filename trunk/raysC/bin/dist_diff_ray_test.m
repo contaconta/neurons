@@ -22,13 +22,13 @@ for i=1:size(c,1)
     a = c(i,1);
     b = c(i,2);
     subplot(3,1,1);
-    im=read_32bitsimage(['ray1_' num2str(a) '.ppm'],[size(g,2) size(g,1)]);
+    im=read_32bitsimage(['/tmp/mitochondria1ray1_' num2str(a) '.ppm'],[size(g,2) size(g,1)]);
     imagesc(im);
     subplot(3,1,2);
-    im=read_32bitsimage(['ray1_' num2str(b) '.ppm'],[size(g,2) size(g,1)]);
+    im=read_32bitsimage(['/tmp/mitochondria1ray1_' num2str(b) '.ppm'],[size(g,2) size(g,1)]);
     imagesc(im);
     subplot(3,1,3);
-    im=read_floatimage(['ray2_' num2str(a) '_' num2str(b) '.ppm'],[size(g,2) size(g,1)]);
+    im=read_floatimage(['/tmp/mitochondria1ray2_' num2str(a) '_' num2str(b) '.ppm'],[size(g,2) size(g,1)]);
     imagesc(im);
     refresh;
     pause(0.1);
