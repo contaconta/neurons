@@ -31,9 +31,11 @@ H = fspecial('gaussian',hsize, sigma);
 
 if(ndims(I)==1)
     I = imfilter(I,H,'same', 'replicate');
+    %I = imfilter(I,H,'same', 'symmetric');
 elseif(ndims(I) ==2)
     Hx = H';
     Hy = H;
     %I=imfilter(imfilter(I,Hy, 'replicate', 'conv'),Hx, 'replicate', 'conv');
-    I=imfilter(imfilter(I,Hy, 'replicate'),Hx, 'replicate');
+    %I=imfilter(imfilter(I,Hy, 'replicate'),Hx, 'replicate');
+    I=imfilter(imfilter(I,Hy, 'symmetric'),Hx, 'symmetric');
 end

@@ -10,7 +10,7 @@ PYRAMID = 0;
 STATS = cell([length(d) 1]);
 
 
-for j  = 368:length(d)
+for j  = 1
     
 
     I = imread([folder d(j).name]);
@@ -42,6 +42,8 @@ for j  = 368:length(d)
     for sigma_i = sigma_list
         %disp(['sigma_i = ' num2str(sigma_i)]);
 
+       
+        
         if PYRAMID
             sigma_red = sigma_i;  red_fact = 0;
             while ( (sigma_red / 2) >= 1 ) && (red_fact <= 3)
@@ -51,7 +53,7 @@ for j  = 368:length(d)
 
             Ired = I;
             for i = 1:red_fact
-                Ired = impyramid(Ired, 'reduce');
+                Ired = imresize(Ired, .5);
             end
             disp(['sigma_i = ' num2str(sigma_i/2), ' reduction factor = ' num2str(red_fact)  ' size = [' num2str(size(Ired)) ']' ]);
         end

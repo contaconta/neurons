@@ -108,6 +108,7 @@ for k = 1:5
                    MITO_LABEL*ones(N2,1); ...
                    BND_LABEL*ones(N1,1); ...
                    zeros(N0,1)]; %#ok<AGROW>
+               
     end
     
     
