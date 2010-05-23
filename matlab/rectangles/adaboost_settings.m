@@ -1,12 +1,14 @@
 %% PARAMETERS
 
-N_features = 1000;      % # of features to consider each boosting round
-N_pos = 5000;           % # of requested positive training examples
-N_total = 50000;        % # of total training examples
-N_SAMPLES = 20000;      % # of negative examples to use when choosing optimal learner parameters
-T = 5000;               % maximum rounds of boosting
+EXP_NAME = 'TEST';          % name of experiment
 
-IMSIZE = [24 24];       % size of the classification window
+N_features = 1000;          % # of features to consider each boosting round
+N_pos = 5000;               % # of requested positive training examples
+N_total = 50000;            % # of total training examples
+N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
+T = 5000;                   % maximum rounds of boosting
+
+IMSIZE = [24 24];           % size of the classification window
 
 host = hostname;                            % compute hostname
 date = datestr(now, 'mmmddyyyy-HHMMSS');    % the current date & time

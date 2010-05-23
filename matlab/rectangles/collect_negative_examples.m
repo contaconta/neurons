@@ -73,6 +73,9 @@ w = sigma*randn(1) + wmean;
 h = round(max(MIN_H_W, h));
 w = round(max(MIN_H_W, w));
 
+h = min(h, round(size(I,1)/2));
+w = min(w, round(size(I,2)/2));
+
 % h = floor(IMSIZE(2)/2);
 % w = floor(IMSIZE(1)/2);
     
