@@ -10,10 +10,10 @@ IMSIZE = [24 24];       % size of the classification window
 
 % folders containing the data sets
 DATA_FOLDER = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/';
-pos_train_folder = [DATA FOLDER 'train/pos/'];
-neg_train_folder = [DATA FOLDER 'non-face_uncropped_images/'];
-pos_valid_folder = [DATA FOLDER 'test/pos/'];
-neg_valid_folder = [DATA FOLDER 'non-face_uncropped_images/'];
+pos_train_folder = [DATA_FOLDER 'train/pos/'];
+neg_train_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
+pos_valid_folder = [DATA_FOLDER 'test/pos/'];
+neg_valid_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 
 
 %% COMPILE ANY MISSING MEX FILES
