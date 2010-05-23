@@ -7,16 +7,21 @@ adaboost_settings;
 % generate the set of features
 [R,C,N,P] = generate_viola_jones_features(IMSIZE);
 
-% define the training data set
-[Lp,Dp] = collect_positive_examples(N_pos, IMSIZE, pos_train_folder); N_pos = length(Lp);
 
-% define the test data set
-[Ln,Dn] = collect_negative_examples(N_total-N_pos, IMSIZE, neg_train_folder);
+if ~exist('D.mat', 'file')
+    % define the training data set
+    [Lp,Dp] = collect_positive_examples(N_pos, IMSIZE, pos_train_folder); N_pos = length(Lp);
 
-D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
-L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
-save D.mat D;               % store the data so we don't have to collect it again!
- 
+    % define the test data set
+    [Ln,Dn] = collect_negative_examples(N_total-N_pos, IMSIZE, neg_train_folder);
+
+    D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
+    L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
+    save D.mat D;  disp(['...storing ' num2str(sum(L==1)) ' + / ' num2str(sum(L==-1)) ' - examples to D.mat.']);
+else
+    load D.mat;
+end
+
 % initialize the weights, set each class to have equal weights initially
 W = ones(size(L));          % example weights
 W(L == 1) = .5 * (W(L == 1) / sum(W(L == 1)));
@@ -97,7 +102,7 @@ for t = 1:T
     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
         
     % store a temporary copy
-    save([host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
+    save([results_folder host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
     
     
     % check for convergence (?)
