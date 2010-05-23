@@ -15,6 +15,8 @@ neg_train_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 pos_valid_folder = [DATA_FOLDER 'test/pos/'];
 neg_valid_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 
+host = hostname;
+date = datestr(now, 'mmmddyyyy-HHMMSS');
 
 %% COMPILE ANY MISSING MEX FILES
 

@@ -15,6 +15,7 @@ adaboost_settings;
 
 D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
 L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
+save D.mat D;               % store the data so we don't have to collect it again!
  
 % initialize the weights, set each class to have equal weights initially
 W = ones(size(L));          % example weights
@@ -94,6 +95,10 @@ for t = 1:T
     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
     stats(t,:) = [TP TN FP FN TPR FPR ACC];
     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
+        
+    % store a temporary copy
+    save([host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
+    
     
     % check for convergence (?)
     
