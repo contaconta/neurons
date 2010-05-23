@@ -9,10 +9,11 @@ T = 5000;               % maximum rounds of boosting
 IMSIZE = [24 24];       % size of the classification window
 
 % folders containing the data sets
-pos_train_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/train/pos/';
-neg_train_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/non-face_uncropped_images/';
-pos_valid_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/test/pos/';
-neg_valid_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/non-face_uncropped_images/';
+DATA_FOLDER = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/';
+pos_train_folder = [DATA FOLDER 'train/pos/'];
+neg_train_folder = [DATA FOLDER 'non-face_uncropped_images/'];
+pos_valid_folder = [DATA FOLDER 'test/pos/'];
+neg_valid_folder = [DATA FOLDER 'non-face_uncropped_images/'];
 
 
 %% COMPILE ANY MISSING MEX FILES
