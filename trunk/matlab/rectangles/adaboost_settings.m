@@ -8,18 +8,25 @@ T = 5000;               % maximum rounds of boosting
 
 IMSIZE = [24 24];       % size of the classification window
 
-% folders containing the data sets
+host = hostname;                            % compute hostname
+date = datestr(now, 'mmmddyyyy-HHMMSS');    % the current date & time
+
+%% folders containing the data sets
 DATA_FOLDER = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/';
 pos_train_folder = [DATA_FOLDER 'train/pos/'];
 neg_train_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 pos_valid_folder = [DATA_FOLDER 'test/pos/'];
 neg_valid_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 
-host = hostname;
-date = datestr(now, 'mmmddyyyy-HHMMSS');
+results_folder = [pwd '/results/'];
+if ~exist(results_folder, 'dir')
+    mkdir(results_folder);
+end
 
 %% COMPILE ANY MISSING MEX FILES
 
 if ~exist(['weight_sample_mex.' mexext], 'file')
      compile_weight_sample;
 end
+
+
