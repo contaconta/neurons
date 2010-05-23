@@ -4,17 +4,17 @@ adaboost_settings;
 
 %% PRE-BOOSTING
 
-% % generate the set of features
-% [R,C,N,P] = generate_viola_jones_features(IMSIZE);
-% 
-% % define the training data set
-% [Lp,Dp] = collect_positive_examples(N_pos, IMSIZE, pos_train_folder); N_pos = length(Lp);
-% 
-% % define the test data set
-% [Ln,Dn] = collect_negative_examples(N_total-N_pos, IMSIZE, neg_train_folder);
-% 
-% D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
-% L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
+% generate the set of features
+[R,C,N,P] = generate_viola_jones_features(IMSIZE);
+
+% define the training data set
+[Lp,Dp] = collect_positive_examples(N_pos, IMSIZE, pos_train_folder); N_pos = length(Lp);
+
+% define the test data set
+[Ln,Dn] = collect_negative_examples(N_total-N_pos, IMSIZE, neg_train_folder);
+
+D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
+L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
  
 % initialize the weights, set each class to have equal weights initially
 W = ones(size(L));          % example weights
