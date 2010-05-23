@@ -17,7 +17,7 @@ if ~exist('D.mat', 'file')
 
     D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
     L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
-    save D.mat D L;  disp(['...storing ' num2str(sum(L==1)) ' (class +1) / ' num2str(sum(L==-1)) ' (class -1) examples to D.mat.']);
+    save('D.mat', '-v7.3', 'D', 'L');  disp(['...storing ' num2str(sum(L==1)) ' (class +1) / ' num2str(sum(L==-1)) ' (class -1) examples to D.mat.']);
 else
     disp('...loading training data from D.mat');
     load D.mat;
@@ -103,7 +103,7 @@ for t = 1:T
     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
         
     % store a temporary copy
-    save([results_folder EXP_NAME '-' host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
+    save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
     
     
     % check for convergence (?)
