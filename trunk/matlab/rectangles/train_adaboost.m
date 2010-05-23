@@ -1,21 +1,9 @@
-%% PARAMETERS
-N_features = 1000;      % # of features to consider each boosting round
-N_pos = 5000;           % # of requested positive training examples
-N_total = 25000;       % # of total training examples
-T = 5000;               % maximum rounds of boosting
-N_SAMPLES = 20000;      % # of negative examples to use when choosing optimal learner parameters
+%% LOAD PARAMETERS
+adaboost_settings;
 
-IMSIZE = [24 24];       % size of the classification window
 
-% % folders containing the data sets
-% pos_train_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/train/pos/';
-% neg_train_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/non-face_uncropped_images/';
-% pos_valid_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/test/pos/';
-% neg_valid_folder = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/non-face_uncropped_images/';
-% 
-% 
-% %% PRE-BOOSTING
-% 
+%% PRE-BOOSTING
+
 % % generate the set of features
 % [R,C,N,P] = generate_viola_jones_features(IMSIZE);
 % 
@@ -43,6 +31,9 @@ alpha = zeros(T,1);     % computed alpha value at each boosting step
 CLASSIFIER.rects = {}; CLASSIFIER.thresh = []; CLASSIFIER.pols = {}; CLASSIFIER.tpol = []; CLASSIFIER.alpha = [];
 
 for t = 1:T
+    disp(' ');
+    disp('===================================================================');
+    disp(['                   BOOSTING ROUND t = ' num2str(t) ]);
     disp('-------------------------------------------------------------------');
     
     % randomly sample features for this round of boosting
@@ -57,22 +48,24 @@ for t = 1:T
         %rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
         F(:,i) = haar_feature(D, f_rects{i}, f_pols{i});
     end
-    to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
+    %to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
     
     %% find the best weak learner
     disp('...selecting the best weak learner and its parameters.');
     
     % only use a subset of the whole training set to find optimal params
-    %pos_inds = find(L == 1); neg_inds = find(L == -1);
-    %neg_inds = weight_sample(neg_inds, W(neg_inds), N_SAMPLES);
-    %inds = [pos_inds; neg_inds];
-    %Fsub = F(inds,:);  Lsub = L(inds);     % Wsub = normalize_weights(W(inds));
-    %Wsub = W(inds); Wsub(Lsub == -1) = Wsub(Lsub==-1) * ( sum(W(L==-1))/ sum(Wsub(Lsub==-1)));
+    pos_inds = find(L == 1); neg_inds = find(L == -1);
+    neg_inds = weight_sample(neg_inds, W(neg_inds), N_SAMPLES);
+    inds = [pos_inds; neg_inds];
+    Fsub = F(inds,:);  Lsub = L(inds);     % Wsub = normalize_weights(W(inds));
+    Wsub = W(inds); Wsub(Lsub == -1) = Wsub(Lsub==-1) * ( sum(W(L==-1))/ sum(Wsub(Lsub==-1)));
     
-    %tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
-    tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
-    rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); to = toc; disp(['...selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) ' . Elapsed time is ' num2str(to) ' seconds.']);
-    %disp(['...local weighted error = ' num2str(e)]);
+    tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
+
+    %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
+    %rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
+    to = toc; disp(['...selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
+
     
     %% compute error. sanity check: best weak learner should beat 50%
     E = p*F(:,ind) < p*thresh;              % predicted classes from weak learner ( < for positive polarity )
@@ -100,7 +93,7 @@ for t = 1:T
     PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
     stats(t,:) = [TP TN FP FN TPR FPR ACC];
-    disp(['   TPR = ' num2str(TPR) '  FPR = ' num2str(FPR) '  ACC = ' num2str(ACC)]);
+    disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
     
     % check for convergence (?)
     

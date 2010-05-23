@@ -1,5 +1,6 @@
 function P = adaboost_classify(rects, pols, thresh, tpol, alpha, D)
 %
+% adaboost_classify(rects, pols, thresh, tpol, alpha, D)
 %   
 %
 
