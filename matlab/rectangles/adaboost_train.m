@@ -5,8 +5,9 @@ adaboost_settings;
 %% PRE-BOOSTING
 
 % generate the set of features
-[R,C,N,P] = generate_viola_jones_features(IMSIZE);
-
+%[R,C,N,P] = generate_viola_jones_features(IMSIZE);
+[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+%[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz3', 'vert3'});
 
 if ~exist('D.mat', 'file')
     % define the training data set
