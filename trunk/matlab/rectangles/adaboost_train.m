@@ -103,7 +103,7 @@ for t = 1:T
     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
         
     % store a temporary copy
-    save([results_folder host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
+    save([results_folder EXP_NAME '-' host '-' date '.mat', 'CLASSIFIER', 'W', 'stats', 'error']);
     
     
     % check for convergence (?)
