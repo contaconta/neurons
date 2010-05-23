@@ -17,7 +17,7 @@ if ~exist('D.mat', 'file')
 
     D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
     L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
-    save D.mat D L;  disp(['...storing ' num2str(sum(L==1)) ' + / ' num2str(sum(L==-1)) ' - examples to D.mat.']);
+    save D.mat D L;  disp(['...storing ' num2str(sum(L==1)) ' (class +1) / ' num2str(sum(L==-1)) ' (class -1) examples to D.mat.']);
 else
     disp('...loading training data from D.mat');
     load D.mat;
@@ -55,7 +55,7 @@ for t = 1:T
         %rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
         F(:,i) = haar_feature(D, f_rects{i}, f_pols{i});
     end
-    %to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
+    to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
     
     %% find the best weak learner
     disp('...selecting the best weak learner and its parameters.');

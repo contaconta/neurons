@@ -1,4 +1,4 @@
-function P = adaboost_classify(rects, pols, thresh, tpol, alpha, D)
+function [P, VALS] = adaboost_classify(rects, pols, thresh, tpol, alpha, D)
 %
 % adaboost_classify(rects, pols, thresh, tpol, alpha, D)
 %   
@@ -19,7 +19,8 @@ for t = 1:T
     
 end
 
-P = (alpha(1:T) * F')';
+VALS = (alpha(1:T) * F')';
+P = VALS;
 
-P = single(P >= 0);  %.5 * sum(alpha(1:T)));
-P(P == 0) = -1;          % set class 0 to class -1
+P = single(P >= 0);     % for classes = [0,1], then >= .5 * sum(alpha(1:T)));
+P(P == 0) = -1;         % set class 0 to class -1
