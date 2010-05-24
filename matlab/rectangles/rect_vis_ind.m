@@ -26,7 +26,7 @@ for n = 1:N
     blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = pol;
 end
 
-imagesc(blankI); colormap gray;
+imagesc(blankI, [-1 1]); colormap gray;
 
 drawnow;
 pause(0.005);
