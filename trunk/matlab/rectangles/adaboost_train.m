@@ -4,10 +4,12 @@ adaboost_settings;
 
 %% PRE-BOOSTING
 
-% generate the set of features
-%[R,C,N,P] = generate_viola_jones_features(IMSIZE);
-[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
-%[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz3', 'vert3'});
+% pre-generate the set of features
+if VJ == 1
+    %[R,C,N,P] = generate_viola_jones_features(IMSIZE);
+    [R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+    %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz3', 'vert3'});
+end
 
 if ~exist('D.mat', 'file')
     % define the training data set
@@ -45,10 +47,16 @@ for t = 1:T
     disp('-------------------------------------------------------------------');
     
     % randomly sample features for this round of boosting
-    inds = randsample(size(N,1), N_features);
-    f_rects = N(inds);  % randomly selected rectangles
-    f_pols = P(inds);   % associated polarities
-    
+    if VJ == 1
+        inds = randsample(size(N,1), N_features);
+        f_rects = N(inds);  % randomly selected rectangles
+        f_pols = P(inds);   % associated polarities
+    else
+        disp(['...generating Rank ' num2str(RANK) ' rectangles.']);
+        [tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
+        clear tempr tempc;
+    end
+        
     % populate the feature responses for the sampled features
     disp('...computing feature responses for the selected features.');
     F = zeros(size(D,1), size(f_rects,1), 'single'); tic;
