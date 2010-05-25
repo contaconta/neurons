@@ -57,11 +57,11 @@ for t = 1:T
         clear tempr tempc;
     end
     
-    %%% TEMPORARY VISUALIZATION
-    figure(34334); disp('   VISUALIZING FEATURES');
-    for i = 1:N_features
-        rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
-    end
+%     %%% TEMPORARY VISUALIZATION
+%     figure(34334); disp('   VISUALIZING FEATURES');
+%     for i = 1:N_features
+%         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
+%     end
     
         
     % populate the feature responses for the sampled features
@@ -113,11 +113,11 @@ for t = 1:T
     CLASSIFIER.alpha(t) = alpha(t);
     
     % evaluate the strong classifier and record performance
-    tic;
-    PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
-    [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
-    stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
-    disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  ' Elapsed time ' num2str(to) ' seconds.']);
+%     tic;
+%     PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
+%     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
+%     stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
+%     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  ' Elapsed time ' num2str(to) ' seconds.']);
         
     % store a temporary copy
     save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
@@ -125,5 +125,4 @@ for t = 1:T
     
     % check for convergence (?)
     
-    keyboard;
 end
