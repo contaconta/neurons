@@ -6,8 +6,8 @@ adaboost_settings;
 
 % pre-generate the set of features
 if VJ == 1
-    %[R,C,N,P] = generate_viola_jones_features(IMSIZE);
-    [R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+    [R,C,N,P] = generate_viola_jones_features(IMSIZE);
+    %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
     %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz3', 'vert3'});
 end
 
@@ -52,10 +52,17 @@ for t = 1:T
         f_rects = N(inds);  % randomly selected rectangles
         f_pols = P(inds);   % associated polarities
     else
-        disp(['...generating Rank ' num2str(RANK) ' rectangles.']);
+        disp(['...generating Rank [2 to ' num2str(RANK) '] rectangles.']);
         [tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
         clear tempr tempc;
     end
+    
+    %%% TEMPORARY VISUALIZATION
+    figure(34334); disp('   VISUALIZING FEATURES');
+    for i = 1:N_features
+        rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
+    end
+    
         
     % populate the feature responses for the sampled features
     disp('...computing feature responses for the selected features.');
@@ -79,7 +86,7 @@ for t = 1:T
     tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
 
     %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
-    %rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
+    rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
     to = toc; disp(['...selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
 
     
@@ -106,16 +113,17 @@ for t = 1:T
     CLASSIFIER.alpha(t) = alpha(t);
     
     % evaluate the strong classifier and record performance
+    tic;
     PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
-    stats(t,:) = [TP TN FP FN TPR FPR ACC];
-    disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)]);
+    stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
+    disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  ' Elapsed time ' num2str(to) ' seconds.']);
         
     % store a temporary copy
     save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
-    
+    %save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'error');
     
     % check for convergence (?)
     
-    %keyboard;
+    keyboard;
 end

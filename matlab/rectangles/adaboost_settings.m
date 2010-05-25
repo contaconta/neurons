@@ -8,7 +8,7 @@ N_total = 25000;            % # of total training examples
 N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
 T = 5000;                   % maximum rounds of boosting
 VJ = 0;                     % 1 = viola jones rectangles / 0 = our rectangles
-RANK = 2;                   % rectangle complexity
+RANK = 6;                   % rectangle complexity
 
 IMSIZE = [24 24];           % size of the classification window
 

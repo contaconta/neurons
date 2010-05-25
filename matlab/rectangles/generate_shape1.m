@@ -17,28 +17,32 @@ Rectangle_List=[];
 %Initialization----------------------------------------------------
 Canvas=zeros(H,W);
 %Get a rectangle in the [W,H] plane uniformaly at random
-x_min=rand()*(W-1) + 1;
-y_min=rand()*(H-1) + 1;
+x_min=round(rand()*(W-1)) + 1;
+y_min=round(rand()*(H-1)) + 1;
 
 %aspect=max_aspect_ratio;
 %while aspect>=max_aspect_ratio
     width=-1;
     while(width<0 || width > (W-x_min))
-        width=randn(1)*sigma+min(mean_width,W-x_min);%rand()*(W-x_min);
+        width=round(randn(1)*sigma)+min(mean_width,W-x_min);%rand()*(W-x_min);
     end
     height=-1;
     while(height<0 || height > (H-y_min))
-        height=randn(1)*sigma+min(mean_height,H-y_min);%rand()*(H-y_min);
+        height=round(randn(1)*sigma)+min(mean_height,H-y_min);%rand()*(H-y_min);
     end
+    
     
     %aspect=max(width,height)/min(width,height);
 %end
 
 
-
 %Add to list and draw
 Rectangle_List(1,:)=round([x_min,y_min,width,height,round(rand())]);
 draw_rectangle(Rectangle_List(1,:),1);
+if(sum(Canvas==0)==0)
+    Rectangle_List=[];
+    return;
+end
 %imagesc(Canvas,[0 C])
 %pause
 
@@ -221,14 +225,20 @@ while(c<C)
                            merged_with=[merged_with i];
                            candidate_rect=[Rectangle_List(i,1) Rectangle_List(i,2) Rectangle_List(i,3) Rectangle_List(i,4)+candidate_rect(4)+1 Rectangle_List(i,5)];
                            draw_rectangle(candidate_rect,i);
-                           %imagesc(Canvas,[0 C]);
+                           if(sum(Canvas==0)==0)
+                               Rectangle_List=[]; 
+                               return;
+                           end
                            merging=1;
                            break;
                        elseif(candidate_rect(2)+candidate_rect(4)+1==Rectangle_List(i,2)) %candidate is mergeable on top
                            merged_with=[merged_with i];
                            candidate_rect=[candidate_rect(1) candidate_rect(2) candidate_rect(3) Rectangle_List(i,4)+candidate_rect(4)+1 Rectangle_List(i,5)];
                            draw_rectangle(candidate_rect,i);
-                           %imagesc(Canvas,[0 C]);
+                           if(sum(Canvas==0)==0)
+                               Rectangle_List=[]; 
+                               return;
+                           end
                            merging=1;
                            break;
                        end 
@@ -241,14 +251,20 @@ while(c<C)
                            merged_with=[merged_with i];
                            candidate_rect=[Rectangle_List(i,1) Rectangle_List(i,2) Rectangle_List(i,3)+candidate_rect(3)+1 Rectangle_List(i,4) Rectangle_List(i,5)];
                            draw_rectangle(candidate_rect,i);
-                           %imagesc(Canvas,[0 C]);
+                           if(sum(Canvas==0)==0)
+                               Rectangle_List=[];
+                               return;
+                           end
                            merging=1;
                            break;
                        elseif(candidate_rect(1)+candidate_rect(3)+1==Rectangle_List(i,1)) %candidate is mergeable on left
                            merged_with=[merged_with i];
                            candidate_rect=[candidate_rect(1) candidate_rect(2) Rectangle_List(i,3)+candidate_rect(3)+1 candidate_rect(4) Rectangle_List(i,5)];
                            draw_rectangle(candidate_rect,i);
-                           %imagesc(Canvas,[0 C]);
+                           if(sum(Canvas==0)==0)
+                               Rectangle_List=[]; 
+                               return;
+                           end
                            merging=1;
                            break;
                        end 
@@ -270,6 +286,10 @@ while(c<C)
    if(sum(merged_with)==0)
       Rectangle_List(c+1,:)=candidate_rect;
       draw_rectangle(candidate_rect,c+1);
+      if(sum(Canvas==0)==0)
+          Rectangle_List=[]; 
+          return;
+      end
    else
        Rectangle_List(merged_with,:)=[];
        Rectangle_List(size(Rectangle_List,1)+1,:)=candidate_rect;
@@ -281,13 +301,47 @@ while(c<C)
     
     c=size(Rectangle_List,1);
    
-       
+     
         
 end
 
 for i=1:C
     draw_rectangle(Rectangle_List(i,:),i);
 end
+
+
+%Have a shape of C boxes, could be all white or all black. Make sure it does not
+%happen
+if(sum(Rectangle_List(:,5))==C)
+    %all 1;
+    %Number of boxes to switch
+    num=randi(C-1,1);
+    num = max(num,1);
+    %which to swtich, can repeat...too bad
+    ind=randsample(C,num);
+    Rectangle_List(ind,5)=0;
+    %disp('fixed all 1');
+   
+elseif (sum(Rectangle_List(:,5))==0)
+    %all 0;
+    %Number of boxes to switch
+    num=randi(C-1,1);
+    num = max(num,1);
+    %which to swtich, can repeat...too bad
+    ind=randsample(C,num);
+    Rectangle_List(ind,5)=1;
+    %disp('fixed all 0');
+end
+
+% figure(2);
+% imagesc(Canvas,[0 C]);
+%     %Rectangle_List
+% drawnow; pause(0.002);
+% % pause;
+% Rectangle_List
+%     keyboard;
+
+
 %imagesc(Canvas);
 
 
