@@ -10,18 +10,38 @@ function [ROWS, COLS, INDS, POLS] = generate_rectangles(N,IMSIZE, RANK)
 SIGMA = 1;
 MAX_ASPECT = 200;
 
-%rects = generate_shape1(10,10,5,1,200);
-%figure(1);
-
 ROWS = cell(N,1);
 COLS = cell(N,1);
 INDS = cell(N,1);
 POLS = cell(N,1);
 
+%RANKBAR = zeros(1, RANK);
+
 for n = 1:N
 
-        %figure(1);
-        rects = generate_shape1(IMSIZE(1),IMSIZE(2),RANK,SIGMA,MAX_ASPECT);
+        rects = []; redo = 0;
+        while isempty(rects)
+            
+            % first, sample the subwindow size
+            w = randi(24);
+            h = randi(24);
+
+            % next sample an offset for the subwindow
+            ro = randi([0 IMSIZE(2) - w],1);
+            co = randi([0 IMSIZE(1) - h],1);
+
+            % sample the rank
+            rank = randi([2 RANK]);
+            
+            % generate a shape with sampled parameters
+            rects = generate_shape1(w,h,rank,SIGMA,MAX_ASPECT);
+            %if redo == 1; disp('needed to regenerate'); end;
+            %redo  = 1;
+        end
+        
+        % apply the sub-window offset
+        rects(:,1) = rects(:,1) + ro;
+        rects(:,2) = rects(:,2) + co;
 
         R = cell(1, size(rects,1));
         C = cell(1, size(rects,1));
@@ -29,7 +49,6 @@ for n = 1:N
         P = zeros(1, size(rects,1));
 
         for i = 1:size(rects,1)
-
             C{i} = [rects(i,1) rects(i,1) rects(i,1)+rects(i,3)+1 rects(i,1)+rects(i,3)+1];
             R{i} = [rects(i,2) rects(i,2)+rects(i,4)+1 rects(i,2) rects(i,2)+rects(i,4)+1];
             I{i} = sub2ind(IMSIZE+[1 1], R{i}, C{i});
@@ -38,26 +57,18 @@ for n = 1:N
             else
                 P(i) = -1;
             end
-
         end
         
-        %figure(2);
-        %rect_vis_ind(zeros(IMSIZE), I, P);
+%         figure(3);
+%         rect_vis_ind(zeros(IMSIZE), I, P);
         ROWS{n} = R;
         COLS{n} = C;
         INDS{n} = I;
         POLS{n} = P;
-        %keyboard;
-        %rects
+
         
-        %pause;
-        
+%         RANKBAR(1, size(rects,1)) = RANKBAR(1, size(rects,1))+1;
+%         figure(2);
+%         bar(RANKBAR);   
 end
-        
-%figure(2);
-
-%rect_vis_ind(zeros(IMSIZE), INDS, POLS);
-
-%rects
-
-%keyboard;
+ 
