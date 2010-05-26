@@ -54,7 +54,7 @@ for t = 1:T
     else
         disp(['...generating Rank [2 to ' num2str(RANK) '] rectangles.']);
         %[tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
-        [tempr, tempc, f_rects, f_pols] = generate_rectangles2(N_features, IMSIZE, RANK);
+        [tempr, tempc, f_rects, f_pols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         clear tempr tempc;
     end
     
