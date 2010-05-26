@@ -53,7 +53,8 @@ for t = 1:T
         f_pols = P(inds);   % associated polarities
     else
         disp(['...generating Rank [2 to ' num2str(RANK) '] rectangles.']);
-        [tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
+        %[tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
+        [tempr, tempc, f_rects, f_pols] = generate_rectangles2(N_features, IMSIZE, RANK);
         clear tempr tempc;
     end
     
@@ -86,7 +87,7 @@ for t = 1:T
     tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
 
     %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
-    rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
+    %rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
     to = toc; disp(['...selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
 
     
@@ -125,4 +126,5 @@ for t = 1:T
     
     % check for convergence (?)
     
+    %keyboard;
 end
