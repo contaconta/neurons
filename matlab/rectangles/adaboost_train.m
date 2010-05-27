@@ -8,7 +8,6 @@ adaboost_settings;
 if VJ == 1
     [R,C,N,P] = generate_viola_jones_features(IMSIZE);
     %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
-    %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz3', 'vert3'});
 end
 
 if ~exist('D.mat', 'file')
@@ -63,20 +62,12 @@ for t = 1:T
 %     for i = 1:N_features
 %         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
 %     end
-    
-        
+
     % populate the feature responses for the sampled features
     disp('...computing feature responses for the selected features.'); tic;
-    F = zeros(size(D,1), size(f_rects,1), 'single');
-    for i = 1:N_features
-        %rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
-        F(:,i) = haar_feature(D, f_rects{i}, f_cols{i});
-    end
-    Fmex = HaarFeature(D, f_rects, f_cols);
+    F = HaarFeature_mex(D, f_rects(:)', f_cols(:)');
     to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
-     if ~isequal(F,Fmex)
-        disp('mex output does not agree :(');
-     end
+  
     
     %% find the best weak learner
     disp('...selecting the best weak learner and its parameters.');
@@ -85,7 +76,7 @@ for t = 1:T
     pos_inds = find(L == 1); neg_inds = find(L == -1);
     neg_inds = weight_sample(neg_inds, W(neg_inds), N_SAMPLES);
     inds = [pos_inds; neg_inds];
-    Fsub = F(inds,:);  Lsub = L(inds);     % Wsub = normalize_weights(W(inds));
+    Fsub = F(inds,:);  Lsub = L(inds);
     Wsub = W(inds); Wsub(Lsub == -1) = Wsub(Lsub==-1) * ( sum(W(L==-1))/ sum(Wsub(Lsub==-1)));
     
     tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
@@ -96,16 +87,9 @@ for t = 1:T
 
     
     %% compute error. sanity check: best weak learner should beat 50%
-    E = p*F(:,ind) < p*thresh;              % predicted classes from weak learner ( < for positive polarity )
-    E = single(E); E(E ==0) = -1;           
-    %E = adaboost_classify(rects, pols, thresh, tpol, alpha, D);
-    Emex = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
-    if ~isequal(E, Emex)
-        disp('problem with classify?');
-        keyboard;
-    end
-    correct_classification = (E == L);
-    incorrect_classification = (E ~= L);
+    %E = p*F(:,ind) < p*thresh; E = single(E); E(E ==0) = -1; % prediction
+    E = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
+    correct_classification = (E == L); incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
     disp(['...local weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
 
@@ -117,15 +101,14 @@ for t = 1:T
     
     % add the new weak learner to the strong classifier
     CLASSIFIER.rects{t} = f_rects{ind}; 
-    CLASSIFIER.pols{t} = f_cols{ind};
-    CLASSIFIER.tpol(t) = p;
+    CLASSIFIER.cols{t} = f_cols{ind};
+    CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
     
     % evaluate the strong classifier and record performance
     tic;
-    %PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
-    PR = AdaBoostClassify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
+    PR = AdaBoostClassify(CLASSIFIER.rects, CLASSIFIER.cols, CLASSIFIER.thresh, CLASSIFIER.pol, CLASSIFIER.alpha, D);
     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
     stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  '.  Elapsed time ' num2str(to) ' seconds.']);
