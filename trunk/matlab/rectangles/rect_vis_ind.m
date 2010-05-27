@@ -1,4 +1,4 @@
-function rect_vis_ind(blankI,i,p)
+function blankI = rect_vis_ind(blankI,i,c,pol)
 % visualize haar-like rectangles
 %
 % rect_vis_ind(blankI,i,p)
@@ -8,6 +8,9 @@ function rect_vis_ind(blankI,i,p)
 %
 
 
+if ~exist('pol', 'var')
+    pol = 1;
+end
 
 %figure(3436321);
 
@@ -20,10 +23,10 @@ for n = 1:N
     %[rectC, rectR] = ind2sub(size(blankI)+[1 1], i{n});
     %rectR = r{n};
     %rectC = c{n};
-    pol = p(n);
+    col = c(n);
 
     
-    blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = pol;
+    blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = pol*col;
 end
 
 imagesc(blankI, [-1 1]); colormap gray;
