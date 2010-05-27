@@ -37,6 +37,9 @@ end
 if ~exist(['AdaBoostClassify_mex.' mexext], 'file')
      compile_weight_sample;
 end
+if ~exist(['AdaBoostClassifyA_mex.' mexext], 'file')
+     compile_weight_sample;
+end
 if ~exist(['HaarFeature_mex.' mexext], 'file')
      compile_weight_sample;
 end
