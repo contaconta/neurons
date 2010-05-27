@@ -4,12 +4,13 @@ EXP_NAME = 'TEST';          % name of experiment
 
 N_features = 2000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
-N_total = 75000;            % # of total training examples
+N_total = 50000;            % # of total training examples
 N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
 T = 5000;                   % maximum rounds of boosting
-VJ = 1;                     % 1 = viola jones rectangles / 0 = our rectangles
-RANK = 2;                   % rectangle complexity
+VJ = 0;                     % 1 = viola jones rectangles / 0 = our rectangles
+RANK = 8;                   % rectangle complexity
 CONNECTEDNESS = 0.7;        % probability rectangles will be connected
+ANORM = 1;                  % 1 = area-based normalization / 0 = no normalization
 
 IMSIZE = [24 24];           % size of the classification window
 

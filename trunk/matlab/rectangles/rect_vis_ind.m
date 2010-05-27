@@ -26,7 +26,8 @@ for n = 1:N
     col = c(n);
 
     
-    blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = pol*col;
+    %blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = pol*col;
+    blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) = blankI(rectR(1):rectR(4)-1,rectC(1):rectC(4)-1) + pol*col;
 end
 
 imagesc(blankI, [-1 1]); colormap gray;
