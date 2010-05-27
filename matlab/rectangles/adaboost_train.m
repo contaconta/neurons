@@ -50,29 +50,33 @@ for t = 1:T
     if VJ == 1
         inds = randsample(size(N,1), N_features);
         f_rects = N(inds);  % randomly selected rectangles
-        f_pols = P(inds);   % associated polarities
+        f_cols = P(inds);   % associated polarities
     else
         disp(['...generating Rank [2 to ' num2str(RANK) '] rectangles.']);
-        %[tempr, tempc, f_rects, f_pols] = generate_rectangles(N_features, IMSIZE, RANK);
-        [tempr, tempc, f_rects, f_pols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
+        [tempr, tempc, f_rects, f_cols] = generate_rectangles(N_features, IMSIZE, RANK);
+        %[tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         clear tempr tempc;
     end
     
 %     %%% TEMPORARY VISUALIZATION
 %     figure(34334); disp('   VISUALIZING FEATURES');
 %     for i = 1:N_features
-%         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
+%         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
 %     end
     
         
     % populate the feature responses for the sampled features
-    disp('...computing feature responses for the selected features.');
-    F = zeros(size(D,1), size(f_rects,1), 'single'); tic;
+    disp('...computing feature responses for the selected features.'); tic;
+    F = zeros(size(D,1), size(f_rects,1), 'single');
     for i = 1:N_features
-        %rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_pols{i});
-        F(:,i) = haar_feature(D, f_rects{i}, f_pols{i});
+        %rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
+        F(:,i) = haar_feature(D, f_rects{i}, f_cols{i});
     end
+    Fmex = HaarFeature(D, f_rects, f_cols);
     to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
+     if ~isequal(F,Fmex)
+        disp('mex output does not agree :(');
+     end
     
     %% find the best weak learner
     disp('...selecting the best weak learner and its parameters.');
@@ -87,14 +91,19 @@ for t = 1:T
     tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,Fsub);  % subset of training data
 
     %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
-    %rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_pols{ind}); 
-    to = toc; disp(['...selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
+    rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_cols{ind}, p); 
+    to = toc; disp(['   Selected feature ' num2str(ind) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
 
     
     %% compute error. sanity check: best weak learner should beat 50%
     E = p*F(:,ind) < p*thresh;              % predicted classes from weak learner ( < for positive polarity )
     E = single(E); E(E ==0) = -1;           
     %E = adaboost_classify(rects, pols, thresh, tpol, alpha, D);
+    Emex = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
+    if ~isequal(E, Emex)
+        disp('problem with classify?');
+        keyboard;
+    end
     correct_classification = (E == L);
     incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
@@ -108,17 +117,18 @@ for t = 1:T
     
     % add the new weak learner to the strong classifier
     CLASSIFIER.rects{t} = f_rects{ind}; 
-    CLASSIFIER.pols{t} = f_pols{ind};
+    CLASSIFIER.pols{t} = f_cols{ind};
     CLASSIFIER.tpol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
     
     % evaluate the strong classifier and record performance
-%     tic;
-%     PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
-%     [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
-%     stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
-%     disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  ' Elapsed time ' num2str(to) ' seconds.']);
+    tic;
+    %PR = adaboost_classify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
+    PR = AdaBoostClassify(CLASSIFIER.rects, CLASSIFIER.pols, CLASSIFIER.thresh, CLASSIFIER.tpol, CLASSIFIER.alpha, D);
+    [TP TN FP FN TPR FPR ACC] = rocstats(PR>0,L>0, 'TP', 'TN', 'FP', 'FN', 'TPR', 'FPR', 'ACC');
+    stats(t,:) = [TP TN FP FN TPR FPR ACC]; to = toc;
+    disp(['   TP = ' num2str(TP) '/' num2str(sum(L==1)) '  FP = ' num2str(FP) '/' num2str(sum(L==-1)) '  ACC = ' num2str(ACC)  '.  Elapsed time ' num2str(to) ' seconds.']);
         
     % store a temporary copy
     save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
@@ -126,5 +136,5 @@ for t = 1:T
     
     % check for convergence (?)
     
-    %keyboard;
+%     keyboard;
 end
