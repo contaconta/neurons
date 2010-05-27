@@ -14,7 +14,8 @@ int nb_learners;
 int nb_examples;
 double fval = NULL;
 
-double* F = NULL;
+//double* F = NULL;
+float* F = NULL;
 int rect_dim;
 
 
@@ -47,10 +48,10 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
     //mexPrintf("number of examples = %d\n", nb_examples);
     
     // allocate the output
-    outputs[0]=mxCreateDoubleMatrix(nb_examples, nb_learners, mxREAL);
-    //const mwSize dims[]={nb_examples,nb_learners};
-    //outputs[0]=mxCreateNumericArray(NDIMS, dims, mxSINGLE_CLASS, mxREAL);
-    F = mxGetPr(outputs[0]);
+    //outputs[0]=mxCreateDoubleMatrix(nb_examples, nb_learners, mxREAL);
+    const mwSize dims[]={nb_examples,nb_learners};
+    outputs[0]=mxCreateNumericArray(NDIMS, dims, mxSINGLE_CLASS, mxREAL);
+    F = (float*) mxGetPr(outputs[0]);
     
     // loop through each example, compute the classifier response
     for(int i = 0; i < nb_examples; i++){
@@ -94,7 +95,8 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
             //mexPrintf("%d,%d ", i,k);
             
             // store the weak responses for each example
-            F[ nb_examples*k + i] = response;
+            //F[ nb_examples*k + i] = response;
+            F[ nb_examples*k + i] = (float) response;
             //F[1] = response;
             
         }
