@@ -42,7 +42,7 @@ CLASSIFIER.rects = {}; CLASSIFIER.thresh = []; CLASSIFIER.cols = {}; CLASSIFIER.
 for t = 1:T
     disp(' ');
     disp('===================================================================');
-    disp(['                   BOOSTING ROUND t = ' num2str(t) ]);
+    disp(['              BOOSTING ROUND t = ' num2str(t) ' : ' EXP_NAME]);
     disp('-------------------------------------------------------------------');
     
     % randomly sample features for this round of boosting
