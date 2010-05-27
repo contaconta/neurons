@@ -8,7 +8,7 @@ N_total = 50000;            % # of total training examples
 N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
 T = 5000;                   % maximum rounds of boosting
 VJ = 0;                     % 1 = viola jones rectangles / 0 = our rectangles
-RANK = 8;                   % rectangle complexity
+RANK = 4;                   % rectangle complexity
 CONNECTEDNESS = 0.7;        % probability rectangles will be connected
 ANORM = 1;                  % 1 = area-based normalization / 0 = no normalization
 
@@ -34,13 +34,3 @@ end
 if ~exist(['weight_sample_mex.' mexext], 'file')
      compile_weight_sample;
 end
-if ~exist(['AdaBoostClassify_mex.' mexext], 'file')
-     mex -v AdaBoostClassify_mex;
-end
-if ~exist(['AdaBoostClassifyA_mex.' mexext], 'file')
-     mex -v AdaBoostClassifyA_mex;
-end
-if ~exist(['HaarFeature_mex.' mexext], 'file')
-     mex -v HaarFeature_mex;
-end
-
