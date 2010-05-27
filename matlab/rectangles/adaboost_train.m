@@ -60,11 +60,11 @@ for t = 1:T
     end
     if ANORM; f_areas = compute_areas(IMSIZE, f_rects); end;
     
-    %%% TEMPORARY VISUALIZATION
-    figure(34334); disp('   VISUALIZING FEATURES');
-    for i = 1:N_features
-        rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
-    end
+%     %%% TEMPORARY VISUALIZATION
+%     figure(34334); disp('   VISUALIZING FEATURES');
+%     for i = 1:N_features
+%         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
+%     end
 
     % populate the feature responses for the sampled features
     disp('...computing feature responses for the selected features.'); tic;
