@@ -62,7 +62,7 @@ axis([1 T 0 100]);
 
 legstr = {};
 for i = 1:length(ranklist)
-   legstr{i} = num2str(ranklist(i));
+   legstr{i} = ['Rank ' num2str(ranklist(i))];
 end
 legend(legstr);
 
