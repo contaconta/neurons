@@ -76,12 +76,12 @@ for t = 1:T
             F(:,i) = haar_feature(D, f_rects{i}, f_cols{i});
         end
     end; to = toc; disp(['   Elapsed time (MATLAB) ' num2str(to) ' seconds.']);
-%     tic; Fmex = HaarFeature_mex(D, f_rects(:)', f_cols(:)');
-%     to=toc;  disp(['   Elapsed time (MEX) ' num2str(to) ' seconds.']);
-%  
-%     if ~isequal(F,Fmex)
-%         disp('mex output does not agree :(');
-%     end
+    tic; Fmex = HaarFeature_mex(D, f_rects(:)', f_cols(:)');
+    to=toc;  disp(['   Elapsed time (MEX) ' num2str(to) ' seconds.']);
+ 
+    if ~isequal(F,Fmex)
+        disp('mex output does not agree :(');
+    end
     
     
     %% find the best weak learner

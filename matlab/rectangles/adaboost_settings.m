@@ -10,7 +10,7 @@ T = 5000;                   % maximum rounds of boosting
 VJ = 0;                     % 1 = viola jones rectangles / 0 = our rectangles
 RANK = 4;                   % rectangle complexity
 CONNECTEDNESS = 0.7;        % probability rectangles will be connected
-ANORM = 1;                  % 1 = area-based normalization / 0 = no normalization
+ANORM = 0;                  % 1 = area-based normalization / 0 = no normalization
 
 IMSIZE = [24 24];           % size of the classification window
 
