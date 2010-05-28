@@ -60,7 +60,7 @@ for n = 1:N
         end
         
 %         figure(3);
-%         rect_vis_ind(zeros(IMSIZE), I, P);
+%         rect_vis_ind(zeros(IMSIZE), I, P, 1);
         ROWS{n} = R;
         COLS{n} = C;
         INDS{n} = I;
