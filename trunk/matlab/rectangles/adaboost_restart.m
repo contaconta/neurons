@@ -1,6 +1,27 @@
 %% LOAD PARAMETERS
 adaboost_settings;
 
+%% LOAD CLASSIFIER
+filename = 'BaselineVJ-cvlabpc47-May242010-012203.mat';
+folder = [pwd '/results/'];
+load([folder filename]);
+if isfield(CLASSIFIER, 'pols')
+    CLASSIFIER.cols = CLASSIFIER.pols;
+    CLASSIFIER = rmfield(CLASSIFIER, 'pols');
+end
+if isfield(CLASSIFIER, 'tpol')
+    CLASSIFIER.pol = CLASSIFIER.tpol;
+    CLASSIFIER = rmfield(CLASSIFIER, 'tpol');
+end
+if isfield(CLASSIFIER, 'areas')
+    ANORM = 1;
+else
+    ANORM = 0;
+end
+beta = zeros(T,1);      % computed beta value at each boosting step
+alpha = zeros(T,1);     % computed alpha value at each boosting step
+tstart = length(CLASSIFIER.rects);
+disp(['-------------- RESTARTING FROM t = ' num2str(tstart) ' --------------']);
 
 %% PRE-BOOSTING
 
@@ -13,21 +34,9 @@ end
 % load the database into D
 adaboost_load_database;
 
-% initialize the weights, set each class to have equal weights initially
-W = ones(size(L));          % example weights
-W(L == 1) = .5 * (W(L == 1) / sum(W(L == 1)));
-W(L == -1) = .5 * (W(L == -1) / sum(W(L == -1)));
-
 
 %% PERFORM BOOSTING
-
-stats = zeros(T,7);     % keep statistics for each boosting round
-error = zeros(T,1);     % weighted classification error at each boosting step
-beta = zeros(T,1);      % computed beta value at each boosting step
-alpha = zeros(T,1);     % computed alpha value at each boosting step
-CLASSIFIER.rects = {}; CLASSIFIER.thresh = []; CLASSIFIER.cols = {}; CLASSIFIER.pol = []; CLASSIFIER.alpha = [];
-
-for t = 1:T
+for t = tstart:T
     disp(' ');
     disp('===================================================================');
     disp(['              BOOSTING ROUND t = ' num2str(t) ',  ' EXP_NAME]);
@@ -99,6 +108,7 @@ for t = 1:T
     % store a temporary copy of boosted classifier
     save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
     disp(['...saved as ' EXP_NAME '-' host '-' date '.mat']);
+    
     % check for convergence (?)
     
 %     keyboard;
