@@ -99,7 +99,7 @@ for t = 1:T
     % store a temporary copy of boosted classifier
     save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
     disp(['...saved as ' EXP_NAME '-' host '-' date '.mat']);
-    % check for convergence (?)
     
-%     keyboard;
+    % check for convergence (?)
+
 end
