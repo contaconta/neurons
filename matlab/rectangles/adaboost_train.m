@@ -5,7 +5,7 @@ adaboost_settings;
 %% PRE-BOOSTING
 
 % pre-generate the set of features
-if VJ == 1
+if strcmp(RectMethod, 'Viola-Jones');
     [R,C,N,P] = generate_viola_jones_features(IMSIZE);
     %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
 end
