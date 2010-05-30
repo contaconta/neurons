@@ -15,7 +15,4 @@ end
 best_thresh = thresh(best_ind);
 best_pol = pol(best_ind);
 
-keyboard;
-
-
 %plot_N_learners(CLASSIFIER, N, IMSIZE)
