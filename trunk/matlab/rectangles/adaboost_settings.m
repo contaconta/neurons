@@ -4,14 +4,14 @@ EXP_NAME = 'TEST';          % name of experiment
 
 N_features = 2000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
-N_total = 50000;            % # of total training examples
-N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
+N_total = 200000;           % # of total training examples
+N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
 T = 5000;                   % maximum rounds of boosting
 RANK = 4;                   % rectangle complexity
 CONNECTEDNESS = 0.7;        % probability rectangles will be connected
 ANORM = 1;                  % 1 = area-based normalization / 0 = no normalization
 EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
-RectMethod = 'Viola-Jones'; % shape generation method 'Viola-Jones', 'Karim1', 'Simple', 'Kevin'
+RectMethod = 'Karim1';      % shape generation method 'Viola-Jones', 'Karim1', 'Simple', 'Kevin'
 
 IMSIZE = [24 24];           % size of the classification window
 
