@@ -5,7 +5,7 @@ adaboost_settings;
 %% PRE-BOOSTING
 
 % pre-generate the set of features
-if strcmp(RectMethod, 'Viola-Jones');
+if strcmp(RectMethod, 'Viola-Jones') || strcmp(RectMethod, 'Mixed50') || strcmp(RectMethod, 'Mixed33');
     [R,C,N,P] = generate_viola_jones_features(IMSIZE);
     %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
 end
@@ -92,6 +92,7 @@ for t = 1:T
     CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
+    CLASSIFIER.types{t} = f_types{ind}; disp(['   selected a ' f_types{ind} ' feature.']);
     
     % evaluate strong classifier performance, if desired (expensive)
     adaboost_eval;
