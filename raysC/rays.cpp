@@ -24,7 +24,7 @@
 #define PI 3.1415926536
 
 // DEBUG ONLY
-string getNameFromPathWithoutExtension(string path){
+static string _getNameFromPathWithoutExtension(string path){
   string nameWith =  path.substr(path.find_last_of("/\\")+1);
   string nameWithout = nameWith.substr(0,nameWith.find_last_of("."));
   return nameWithout;
@@ -81,7 +81,7 @@ int computeDistanceDifferenceRays(const char *pImageName,
           if(saveImages)
             {
               stringstream sout;
-              sout << "/tmp/" << getNameFromPathWithoutExtension((string)pImageName) << "ray1_" << angle << ".ppm";
+              sout << "/tmp/" << _getNameFromPathWithoutExtension((string)pImageName) << "ray1_" << angle << ".ppm";
               printf("Saving %s\n",sout.str().c_str());
               save32bitsimage((char*)sout.str().c_str(),rays1[a]);
             }
@@ -139,7 +139,7 @@ int computeDistanceDifferenceRays(const char *pImageName,
       if(saveImages)
         {
           stringstream sout;
-          sout << "/tmp/" << getNameFromPathWithoutExtension((string)pImageName) << "ray2_" << angle1 << "_" << angle2 << ".ppm";
+          sout << "/tmp/" << _getNameFromPathWithoutExtension((string)pImageName) << "ray2_" << angle1 << "_" << angle2 << ".ppm";
           printf("Saving %s\n",sout.str().c_str());
           savefloatimage((char*)sout.str().c_str(),rays2[i]);
         }
@@ -241,7 +241,7 @@ void computeRays(const char *pImageName, double angle,
     //if(saveImages)
     stringstream sout;
     string s(pImageName);
-    sout << "/tmp/" << getNameFromPathWithoutExtension(s) << "edge_" << edge_low_threshold << "_" << edge_high_threshold << ".png";
+    sout << "/tmp/" << _getNameFromPathWithoutExtension(s) << "edge_" << edge_low_threshold << "_" << edge_high_threshold << ".png";
     cvSaveImage(sout.str().c_str(),edge);
 
   // ensure good angles
