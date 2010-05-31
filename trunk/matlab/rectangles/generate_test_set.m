@@ -1,13 +1,38 @@
-function [TESTD, TESTL] = generate_test_set(pos_folder, neg_folder, NPOS, N, IMSIZE)
+%function [TESTD, TESTL] = generate_test_set(pos_folder, neg_folder, NPOS, N, IMSIZE)
+
+IMSIZE = [24 24];
+
+DATA_FOLDER = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/';
+%pos_train_folder = [DATA_FOLDER 'train/pos/'];
+%neg_train_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
+pos_folder = [DATA_FOLDER 'test/pos/'];
+neg_folder = [DATA_FOLDER 'non-face_uncropped_images/'];
 
 
-[Lp,Dp] = collect_positive_examples(NPOS, IMSIZE, pos_folder); 
-NPOS = length(Lp);
+%% the positive set
+NPOS = 5000;
 
-[Ln,Dn] = collect_negative_examples(N-NPOS, IMSIZE, neg_folder);
+[Li,Di] = collect_positive_examples(NPOS, IMSIZE, pos_folder); 
+NPOS = length(Li);
 
-TESTD = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
-TESTL = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
+filename = ['TEST1' '.mat'];
+disp(['...storing ' num2str(sum(Li==1)) ' (class +1) / ' num2str(sum(Li==-1)) ' (class -1) examples to ' filename]);
+save(filename, '-v7.3', 'Li', 'Di');  
 
-save('TEST.mat', '-v7.3', 'TESTD', 'TESTL');  
-disp(['...storing ' num2str(sum(TESTL==1)) ' (class +1) / ' num2str(sum(TESTL==-1)) ' (class -1) examples to TEST.mat.']);
+%% the negative set
+NNEGi = 100000;
+Ni = 10;
+
+for i = 1:Ni
+
+    [Li,Di] = collect_negative_examples(NNEGi, IMSIZE, neg_folder);
+
+    filename = ['TEST' num2str(i+1) '.mat'];
+    disp(['...storing ' num2str(sum(Li==1)) ' (class +1) / ' num2str(sum(Li==-1)) ' (class -1) examples to ' filename]);
+    save(filename, '-v7.3', 'Li', 'Di');  
+
+end
+
+
+% TESTD = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
+% TESTL = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
