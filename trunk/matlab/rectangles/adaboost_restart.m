@@ -58,11 +58,12 @@ for t = tstart:T
     disp('...computing feature responses for the selected features.'); tic;
     F = zeros(size(Dsub,1), size(f_rects,1), 'single');
     for i = 1:N_features
-        if ANORM
-            F(:,i) = haar_featureA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
-        else
-            F(:,i) = haar_feature(Dsub, f_rects{i}, f_cols{i});
-        end
+        F(:,i) = haar_featureDynamicA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
+%         if ANORM
+%             F(:,i) = haar_featureA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
+%         else
+%             F(:,i) = haar_feature(Dsub, f_rects{i}, f_cols{i});
+%         end
     end; to = toc; disp(['   Elapsed time (MATLAB) ' num2str(to) ' seconds.']);
     %tic; Fmex = HaarFeature_mex(Dsub, f_rects(:)', f_cols(:)');
     %to=toc;  disp(['   Elapsed time (MEX) ' num2str(to) ' seconds.']);
@@ -79,11 +80,12 @@ for t = tstart:T
     
     %% compute error. sanity check: best weak learner should beat 50%
     %E = p*F(:,ind) < p*thresh; E = single(E); E(E ==0) = -1; % prediction
-    if ANORM
-        E = AdaBoostClassifyA(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
-    else
-        E = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
-    end
+    E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
+%     if ANORM
+%         E = AdaBoostClassifyA(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
+%     else
+%         E = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
+%     end
     correct_classification = (E == L); incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
     disp(['...local weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
@@ -101,7 +103,7 @@ for t = tstart:T
     CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
-    CLASSIFIER.types{t} = f_types{ind}; disp(['   selected ' f_types{ind} ' feature.']);
+    CLASSIFIER.types{t} = f_types{ind}; disp(['   selected a ' f_types{ind} ' feature.']);
     
     % evaluate strong classifier performance, if desired (expensive)
     adaboost_eval;
