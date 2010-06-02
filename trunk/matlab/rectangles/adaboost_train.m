@@ -6,9 +6,9 @@ adaboost_settings;
 
 % pre-generate necessary feature pools
 if strcmp(RectMethod, 'Viola-Jones') || strcmp(RectMethod, 'Mixed50') || strcmp(RectMethod, 'Mixed33');
-    [R,C,N,P] = generate_viola_jones_features(IMSIZE);
-    %[R,C,N,P] = generate_viola_jones_features_special(IMSIZE);  % Rank3 has equal areas
-    %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+    [R,C,N,P] = generate_viola_jones_features(IMSIZE); %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+elseif strcmp(RectMethod, 'VJSPECIAL')
+    [R,C,N,P] = generate_viola_jones_features_special(IMSIZE);  % Rank3 has equal areas
 end
 
 % load the database into D

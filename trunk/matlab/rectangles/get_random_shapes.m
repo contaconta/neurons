@@ -18,6 +18,11 @@ switch RectMethod
     case 'Kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
+    case 'VJSPECIAL'
+        inds = randsample(size(N,1), N_features);
+        f_rects = N(inds);  % randomly selected rectangles
+        f_cols = P(inds);   % associated polarities
+        f_types(1:N_features) = deal({'VJSPECIAL'});
     case 'Mixed50'
         N1 = round(N_features/2);  N2 = N_features - N1;
         inds = randsample(size(N,1), N1);
@@ -50,7 +55,6 @@ if ANORM;
 else
     f_areas = compute_nonorm_areas(rects);
 end
-
 
 
 %     %%% TEMPORARY VISUALIZATION
