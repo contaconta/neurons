@@ -15,7 +15,7 @@ for i = 1:length(d)
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
     TPvj(i,:) = interp1(FP/NN,TP/NP,fplocs);
 end
-save(['results' num2str(NLEARNERS) '.mat'], 'TPvj', 'fplocs');
+save(['roc' num2str(NLEARNERS) '.mat'], 'TPvj', 'fplocs');
 
 prefix = 'A2-';
 d = dir([folder prefix '*']); TPa2 = zeros(length(d), length(fplocs));
@@ -25,7 +25,7 @@ for i = 1:length(d)
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
     TPa2(i,:) = interp1(FP/NN,TP/NP,fplocs);
 end
-save(['results' num2str(NLEARNERS) '.mat']);
+save(['roc' num2str(NLEARNERS) '.mat']);
 
 prefix = 'A4-';
 d = dir([folder prefix '*']); TPa4 = zeros(length(d), length(fplocs));
@@ -35,7 +35,7 @@ for i = 1:length(d)
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
     TPa4(i,:) = interp1(FP/NN,TP/NP,fplocs);
 end
-save(['results' num2str(NLEARNERS) '.mat']);
+save(['roc' num2str(NLEARNERS) '.mat']);
 
 prefix = 'A8-';
 d = dir([folder prefix '*']); TPa8 = zeros(length(d), length(fplocs));
@@ -45,7 +45,7 @@ for i = 1:length(d)
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
     TPa8(i,:) = interp1(FP/NN,TP/NP,fplocs);
 end
-save(['results' num2str(NLEARNERS) '.mat']);
+save(['roc' num2str(NLEARNERS) '.mat']);
 
 prefix = 'A12-';
 d = dir([folder prefix '*']); TPa12 = zeros(length(d), length(fplocs));
@@ -55,7 +55,7 @@ for i = 1:length(d)
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
     TPa12(i,:) = interp1(FP/NN,TP/NP,fplocs);
 end
-save(['results' num2str(NLEARNERS) '.mat']);
+save(['roc' num2str(NLEARNERS) '.mat']);
 
 % prefix = '50-50';
 % d = dir([folder prefix '*']); TP50 = zeros(length(d), length(fplocs));
@@ -65,7 +65,7 @@ save(['results' num2str(NLEARNERS) '.mat']);
 %     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
 %     TP50(i,:) = interp1(FP/NN,TP/NP,fplocs);
 % end
-% save(['results' num2str(NLEARNERS) '.mat']);
+% save(['roc' num2str(NLEARNERS) '.mat']);
 % 
 % prefix = '33-';
 % d = dir([folder prefix '*']); TP33 = zeros(length(d), length(fplocs));
@@ -75,7 +75,7 @@ save(['results' num2str(NLEARNERS) '.mat']);
 %     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
 %     TP33(i,:) = interp1(FP/NN,TP/NP,fplocs);
 % end
-% save(['results' num2str(NLEARNERS) '.mat']);
+% save(['roc' num2str(NLEARNERS) '.mat']);
 % 
 % prefix = 'VJANORM-';
 % d = dir([folder prefix '*']); TPvja = zeros(length(d), length(fplocs));
@@ -85,7 +85,7 @@ save(['results' num2str(NLEARNERS) '.mat']);
 %     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
 %     TPvja(i,:) = interp1(FP/NN,TP/NP,fplocs);
 % end
-% save(['results' num2str(NLEARNERS) '.mat']);
+% save(['roc' num2str(NLEARNERS) '.mat']);
 
 plot(fplocs, mean(TPvj,1), 'k', 'LineWidth', 2);
 plot(fplocs, mean(TPa2,1), 'b');
