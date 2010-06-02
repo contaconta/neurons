@@ -91,11 +91,13 @@ for t = 1:T
     % add the new weak learner to the strong classifier
     CLASSIFIER.rects{t} = f_rects{ind}; 
     CLASSIFIER.cols{t} = f_cols{ind};
-    if ANORM; CLASSIFIER.areas{t} = f_areas{ind}; end;
+    CLASSIFIER.areas{t} = f_areas{ind};
     CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
     CLASSIFIER.types{t} = f_types{ind}; disp(['   selected a ' f_types{ind} ' feature.']);
+    CLASSIFIER.norm = NORM;
+    CLASSIFIER.method = RectMethod;
     
     % evaluate strong classifier performance, if desired (expensive)
     adaboost_eval;

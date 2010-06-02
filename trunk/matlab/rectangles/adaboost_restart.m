@@ -13,11 +13,7 @@ if isfield(CLASSIFIER, 'tpol')
     CLASSIFIER.pol = CLASSIFIER.tpol;
     CLASSIFIER = rmfield(CLASSIFIER, 'tpol');
 end
-if isfield(CLASSIFIER, 'areas')
-    ANORM = 1;
-else
-    ANORM = 0;
-end
+
 beta = zeros(T,1);      % computed beta value at each boosting step
 alpha = zeros(T,1);     % computed alpha value at each boosting step
 tstart = length(CLASSIFIER.rects);
@@ -99,12 +95,14 @@ for t = tstart:T
     % add the new weak learner to the strong classifier
     CLASSIFIER.rects{t} = f_rects{ind}; 
     CLASSIFIER.cols{t} = f_cols{ind};
-    if ANORM; CLASSIFIER.areas{t} = f_areas{ind}; end;
+    CLASSIFIER.areas{t} = f_areas{ind};
     CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
     CLASSIFIER.types{t} = f_types{ind}; disp(['   selected a ' f_types{ind} ' feature.']);
-    
+    CLASSIFIER.norm = NORM;
+    CLASSIFIER.method = RectMethod;
+
     % evaluate strong classifier performance, if desired (expensive)
     adaboost_eval;
    
