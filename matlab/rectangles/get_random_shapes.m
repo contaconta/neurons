@@ -38,8 +38,18 @@ switch RectMethod
         [tempr, tempc, f_rects(N1+1:N1+N2), f_cols(N1+1:N1+N2)] = generate_rectangles(N2, IMSIZE, RANK); 
         [f_rects(N1+N2+1:N_features), f_cols(N1+N2+1:N_features)] = generate_simple_rectangles(N3, IMSIZE, RANK);
         clear tempr tempc N1 N2 N3;
+    otherwise
+        error('invalid Rectangle Generation Method was specified in settings.');
 end
-if ANORM; f_areas = compute_areas(IMSIZE, f_rects); end;  
+
+
+%% generate a list of [white black] areas. set to [0 0] if they are equal
+%% or normalization is turned off
+if ANORM; 
+    f_areas = compute_areas2(IMSIZE, f_rects, f_cols); 
+else
+    f_areas = compute_nonorm_areas(rects);
+end
 
 
 
