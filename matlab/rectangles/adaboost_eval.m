@@ -1,3 +1,6 @@
+disp('need to update this script for area normalization!');
+keyboard;
+
 if EVAL 
     % evaluate the strong classifier and record performance
     tic;

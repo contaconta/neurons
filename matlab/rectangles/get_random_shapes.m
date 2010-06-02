@@ -50,11 +50,14 @@ end
 
 %% generate a list of [white black] areas. set to [0 0] if they are equal
 %% or normalization is turned off
-if ANORM; 
-    f_areas = compute_areas2(IMSIZE, f_rects, f_cols); 
-else
-    f_areas = compute_nonorm_areas(f_rects);
-end
+f_areas = compute_areas2(IMSIZE, NORM, f_rects, f_cols);
+
+
+% if ANORM; 
+%     f_areas = compute_areas2(IMSIZE, f_rects, f_cols); 
+% else
+%     f_areas = compute_nonorm_areas(f_rects);
+% end
 
 
 %     %%% TEMPORARY VISUALIZATION
