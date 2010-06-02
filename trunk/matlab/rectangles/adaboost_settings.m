@@ -12,7 +12,7 @@ EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluati
 
 RANK = 4;                   % rectangle complexity
 NORM = 'NONORM';            % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Viola-Jones'; % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'Karim1'; % shape generation method 'Viola-Jones', 'Karim1',
                             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50'
 
 IMSIZE = [24 24];           % size of the classification window

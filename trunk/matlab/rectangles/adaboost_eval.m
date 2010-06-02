@@ -1,7 +1,8 @@
-disp('need to update this script for area normalization!');
-keyboard;
+
 
 if EVAL 
+    disp('need to update this script for area normalization!');
+    keyboard;
     % evaluate the strong classifier and record performance
     tic;
     if ANORM

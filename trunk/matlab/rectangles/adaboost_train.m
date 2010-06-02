@@ -51,11 +51,6 @@ for t = 1:T
     F = zeros(size(Dsub,1), size(f_rects,1), 'single');
     for i = 1:N_features
         F(:,i) = haar_featureDynamicA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
-%         if ANORM
-%             F(:,i) = haar_featureA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
-%         else
-%             F(:,i) = haar_feature(Dsub, f_rects{i}, f_cols{i});
-%         end
     end; to = toc; disp(['   Elapsed time (MATLAB) ' num2str(to) ' seconds.']);
     %tic; Fmex = HaarFeature_mex(Dsub, f_rects(:)', f_cols(:)');
     %to=toc;  disp(['   Elapsed time (MEX) ' num2str(to) ' seconds.']);
@@ -67,7 +62,7 @@ for t = 1:T
     %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
     
     rect_vis_ind(zeros(IMSIZE), f_rects{ind}, f_cols{ind}, p); 
-    to = toc; disp(['   Selected feature ' num2str(ind) '. RANK = ' num2str(length(f_rects{ind})) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Elapsed time is ' num2str(to) ' seconds.']);
+    to = toc; disp(['   Selected ' f_types{ind} ' feature ' num2str(ind) '. RANK = ' num2str(length(f_rects{ind})) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Time ' num2str(to) ' s.']);
 
     
     %% compute error. sanity check: best weak learner should beat 50%
@@ -95,7 +90,7 @@ for t = 1:T
     CLASSIFIER.pol(t) = p;
     CLASSIFIER.thresh(t) = thresh;
     CLASSIFIER.alpha(t) = alpha(t);
-    CLASSIFIER.types{t} = f_types{ind}; disp(['   selected a ' f_types{ind} ' feature.']);
+    CLASSIFIER.types{t} = f_types{ind};
     CLASSIFIER.norm = NORM;
     CLASSIFIER.method = RectMethod;
     
