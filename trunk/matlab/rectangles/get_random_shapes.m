@@ -53,7 +53,7 @@ end
 if ANORM; 
     f_areas = compute_areas2(IMSIZE, f_rects, f_cols); 
 else
-    f_areas = compute_nonorm_areas(rects);
+    f_areas = compute_nonorm_areas(f_rects);
 end
 
 
