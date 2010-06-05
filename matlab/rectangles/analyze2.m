@@ -1,4 +1,4 @@
-NLEARNERS = 15;
+NLEARNERS = 2000;
 IMSIZE = [24 24];
 folder = [pwd '/results/'];
 
@@ -7,55 +7,55 @@ legstr = {}; plotid = 2;
 fplocs = [1.1e-6:.1e-6:1e-5,1.1e-5:.1e-5:1e-4,1.1e-4:.1e-4:1e-3,1.1e-3:.1e-3:1e-2, 1.1e-2:.1e-2:1e-1, 1.1e-1:.1e-1:1];
 
 
-prefix = 'VJ-';
-d = dir([folder prefix '*']); TPvj = zeros(length(d), length(fplocs));
-for i = 1:length(d)
-    filename = d(i).name;
-    load([folder filename]);
-    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-    TPvj(i,:) = interp1(FP/NN,TP/NP,fplocs);
-end
-save(['roc' num2str(NLEARNERS) '.mat'], 'TPvj', 'fplocs');
-
-prefix = 'A2-';
-d = dir([folder prefix '*']); TPa2 = zeros(length(d), length(fplocs));
-for i = 1:length(d)
-    filename = d(i).name;
-    load([folder filename]);
-    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-    TPa2(i,:) = interp1(FP/NN,TP/NP,fplocs);
-end
-save(['roc' num2str(NLEARNERS) '.mat']);
-
-prefix = 'A4-';
-d = dir([folder prefix '*']); TPa4 = zeros(length(d), length(fplocs));
-for i = 1:length(d)
-    filename = d(i).name;
-    load([folder filename]);
-    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-    TPa4(i,:) = interp1(FP/NN,TP/NP,fplocs);
-end
-save(['roc' num2str(NLEARNERS) '.mat']);
-
-prefix = 'A8-';
-d = dir([folder prefix '*']); TPa8 = zeros(length(d), length(fplocs));
-for i = 1:length(d)
-    filename = d(i).name;
-    load([folder filename]);
-    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-    TPa8(i,:) = interp1(FP/NN,TP/NP,fplocs);
-end
-save(['roc' num2str(NLEARNERS) '.mat']);
-
-prefix = 'A12-';
-d = dir([folder prefix '*']); TPa12 = zeros(length(d), length(fplocs));
-for i = 1:length(d)
-    filename = d(i).name;
-    load([folder filename]);
-    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-    TPa12(i,:) = interp1(FP/NN,TP/NP,fplocs);
-end
-save(['roc' num2str(NLEARNERS) '.mat']);
+% prefix = 'VJ-';
+% d = dir([folder prefix '*']); TPvj = zeros(length(d), length(fplocs));
+% for i = 1:length(d)
+%     filename = d(i).name;
+%     load([folder filename]);
+%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+%     TPvj(i,:) = interp1(FP/NN,TP/NP,fplocs);
+% end
+% save(['roc' num2str(NLEARNERS) '.mat'], 'TPvj', 'fplocs');
+% 
+% prefix = 'A2-';
+% d = dir([folder prefix '*']); TPa2 = zeros(length(d), length(fplocs));
+% for i = 1:length(d)
+%     filename = d(i).name;
+%     load([folder filename]);
+%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+%     TPa2(i,:) = interp1(FP/NN,TP/NP,fplocs);
+% end
+% save(['roc' num2str(NLEARNERS) '.mat']);
+% 
+% prefix = 'A4-';
+% d = dir([folder prefix '*']); TPa4 = zeros(length(d), length(fplocs));
+% for i = 1:length(d)
+%     filename = d(i).name;
+%     load([folder filename]);
+%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+%     TPa4(i,:) = interp1(FP/NN,TP/NP,fplocs);
+% end
+% save(['roc' num2str(NLEARNERS) '.mat']);
+% 
+% prefix = 'A8-';
+% d = dir([folder prefix '*']); TPa8 = zeros(length(d), length(fplocs));
+% for i = 1:length(d)
+%     filename = d(i).name;
+%     load([folder filename]);
+%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+%     TPa8(i,:) = interp1(FP/NN,TP/NP,fplocs);
+% end
+% save(['roc' num2str(NLEARNERS) '.mat']);
+% 
+% prefix = 'A12-';
+% d = dir([folder prefix '*']); TPa12 = zeros(length(d), length(fplocs));
+% for i = 1:length(d)
+%     filename = d(i).name;
+%     load([folder filename]);
+%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+%     TPa12(i,:) = interp1(FP/NN,TP/NP,fplocs);
+% end
+% save(['roc' num2str(NLEARNERS) '.mat']);
 
 % prefix = '50-50';
 % d = dir([folder prefix '*']); TP50 = zeros(length(d), length(fplocs));
@@ -77,15 +77,75 @@ save(['roc' num2str(NLEARNERS) '.mat']);
 % end
 % save(['roc' num2str(NLEARNERS) '.mat']);
 % 
-% prefix = 'VJANORM-';
-% d = dir([folder prefix '*']); TPvja = zeros(length(d), length(fplocs));
-% for i = 1:length(d)
-%     filename = d(i).name;
-%     load([folder filename]);
-%     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
-%     TPvja(i,:) = interp1(FP/NN,TP/NP,fplocs);
-% end
-% save(['roc' num2str(NLEARNERS) '.mat']);
+prefix = 'VJANORM-';
+d = dir([folder prefix '*']); TPvja = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPvja(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'VJDNORM-';
+d = dir([folder prefix '*']); TPvjd = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPvjd(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'VJSPECIAL-';
+d = dir([folder prefix '*']); TPvjspecial = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPvjspecial(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'Simple2-';
+d = dir([folder prefix '*']); TPs2 = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPs2(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'Simple4-';
+d = dir([folder prefix '*']); TPs4 = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPs4(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'Simple8-';
+d = dir([folder prefix '*']); TPs8 = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPs8(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
+
+prefix = 'Simple12-';
+d = dir([folder prefix '*']); TPs12 = zeros(length(d), length(fplocs));
+for i = 1:length(d)
+    filename = d(i).name;
+    load([folder filename]);
+    [TP FP NP NN] = evaluate_test_set(CLASSIFIER, NLEARNERS, filename);
+    TPs12(i,:) = interp1(FP/NN,TP/NP,fplocs);
+end
+save(['roc' num2str(NLEARNERS) '.mat']);
 
 plot(fplocs, mean(TPvj,1), 'k', 'LineWidth', 2);
 plot(fplocs, mean(TPa2,1), 'b');
@@ -95,8 +155,14 @@ plot(fplocs, mean(TPa12,1), 'y');
 plot(fplocs, mean(TP50,1), 'c', 'LineWidth', 2);
 plot(fplocs, mean(TP33,1), 'm', 'LineWidth', 2);
 plot(fplocs, mean(TPvja,1), 'b--', 'LineWidth', 2);
+plot(fplocs, mean(TPvjd,1), 'r--', 'LineWidth', 2);
+plot(fplocs, mean(TPvjspecial,1), 'g--', 'LineWidth', 2);
+plot(fplocs, mean(TPs2,1), 'b:');
+plot(fplocs, mean(TPs4,1), 'r:');
+plot(fplocs, mean(TPs8,1), 'g:');
+plot(fplocs, mean(TPs12,1), 'y:');
 
-legend('VJ', 'A2', 'A4', 'A8', 'A12', '50-50', '33', 'ANORM');
+legend('VJ', 'A2', 'A4', 'A8', 'A12', '50-50', '33', 'ANORM', 'ADNORM', 'VJ-SPECIAL', 'S2', 'S4', 'S8', 'S12');
 title(['Area Normalized vs Viola-Jones ' num2str(NLEARNERS) ' learners, ' num2str(NP) ' (+) / ' num2str(NN) ' (-) examples.']);
 
 

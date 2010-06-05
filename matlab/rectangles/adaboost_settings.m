@@ -11,8 +11,8 @@ CONNECTEDNESS = 0.7;        % probability rectangles will be connected
 EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
 
 RANK = 4;                   % rectangle complexity
-NORM = 'NONORM';            % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Karim1'; % shape generation method 'Viola-Jones', 'Karim1',
+NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'Viola-Jones'; % shape generation method 'Viola-Jones', 'Karim1',
                             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50'
 
 IMSIZE = [24 24];           % size of the classification window
