@@ -2,28 +2,28 @@
 
 disp(['...generating ' num2str(N_features) ' Rank [2 to ' num2str(RANK) '] ' RectMethod ' rectangles.']);
 f_rects = cell(N_features, 1); f_cols = cell(N_features,1); f_types = cell(N_features,1);
-switch RectMethod
-    case 'Viola-Jones'
+switch lower(RectMethod)
+    case 'viola-jones'
         inds = randsample(size(N,1), N_features);
         f_rects = N(inds);  % randomly selected rectangles
         f_cols = P(inds);   % associated polarities
         f_types(1:N_features) = deal({'VJ'});
-    case 'Karim1'
+    case 'karim1'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles(N_features, IMSIZE, RANK); 
         f_types(1:N_features) = deal({'Karim1'});
         clear tempr tempc;
-    case 'Simple'
+    case 'simple'
         [f_rects, f_cols] = generate_simple_rectangles(N_features, IMSIZE, RANK);
         f_types(1:N_features) = deal({'Simple'});
-    case 'Kevin'
+    case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
-    case 'VJSPECIAL'
+    case 'vjspecial'
         inds = randsample(size(N,1), N_features);
         f_rects = N(inds);  % randomly selected rectangles
         f_cols = P(inds);   % associated polarities
         f_types(1:N_features) = deal({'VJSPECIAL'});
-    case 'Mixed50'
+    case 'mixed50'
         N1 = round(N_features/2);  N2 = N_features - N1;
         inds = randsample(size(N,1), N1);
         f_types(1:N1) = deal({'VJ'});
@@ -32,7 +32,7 @@ switch RectMethod
         f_cols(1:N1) = P(inds);   % associated polarities
         [tempr, tempc, f_rects(N1+1:N_features), f_cols(N1+1:N_features)] = generate_rectangles(N2, IMSIZE, RANK);  
         clear tempr tempc N1 N2;
-    case 'Mixed33'
+    case 'mixed33'
         N1 = round(N_features/3); N2 = round(N_features/3);  N3 = N_features - N1 - N2;
         inds = randsample(size(N,1), N1);
         f_rects(1:N1) = N(inds);  % randomly selected rectangles
@@ -44,7 +44,8 @@ switch RectMethod
         [f_rects(N1+N2+1:N_features), f_cols(N1+N2+1:N_features)] = generate_simple_rectangles(N3, IMSIZE, RANK);
         clear tempr tempc N1 N2 N3;
     otherwise
-        error('invalid Rectangle Generation Method was specified in settings.');
+        disp('Invalid Rectangle Generation Method was specified in settings! Stopping.');
+        keyboard;
 end
 
 
