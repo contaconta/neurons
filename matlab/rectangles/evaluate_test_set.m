@@ -43,11 +43,7 @@ for i = 1:NTestSets
     L = [L; Li]; %#ok<AGROW>
     
     tic; disp(['   collecting classifier responses to ' filename]); pause(0.002);
-%     if ANORM
-%         VALSi = AdaBoostClassifyA_mex(rects, cols, areas, thresh, pol, alpha, Di);    
-%     else
-%         VALSi = AdaBoostClassify(rects, cols, thresh, pol, alpha, Di);
-%     end
+    
     VALSi = AdaBoostClassifyDynamicA_mex(rects, cols, areas, thresh, pol, alpha, Di);
 
     to=toc;  disp(['   Elapsed time ' num2str(to) ' seconds.']);
