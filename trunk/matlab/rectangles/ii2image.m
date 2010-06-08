@@ -6,7 +6,7 @@ function I = ii2image(ii, IMSIZE, type)
 
 if strcmp(type, 'outer')
     
-    I = zeros(IMSIZE);
+    I = zeros(IMSIZE, 'single');
 
     ii = reshape(ii, IMSIZE + [1 1 ]);
     
@@ -18,3 +18,5 @@ if strcmp(type, 'outer')
         end
     end
 end
+
+I = uint8(I);

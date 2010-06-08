@@ -15,6 +15,9 @@ switch lower(RectMethod)
     case 'simple'
         [f_rects, f_cols] = generate_simple_rectangles(N_features, IMSIZE, RANK);
         f_types(1:N_features) = deal({'Simple'});
+    case 'rank-fixed'
+        [f_rects, f_cols] = generate_simple_rectangles_rank_fixed(N_features, IMSIZE, RANK);
+        f_types(1:N_features) = deal({'rank-fixed'});
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});

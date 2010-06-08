@@ -1,6 +1,6 @@
 %% PARAMETERS
 
-EXP_NAME = 'Amix';          % name of experiment
+EXP_NAME = 'RANKFIX2';          % name of experiment
 
 N_features = 2000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
@@ -11,10 +11,10 @@ CONNECTEDNESS = 0.8;        % probability rectangles will be connected
 EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
 
 RANK = 2;                   % rectangle complexity
-NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Asymmetric-Mix'; % shape generation method 'Viola-Jones', 'Karim1',
+NORM = 'NONORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'rank-fixed'; % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
-                            %'Asymmetric-Mix'
+                            %'Asymmetric-Mix', 'rank-fixed'
 
 IMSIZE = [24 24];           % size of the classification window
 
