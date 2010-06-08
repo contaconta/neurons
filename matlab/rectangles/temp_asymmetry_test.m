@@ -10,7 +10,7 @@ F = haar_featureDynamicA(D, C.rects{ind}, C.cols{ind}, C.areas{ind});
 
 % + class is < threshold, therefore lowest theshold is most positive
 
-if C.pol(ind) == -1    % SHOULD BE +1 
+if C.pol(ind) == 1    % SHOULD BE +1 
     [Fsorted, inds] = sort(F, 'ascend');   %SHOULD BE ascend to see + class
 else
     [Fsorted, inds] = sort(F, 'descend');  % SHOULD BE descend to see + class
