@@ -8,7 +8,7 @@ if ~exist('D.mat', 'file')
     D = [Dp;Dn];  clear Dp Dn;  % D contains all integral image data (each row contains a vectorized image)
     L = [Lp;Ln];  clear Lp Ln;  % L contains all associated labels
     save('D.mat', '-v7.3', 'D', 'L');  disp(['...storing ' num2str(sum(L==1)) ' (class +1) / ' num2str(sum(L==-1)) ' (class -1) examples to D.mat.']);
-elseif strcmp(RectMethod, 'Lienhart')
+elseif strcmp(RectMethod, 'Lienhart') || strcmp(RectMethod, 'LienhartNO3')
     disp('...loading the Lienhart data from D45.mat');
     load D_45.mat;
 else
