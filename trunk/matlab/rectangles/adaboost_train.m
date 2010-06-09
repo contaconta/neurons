@@ -6,9 +6,22 @@ adaboost_settings;
 
 % pre-generate necessary feature pools
 if strcmp(RectMethod, 'Viola-Jones') || strcmp(RectMethod, 'Mixed50') || strcmp(RectMethod, 'Mixed33')|| strcmp(RectMethod, 'Asymmetric-Mix') ;
-    [R,C,N,P] = generate_viola_jones_features(IMSIZE); %[R,C,N,P] = generate_viola_jones_features(IMSIZE, 'shapes', {'horz2', 'vert2'});
+    [R,C,N,P] = generate_viola_jones_features(IMSIZE); 
 elseif strcmp(RectMethod, 'VJSPECIAL')
     [R,C,N,P] = generate_viola_jones_features_special(IMSIZE);  % Rank3 has equal areas
+elseif strcmp(RectMethod, 'Lienhart')
+    %[lien1, lien2, lien3, lien4,] = generate_lienhart_features(IMSIZE, NORM);
+    disp('...loading lienhart features from the disk');
+    if ~exist('lien1', 'var')
+        switch NORM
+            case 'NONORM'
+                load lienhart_featuresNONORM.mat;
+            case 'ANORM'
+                load lienhart_featuresANORM.mat;
+            case 'DNORM'
+                load lienhart_featuresDNORM.mat;
+        end
+    end
 end
 
 % load the database into D
@@ -68,11 +81,6 @@ for t = 1:T
     %% compute error. sanity check: best weak learner should beat 50%
     %E = p*F(:,ind) < p*thresh; E = single(E); E(E ==0) = -1; % prediction
     E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
-%     if ANORM
-%         E = AdaBoostClassifyA(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
-%     else
-%         E = AdaBoostClassify(f_rects(ind), f_cols(ind), thresh, p, 1, D);
-%     end
     correct_classification = (E == L); incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
     disp(['...local weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
