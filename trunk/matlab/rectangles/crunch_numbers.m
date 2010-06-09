@@ -53,7 +53,6 @@ for i = 1:length(available_prefix)
     TP = TP_list(inds,:);    
     plot(fplocs, mean(TP,1), 'Color', cmap(i,:));
     %plot(fplocs, mean(TP,1), 'b-');
-    disp('got here')
     lstr{i} = available_prefix{i};
 end
 set(gca, 'XScale', 'log')
