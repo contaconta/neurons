@@ -25,7 +25,7 @@ switch lower(RectMethod)
         f_cols = lien2(inds);   % associated polarities
         f_areas = lien3(inds);  % associated areas
         f_types = lien4(inds);  % associated types
-    case 'lienhartNO3'
+    case 'lienhartno3'
         % sample pregenerated lienhart features
         inds = randsample(size(lien1,1), N_features);
         f_rects = lien1(inds);  % randomly selected rectangles

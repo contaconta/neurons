@@ -22,7 +22,7 @@ elseif strcmp(RectMethod, 'Lienhart')
                 load lienhart_featuresDNORM.mat;
         end
     end
-elseif strcmp(RectMethod, 'lienhartNO3')
+elseif strcmp(RectMethod, 'LienhartNO3')
     %[lien1, lien2, lien3, lien4,] = generate_lienhartNO3_features(IMSIZE, NORM);
     disp('...loading lienhart features from the disk');
     if ~exist('lien1', 'var')
