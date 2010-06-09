@@ -1,8 +1,10 @@
 function crunch_numbers(N, folder)
-
+input_folder = folder;
 
 fplocs = [1.1e-6:.1e-6:1e-5,1.1e-5:.1e-5:1e-4,1.1e-4:.1e-4:1e-3,1.1e-3:.1e-3:1e-2, 1.1e-2:.1e-2:1e-1, 1.1e-1:.1e-1:1];
 matfilename = ['TP' num2str(N) '.mat'];
+
+
 
 % check to see if results already exist for this N
 if exist(matfilename, 'file')
@@ -13,37 +15,52 @@ else
     TP_list = zeros(0,length(fplocs));
 end
 
-% scan the files in the directory
-d = dir([folder '*.mat']);
-for i = 1:length(d)
-    filename = d(i).name;
-    if ~ismember(filename, file_list);   % if it is not a member we should process it
-        
-        % get the files prefix, and try to analyze it
-        prefix = extract_prefix(filename);
-        if ~isempty(prefix)
-            [TP_list, file_list, prefix_list] = analyze_file(folder, filename, N, fplocs, TP_list, prefix, prefix_list, file_list, matfilename);
-        else
-            disp(['skipped ' filename]);
+folder = input_folder;
+
+tn = input(['\nScan for new experiments to add to N=' num2str(N) ' test evaluation?(Y/n)\n'],'s');
+
+
+%% scan for new files appearing in the directory
+if strcmp(tn, 'Y')
+    d = dir([folder '*.mat']);
+    for i = 1:length(d)
+        filename = d(i).name;
+        if ~ismember(filename, file_list);   % if it is not a member we should process it
+
+            % get the files prefix, and try to analyze it
+            prefix = extract_prefix(filename);
+            if ~isempty(prefix)
+                [TP_list, file_list, prefix_list] = analyze_file(folder, filename, N, fplocs, TP_list, prefix, prefix_list, file_list, matfilename);
+            else
+                disp(['skipped ' filename]);
+            end
+
         end
-        
     end
 end
 
+% contains the names of available experiments
 available_prefix = unique(prefix_list);
 
 
-
-
 %% plottting!
-figure; hold on;
+figure; hold on; cmap = jet(length(available_prefix));
+lstr = {};
 for i = 1:length(available_prefix)
     [tf, members] = ismember(prefix_list, available_prefix(i));
     inds = find(members);
     files = file_list(inds);
     TP = TP_list(inds,:);    
-    plot(fplocs, mean(TP,1), 'b-');
+    plot(fplocs, mean(TP,1), 'Color', cmap(i,:));
+    %plot(fplocs, mean(TP,1), 'b-');
+    disp('got here')
+    lstr{i} = available_prefix{i};
 end
+set(gca, 'XScale', 'log')
+legend(lstr);
+xlabel('False Positive Rate (1,000,000 negative examples)')
+ylabel('True Positive Rate (4010 positive examples)')
+title(['ROC for T=' num2str(N) ' Weak Learners']);
 
 keyboard;
 
@@ -80,8 +97,8 @@ prefix = 'RANKFIX2-'; if strfind(filename, prefix); return; end;
 prefix = 'RANKFIX4-'; if strfind(filename, prefix); return; end;
 prefix = 'RANKFIX8-'; if strfind(filename, prefix); return; end;
 prefix = 'RANKFIX12-'; if strfind(filename, prefix); return; end;
-%prefix = 'LIENHART_NONORM-'; if strfind(filename, prefix); return; end;
-%prefix = 'LIENHART_ANORM-'; if strfind(filename, prefix); return; end;
+prefix = 'LIENHART_NONORM-'; if strfind(filename, prefix); return; end;
+prefix = 'LIENHART_ANORM-'; if strfind(filename, prefix); return; end;
 
 prefix = []; % if none are chose, return empty
 

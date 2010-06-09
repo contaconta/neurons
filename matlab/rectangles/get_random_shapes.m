@@ -25,6 +25,13 @@ switch lower(RectMethod)
         f_cols = lien2(inds);   % associated polarities
         f_areas = lien3(inds);  % associated areas
         f_types = lien4(inds);  % associated types
+    case 'lienhartNO3'
+        % sample pregenerated lienhart features
+        inds = randsample(size(lien1,1), N_features);
+        f_rects = lien1(inds);  % randomly selected rectangles
+        f_cols = lien2(inds);   % associated polarities
+        f_areas = lien3(inds);  % associated areas
+        f_types = lien4(inds);  % associated types
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});

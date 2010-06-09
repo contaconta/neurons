@@ -35,8 +35,12 @@ end
 L = [ ]; VALS = [ ];
 
 for i = 1:NTestSets
-    
-    filename = ['TEST' num2str(i) '.mat'];
+
+    if strcmp(CLASSIFIER.method, 'Lienhart')
+        filename = ['45_TEST' num2str(i) '.mat'];
+    else
+        filename = ['TEST' num2str(i) '.mat'];
+    end
     disp(['...loading ' filename]);
     load(filename);
     

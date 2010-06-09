@@ -22,6 +22,18 @@ elseif strcmp(RectMethod, 'Lienhart')
                 load lienhart_featuresDNORM.mat;
         end
     end
+elseif strcmp(RectMethod, 'lienhartNO3')
+    %[lien1, lien2, lien3, lien4,] = generate_lienhartNO3_features(IMSIZE, NORM);
+    disp('...loading lienhart features from the disk');
+    if ~exist('lien1', 'var')
+        switch NORM
+            case 'NONORM'
+                load lienhartNO3_featuresNONORM.mat;
+            otherwise 
+                disp('problems!!');
+                keyboard;
+        end
+    end
 end
 
 % load the database into D
