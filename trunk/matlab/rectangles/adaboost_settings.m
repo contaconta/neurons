@@ -12,9 +12,10 @@ EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluati
 
 RANK = 4;                   % rectangle complexity
 NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Lienhart';    % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'LienhartNO3';    % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
-                            %'Asymmetric-Mix', 'rank-fixed', 'Lienhart'
+                            %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
+                            %'LienhardNO3'
 
 IMSIZE = [24 24];           % size of the classification window
 

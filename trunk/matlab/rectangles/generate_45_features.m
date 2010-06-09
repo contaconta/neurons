@@ -1,4 +1,10 @@
-function [rects, cols, types] = generate_45_features(IMSIZE)
+function [rects, cols, types] = generate_45_features(IMSIZE, varargin)
+
+if nargin > 1
+    NO3 = varargin{1};
+else
+    NO3 = 0;
+end
 
 IISIZE = IMSIZE + [ 1 2];
 %VEC_SHIFT = (IMSIZE(1)+1)  * (IMSIZE(2)+1); % how far we must shift the linear indexes for the 45 degree integral image
@@ -130,7 +136,7 @@ for r = 2:IISIZE(1)-2
                             end
                             
                             % the vj-special at 45 along ca
-                            if mod(ca,4) == 0
+                            if mod(ca,4) == 0 && ~NO3
                                 C1 = C; D1 = D;
                                 A1 = C1 + (ca/4)*[1 1];
                                 B1 = A1 + cd*[-1 1];
@@ -153,7 +159,8 @@ for r = 2:IISIZE(1)-2
                                 cnt = cnt + 1;
                                 
                             end
-                            if mod(cd,4) == 0
+                            
+                            if mod(cd,4) == 0 && ~NO3
                                 C1 = C; A1 = A;
                                 D1 = C1 + (cd/4)*[-1 1];
                                 B1 = A1 + (cd/4)*[-1 1];
