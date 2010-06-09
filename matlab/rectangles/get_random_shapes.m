@@ -18,6 +18,13 @@ switch lower(RectMethod)
     case 'rank-fixed'
         [f_rects, f_cols] = generate_simple_rectangles_rank_fixed(N_features, IMSIZE, RANK);
         f_types(1:N_features) = deal({'rank-fixed'});
+    case 'lienhart'
+        % sample pregenerated lienhart features
+        inds = randsample(size(lien1,1), N_features);
+        f_rects = lien1(inds);  % randomly selected rectangles
+        f_cols = lien2(inds);   % associated polarities
+        f_areas = lien3(inds);  % associated areas
+        f_types = lien4(inds);  % associated types
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
@@ -64,20 +71,16 @@ end
 
 %% generate a list of [white black] areas. set to [0 0] if they are equal
 %% or normalization is turned off
-f_areas = compute_areas2(IMSIZE, NORM, f_rects, f_cols);
+if ~exist('f_areas', 'var')
+    f_areas = compute_areas2(IMSIZE, NORM, f_rects, f_cols);
+end
 
 
-% if ANORM; 
-%     f_areas = compute_areas2(IMSIZE, f_rects, f_cols); 
-% else
-%     f_areas = compute_nonorm_areas(f_rects);
-% end
 
-
-%     %% TEMPORARY VISUALIZATION
-%     figure(34334); disp('   VISUALIZING FEATURES');
-%     for i = 1:N_features
-%         rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
-%     end
-%     
-%     keyboard;
+    %% TEMPORARY VISUALIZATION
+    figure(34334); disp('   VISUALIZING FEATURES');
+    for i = 1:N_features
+        rect_vis_ind(zeros(IMSIZE), f_rects{i}, f_cols{i});
+    end
+    
+%    keyboard;
