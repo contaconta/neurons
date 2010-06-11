@@ -57,3 +57,10 @@ set(h, 'InvertHardcopy', 'off');
 saveas(h, filename, 'pdf');
 cmdcrop = ['pdfcrop ' filename ' ' filename  ];
 system(cmdcrop);
+
+% keyboard;
+% cmdrot = ['pdftk ' filename ' cat 1W output tempxxx.pdf'];
+% cmdmv = ['mv tempxxx.pdf ' filename];
+% system(cmdrot);
+% system(cmdmv);
+

@@ -107,7 +107,11 @@ axis([1 T 0 100]);
 % legend(legstr);
 legend(labels);
 
-xlabel('Boosting Stage t');
-ylabel('Classifier Rank (%)');
+xlabel('Boosting Stage (t)');
+ylabel('Percent of Weak Learners (%)');
+
+
+BACKGROUNDCOLOR = [1 1 1];
+set(gcf, 'Color', BACKGROUNDCOLOR);
 
 %keyboard;

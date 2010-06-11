@@ -35,6 +35,12 @@ switch lower(RectMethod)
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
+    case 'lisymm'
+        [f_rects, f_cols] = generate_li_rectangles(N_features, IMSIZE, 1);
+        f_types(1:N_features) = deal({'lisymm'});
+    case 'liasymm'
+        [f_rects, f_cols] = generate_li_rectangles(N_features, IMSIZE, 0);
+        f_types(1:N_features) = deal({'liasymm'});
     case 'asymmetric-mix'
         N1 = round( mixrate * N_features );
         N2 = N_features - N1;
