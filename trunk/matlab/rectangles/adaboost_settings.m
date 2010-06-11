@@ -1,6 +1,6 @@
 %% PARAMETERS
 
-EXP_NAME = 'LIENHART_ANORM';          % name of experiment
+EXP_NAME = 'TEST';          % name of experiment
 
 N_features = 2000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
@@ -11,11 +11,11 @@ CONNECTEDNESS = 0.8;        % probability rectangles will be connected
 EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
 
 RANK = 4;                   % rectangle complexity
-NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'LienhartNO3';    % shape generation method 'Viola-Jones', 'Karim1',
+NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'lisymm';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
-                            %'LienhardNO3'
+                            %'LienhardNO3', 'lisymm', 'liasymm'
 
 IMSIZE = [24 24];           % size of the classification window
 

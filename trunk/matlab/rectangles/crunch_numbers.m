@@ -98,6 +98,8 @@ prefix = 'RANKFIX8-'; if strfind(filename, prefix); return; end;
 prefix = 'RANKFIX12-'; if strfind(filename, prefix); return; end;
 prefix = 'LIENHART_NONORM-'; if strfind(filename, prefix); return; end;
 prefix = 'LIENHART_ANORM-'; if strfind(filename, prefix); return; end;
+prefix = 'lisymm-'; if strfind(filename, prefix); return; end;
+prefix = 'liasymm-'; if strfind(filename, prefix); return; end;
 
 prefix = []; % if none are chose, return empty
 
