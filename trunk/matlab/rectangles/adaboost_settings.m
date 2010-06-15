@@ -20,7 +20,8 @@ mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
 
 IMSIZE = [24 24];           % size of the classification window
 
-host = system('hostname');                  % compute hostname
+%host = hostname;                            % compute hostname
+[s,host] = system('hostname');              % computer hostname
 date = datestr(now, 'mmmddyyyy-HHMMSS');    % the current date & time
 
 %% folders containing the data sets
