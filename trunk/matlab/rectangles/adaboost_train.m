@@ -38,10 +38,6 @@ for t = 1:T
     
     % populate the feature responses for the sampled features
     disp('...optimizing sampled features.'); tic;
-    disp(['is Dsub == D? ' num2str(isequal(Dsub,D))]);
-    disp(['is Wsub == W? ' num2str(isequal(Wsub,W))]);
-    disp(['is sum(Wsub) == 1? ' num2str(sum(Wsub))]);
-    disp(['is Lsub == L? ' num2str(isequal(Lsub,L))]);
     [thresh p e ind] = optimize_features(Dsub,Wsub,Lsub,N_features,f_rects,f_cols,f_areas);
     to = toc; disp(['   Selected ' f_types{ind} ' feature ' num2str(ind) '. RANK = ' num2str(length(f_rects{ind})) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Time ' num2str(to) ' s.']);
 
@@ -57,13 +53,6 @@ for t = 1:T
     error(t) = sum(W .* incorrect_classification);
     disp(['...sampled weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
 
-    % temp sanity check
-    F = haar_featureDynamicA(D, f_rects{ind}, f_cols{ind}, f_areas{ind});
-    E = double(F < thresh); E(E == 0) = -1; E = E*p;
-    correct_classification = (E == L); incorrect_classification = (E ~= L);
-    error(t) = sum(W .* incorrect_classification);
-    disp(['...sanity check weighted error = ' num2str(error(t))]);
-    
     
     %% update the weights
     beta(t) = error(t) / (1 - error(t) );
