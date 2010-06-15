@@ -18,6 +18,7 @@ W(L == -1) = .5 * (W(L == -1) / sum(W(L == -1)));
 
 %% PERFORM BOOSTING
 
+[pathstr, name, ext, versn] = fileparts([results_folder EXP_NAME '-' host '-' date '.mat']);
 stats = zeros(T,7);     % keep statistics for each boosting round
 error = zeros(T,1);     % weighted classification error at each boosting step
 beta = zeros(T,1);      % computed beta value at each boosting step
@@ -48,7 +49,6 @@ for t = 1:T
     %% compute error. sanity check: best weak learner should beat 50%
     % +class < thresh < -class for pol=1. -class < thresh < +class for pol=-1
     E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
-    %E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, 1, p, D);
     correct_classification = (E == L); incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
     disp(['...sampled weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
@@ -76,29 +76,17 @@ for t = 1:T
     adaboost_eval;
    
     % store a temporary copy of boosted classifier
-    save([results_folder EXP_NAME '-' host '-' date '.mat'], 'CLASSIFIER', 'W', 'stats', 'error');
-    disp(['...saved as ' EXP_NAME '-' host '-' date '.mat']);
-    
-    % check for convergence (?)
+    save([pathstr '/' name ext], 'CLASSIFIER', 'W', 'stats', 'error'); disp(['...saved as ' name ext]);
 
 end
 
 
+%% evaluate the results on the test set!
+adaboost_self_evaluate([pathstr '/' name ext]);
 
 
 
-%     % populate the feature responses for the sampled features
-%     disp('...computing feature responses for the selected features.'); tic;
-%     F = zeros(size(Dsub,1), size(f_rects,1), 'single');
-%     for i = 1:N_features
-%         F(:,i) = haar_featureDynamicA(Dsub, f_rects{i}, f_cols{i}, f_areas{i});
-%     end; to = toc; disp(['   Elapsed time (MATLAB) ' num2str(to) ' seconds.']);
-%     %tic; Fmex = HaarFeature_mex(Dsub, f_rects(:)', f_cols(:)');
-%     %to=toc;  disp(['   Elapsed time (MEX) ' num2str(to) ' seconds.']);
-%     
-%     
-%     %% find the best weak learner
-%     disp('...selecting the best weak learner and its parameters.');
-%     tic; [thresh p e ind] = best_weak_learner(Wsub,Lsub,F);     % subset of training data
-%     %tic; [thresh p e ind] = best_weak_learner(W,L,F);          % entire set of training data
-    
+
+
+
+

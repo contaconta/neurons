@@ -3,34 +3,15 @@ function [TP FP NP NN] = evaluate_test_set(CLASSIFIER, T, filename)
 disp(' ');
 disp(['--------- evaluating ' filename '---------']);
 
-NTestSets = 11;  IMSIZE = [24 24];
+NTestSets = 11;  
 
 rects = CLASSIFIER.rects(1:T);
 thresh = CLASSIFIER.thresh(1:T);
 alpha = CLASSIFIER.alpha(1:T);
+cols  = CLASSIFIER.cols(1:T);
+pol = CLASSIFIER.pol(1:T);
+areas = CLASSIFIER.areas(1:T);
 
-% backwards-compatible naming
-if isfield(CLASSIFIER, 'pols')
-    cols = CLASSIFIER.pols(1:T);
-else
-    cols  = CLASSIFIER.cols(1:T);
-end
-if isfield(CLASSIFIER, 'tpol')
-    pol = CLASSIFIER.tpol(1:T);
-else
-    pol = CLASSIFIER.pol(1:T);
-end
-% if isfield(CLASSIFIER, 'areas');
-%     ANORM = 1;
-%     areas = CLASSIFIER.areas(1:T);
-% else
-%     ANORM = 0;
-% end
-if isfield(CLASSIFIER, 'areas');
-    areas = CLASSIFIER.areas(1:T);
-else
-    areas = compute_areas2(IMSIZE, rects, cols);
-end
 
 L = [ ]; VALS = [ ];
 
