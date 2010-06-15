@@ -1,4 +1,4 @@
-function [thresh, pol, min_err] = optimal_feature_params(F1, L, W)
+function [best_thresh, best_pol, best_err] = optimal_feature_params(F1, L, W)
 
 [Fs inds] = sort(F1);   % sorted feature responses
 Ls = L(inds);           % sorted class labels
@@ -26,21 +26,31 @@ for q=1:length(Fs)
         % accumulate error for positive polarity and negative polarity.
         % errors come in the form of false positives (fp) and false
         % negatives (fn)
+        % positive polarity => + class < thresh < - class
+        % negative polarity => - class < thresh < + class
         
         fp_error_pos_pol = TPOS - SPOS;                             % fp >= q
-        fp_error_neg_pol = SPOS + Ls(q)*Ws(q);                      % fp <= q
+        %fp_error_neg_pol = SPOS + Ls(q)*Ws(q);                      % fp <= q
         fn_error_pos_pol = SNEG;                                    % fn < q
-        fn_error_neg_pol = TNEG - SNEG - ~Ls(q)*Ws(q);              % fn > q
+        %fn_error_neg_pol = TNEG - SNEG - ~Ls(q)*Ws(q);              % fn > q
 
         % total error for +/- polarity
+        %last_err = pos_pol_error;
         pos_pol_error = fp_error_pos_pol + fn_error_pos_pol;
-        neg_pol_error = fp_error_neg_pol + fn_error_neg_pol;
+        %neg_pol_error = fp_error_neg_pol + fn_error_neg_pol;
+        
+%         % set the final error and polarity
+%         if pos_pol_error <= neg_pol_error
+%             err(q) = pos_pol_error; pol(q) = 1;
+%         else
+%             err(q) = neg_pol_error; pol(q) = -1;
+%         end
         
         % set the final error and polarity
-        if pos_pol_error <= neg_pol_error
+        if pos_pol_error <=.5
             err(q) = pos_pol_error; pol(q) = 1;
         else
-            err(q) = neg_pol_error; pol(q) = -1;
+            err(q) = 1-pos_pol_error; pol(q) = -1;
         end
     end
     
@@ -57,8 +67,15 @@ end
 %keyboard;
 
 %% find 'q' that gives the minimum error and correspoinding polarity
-[min_err, q_ind]  = min(err);
-thresh          = Fs(q_ind);
-pol             = pol(q_ind);
+[best_err, q_ind]  = min(err);
+best_thresh          = Fs(q_ind);
+best_pol             = pol(q_ind);
 
 
+
+% if (best_err > 1) || (best_err < 0)
+%     plot(err);
+%     hold on;
+%     plot(pol, 'r-');
+%     keyboard;
+% end

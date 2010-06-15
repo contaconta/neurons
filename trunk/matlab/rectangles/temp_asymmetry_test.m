@@ -1,6 +1,6 @@
-load results/Amix-cvlabpc47-Jun072010-051124.mat; ind = 5;
-%load results/Amix50-cvlabpc2-Jun072010-051841.mat;  ind = 4;
-%load results/Amix33-cvlabpc2-Jun072010-051736.mat; ind = 2;
+%load results/finished/Amix-cvlabpc47-Jun072010-051124.mat; ind = 5;
+%load results/finished/Amix50-cvlabpc2-Jun072010-051841.mat;  ind = 4;
+load results/Amix33-cvlabpc2-Jun072010-051736.mat; ind = 2;
 
 load D.mat
 
@@ -10,7 +10,7 @@ F = haar_featureDynamicA(D, C.rects{ind}, C.cols{ind}, C.areas{ind});
 
 % + class is < threshold, therefore lowest theshold is most positive
 
-if C.pol(ind) == 1    % SHOULD BE +1 
+if C.pol(ind) == -1    % SHOULD BE +1 
     [Fsorted, inds] = sort(F, 'ascend');   %SHOULD BE ascend to see + class
 else
     [Fsorted, inds] = sort(F, 'descend');  % SHOULD BE descend to see + class

@@ -21,7 +21,7 @@ double fval = 0;
 double* o_ind = NULL;
 int rect_dim;
 
-
+//AdaBoostClassifyDynamicA_mex(f_rects, f_cols, f_areas,thresh, alpha, pol, DATA);
 
 void mexFunction(int nb_outputs,  mxArray* outputs[], 
 				int nb_inputs, const mxArray* inputs[] ) 
@@ -123,7 +123,7 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
             
             //mexPrintf("response = %3.0f  thresh = %3.0f  pol = %3.0f\n", response, thresh[k], pol[k]);
             int weak_classification = 0;
-            if (pol[k] * response < pol[k] * thresh[k]){
+            if (response < thresh[k]){
                 weak_classification = 1;
             }
             else{
@@ -132,7 +132,7 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
             //mexPrintf("classification = %d\n", weak_classification);
                     
             // compute the strong response
-            strong_response = strong_response + alpha[k]*weak_classification;
+            strong_response = strong_response + pol[k]*alpha[k]*weak_classification;
             
         }
         //int D_r = mxGetDimensions(inputs[6])[0];

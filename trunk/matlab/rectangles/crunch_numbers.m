@@ -101,6 +101,7 @@ prefix = 'LIENHART_ANORM-'; if strfind(filename, prefix); return; end;
 %prefix = 'LIENHARTNO3_NONORM'; if strfind(filename, prefix); return; end;
 prefix = 'lisymm-'; if strfind(filename, prefix); return; end;
 prefix = 'liasymm-'; if strfind(filename, prefix); return; end;
+prefix = 'ramirez-'; if strfind(filename, prefix); return; end;
 
 prefix = []; % if none are chose, return empty
 
