@@ -100,52 +100,6 @@ end
 
 
 
-
-
-
-% function [valid, rects] = valid_rectangles(Q, wh, SYMM, RANK)
-% IISIZE = size(Q)+[1 1];
-% valid = 0; count = 0; BIG = 700; rects = zeros(BIG, 4);
-% 
-% 
-% 
-% if SYMM
-% 
-%     if rand(1) <= .5
-%         h = wh(2)-1;
-%         w = wh(1)-1;
-%     else
-%         h = wh(1)-1;
-%         w = wh(2)-1;
-%     end
-% else
-%     WMAX = min(floor(IISIZE(2)/RANK));
-%     HMAX = min(floor(IISIZE(1)/RANK));
-%     w = randsample(1:WMAX,1,true,1./(1:WMAX));
-%     h = randsample(1:HMAX,1,true,1./(1:HMAX));
-%     %w = randsample(1:WMAX,1);
-%     %h = randsample(1:HMAX,1);
-% end
-% 
-% for r1 = 2:IISIZE(1)-h
-%     for c1 = 2:IISIZE(2)-w
-%         r2 = r1 + h;
-%         c2 = c1 + w;
-% 
-%         if sum(Q(r1-1:r2-1,c1-1:c2-1)) == 0
-%             count = count + 1;
-%             R = [r1-1 r1-1 r2 r2];
-%             C = [c1-1 c2 c1-1 c2];
-%             rects(count,:) = sub2ind(IISIZE, R, C);
-%             valid = 1;
-%         end
-%     end
-% end
-% 
-% rects = rects(1:count,:);
-
-
-
 function [valid, rect] = random_rectangle(Q, wh, SYMM, RANK)
 IISIZE = size(Q)+[1 1]; rect = [];
 valid = 0; 
@@ -188,4 +142,45 @@ end
     
   
 
+
+% function [valid, rects] = valid_rectangles(Q, wh, SYMM, RANK)
+% IISIZE = size(Q)+[1 1];
+% valid = 0; count = 0; BIG = 700; rects = zeros(BIG, 4);
+% 
+% 
+% 
+% if SYMM
+% 
+%     if rand(1) <= .5
+%         h = wh(2)-1;
+%         w = wh(1)-1;
+%     else
+%         h = wh(1)-1;
+%         w = wh(2)-1;
+%     end
+% else
+%     WMAX = min(floor(IISIZE(2)/RANK));
+%     HMAX = min(floor(IISIZE(1)/RANK));
+%     w = randsample(1:WMAX,1,true,1./(1:WMAX));
+%     h = randsample(1:HMAX,1,true,1./(1:HMAX));
+%     %w = randsample(1:WMAX,1);
+%     %h = randsample(1:HMAX,1);
+% end
+% 
+% for r1 = 2:IISIZE(1)-h
+%     for c1 = 2:IISIZE(2)-w
+%         r2 = r1 + h;
+%         c2 = c1 + w;
+% 
+%         if sum(Q(r1-1:r2-1,c1-1:c2-1)) == 0
+%             count = count + 1;
+%             R = [r1-1 r1-1 r2 r2];
+%             C = [c1-1 c2 c1-1 c2];
+%             rects(count,:) = sub2ind(IISIZE, R, C);
+%             valid = 1;
+%         end
+%     end
+% end
+% 
+% rects = rects(1:count,:);
 

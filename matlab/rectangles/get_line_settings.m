@@ -59,4 +59,10 @@ switch prefix
         
     case 'LIENHART_ANORM-'
         
+    case 'lisymm-'
+        
+    case 'liasymm-'
+        
+    case 'ramirez'
+        
 end

@@ -4,9 +4,9 @@ disp(['...generating ' num2str(N_features) ' Rank [2 to ' num2str(RANK) '] ' Rec
 f_rects = cell(N_features, 1); f_cols = cell(N_features,1); f_types = cell(N_features,1);
 switch lower(RectMethod)
     case 'viola-jones'
-        inds = randsample(size(N,1), N_features);
-        f_rects = N(inds);  % randomly selected rectangles
-        f_cols = P(inds);   % associated polarities
+        inds = randsample(size(pre_rects,1), N_features);
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
         f_types(1:N_features) = deal({'VJ'});
     case 'karim1'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles(N_features, IMSIZE, RANK); 
@@ -21,17 +21,17 @@ switch lower(RectMethod)
     case 'lienhart'
         % sample pregenerated lienhart features
         inds = randsample(size(lien1,1), N_features);
-        f_rects = lien1(inds);  % randomly selected rectangles
-        f_cols = lien2(inds);   % associated polarities
-        f_areas = lien3(inds);  % associated areas
-        f_types = lien4(inds);  % associated types
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
+        f_areas = pre_areas(inds);  % associated areas
+        f_types = pre_types(inds);  % associated types
     case 'lienhartno3'
         % sample pregenerated lienhart features
         inds = randsample(size(lien1,1), N_features);
-        f_rects = lien1(inds);  % randomly selected rectangles
-        f_cols = lien2(inds);   % associated polarities
-        f_areas = lien3(inds);  % associated areas
-        f_types = lien4(inds);  % associated types
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
+        f_areas = pre_areas(inds);  % associated areas
+        f_types = pre_types(inds);  % associated types
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
@@ -41,35 +41,38 @@ switch lower(RectMethod)
     case 'liasymm'
         [f_rects, f_cols] = generate_li_rectangles(N_features, IMSIZE, 0);
         f_types(1:N_features) = deal({'liasymm'});
+    case 'ramirez'
+        [f_rects, f_cols] = generate_ramirez_rectangles(N_features, IMSIZE);
+        f_types(1:N_features) = deal({'ramirez'});
     case 'asymmetric-mix'
         N1 = round( mixrate * N_features );
         N2 = N_features - N1;
         [f_rects(1:N1), f_cols(1:N1)] = generate_asymmetric_rectangles(N1, [24 24], 4, CONNECTEDNESS);
         f_types(1:N1) = deal({'Asymmetric'});
-        inds = randsample(size(N,1), N2);
-        f_rects(N1+1:N_features) = N(inds);  % randomly selected rectangles
-        f_cols(N1+1:N_features) = P(inds);   % associated polarities
+        inds = randsample(size(pre_rects,1), N2);
+        f_rects(N1+1:N_features) = pre_rects(inds);  % randomly selected rectangles
+        f_cols(N1+1:N_features) = pre_cols(inds);   % associated polarities
         f_types(N1+1:N_features) = deal({'VJ'});
         CLASSIFIER.mixrate = mixrate;
     case 'vjspecial'
-        inds = randsample(size(N,1), N_features);
-        f_rects = N(inds);  % randomly selected rectangles
-        f_cols = P(inds);   % associated polarities
+        inds = randsample(size(pre_rects,1), N_features);
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
         f_types(1:N_features) = deal({'VJSPECIAL'});
     case 'mixed50'
         N1 = round(N_features/2);  N2 = N_features - N1;
-        inds = randsample(size(N,1), N1);
+        inds = randsample(size(pre_rects,1), N1);
         f_types(1:N1) = deal({'VJ'});
         f_types(N1+1:N_features) = deal({'Karim1'});
-        f_rects(1:N1) = N(inds);  % randomly selected rectangles
-        f_cols(1:N1) = P(inds);   % associated polarities
+        f_rects(1:N1) = pre_rects(inds);  % randomly selected rectangles
+        f_cols(1:N1) = pre_cols(inds);   % associated polarities
         [tempr, tempc, f_rects(N1+1:N_features), f_cols(N1+1:N_features)] = generate_rectangles(N2, IMSIZE, RANK);  
         clear tempr tempc N1 N2;
     case 'mixed33'
         N1 = round(N_features/3); N2 = round(N_features/3);  N3 = N_features - N1 - N2;
-        inds = randsample(size(N,1), N1);
-        f_rects(1:N1) = N(inds);  % randomly selected rectangles
-        f_cols(1:N1) = P(inds);   % associated polarities
+        inds = randsample(size(pre_rects,1), N1);
+        f_rects(1:N1) = pre_rects(inds);  % randomly selected rectangles
+        f_cols(1:N1) = pre_cols(inds);   % associated polarities
         f_types(1:N1) = deal({'VJ'});
         f_types(N1+1:N2) = deal({'Karim1'});
         f_types(N1+N2+1:N_features) = deal({'Simple'});
