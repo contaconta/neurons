@@ -112,7 +112,6 @@ load([folder filename]);
 if length(CLASSIFIER.rects) >= N    % we should only process if it has sufficient learners
     [TP FP NP NN] = evaluate_test_set(CLASSIFIER, N, filename);
     TP_list(size(TP_list,1)+1,:) = interp1(FP/NN,TP/NP,fplocs); %#ok<AGROW>
-    %TP_list(size(TP_list,1)+1,:) = rand(1,size(TP_list,2)); 
     file_list{size(TP_list,1)} = filename;  %#ok<AGROW>
     prefix_list{size(TP_list,1)} = prefix;
     
