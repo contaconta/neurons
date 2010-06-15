@@ -20,9 +20,9 @@ mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
 
 IMSIZE = [24 24];           % size of the classification window
 
-%host = hostname;                            % compute hostname
-[s,host] = system('hostname');              % computer hostname
-date = datestr(now, 'mmmddyyyy-HHMMSS');    % the current date & time
+%host = hostname;                                        % compute hostname
+[s,host] = system('hostname'); host = strtrim(host);  	% computer hostname
+date = datestr(now, 'mmmddyyyy-HHMMSS');                % the current date & time
 
 %% folders containing the data sets
 DATA_FOLDER = '/osshare/Work/Data/face_databases/EPFL-CVLAB_faceDB/';
