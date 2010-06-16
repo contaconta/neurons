@@ -25,14 +25,14 @@ switch lower(RectMethod)
         f_types(1:N_features) = deal({'rank-fixed'});
     case 'lienhart'
         % sample pregenerated lienhart features
-        inds = randsample(size(lien1,1), N_features);
+        inds = randsample(size(pre_rects,1), N_features);
         f_rects = pre_rects(inds);  % randomly selected rectangles
         f_cols = pre_cols(inds);   % associated polarities
         f_areas = pre_areas(inds);  % associated areas
         f_types = pre_types(inds);  % associated types
     case 'lienhartno3'
         % sample pregenerated lienhart features
-        inds = randsample(size(lien1,1), N_features);
+        inds = randsample(size(pre_rects,1), N_features);
         f_rects = pre_rects(inds);  % randomly selected rectangles
         f_cols = pre_cols(inds);   % associated polarities
         f_areas = pre_areas(inds);  % associated areas
