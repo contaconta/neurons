@@ -17,10 +17,10 @@ elseif strcmp(RectMethod, 'Lienhart')
             case 'DNORM'
                 load lienhart_featuresDNORM.mat;
         end
-        pre_rects = lien(1); clear lien1;
-        pre_cols = lien(2); clear lien2;
-        pre_areas = lien(3); clear lien3;
-        pre_types = lien(4); clear lien4;
+        pre_rects = lien1(1); clear lien1;
+        pre_cols = lien2(1); clear lien2;
+        pre_areas = lien3(1); clear lien3;
+        pre_types = lien4(1); clear lien4;
     end
 elseif strcmp(RectMethod, 'LienhartNO3')
     %[lien1, lien2, lien3, lien4,] = generate_lienhartNO3_features(IMSIZE, NORM);
@@ -34,10 +34,10 @@ elseif strcmp(RectMethod, 'LienhartNO3')
                 keyboard;
         end
     end
-    pre_rects = lien(1); clear lien1; 
-    pre_cols = lien(2); clear lien2;
-    pre_areas = lien(3); clear lien3;
-    pre_types = lien(4); clear lien4;
+    pre_rects = lien1(1); clear lien1; 
+    pre_cols = lien2(1); clear lien2;
+    pre_areas = lien3(1); clear lien3;
+    pre_types = lien4(1); clear lien4;
 end
 
 clear Rc C;
