@@ -8,7 +8,6 @@ for f = 1:length(rects)
     rectsf = rects{f};
     colsf = cols{f};
     
-    %fA = zeros(1,length(rectsf));
     W = 0;
     B = 0;
     
@@ -24,7 +23,7 @@ for f = 1:length(rects)
         else
             B = B + (r(4)-r(1))  * (c(4)-c(1));
         end
-        %fA(j) = (r(4)-r(1))  * (c(4)-c(1));
+
     end
     
     
