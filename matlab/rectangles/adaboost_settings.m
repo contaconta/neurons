@@ -12,11 +12,12 @@ EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluati
 SE = 'francois';               % example sampling method: 'kevin' or 'francois'
 
 RANK = 4;                   % rectangle complexity
-NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Viola-Jones';      % shape generation method 'Viola-Jones', 'Karim1',
+NORM = 'NONORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'Papageorgiou';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
-                            %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez'
+                            %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
+                            %'Papageorgiou'
 
 IMSIZE = [24 24];           % size of the classification window
 
