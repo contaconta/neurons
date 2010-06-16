@@ -8,6 +8,11 @@ switch lower(RectMethod)
         f_rects = pre_rects(inds);  % randomly selected rectangles
         f_cols = pre_cols(inds);   % associated polarities
         f_types(1:N_features) = deal({'VJ'});
+    case 'papageorgiou'
+        inds = randsample(size(pre_rects,1), N_features);
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
+        f_types(1:N_features) = deal({'PG'});
     case 'karim1'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles(N_features, IMSIZE, RANK); 
         f_types(1:N_features) = deal({'Karim1'});
