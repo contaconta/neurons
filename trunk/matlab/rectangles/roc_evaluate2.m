@@ -15,7 +15,7 @@ FP = sum( (LSORT==-1).* (VSORT>=current_thresh)  );
 last_thresh = VSORT(1);
 
 %disp('...looping to compute the ROC'); 
-tic;
+%tic;
 
 c = 1;
 
@@ -32,7 +32,8 @@ for i = 2:length(VSORT)
         last_thresh = current_thresh;
     end
 end
-to=toc;  %disp(['   Elapsed time ' num2str(to) ' seconds.']);
+%to=toc;  
+%disp(['   Elapsed time ' num2str(to) ' seconds.']);
 
 
 %keyboard;

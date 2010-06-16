@@ -1,5 +1,6 @@
 %% LOAD PARAMETERS
 adaboost_settings;
+tstart = tic;
 
 
 %% PRE-BOOSTING
@@ -32,6 +33,7 @@ for t = 1:T
     disp('-------------------------------------------------------------------');
     
     % randomly sample shape features
+   	clear f_areas f_rects f_cols f_types;
     get_random_shapes;
 
     % sample a subset of the whole training set to find optimal params
@@ -72,6 +74,14 @@ for t = 1:T
     CLASSIFIER.method = RectMethod;
  
     
+    
+    % TEMP AREA SANITY CHECK CODE
+    %[r c] = ind2sub([25 25], CLASSIFIER.rects{t}{1});
+    a = compute_areas2([24 24], NORM, CLASSIFIER.rects(t), CLASSIFIER.cols(t));
+    disp([  '   CLASSIFIER.areas=[' num2str(CLASSIFIER.areas{t})  '] a=[' num2str(a{1}) ']']);
+    
+    
+    
     % evaluate strong classifier performance, if desired (expensive)
     adaboost_eval;
    
@@ -84,9 +94,13 @@ end
 %% evaluate the results on the test set!
 adaboost_self_evaluate([pathstr '/' name ext]);
 
-
-
-
+tstop = toc(tstart);
+cmd = ['mv ' pathstr '/' name ext ' ' pathstr '/finished/' name ext];
+system(cmd); 
+disp('==================================================================');
+disp(['  ' name ' finished processing in ' num2str(round(tstop)) ' seconds. Moved to /finished/']);
+disp('==================================================================');
+%send_gmail({'kevin.smith@epfl.ch'}, ['finished ' name], [host ' has completed ' name ' in ' num2str(round(tstop)) ' seconds.']);
 
 
 

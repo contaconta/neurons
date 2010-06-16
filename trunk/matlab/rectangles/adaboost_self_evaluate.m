@@ -63,4 +63,3 @@ fprintf('\n');
 save([pathstr '/' name ext], 'CLASSIFIER', 'W', 'error', 'TPR_list', 'fplocs', 'Tlist');
 disp(['... saved results in ' pathstr '/' name ext ]);
 
-keyboard;
