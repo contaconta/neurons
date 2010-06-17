@@ -1,9 +1,9 @@
 %% LOAD PARAMETERS
 adaboost_settings;
-tstart = tic;
 
 
 %% PRE-BOOSTING
+tstart = tic;
 
 % pre-generate necessary feature pools (VJ, Lienhart, ...)
 adaboost_pregenerate_features;
