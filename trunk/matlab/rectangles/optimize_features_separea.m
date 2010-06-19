@@ -47,7 +47,7 @@ best_w = w{best_ind};
 
 
 to = toc;
-disp(['FUCKING OPTIMAL WEIGHTS ARE [' num2str(best_w) '] time = ' num2str(to) ]);
+disp(['   optimal weights = [' num2str(best_w) '] time = ' num2str(to) ]);
 
 
 

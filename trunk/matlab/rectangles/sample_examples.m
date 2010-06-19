@@ -28,7 +28,7 @@ switch SE
 %         Wsub = [W(pos_inds); W(neg_inds) * ((1-sum(W(pos_inds)))/sum(W(neg_inds)))];
         inds = [pos_inds; neg_inds];
         Lsub = L(inds);
-        disp(['   ' num2str(length(pos_inds)) ' + and ' num2str(length(neg_inds)) ' - examples sampled.']);
+        disp(['   ' num2str(length(pos_inds)) '+ and ' num2str(length(neg_inds)) '- examples sampled.']);
 
 end
 
