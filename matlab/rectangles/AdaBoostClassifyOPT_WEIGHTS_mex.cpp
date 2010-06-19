@@ -1,11 +1,12 @@
 #include <math.h>
 #include <algorithm>
 #include "mex.h"
+#include <iostream>
 
 
 
 mxArray* rects = NULL;
-mxArray* cols = NULL;
+mxArray* weights = NULL;
 mxArray* areas = NULL;
 double* thresh = NULL;
 double* pol = NULL;
@@ -26,7 +27,8 @@ int rect_dim;
 void mexFunction(int nb_outputs,  mxArray* outputs[], 
 				int nb_inputs, const mxArray* inputs[] ) 
 {
-    
+    //std::cout << "hi0" << std::flush;
+    //mexPrintf("hi0");
     //=====================================================================
     if(nb_inputs != 7)
         mexErrMsgTxt("7 input argument required, usage : blablablabalabla");
@@ -35,7 +37,7 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
     // read the cell inputs
     //=====================================================================
     rects = (mxArray*) inputs[0];
-    cols  = (mxArray*) inputs[1];
+    weights  = (mxArray*) inputs[1];
     areas = (mxArray*) inputs[2];
     
     //=====================================================================
@@ -47,16 +49,17 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
     D       = (float*) mxGetPr(inputs[6]);
     //=====================================================================
     
+	//std::cout << "hi1" << std::flush;
     // get the # of learners
     nb_learners = mxGetDimensions(inputs[0])[1];
     nb_examples = mxGetDimensions(inputs[6])[0];
     //mexPrintf("number of learners = %d\n", nb_learners);
     //mexPrintf("number of examples = %d\n", nb_examples);
-    
+    //std::cout << "hi1.1" << std::flush;
     // allocate the output
     outputs[0]=mxCreateDoubleMatrix(nb_examples, 1, mxREAL);
     o_ind = mxGetPr(outputs[0]);
-    
+    //std::cout << "hi1.2" << std::flush;
     // loop through each example, compute the classifier response
     for(int i = 0; i < nb_examples; i++){
     //for(int i = 0; i < 4; i++){
@@ -66,61 +69,54 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
         // loop through the weak learners
         for(int k = 0; k < nb_learners; k++){
         //for(int k = 0; k < 4; k++){
+
             mxArray* RectCell = mxGetCell(rects, k);
-            mxArray* ColsA    = mxGetCell(cols, k);
+            mxArray* ColsA    = mxGetCell(weights, k);
             mxArray* AreaArray= mxGetCell(areas,k);
-            
+            //std::cout << "hi1.3" << std::flush;
             double response = 0;
             double f1 = 0;
             double f0 = 0;
             
             pc=(double *)mxGetPr(ColsA);
+//std::cout << "hi1.3.1" << std::flush;
             pa=(double *)mxGetPr(AreaArray);
+//std::cout << "hi1.3.2" << std::flush;
             int nb_rects = mxGetDimensions(RectCell)[1];
             //mexPrintf("%d\n", nb_rects);
-            
-            double area1 = pa[0];
-            double area0 = pa[1];
+            //std::cout << "hi1.4" << std::flush;
+            //double area1 = pa[0];
+            //double area0 = pa[1];
             
             for(int j = 0; j < nb_rects; j++){
                 mxArray* RectA = mxGetCell(RectCell,j);
-
+			//std::cout << "hi1.5" << std::flush;
                 //int rect_dim = mxGetDimensions(RectA)[1];
                 pr=(double *)mxGetPr(RectA);
 
                 // print the data we want to access
                 //mexPrintf("[%3.0f %3.0f %3.0f %3.0f]", D[nb_examples * ((int)pr[0]-1) + i], D[nb_examples*((int)pr[1]-1) + i],D[nb_examples*((int)pr[2]-1)+i], D[nb_examples*((int)pr[3]-1)+i]);
                 //mexPrintf("[%d %d %d %d]", nb_examples*i + (int)pr[0], nb_examples*i + (int)pr[1],nb_examples*i + (int)pr[2], nb_examples*i + (int)pr[3]);
+                //std::cout << "hi2" << std::flush;
                 
                 fval = pc[j]*D[nb_examples * ((int)pr[0]-1) + i] - pc[j]*D[nb_examples*((int)pr[1]-1) + i]  - pc[j]*D[nb_examples*((int)pr[2]-1)+i] + pc[j]*D[nb_examples*((int)pr[3]-1)+i];
+               //std::cout << "hi3" << std::flush;
+                fval = fval / pa[j];
+                //std::cout << "hi4" << std::flush;
+                
                 //mexPrintf("col %3.0f => %3.0f  ", pc[j], fval);
                 
-                if (pc[j] == 1){
-                    f1 = f1 + D[nb_examples * ((int)pr[0]-1) + i] - D[nb_examples*((int)pr[1]-1) + i]  - D[nb_examples*((int)pr[2]-1)+i] + D[nb_examples*((int)pr[3]-1)+i];
-                    //area1 = area1 + pa[j];
-                }
-                else{
-                    f0 = f0 + D[nb_examples * ((int)pr[0]-1) + i] - D[nb_examples*((int)pr[1]-1) + i]  - D[nb_examples*((int)pr[2]-1)+i] + D[nb_examples*((int)pr[3]-1)+i];
-                    //area0 = area0 + pa[j];
-                }
+                
                 //mexPrintf("[%3.0f %3.0f %3.0f %3.0f] ", pr[0],pr[1],pr[2],pr[3]);        
                 //mexPrintf("[%3.0f] ", pc[j]);
 
                 // col * [1 + 4 - 2 -3]
-                //response = response + fval;
+                response = response + fval;
+                //std::cout << "hi5" << std::flush;
             }
             
             // get the areas
-            
-            // normalize
-            if(area1 != 0)
-                f1 = f1/area1;
-            if(area0 != 0)
-                f0 = f0/area0;
-            
-            response = f1 - f0;
-            //response = (f1 - f0) * (f1 + f0 + pow(10,-16));
-            //mexPrintf("%3.4f ", response);
+
             
             //mexPrintf("response = %3.0f  thresh = %3.0f  pol = %3.0f\n", response, thresh[k], pol[k]);
             int weak_classification = 0;

@@ -2,18 +2,19 @@
 
 EXP_NAME = 'TEST';          % name of experiment 
 
-N_features = 2000;          % # of features to consider each boosting round
+N_features = 1000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
 N_total = 200000;           % # of total training examples
-N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
+N_SAMPLES = 2500;          % # of negative examples to use when choosing optimal learner parameters
 T = 2000;                   % maximum rounds of boosting
 CONNECTEDNESS = 0.8;        % probability rectangles will be connected
-EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
+EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation
+OPT_WEIGHTS = 1;            % 1 = search for "optimal" weights, 0 = no search w = 1
 SE = 'francois';               % example sampling method: 'kevin' or 'francois'
 
-RANK = 4;                   % rectangle complexity
-NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Lienhart';      % shape generation method 'Viola-Jones', 'Karim1',
+RANK = 2;                   % rectangle complexity
+NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'Karim1';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
@@ -37,6 +38,9 @@ if ~exist(results_folder, 'dir'); mkdir(results_folder); end;
 
 % compile any missing files
 compile_mex_files;
+
+% if necessary, generate brute_lists
+generate_brute_lists;
 
 % fix random number generator (disable for real experiments)
 %load randomState.mat;
