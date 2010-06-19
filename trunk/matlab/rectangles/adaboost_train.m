@@ -33,7 +33,7 @@ for t = 1:T
     disp('-------------------------------------------------------------------');
     
     % randomly sample shape features
-   	clear f_areas f_rects f_cols f_types;
+   	clear f_areas f_rects f_cols f_types f_separea;
     get_random_shapes;
 
     % sample a subset of the whole training set to find optimal params
@@ -41,7 +41,11 @@ for t = 1:T
     
     % populate the feature responses for the sampled features
     disp('...optimizing sampled features.'); tic;
-    [thresh p e ind] = optimize_features(Dsub,Wsub,Lsub,N_features,f_rects,f_cols,f_areas);
+    if OPT_WEIGHTS
+        [thresh p e ind weights] = optimize_features_separea(Dsub, Wsub, Lsub, N_features, f_rects, brute_lists, f_separeas);
+    else
+        [thresh p e ind] = optimize_features(Dsub,Wsub,Lsub,N_features,f_rects,f_cols,f_areas);
+    end
     to = toc; disp(['   Selected ' f_types{ind} ' feature ' num2str(ind) '. RANK = ' num2str(length(f_rects{ind})) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Time ' num2str(to) ' s.']);
 
     % visualize the selected feature
@@ -50,7 +54,15 @@ for t = 1:T
     
     %% compute error. sanity check: best weak learner should beat 50%
     % +class < thresh < -class for pol=1. -class < thresh < +class for pol=-1
-    E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
+    
+    %F = haar_featureDynamicA(D, f_rects(ind), f_cols(ind), f_areas(ind));
+    %E = p * (F < thresh);
+    %keyboard;
+    if OPT_WEIGHTS
+        E = AdaBoostClassifyOPT_WEIGHTS_mex(f_rects(ind), {weights}, f_separeas(ind), thresh, p, 1, D);
+    else        
+        E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
+    end
     correct_classification = (E == L); incorrect_classification = (E ~= L);
     error(t) = sum(W .* incorrect_classification);
     disp(['...sampled weighted error = ' num2str(e) ' global weighted error = ' num2str(error(t))]);
@@ -72,13 +84,17 @@ for t = 1:T
     CLASSIFIER.types{t} = f_types{ind};
     CLASSIFIER.norm = NORM;
     CLASSIFIER.method = RectMethod;
- 
+    if OPT_WEIGHTS
+        CLASSIFIER.separeas{t} = f_separeas{ind};
+        CLASSIFIER.weights{t} = weights;
+    end
     
+    %keyboard;
     
     % TEMP AREA SANITY CHECK CODE
     %[r c] = ind2sub([25 25], CLASSIFIER.rects{t}{1});
-    a = compute_areas2([24 24], NORM, CLASSIFIER.rects(t), CLASSIFIER.cols(t));
-    disp([  '   CLASSIFIER.areas=[' num2str(CLASSIFIER.areas{t})  '] a=[' num2str(a{1}) ']']);
+    %a = compute_areas2([24 24], NORM, CLASSIFIER.rects(t), CLASSIFIER.cols(t));
+    %disp([  '   CLASSIFIER.areas=[' num2str(CLASSIFIER.areas{t})  '] a=[' num2str(a{1}) ']']);
     
     
     

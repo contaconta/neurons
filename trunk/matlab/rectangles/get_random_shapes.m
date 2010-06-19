@@ -96,6 +96,10 @@ if ~exist('f_areas', 'var')
     f_areas = compute_areas2(IMSIZE, NORM, f_rects, f_cols);
 end
 
+if OPT_WEIGHTS
+    f_separeas = compute_separeas2(IMSIZE, f_rects);
+end
+
 
 
 %     %% TEMPORARY VISUALIZATION

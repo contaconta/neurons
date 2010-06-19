@@ -18,10 +18,12 @@ for f = 1:length(rects)
     
         [r c] = ind2sub(IMSIZE1, rect);
         
+        thisarea = (r(4)-r(1))  * (c(4)-c(1));
+        
         if col == 1
-            W = W + (r(4)-r(1))  * (c(4)-c(1));
+            W = W + thisarea;
         else
-            B = B + (r(4)-r(1))  * (c(4)-c(1));
+            B = B + thisarea;
         end
 
     end
