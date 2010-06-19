@@ -14,7 +14,7 @@ SE = 'francois';               % example sampling method: 'kevin' or 'francois'
 
 RANK = 2;                   % rectangle complexity
 NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Karim1';      % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'vj2';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
