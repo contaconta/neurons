@@ -5,6 +5,8 @@ elseif strcmp(RectMethod, 'VJSPECIAL')
     [R,C,pre_rects,pre_cols] = generate_viola_jones_features_special(IMSIZE);  % Rank3 has equal areas
 elseif strcmp(RectMethod, 'vj24')
     [R,C,pre_rects,pre_cols] = generate_viola_jones_features(IMSIZE, 'shapes', {'vert2', 'horz2', 'checker'});
+elseif strcmp(RectMethod, 'vj2')
+    [R,C,pre_rects,pre_cols] = generate_viola_jones_features(IMSIZE, 'shapes', {'vert2', 'horz2'});
 elseif strcmp(RectMethod, 'Lienhart')
     %[lien1, lien2, lien3, lien4,] = generate_lienhart_features(IMSIZE, NORM);
     disp('...loading lienhart features from the disk');

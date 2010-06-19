@@ -2,10 +2,10 @@
 
 if OPT_WEIGHTS
     
-    weightrange = -1:.05:1;
+    weightrange = -1:.1:1;
 
     % find the maxmimum rank
-    RANKMAX = 4;
+    RANKMAX = 2;
 
     brute_lists = cell(1,4);
 
