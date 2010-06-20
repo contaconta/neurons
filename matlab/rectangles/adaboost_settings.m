@@ -9,7 +9,7 @@ N_SAMPLES = 2500;          % # of negative examples to use when choosing optimal
 T = 2000;                   % maximum rounds of boosting
 CONNECTEDNESS = 0.8;        % probability rectangles will be connected
 EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation
-OPT_WEIGHTS = 1;            % 1 = search for "optimal" weights, 0 = no search w = 1
+OPT_WEIGHTS = 0;            % 1 = search for "optimal" weights, 0 = no search w = 1
 SE = 'francois';               % example sampling method: 'kevin' or 'francois'
 
 RANK = 2;                   % rectangle complexity
@@ -20,7 +20,12 @@ mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
                             %'Papageorgiou'
 
+                            
 IMSIZE = [24 24];           % size of the classification window
+DATASET = 'Dplus40';        % the data set to use.  'D', 'Dplus40', ...
+
+
+
 
 [s,host] = system('hostname'); host = strtrim(host);  	% computer hostname
 date = datestr(now, 'mmmddyyyy-HHMMSS');                % the current date & time
