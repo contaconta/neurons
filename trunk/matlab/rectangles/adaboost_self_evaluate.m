@@ -1,8 +1,8 @@
 function adaboost_self_evaluate(mat_filename)
 
 fplocs = [1.1e-6:.1e-6:1e-5,1.1e-5:.1e-5:1e-4,1.1e-4:.1e-4:1e-3,1.1e-3:.1e-3:1e-2, 1.1e-2:.1e-2:1e-1, 1.1e-1:.1e-1:1];
-Tlist = [50 100 200 400 600 800 1000 1200 1400 1600 1800 2000];
-%Tlist = [50 100 200];
+%Tlist = [50 100 200 400 600 800 1000 1200 1400 1600 1800 2000];
+Tlist = [100];
 
 [pathstr,name,ext,versn] = fileparts(mat_filename);
 
@@ -13,6 +13,9 @@ disp(['--------- evaluating ' name '---------']);
 % load the mat file containing the classifier
 load([pathstr '/' name ext]);
 
+if length(CLASSIFIER.rects) < max(Tlist)
+    error('rectangles:error', ['Error: CLASSIFIER has only ' num2str(length(CLASSIFIER.rects)) ' learners. ' num2str(max(Tlist)) ' required.']);
+end
 
 NTestSets = 11;
 L = [ ]; VALS = cell(1, length(Tlist));
@@ -37,7 +40,15 @@ for i = 1:NTestSets
         pol = CLASSIFIER.pol(1:T);
         areas = CLASSIFIER.areas(1:T);
         fprintf('%s ', num2str(T));
-        VALSi = AdaBoostClassifyDynamicA_mex(rects, cols, areas, thresh, pol, alpha, Di);
+        if isfield(CLASSIFIER, 'separeas')
+            separeas = CLASSIFIER.separeas(1:T);
+            weights = CLASSIFIER.weights(1:T);
+            VALSi = AdaBoostClassifyOPT_WEIGHTS_mex(rects, weights, separeas, thresh, pol, alpha, Di);
+        else
+            VALSi = AdaBoostClassifyDynamicA_mex(rects, cols, areas, thresh, pol, alpha, Di);
+        end
+        
+        
         
         VALS{t} = [VALS{t}; VALSi];
     end
