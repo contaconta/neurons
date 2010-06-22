@@ -5,16 +5,17 @@ EXP_NAME = 'TEST';          % name of experiment
 N_features = 1000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
 N_total = 200000;           % # of total training examples
-N_SAMPLES = 2500;          % # of negative examples to use when choosing optimal learner parameters
+N_SAMPLES = 5000;          % # of negative examples to use when choosing optimal learner parameters
 T = 2000;                   % maximum rounds of boosting
 CONNECTEDNESS = 0.8;        % probability rectangles will be connected
 EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation
 OPT_WEIGHTS = 0;            % 1 = search for "optimal" weights, 0 = no search w = 1
 SE = 'francois';               % example sampling method: 'kevin' or 'francois'
+LOGR = 0;                   % Log-ratio calculations as in Cordiner's Thesis
 
-RANK = 2;                   % rectangle complexity
-NORM = 'ANORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'vj2';      % shape generation method 'Viola-Jones', 'Karim1',
+RANK = 4;                   % rectangle complexity
+NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
+RectMethod = 'Viola-Jones';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
@@ -22,7 +23,7 @@ mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
 
                             
 IMSIZE = [24 24];           % size of the classification window
-DATASET = 'Dplus40';        % the data set to use.  'D', 'Dplus40', ...
+DATASET = 'D';        % the data set to use.  'D', 'Dplus40', ...
 
 
 

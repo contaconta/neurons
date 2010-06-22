@@ -1,8 +1,8 @@
 function adaboost_self_evaluate(mat_filename)
 
 fplocs = [1.1e-6:.1e-6:1e-5,1.1e-5:.1e-5:1e-4,1.1e-4:.1e-4:1e-3,1.1e-3:.1e-3:1e-2, 1.1e-2:.1e-2:1e-1, 1.1e-1:.1e-1:1];
-Tlist = [50 100 200 400 600 800 1000 1200 1400 1600 1800 2000];
-%Tlist = [100 300];
+%Tlist = [50 100 200 400 600 800 1000 1200 1400 1600 1800 2000];
+Tlist = [100 700];
 
 [pathstr,name,ext,versn] = fileparts(mat_filename); %#ok<NASGU>
 
