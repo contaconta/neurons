@@ -23,15 +23,15 @@ for n = 1:N
         while isempty(rects)
             
             % first, sample the subwindow size
-            w = randint(24,1);
-            h = randint(24,1);
+            w = randi(24);
+            h = randi(24);
 
             % next sample an offset for the subwindow
-            ro = randint([0 IMSIZE(2) - w],1);
-            co = randint([0 IMSIZE(1) - h],1);
+            ro = randi([0 IMSIZE(2) - w],1);
+            co = randi([0 IMSIZE(1) - h],1);
 
             % sample the rank
-            rank = randint([2 RANK]);
+            rank = randi([2 RANK]);
             
             % generate a shape with sampled parameters
             rects = generate_shape1(w,h,rank,SIGMA,MAX_ASPECT);
