@@ -2,7 +2,7 @@
 
 % Create Wsafe -> weight vector W with extremely low weights set to zero
 % to prevent precision errors.
-Wsafe = W; Wsafe(Wsafe < 1e-15) = 0;
+Wsafe = W; Wsafe(Wsafe < 1e-12) = 0;
 
 
 pos_inds = find(L == 1); neg_inds = find(L == -1);
