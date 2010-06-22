@@ -26,8 +26,6 @@ IMSIZE = [24 24];           % size of the classification window
 DATASET = 'D';        % the data set to use.  'D', 'Dplus40', ...
 
 
-
-
 [s,host] = system('hostname'); host = strtrim(host);  	% computer hostname
 date = datestr(now, 'mmmddyyyy-HHMMSS');                % the current date & time
 
@@ -48,6 +46,5 @@ compile_mex_files;
 % if necessary, generate brute_lists
 generate_brute_lists;
 
-% fix random number generator (disable for real experiments)
-%load randomState.mat;
-%defaultStream.State = randomState;
+% list of T values to evaluate performance on
+EVALUATE_LIST = [50 100 200 400 600 800 1000 1200 1400 1600 1800 2000];
