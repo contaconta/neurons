@@ -42,6 +42,11 @@ switch lower(RectMethod)
         f_cols = pre_cols(inds);   % associated polarities
         f_areas = pre_areas(inds);  % associated areas
         f_types = pre_types(inds);  % associated types
+    case 'lh90'
+        inds = randsample(size(pre_rects,1), N_features);
+        f_rects = pre_rects(inds);  % randomly selected rectangles
+        f_cols = pre_cols(inds);   % associated polarities
+        f_types(1:N_features) = deal({'LH90'});
     case 'kevin'
         [tempr, tempc, f_rects, f_cols] = generate_rectangles2(N_features, IMSIZE, RANK, CONNECTEDNESS);
         f_types(1:N_features) = deal({'Kevin'});
