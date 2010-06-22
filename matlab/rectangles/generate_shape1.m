@@ -56,29 +56,29 @@ while(c<C)
     valid_point=0;
     while(valid_point==0)
         %Pick a rectangle at random
-        anchor_rect=randint(c,1);
+        anchor_rect=randi(c,1);
         %Pick a side at random top,left,bottom,right->1,2,3,4
-        anchor_side=randint(4,1);
+        anchor_side=randi(4,1);
         %Pick a point at random
         switch anchor_side
             case 1
                 anchor_y=Rectangle_List(anchor_rect,2);
-                anchor_x=randint(Rectangle_List(anchor_rect,3)+1,1)-1+Rectangle_List(anchor_rect,1);
+                anchor_x=randi(Rectangle_List(anchor_rect,3)+1,1)-1+Rectangle_List(anchor_rect,1);
                 %Move Anchor off top
                 anchor_y=anchor_y-1;
             case 2    
                 anchor_x=Rectangle_List(anchor_rect,1)+Rectangle_List(anchor_rect,3);
-                anchor_y=randint(Rectangle_List(anchor_rect,4)+1,1)-1+Rectangle_List(anchor_rect,2);
+                anchor_y=randi(Rectangle_List(anchor_rect,4)+1,1)-1+Rectangle_List(anchor_rect,2);
                 %Move Anchor off right
                 anchor_x=anchor_x+1;
             case 3
                 anchor_y=Rectangle_List(anchor_rect,2)+Rectangle_List(anchor_rect,4);
-                anchor_x=randint(Rectangle_List(anchor_rect,3)+1,1)-1+Rectangle_List(anchor_rect,1);
+                anchor_x=randi(Rectangle_List(anchor_rect,3)+1,1)-1+Rectangle_List(anchor_rect,1);
                 %Move Anchor off bottom
                 anchor_y=anchor_y+1;
             case 4
                 anchor_x=Rectangle_List(anchor_rect,1);
-                anchor_y=randint(Rectangle_List(anchor_rect,4)+1,1)-1+Rectangle_List(anchor_rect,2);
+                anchor_y=randi(Rectangle_List(anchor_rect,4)+1,1)-1+Rectangle_List(anchor_rect,2);
                 %Move Anchor off left
                 anchor_x=anchor_x-1;
         end
@@ -106,8 +106,8 @@ while(c<C)
     aspect=max_aspect_ratio;
     while aspect >= max_aspect_ratio
     
-        %h_minus_sampled=randint(abs(anchor_y-h_minus)+1,1)-1;
-        %h_plus_sampled=randint(abs(anchor_y-h_plus)+1,1)-1;
+        %h_minus_sampled=randi(abs(anchor_y-h_minus)+1,1)-1;
+        %h_plus_sampled=randi(abs(anchor_y-h_plus)+1,1)-1;
     
         
        
@@ -199,7 +199,7 @@ while(c<C)
     end
     
     
-   candidate_rect=round([anchor_x-w_minus_sampled anchor_y-h_minus_sampled w_plus_sampled+w_minus_sampled h_plus_sampled+h_minus_sampled round(rand())]); %randint(2,1)-1])
+   candidate_rect=round([anchor_x-w_minus_sampled anchor_y-h_minus_sampled w_plus_sampled+w_minus_sampled h_plus_sampled+h_minus_sampled round(rand())]); %randi(2,1)-1])
    
    
    
@@ -315,7 +315,7 @@ end
 if(sum(Rectangle_List(:,5))==C)
     %all 1;
     %Number of boxes to switch
-    num=randint(C-1,1);
+    num=randi(C-1,1);
     num = max(num,1);
     %which to swtich, can repeat...too bad
     ind=randsample(C,num);
@@ -325,7 +325,7 @@ if(sum(Rectangle_List(:,5))==C)
 elseif (sum(Rectangle_List(:,5))==0)
     %all 0;
     %Number of boxes to switch
-    num=randint(C-1,1);
+    num=randi(C-1,1);
     num = max(num,1);
     %which to swtich, can repeat...too bad
     ind=randsample(C,num);
