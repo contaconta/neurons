@@ -23,8 +23,8 @@ for n = 1:N
         while isempty(rects)
             
             % first, sample the subwindow size
-            w = randint(24);
-            h = randint(24);
+            w = randint(24,1);
+            h = randint(24,1);
 
             % next sample an offset for the subwindow
             ro = randint([0 IMSIZE(2) - w],1);
