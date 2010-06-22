@@ -2,10 +2,10 @@
 
 EXP_NAME = 'TEST';          % name of experiment 
 
-N_features = 1000;          % # of features to consider each boosting round
+N_features = 2000;          % # of features to consider each boosting round
 N_pos = 5000;               % # of requested positive training examples
 N_total = 200000;           % # of total training examples
-N_SAMPLES = 5000;          % # of negative examples to use when choosing optimal learner parameters
+N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
 T = 2000;                   % maximum rounds of boosting
 CONNECTEDNESS = 0.8;        % probability rectangles will be connected
 EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation
