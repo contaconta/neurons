@@ -111,7 +111,7 @@ end
 
 
 %% evaluate the results on the test set!
-adaboost_self_evaluate([pathstr '/' name ext]);
+adaboost_self_evaluate([pathstr '/' name ext], EVALUATE_LIST);
 
 tstop = toc(tstart);
 cmd = ['mv ' pathstr '/' name ext ' ' pathstr '/finished/' name ext];
