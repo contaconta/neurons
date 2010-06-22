@@ -7,7 +7,9 @@ if EVAL
     
     if OPT_WEIGHTS
         E = AdaBoostClassifyOPT_WEIGHTS_mex(CLASSIFIER.rects, CLASSIFIER.weights, CLASSIFIER.separeas, CLASSIFIER.thresh, CLASSIFIER.pol, CLASSIFIER.alpha, D);
-    else        
+    elseif LOGR
+        E = AdaBoostClassifyDynamicA_LOGR(CLASSIFIER.rects, CLASSIFIER.cols, CLASSIFIER.areas, CLASSIFIER.thresh, CLASSIFIER.pol, CLASSIFIER.alpha, D);
+    else
         E = AdaBoostClassifyDynamicA_mex(CLASSIFIER.rects, CLASSIFIER.cols, CLASSIFIER.areas, CLASSIFIER.thresh, CLASSIFIER.pol, CLASSIFIER.alpha, D);
     end
     

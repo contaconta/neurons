@@ -27,30 +27,77 @@ function prettygraph()
 %   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
 %   PURPOSE.  See the GNU General Public License for more details.
 
+SHOWTICKS = 1;
 
-BACKGROUNDCOLOR = [.94 .94 .94];
-GRIDWIDTH = 1.75;
+BACKGROUNDCOLOR = [.92 .92 .92];
+FIGBG = [ 1 1 1];
+GRIDWIDTH = 1;
 
 
 a = gca;
 XLim = get(a, 'XLim');
 YLim = get(a, 'YLim');
 YTick = get(a, 'YTick');
+XTick = get(a, 'XTick');
+
+
+YOFFSET = abs(YLim(2)-YLim(1))/85;
+%YOFFSETS = 0:YOFFSET/(length(YTick)-1):YOFFSET;
+%XYOFFSET = abs(YLim(2)-YLim(1))/20;
+set(a, 'Color', BACKGROUNDCOLOR);
 
 box off
-set(a, 'TickLength', [0 0]);
+if ~SHOWTICKS
+    set(a, 'TickLength', [0 0]);
+else
+    %set(a, 'TickLength', get(a, 'TickLength')*2);
+    set(gca, 'TickLength', [.03 .025]);
+end
+%set(a, 'LineWidth', 0.001);
+%xblock = line(XLim, [YLim(1) YLim(1)], 'Linewidth', 0.5, 'Color', BACKGROUNDCOLOR);
+%yblock = line([XLim(1) XLim(1)], YLim, 'Linewidth', 0.5, 'Color', BACKGROUNDCOLOR);
+%set(xblock, 'ZData', [-1 -1]);
+%set(yblock, 'ZData', [-1 -1]);
 
-set(a, 'Color', BACKGROUNDCOLOR);
-set(a, 'LineWidth', 0.001);
-xblock = line(XLim, [YLim(1) YLim(1)], 'Linewidth', 0.5, 'Color', BACKGROUNDCOLOR);
-yblock = line([XLim(1) XLim(1)], YLim, 'Linewidth', 0.5, 'Color', BACKGROUNDCOLOR);
-set(xblock, 'ZData', [-1 -1]);
-set(yblock, 'ZData', [-1 -1]);
+if strcmp(get(a, 'XScale'), 'log')
+    XLim(1) = XTick(1)/10;
+    x1 = text(XLim(1), YLim(1),  ['10^{' num2str(round(log10(XLim(1)))) '}']);
+    set(x1, 'VerticalAlignment', 'top')
+end
+if strcmp(get(a, 'YScale'), 'log')
+    YLim(1) = YTick(1)/10;
+end
 
 l = zeros(size(YTick));
 for y = 1:length(YTick)
-   l(y) = line(XLim, [YTick(y) YTick(y)], 'LineWidth', GRIDWIDTH, 'Color', [1 1 1]); 
-   set(l(y), 'ZData', [-1 -1]);
+  l(y) = line(XLim, [YTick(y) YTick(y)], 'LineWidth', GRIDWIDTH, 'Color', [1 1 1]); 
+  set(l(y), 'ZData', [-1 -1]);
 end
 
-set(gcf, 'Color', [1 1 1]);
+
+set(a, 'XColor', FIGBG);
+set(a, 'YColor', FIGBG);
+
+ya = line([XLim(1) XLim(1)], [YLim(1) YLim(2)]);
+set(ya, 'Color', [1 1 1], 'LineWidth', 6);
+
+for i = 1:length(XTick)
+    if strcmp(get(a, 'XScale'), 'log')
+        x(i) = text(XTick(i), YLim(1),  ['10^{' num2str(round(log10(XTick(i)))) '}']);
+    else
+        x(i) = text(XTick(i), YLim(1), num2str(XTick(i)));
+    end
+    set(x(i), 'HorizontalAlignment', 'center');
+    set(x(i), 'VerticalAlignment', 'top')
+end
+for i = 1:length(YTick)
+    %y(i) = text(XLim(1), YTick(i)-YOFFSETS(i), num2str(YTick(i)));
+    y(i) = text(XLim(1), YTick(i), num2str(YTick(i)));
+    set(y(i), 'HorizontalAlignment', 'right');
+    set(y(i), 'VerticalAlignment', 'middle')
+end
+
+
+set(gcf, 'Color', FIGBG);
+
+keyboard;

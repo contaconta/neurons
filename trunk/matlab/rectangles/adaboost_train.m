@@ -44,7 +44,7 @@ for t = 1:T
     if OPT_WEIGHTS
         [thresh p e ind weights] = optimize_features_separea(Dsub, Wsub, Lsub, N_features, f_rects, brute_lists, f_separeas);
     else
-        [thresh p e ind] = optimize_features(Dsub,Wsub,Lsub,N_features,f_rects,f_cols,f_areas);
+        [thresh p e ind] = optimize_features(Dsub,Wsub,Lsub,N_features,f_rects,f_cols,f_areas,LOGR);
     end
     to = toc; disp(['   Selected ' f_types{ind} ' feature ' num2str(ind) '. RANK = ' num2str(length(f_rects{ind})) ' thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Time ' num2str(to) ' s.']);
 
@@ -60,7 +60,9 @@ for t = 1:T
     %keyboard;
     if OPT_WEIGHTS
         E = AdaBoostClassifyOPT_WEIGHTS_mex(f_rects(ind), {weights}, f_separeas(ind), thresh, p, 1, D);
-    else        
+    elseif LOGR
+        E = AdaBoostClassifyDynamicA_LOGR(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
+    else
         E = AdaBoostClassifyDynamicA_mex(f_rects(ind), f_cols(ind), f_areas(ind),thresh, p, 1, D);
     end
     correct_classification = (E == L); incorrect_classification = (E ~= L);
@@ -84,6 +86,7 @@ for t = 1:T
     CLASSIFIER.types{t} = f_types{ind};
     CLASSIFIER.norm = NORM;
     CLASSIFIER.method = RectMethod;
+    CLASSIFIER.dataset = DATASET;
     if OPT_WEIGHTS
         CLASSIFIER.separeas{t} = f_separeas{ind};
         CLASSIFIER.weights{t} = weights;

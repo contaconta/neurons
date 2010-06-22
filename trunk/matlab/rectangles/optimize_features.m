@@ -1,4 +1,4 @@
-function [best_thresh best_pol best_err best_ind] = optimize_features(D, W, L, N, rects, cols, areas)
+function [best_thresh best_pol best_err best_ind] = optimize_features(D, W, L, N, rects, cols, areas,LOGR)
 
 thresh = zeros(N, 1);
 pol = zeros(size(thresh));
@@ -11,7 +11,11 @@ TNEG = sum( W(L==-1));                 % Total sum of class -1 example weights
 for i = 1:N
     
     % compute responses of feature i to the data set
-    F = haar_featureDynamicA(D, rects{i}, cols{i}, areas{i});
+    if ~LOGR
+        F = haar_featureDynamicA(D, rects{i}, cols{i}, areas{i});
+    else
+        F = haar_featureDynamicA_LOGR(D, rects{i}, cols{i}, areas{i});
+    end
     %keyboard;
         
     % get the optimal classification error, polarity, thresh for feature i
