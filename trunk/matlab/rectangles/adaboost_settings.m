@@ -8,18 +8,18 @@ N_total = 200000;           % # of total training examples
 N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
 T = 2000;                   % maximum rounds of boosting
 CONNECTEDNESS = 0.8;        % probability rectangles will be connected
-EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation
+EVAL = 0;                   % 1 = evaluate every boosting round/ 0 = no evaluation
 OPT_WEIGHTS = 0;            % 1 = search for "optimal" weights, 0 = no search w = 1
 SE = 'francois';               % example sampling method: 'kevin' or 'francois'
 LOGR = 0;                   % Log-ratio calculations as in Cordiner's Thesis
 
 RANK = 4;                   % rectangle complexity
 NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'Viola-Jones';      % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'lh90';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
-                            %'Papageorgiou'
+                            %'Papageorgiou', 'lh90'
 
                             
 IMSIZE = [24 24];           % size of the classification window
