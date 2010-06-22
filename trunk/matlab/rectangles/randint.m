@@ -4,6 +4,11 @@ if nargin < 2
     n = 1;
 end
 
-max = a(2)+1;
-min = a(1);
+if isscalar(a)
+    max = a;
+    min = 1;
+else
+    max = a(2)+1;
+    min = a(1);
+end
 r = floor( (max-min)*rand(1,n)) + min; 
