@@ -86,11 +86,8 @@ if sum(missing_list) ~= 0
 
     end
 
-
-%     if ~exist('TPR_list', 'var')
-%         TPR_list = zeros(length(Tlist), length(fplocs));
-%     end
-
+    % now that we have classification results, we need to evaluate the roc
+    % and interpolate!
     NP = sum(L == 1);
     NN = sum(L == -1);
     fprintf('...evaluating the ROC for T = ');
