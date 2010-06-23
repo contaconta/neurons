@@ -69,6 +69,9 @@ switch lower(RectMethod)
         f_cols(N1+1:N_features) = pre_cols(inds);   % associated polarities
         f_types(N1+1:N_features) = deal({'VJ'});
         CLASSIFIER.mixrate = mixrate;
+    case 'asymmetric-alone'
+        [f_rects, f_cols] = generate_asymmetric_rectangles(N_features, [24 24], 4, CONNECTEDNESS);
+        f_types(1:N_features) = deal({'Asymmetric-alone'});
     case 'vjspecial'
         inds = randsample(size(pre_rects,1), N_features);
         f_rects = pre_rects(inds);  % randomly selected rectangles
