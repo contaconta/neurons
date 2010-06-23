@@ -15,11 +15,11 @@ LOGR = 0;                   % Log-ratio calculations as in Cordiner's Thesis
 
 RANK = 4;                   % rectangle complexity
 NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'lh90';      % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'asymmetric-alone';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
-                            %'Papageorgiou', 'lh90'
+                            %'Papageorgiou', 'lh90', 'asymmetric-alone'
 
                             
 IMSIZE = [24 24];           % size of the classification window
