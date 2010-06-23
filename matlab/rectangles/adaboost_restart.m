@@ -26,7 +26,7 @@ beta = zeros(T,1);      % computed beta value at each boosting step
 alpha = zeros(T,1);     % computed alpha value at each boosting step
 
 start_t = length(CLASSIFIER.rects);
-disp(['-------------- RESTARTING FROM t = ' num2str(tstart) ' --------------']);
+disp(['-------------- RESTARTING FROM t = ' num2str(start_t) ' --------------']);
 disp(' ');
 
 for t = start_t:T
