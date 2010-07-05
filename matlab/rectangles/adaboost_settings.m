@@ -3,7 +3,7 @@
 EXP_NAME = 'TEST';          % name of experiment 
 
 N_features = 2000;          % # of features to consider each boosting round
-N_pos = 5000;               % # of requested positive training examples
+N_pos = 3000;               % # of requested positive training examples
 N_total = 200000;           % # of total training examples
 N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
 T = 2000;                   % maximum rounds of boosting
@@ -15,11 +15,12 @@ LOGR = 0;                   % Log-ratio calculations as in Cordiner's Thesis
 
 RANK = 4;                   % rectangle complexity
 NORM = 'DNORM';             % ANORM = all normalized, DNORM = dynamic, NONORM = no normalize
-RectMethod = 'asymmetric-alone';      % shape generation method 'Viola-Jones', 'Karim1',
+RectMethod = 'Viola-Jones';      % shape generation method 'Viola-Jones', 'Karim1',
 mixrate = 0.25;             %'Simple', 'Kevin', 'VJSPECIAL', '33', '50',
                             %'Asymmetric-Mix', 'rank-fixed', 'Lienhart',
                             %'LienhardNO3', 'lisymm', 'liasymm', 'ramirez',
-                            %'Papageorgiou', 'lh90', 'asymmetric-alone'
+                            %'Papageorgiou', 'lh90', 'asymmetric-alone',
+                            %'vj2'
 
                             
 IMSIZE = [24 24];           % size of the classification window
@@ -44,6 +45,7 @@ if ~exist(results_folder, 'dir'); mkdir(results_folder); end;
 compile_mex_files;
 
 % if necessary, generate brute_lists
+weightrange = -1:.1:1;
 generate_brute_lists;
 
 % list of T values to evaluate performance on
