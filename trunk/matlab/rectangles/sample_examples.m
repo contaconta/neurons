@@ -18,6 +18,21 @@ switch SE
     case 'francois'
         disp('...weighted sampling negative examples using FRANCOIS method');
         
+%         if N_pos < length(pos_inds)
+%             
+%             pos_samps = randsample(pos_inds, N_pos, true, Wsafe(pos_inds));        
+%             pos_inds = unique(pos_samps);
+%             Wpos = zeros(length(pos_inds),1);
+%             for n = 1:length(pos_inds)
+%                 Wpos(n) = sum(pos_samps == pos_inds(n));
+%             end
+%             Wpos = Wpos .*  ( sum(W(L==-1)) / sum(Wpos));
+%             
+%         else
+%             Wpos = W(pos_inds); 
+%         end
+        Wpos = W(pos_inds);    
+                
         % sample negative samples, set weights according to sample frequency
         neg_samps = randsample(neg_inds, N_SAMPLES, true, Wsafe(neg_inds));        
         neg_inds = unique(neg_samps);
@@ -26,9 +41,10 @@ switch SE
             Wneg(n) = sum(neg_samps == neg_inds(n));
         end
         Wneg = Wneg .*  ( sum(W(L==-1)) / sum(Wneg));
-        Wsub = [W(pos_inds); Wneg];
+        
         
         % sampled indexes are all positive examples, sampled negative
+        Wsub = [Wpos; Wneg];
         inds = [pos_inds; neg_inds];
         Lsub = L(inds);
         disp(['   ' num2str(length(pos_inds)) '+ and ' num2str(length(neg_inds)) '- examples sampled.']);

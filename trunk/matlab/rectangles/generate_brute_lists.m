@@ -2,7 +2,7 @@
 
 if OPT_WEIGHTS
     
-    weightrange = -1:.1:1;
+    %weightrange = -1:.1:1;
 
     % find the maxmimum rank
     RANKMAX = 4;
