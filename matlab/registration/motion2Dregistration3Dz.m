@@ -90,10 +90,10 @@ clear PosXX;
 mkdir([mipfolderXY '/out/']);
 %------------------------------------------
 
-%[X Y Z] = meshgrid(single(0:Vsize(2)-1), single(0:Vsize(1)-1), single(0:Vsize(3)-1));
+[X Y Z] = meshgrid(single(0:Vsize(2)-1), single(0:Vsize(1)-1), single(0:Vsize(3)-1));
 
 disp('   registering images');
-for t = 1:T
+for t =  1:T
     
     % read the tif
     fname = d(t).name;
@@ -113,16 +113,19 @@ for t = 1:T
     for y = 1:Vsize(2)
         Zi(:, y, :) = zi';
     end
+    
+    %keyboard;
+    
     zi = Zi + 1;
     clear Zi;
     
     
-    %keyboard;
+   
     
       	%V(:,:,z) = interp2(X, Y, V(:,:,z), xi,yi);
-        %V = interp3(X, Y, Z, V, xi,yi,zi);
+        V = interp3(X, Y, Z, V, xi,yi,zi);
 
-        V = interp3(V, xi,yi,zi);
+        %V = interp3(V, xi,yi,zi);
    
     
     % overwrite with the registered file
