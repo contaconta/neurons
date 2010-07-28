@@ -127,6 +127,7 @@ for t = 1:T
     
     % overwrite with the registered file
     writeMultiPageTiff(uint8(V), [source fname]);
+    disp(['   wrote ' source fname]);
     
     %---------------TEMPORARY------------------
     % write a registered MIP so we can see if we've done well
