@@ -1,14 +1,16 @@
-function motion2Dregistration3Dz(source)
+function motion2Dregistration3Dz()
 %
 %
 %
 %
 %
 %
+
+source = pwd;
 
 %motion2Dfile = '/Users/feth/Documents/Work/CV_Softs/Motion2D-1.3.11/bin/Darwin/Motion2D';
-motion2Dfile = '/osshare/Work/software/Motion2D-1.3.11/bin/Linux/Motion2D';
-
+%motion2Dfile = '/osshare/Work/software/Motion2D-1.3.11/bin/Linux/Motion2D';
+motion2Dfile = '/opt/cvlab/Motion2D-1.3.11/bin/Linux/Motion2D';
 
 %% step 1: read in the series of image stacks, create a temp folder to hold the MIPs
 mipfolderXY = [source 'xyMIP/'];    d = dir([source '*.tif']); T = length(d);
@@ -20,29 +22,29 @@ mkdir(mipfolderXY);
 mipfolderXZ = [source 'xzMIP/'];
 mkdir(mipfolderXZ);
 
-% disp('   reading image stacks');
-% for i = 1:T
-%     fname = d(i).name; %disp(['...computing MIP for ' fname]);
-% 
-%     % read the tiff, clean it, write MIPS to a folder
-%     V = readMultiPageTiff([source fname]);    
-%     mipXY = max(V, [],3);                     % compute the MIP    
-%     mipXZ = squeeze(max(V, [],1));                     % compute the MIP    
-%     filenameXY = [mipfolderXY sprintf('%06d', i) '.png'];
-%     filenameXZ = [mipfolderXZ sprintf('%06d', i) '.png'];
-%     imwrite(mipXY, filenameXY, 'PNG');          % write the MIP  
-%     imwrite(mipXZ, filenameXZ, 'PNG');          % write the MIP  
-% end
-% Vsize = size(V);
-% clear V;
-% 
-% %% step 2: apply motion2D to the MIP image stacks
-% disp('   estimating motion parameters');
-% cmd = [motion2Dfile ' -p ' mipfolderXY '0000%02d.png -s 1 -i ' num2str(length(d)-1) ' -r ' mipfolderXY 'motion_params.txt'];
-% system('export LD_LIBRARY_PATH=/usr/X11/lib/');
-% system(cmd);
-% cmd = [motion2Dfile ' -p ' mipfolderXZ '0000%02d.png -s 1 -i ' num2str(length(d)-1) ' -r ' mipfolderXZ 'motion_params.txt'];
-% system(cmd);
+disp('   reading image stacks');
+for i = 1:T
+    fname = d(i).name; %disp(['...computing MIP for ' fname]);
+
+    % read the tiff, clean it, write MIPS to a folder
+    V = readMultiPageTiff([source fname]);    
+    mipXY = max(V, [],3);                     % compute the MIP    
+    mipXZ = squeeze(max(V, [],1));                     % compute the MIP    
+    filenameXY = [mipfolderXY sprintf('%06d', i) '.png'];
+    filenameXZ = [mipfolderXZ sprintf('%06d', i) '.png'];
+    imwrite(mipXY, filenameXY, 'PNG');          % write the MIP  
+    imwrite(mipXZ, filenameXZ, 'PNG');          % write the MIP  
+end
+Vsize = size(V);
+clear V;
+
+%% step 2: apply motion2D to the MIP image stacks
+disp('   estimating motion parameters');
+cmd = [motion2Dfile ' -p ' mipfolderXY '0000%02d.png -s 1 -i ' num2str(length(d)-1) ' -r ' mipfolderXY 'motion_params.txt'];
+system('export LD_LIBRARY_PATH=/usr/X11/lib/');
+system(cmd);
+cmd = [motion2Dfile ' -p ' mipfolderXZ '0000%02d.png -s 1 -i ' num2str(length(d)-1) ' -r ' mipfolderXZ 'motion_params.txt'];
+system(cmd);
 
 Vsize = [1031 1031 101];
 
@@ -118,14 +120,11 @@ for t =  1:T
     
     zi = Zi + 1;
     clear Zi;
-    
-    
-   
-    
-      	%V(:,:,z) = interp2(X, Y, V(:,:,z), xi,yi);
-        %V = interp3(X, Y, Z, V, xi,yi,zi);
+        
+    %V(:,:,z) = interp2(X, Y, V(:,:,z), xi,yi);
+    %V = interp3(X, Y, Z, V, xi,yi,zi);
 
-        V = interp3(V, xi,yi,zi);
+    V = interp3(V, xi,yi,zi);
    
     
     % overwrite with the registered file
