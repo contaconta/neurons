@@ -69,12 +69,17 @@ for t = 2:T
     PosXX_1 = PosXX(:,t-1);
     PosX(:, t) = TransXY(t-1, 1)+ (AXY(t-1, 1, 1) * PosX_1 + AXY(t-1, 1, 2)*PosY_1);
     PosY(:, t) = TransXY(t-1, 2)+ (AXY(t-1, 2, 1) * PosX_1 + AXY(t-1, 2, 2)*PosY_1);
-    PosXX(:, t)= TransXZ(t-1, 1)+ (AXZ(t-1, 1, 1) * PosXX_1 + AXZ(t-1, 1, 2)*PosZ_1);
-    PosZ(:, t) = TransXZ(t-1, 2)+ (AXZ(t-1, 2, 1) * PosXX_1 + AXZ(t-1, 2, 2)*PosZ_1);
+%     PosXX(:, t)= TransXZ(t-1, 1)+ (AXZ(t-1, 1, 1) * PosXX_1 + AXZ(t-1, 1, 2)*PosZ_1);
+%     PosZ(:, t) = TransXZ(t-1, 2)+ (AXZ(t-1, 2, 1) * PosXX_1 + AXZ(t-1, 2, 2)*PosZ_1);
+    PosZ(:, t)= TransXZ(t-1, 1)+ (AXZ(t-1, 1, 1) * PosZ_1 + AXZ(t-1, 1, 2)*PosXX_1);
+    PosXX(:, t) = TransXZ(t-1, 2)+ (AXZ(t-1, 2, 1) * PosZ_1 + AXZ(t-1, 2, 2)*PosXX_1);
 end
 PosX = reshape(PosX, [Vsize(1) Vsize(2) T]);
 PosY = reshape(PosY, [Vsize(1) Vsize(2) T]);
-PosZ = reshape(PosZ, [Vsize(2) Vsize(3) T]);
+PosZ = reshape(PosZ, [Vsize(3) Vsize(2) T]);
+%keyboard;
+
+%PosZ = reshape(PosZ, [Vsize(2) Vsize(3) T]);
 clear PosX_1 PosY_1 PosZ_1 PosXX_1;
 clear X Y Z XX;
 clear PosXX;
@@ -92,7 +97,7 @@ for t = 1:T
     
     % read the tif
     fname = d(t).name;
-    disp(['...registered (' num2str(t) '/' num2str(T) ')']);
+    disp(['...registering (' num2str(t) '/' num2str(T) ')']);
     V = readMultiPageTiff([source fname]);
     V = single(V);
     
@@ -110,6 +115,8 @@ for t = 1:T
     end
     zi = Zi + 1;
     clear Zi;
+    
+    
     %keyboard;
     
       	%V(:,:,z) = interp2(X, Y, V(:,:,z), xi,yi);
