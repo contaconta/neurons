@@ -111,7 +111,7 @@ for t = 1:T
     %zi = repmat(zi, [Vsize(1), 1, 1]) + 1;
     Zi = zeros(Vsize, 'single');
     for y = 1:Vsize(2)
-        Zi(:, y, :) = zi;
+        Zi(:, y, :) = zi';
     end
     zi = Zi + 1;
     clear Zi;
