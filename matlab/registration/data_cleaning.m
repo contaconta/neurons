@@ -1,7 +1,7 @@
-function data_cleaning()
+function data_cleaning(source)
 
 
-d = dir([pwd '/' '*.tif']);
+d = dir([source '*.tif']);
 
 
 
