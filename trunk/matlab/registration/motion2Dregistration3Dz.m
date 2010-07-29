@@ -1,12 +1,10 @@
-function motion2Dregistration3Dz()
+function motion2Dregistration3Dz(source)
 %
 %
 %
 %
 %
 %
-
-source = pwd;
 
 %motion2Dfile = '/Users/feth/Documents/Work/CV_Softs/Motion2D-1.3.11/bin/Darwin/Motion2D';
 %motion2Dfile = '/osshare/Work/software/Motion2D-1.3.11/bin/Linux/Motion2D';
@@ -88,9 +86,9 @@ clear PosXX;
 
 %% step 5: apply the 2D transforms at each time step
 
-%---------------TEMPORARY------------------
-mkdir([mipfolderXY '/out/']);
-%------------------------------------------
+% %---------------TEMPORARY------------------
+% mkdir([mipfolderXY '/out/']);
+% %------------------------------------------
 
 %[X Y Z] = meshgrid(single(0:Vsize(2)-1), single(0:Vsize(1)-1), single(0:Vsize(3)-1));
 
@@ -131,11 +129,11 @@ for t =  1:T
     writeMultiPageTiff(uint8(V), [source fname]);
     disp(['   wrote ' source fname]);
     
-    %---------------TEMPORARY------------------
-    % write a registered MIP so we can see if we've done well
-    filename = [mipfolderXY '/out/' sprintf('%06d', t) '.png'];
-    imwrite( max(uint8(V), [ ], 3), filename, 'PNG');
-    %------------------------------------------
+%     %---------------TEMPORARY------------------
+%     % write a registered MIP so we can see if we've done well
+%     filename = [mipfolderXY '/out/' sprintf('%06d', t) '.png'];
+%     imwrite( max(uint8(V), [ ], 3), filename, 'PNG');
+%     %------------------------------------------
 end
 
 
@@ -143,8 +141,9 @@ keyboard;
 
 %% Cleanup!
 
-% remove the temporary directory
-rmdir(tempdir, 's');
+% remove the temporary directories
+rmdir(mipfolderXY, 's');
+rmdir(mipfolderXZ, 's');
 
 % remove the motion parameters file
 delete([source 'motion_params.txt']);
