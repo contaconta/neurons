@@ -1,7 +1,7 @@
-function remove_outliers()
+function remove_outliers(source)
 
 
-source = [pwd '/'];
+%source = [pwd '/'];
 %source = '/media/VERBATIM/Data/slice3noisycopy/';
 
 d = dir([source '*.tif']);
