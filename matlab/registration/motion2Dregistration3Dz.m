@@ -137,7 +137,7 @@ for t =  1:T
 end
 
 
-keyboard;
+%keyboard;
 
 %% Cleanup!
 
@@ -146,7 +146,7 @@ rmdir(mipfolderXY, 's');
 rmdir(mipfolderXZ, 's');
 
 % remove the motion parameters file
-delete([source 'motion_params.txt']);
+%delete([mipfolderXY 'motion_params.txt']);
 
 
 
