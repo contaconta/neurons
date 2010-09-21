@@ -1,4 +1,10 @@
-function denoise_stack(source)
+function denoise_stack()
+
+source = input('Provide the path to the folder containing stacks to denoise:\n', 's');
+
+if ~strcmp(source(end), '/')
+    source = [source '/'];
+end
 
 addpath('./bm3d/')
 
