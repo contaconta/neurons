@@ -13,8 +13,9 @@ adaboost_load_database;
 
 % initialize the weights, set each class to have equal weights initially
 W = ones(size(L));          % example weights
-W(L == 1) = .5 * (W(L == 1) / sum(W(L == 1)));
-W(L == -1) = .5 * (W(L == -1) / sum(W(L == -1)));
+W = W/sum(W);
+%W(L == 1) = .5 * (W(L == 1) / sum(W(L == 1)));
+%W(L == -1) = .5 * (W(L == -1) / sum(W(L == -1)));
 
 
 %% PERFORM BOOSTING
@@ -44,7 +45,7 @@ for t = 1:T
    
     to = toc; disp(['   Selected feature ' num2str(ind) '.  thresh = ' num2str(thresh) '. Polarity = ' num2str(p) '. Time ' num2str(to) ' s.']);
 
-   
+    %figure(1);  bar(W(1:3000)); drawnow; pause(0.01);
     
     %% compute error. sanity check: best weak learner should beat 50%
     % +class < thresh < -class for pol=1. -class < thresh < +class for pol=-1
@@ -93,19 +94,20 @@ for t = 1:T
     % store a temporary copy of boosted classifier
     save([pathstr '/' name ext], 'CLASSIFIER', 'W', 'stats', 'error'); disp(['...saved as ' name ext]);
 
+   
 end
 
 
 %% evaluate the results on the test set!
-adaboost_self_evaluate([pathstr '/' name ext], EVALUATE_LIST);
+%adaboost_self_evaluate([pathstr '/' name ext], EVALUATE_LIST);
 
 tstop = toc(tstart);
-cmd = ['mv ' pathstr '/' name ext ' ' pathstr '/finished/' name ext];
-system(cmd); 
+%cmd = ['mv ' pathstr '/' name ext ' ' pathstr '/finished/' name ext];
+%system(cmd); 
 disp('==================================================================');
-disp(['  ' name ' finished processing in ' num2str(round(tstop)) ' seconds. Moved to /finished/']);
+disp(['  ' name ' finished processing in ' num2str(round(tstop)) ' seconds.']);
 disp('==================================================================');
 %send_gmail({'kevin.smith@epfl.ch'}, ['finished ' name], [host ' has completed ' name ' in ' num2str(round(tstop)) ' seconds.']);
 
-
-
+disp(['saved classifier as ' name '.txt']);
+classifier2text(CLASSIFIER, [name '.txt']);

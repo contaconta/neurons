@@ -63,25 +63,20 @@ if(nb_inputs != 5)
     
     for (int n = 0; n < N_examples; n++){
         
-        
-        
-        
-     
+
         if((n > 0) && (F[n] == F[n-1])){
             err[n] = err[n-1];
             pol[n] = pol[n-1];
         }
         else{
-            // positive polarity => + class < THRESH < F[n] < - class
-            // negative polarity => - class < THRESH < F[n] < + class
-            
+            // positive polarity => + class < THRESH <= - class
+            // negative polarity => - class < THRESH <= + class
+
             fp_err_pos_pol = TPOS - SPOS;
-            //fp_err_neg_pol = SPOS + L[n]*W[n];
             fn_err_pos_pol = SNEG;
-            //fn_err_neg_pol = TNEG - SNEG - (!L[n])*W[n];
             
             pos_pol_err = fp_err_pos_pol + fn_err_pos_pol;
-            //neg_pol_err = fp_err_neg_pol + fn_err_neg_pol;
+            
             
             if (pos_pol_err <= .5){
                 err[n] = pos_pol_err;
@@ -90,10 +85,10 @@ if(nb_inputs != 5)
             else{
                 err[n] = 1-pos_pol_err;
                 pol[n] = -1;
-            }
+            } 
         }
         
-        // does this go before or after?
+         // the SPOS and SNEG count get updated after the threshold passes them
         if (L[n] == 1){
             SPOS = SPOS + W[n];
         }
