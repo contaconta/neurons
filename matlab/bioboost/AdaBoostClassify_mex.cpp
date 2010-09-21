@@ -71,19 +71,24 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
             pi=(double *)mxGetPr(IndArray);
             
             
-           
-            response = (double) D[nb_examples * ((int)pi[0]-1) + i];
+           response = (double) D[nb_examples * ((int)pi[0]-1) + i];
                       
-            //if (i==1)
-            //    mexPrintf("%d ", k);
 
             int weak_classification = 0;
-            if (pol[k] * response < pol[k] * thresh[k]){
-                weak_classification = 1;
+            if (pol[k] == 1){
+                if (response < thresh[k]){
+                    weak_classification = 1;
+                }else{
+                    weak_classification = -1;
+                }
+            }else{
+                if (response < thresh[k]){
+                    weak_classification = -1;
+                }else{
+                    weak_classification = 1;
+                }
             }
-            else{
-                weak_classification = -1;
-            }
+
 
             // compute the strong response
             strong_response = strong_response + alpha[k]*weak_classification;

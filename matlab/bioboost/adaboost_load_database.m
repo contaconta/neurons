@@ -4,6 +4,10 @@ if exist('DATASET', 'var')
             load D1.mat
         case 'D2'
             load D2.mat
+        case 'OPF'
+            load OPF_D.mat     
+        case 'OPF_1_2'
+            load OPF_1_2.mat
         otherwise
             error('Error: no valid DATASET specified.');
     end

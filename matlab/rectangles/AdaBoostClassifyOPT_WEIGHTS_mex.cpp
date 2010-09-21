@@ -118,16 +118,22 @@ void mexFunction(int nb_outputs,  mxArray* outputs[],
             // get the areas
 
             
-            //mexPrintf("response = %3.0f  thresh = %3.0f  pol = %3.0f\n", response, thresh[k], pol[k]);
             int weak_classification = 0;
-            if (response < thresh[k]){
-                weak_classification = 1;
+            if (pol[k] == 1){
+                if (response < thresh[k]){
+                    weak_classification = 1;
+                }else{
+                    weak_classification = -1;
+                }
+            }else{
+                if (response < thresh[k]){
+                    weak_classification = -1;
+                }else{
+                    weak_classification = 1;
+                }
             }
-            else{
-                weak_classification = -1;
-            }
-            //mexPrintf("classification = %d\n", weak_classification);
-                    
+            
+            
             // compute the strong response
             strong_response = strong_response + pol[k]*alpha[k]*weak_classification;
             

@@ -5,15 +5,13 @@ EXP_NAME = 'TEST';          % name of experiment
 N_features = 2000;          % # of features to consider each boosting round
 N_pos = 3000;               % # of requested positive training examples
 N_total = 200000;           % # of total training examples
-N_SAMPLES = 25000;          % # of negative examples to use when choosing optimal learner parameters
-T = 2000;                   % maximum rounds of boosting
+N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
+T = 150;                   % maximum rounds of boosting
 EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation (faster)
 SE = 'francois';            % example sampling method: 'kevin' or 'francois'
 
 
-                            
-
-DATASET = 'D2';        % the data set to use.  'D1', 'D2'
+DATASET = 'OPF';        % the data set to use.  'D1', 'D2'
 
 
 [s,host] = system('hostname'); host = strtrim(host);  	% computer hostname
