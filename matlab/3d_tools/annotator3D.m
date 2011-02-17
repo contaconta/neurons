@@ -70,7 +70,6 @@ set(handles.hSP,'Units','normalized','Position',[0 0 1 1])
 set(handles.hFig,'KeyPressFcn',{@keypresshandler, handles}); % set an event listener for keypresses
 handles.hov = imoverviewpanel(handles.ovpanel, handles.hIm);
 
-
 % INITIALIZE ALL HANDLES WE WILL NEED LATER!
 
 % Update handles structure
