@@ -2,8 +2,8 @@ function K = determineKfromMask(B, Kmin, Kmax, Afactor)
 % B(12,12) = 1;
 % B(12,13) = 1;
 
-Bwhite = B > 0;
-Bblack = B < 0;
+Bwhite = bwlabel(B > 0);
+Bblack = bwlabel(B < 0);
 w = regionprops(Bwhite, 'Area');
 b = regionprops(Bblack, 'Area');
 
