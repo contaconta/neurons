@@ -1,4 +1,4 @@
-function L = readRKLabel(labelFilenm, s)
+function L = readRKLabel(labelFilenm, s, bitdepth)
 %% READRKLABEL reads RK superpixels data files
 %   
 %   L = readRKLabel(labelFilenm, size) reads a superpixel label data file 
@@ -23,9 +23,17 @@ function L = readRKLabel(labelFilenm, s)
 
 
 fid = fopen(labelFilenm,'r');
-L = fread(fid,[s(2) s(1)],'int32');
+
+if ~ (strcmp(bitdepth, 'uint16') || strcmp(bitdepth, 'uint32') || strcmp(bitdepth, 'uint8') )
+    error('input a valid bitdepth')
+end
+
+for i = 1:s(3)
+    
+    I = fread(fid,[s(2) s(1)], bitdepth);
+    L(:,:,i) = I';
+end
 L = double(L);
 L = L+1;
-
 
 fclose(fid);
