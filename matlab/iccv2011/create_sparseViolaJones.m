@@ -50,15 +50,15 @@ for i = 1:nfeatures
     
     if mod(i, 200) == 0
         disp(['feature ' num2str(i) ' (K=' num2str(k) '/X=' num2str(numel(X)) ') samples: ' f]);
-         R = sparseRender(str2num(f),IMSIZE); %#ok<ST2NM>
-         subplot(1,2,1); imagesc(B); colormap gray;
-         subplot(1,2,2); 
-         cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on;
-         plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
-         plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
-         plot(XC,YC, 'mo'); hold off;
-        drawnow;
-        pause;
+%         R = sparseRender(str2num(f),IMSIZE); %#ok<ST2NM>
+%         subplot(1,2,1); imagesc(B); colormap gray;
+%         subplot(1,2,2); 
+%         cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on;
+%         plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
+%         plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
+%         plot(XC,YC, 'mo'); hold off;
+%         drawnow;
+%         pause;
     end
     
     fprintf(fid2, [f '\n']);
