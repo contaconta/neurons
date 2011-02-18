@@ -59,7 +59,6 @@ for i = 1:nfeatures
         plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
         plot(XC+1,YC+1, 'mo'); hold off;
         drawnow;
-        pause;
     end
     
     fprintf(fid2, [f '\n']);
