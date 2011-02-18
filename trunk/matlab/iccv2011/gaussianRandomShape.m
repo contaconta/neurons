@@ -43,6 +43,16 @@ for i = 1:Npos+Nneg
     SIGMA = [SIGMA; s];
 end
 
+%keyboard;
+
+% mean center according to area (assume 2*sigma radius)
+winds = (W > 0);
+binds = (W <= 0);
+warea = sum( 4*pi*SIGMA(winds).^2);
+barea = sum( 4*pi*SIGMA(binds).^2);
+W(winds) = W(winds)/warea;
+W(binds) = W(binds)/barea;
+
 %[X Y W SIGMA]
 
 
@@ -54,6 +64,23 @@ if DISPLAY
     drawnow;
 end
 %pause;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

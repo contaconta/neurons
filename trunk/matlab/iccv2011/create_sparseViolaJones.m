@@ -3,7 +3,7 @@ filename = 'violajones24x24.list';
 
 
 Sigmas = [.5 1:8];
-Kmin = 4;
+Kmin = 8;
 Kmax = 16;
 Afactor = 8;
 
@@ -27,12 +27,13 @@ for i = 1:nfeatures
     f = str2num(tline); %#ok<ST2NM>
     B = rectRender(f, IMSIZE, BLANK);
     [r,c] = find(B ~= 0);
-    XC = mean(c);
-    YC = mean(r);
+    XC = mean(c)-1;
+    YC = mean(r)-1;
     
     % select and appropriate number for K
     K = determineKfromMask(B, Kmin, Kmax, Afactor);
     
+    % get the matching pursuit approximation
     [X Y W S m] = MatchingPursuitGaussianApproximation(B, Sigmas, K);
     X = X-1;
     Y = Y-1;
@@ -50,15 +51,15 @@ for i = 1:nfeatures
     
     if mod(i, 200) == 0
         disp(['feature ' num2str(i) ' (K=' num2str(k) '/X=' num2str(numel(X)) ') samples: ' f]);
-%         R = sparseRender(str2num(f),IMSIZE); %#ok<ST2NM>
-%         subplot(1,2,1); imagesc(B); colormap gray;
-%         subplot(1,2,2); 
-%         cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on;
-%         plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
-%         plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
-%         plot(XC,YC, 'mo'); hold off;
-%         drawnow;
-%         pause;
+        R = sparseRender(str2num(f),IMSIZE); %#ok<ST2NM>
+        subplot(1,2,1); imagesc(B); colormap gray;
+        subplot(1,2,2); 
+        cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on;
+        plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
+        plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
+        plot(XC+1,YC+1, 'mo'); hold off;
+        drawnow;
+        pause;
     end
     
     fprintf(fid2, [f '\n']);

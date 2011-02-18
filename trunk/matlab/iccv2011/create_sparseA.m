@@ -3,7 +3,7 @@ gPerLine = 5;
 sigmas = 1:8;
 IMSIZE = [24 24];
 
-Nfeatures = 300000;
+Nfeatures = 500000;
 
 filename = ['sparseA' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
@@ -17,10 +17,6 @@ disp(['...writing to ' filename]);
 for i = 1:Nfeatures
     
     [x y w s] = gaussianRandomShape(IMSIZE, sigmas, gPerLine, 1, 1, 0);
-    
-    %R = reconstruction(IMSIZE, x, y, w, s);
-    %imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray;
-    %drawnow;
     
     n = length(x);
     xc = mean(x);
