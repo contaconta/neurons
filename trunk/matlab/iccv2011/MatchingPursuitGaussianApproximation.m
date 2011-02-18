@@ -67,10 +67,21 @@ Y = Y(inds);
 W = W(inds);
 S = S(inds);
 
+
+% new and improved mean centering
+% Wsum = sum(W);
+% avgWsum = Wsum / numel(W);
+% if avgWsum ~= 0
+%     W = W - avgWsum;    
+% end
+
+%keyboard;
+
+
 % mean center according to area (assume 2*sigma radius)
-winds = (W > 0);
-binds = (W <= 0);
-warea = sum( 4*pi*S(winds).^2);
-barea = sum( 4*pi*S(binds).^2);
-W(winds) = W(winds)/warea;
-W(binds) = W(binds)/barea;
+% winds = (W > 0);
+% binds = (W <= 0);
+% warea = sum( 4*pi*S(winds).^2);
+% barea = sum( 4*pi*S(binds).^2);
+% W(winds) = W(winds)/warea;
+% W(binds) = W(binds)/barea;

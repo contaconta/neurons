@@ -1,9 +1,10 @@
 clear; 
 filename = 'violajones24x24.list';
+%filename = 'pham24x24.list';
 
 
 Sigmas = [.5 1:8];
-Kmin = 8;
+Kmin = 16;
 Kmax = 16;
 Afactor = 8;
 
@@ -30,8 +31,16 @@ for i = 1:nfeatures
     XC = mean(c)-1;
     YC = mean(r)-1;
     
+    
     % select and appropriate number for K
-    K = determineKfromMask(B, Kmin, Kmax, Afactor);
+    %K = determineKfromMask(B, Kmin, Kmax, Afactor);
+    K = Kmin;
+    
+    % mean-center the target signal
+%     T = B;
+%     T(T == 1) = T(T ==1) / sum(sum(T == 1));
+%     T(T == -1) = T(T==-1) / sum(sum(T == -1));
+    
     
     % get the matching pursuit approximation
     [X Y W S m] = MatchingPursuitGaussianApproximation(B, Sigmas, K);
@@ -56,9 +65,12 @@ for i = 1:nfeatures
         subplot(1,2,2); 
         cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on;
         plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
-        plot(X(W < 0)+1, Y(W < 0)+1, 'gs'); 
+        plot(X(W < 0)+1, Y(W < 0)+1, 'g.'); 
         plot(XC+1,YC+1, 'mo'); hold off;
         drawnow;
+        %keyboard;
+%         [sum(sum(T)) sum(sum(R))/sum(sum(abs(B)))]
+        %pause;
     end
     
     fprintf(fid2, [f '\n']);
