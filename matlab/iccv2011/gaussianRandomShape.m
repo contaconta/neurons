@@ -324,7 +324,9 @@ x0 = x - xc;
 y0 = y - yc;
 
 %Theta = pi* randi([0 7]) /2;
-Theta = randsample([pi/4 pi/2 .75*pi 1.25*pi 1.5*pi 1.75*pi], 1);
+%validangles = [pi/4 pi/2 .75*pi 1.25*pi 1.5*pi 1.75*pi];
+validangles = [pi/2 1.5*pi];  
+Theta = randsample(validangles, 1);
 
 R = [cos(Theta) -sin(Theta); sin(Theta) cos(Theta)];
 
