@@ -4,6 +4,7 @@ function [X Y W S Mixture]= MatchingPursuitGaussianApproximation(Image, Sigmas, 
 %
 addpath('anigaussm/');
 
+IMSIZE = size(Image);
 PAD = round(  size(Image)/3 );
 Image = padarray(Image, PAD);
 
@@ -43,8 +44,10 @@ for i = 1:NbGaussians
    %ReconstructedImage = ReconstructedImage + weight*gaussian(X, Y, [x, y], Sigmas(r));
 end
 
-%imagesc(ReconstructedImage);
 
+%%====================== KEVINS STUFF ====================================
+
+% put the GMM into a format I like
 X = Mixture.Mu(2,:)-PAD(2);
 X = X(:);
 Y = Mixture.Mu(1,:)-PAD(1);
@@ -52,4 +55,22 @@ Y = Y(:);
 W = Mixture.Weights;
 S = Mixture.Sigmas;
 
-%keyboard;
+% remove any gaussians placed outside of the image due to padding
+badinds1 = (X < 1);
+badinds2 = (Y < 1);
+badinds3 = (X > IMSIZE(2));
+badinds4 = (Y > IMSIZE(1));
+
+inds = ~(badinds1 | badinds2 | badinds3 | badinds4);
+X = X(inds);
+Y = Y(inds);
+W = W(inds);
+S = S(inds);
+
+% mean center according to area (assume 2*sigma radius)
+winds = (W > 0);
+binds = (W <= 0);
+warea = sum( 4*pi*S(winds).^2);
+barea = sum( 4*pi*S(binds).^2);
+W(winds) = W(winds)/warea;
+W(binds) = W(binds)/barea;

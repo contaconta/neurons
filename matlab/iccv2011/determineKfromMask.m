@@ -4,7 +4,7 @@ function K = determineKfromMask(B, Kmin, Kmax, Afactor)
 
 Bwhite = bwlabel(B > 0);
 Bblack = bwlabel(B < 0);
-w = regionprops(Bwhite, 'Area');
+w = regionprops(Bwhite, 'Area'); %#ok<*MRPBW>
 b = regionprops(Bblack, 'Area');
 
 P = [w; b];

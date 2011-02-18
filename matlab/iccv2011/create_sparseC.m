@@ -1,6 +1,6 @@
 warning('off','MATLAB:polyfit:PolyNotUnique');
 warning('off','MATLAB:polyfit:RepeatedPointsOrRescale');
-gPerLine = 5;
+K = 5;
 sigmas = [.5 1:8];
 IMSIZE = [24 24];
 reflectProb = 1;
@@ -19,12 +19,7 @@ disp(['...writing to ' filename]);
 
 for i = 1:Nfeatures
     
-    [x y w s] = gaussianRandomShape(IMSIZE, sigmas, gPerLine, 1, 1, reflectProb);
-    
-%     R = reconstruction(IMSIZE, x, y, w, s);
-%     imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray;
-%     drawnow;
-%     pause;
+    [x y w s] = gaussianRandomShape(IMSIZE, sigmas, K, 1, 1, reflectProb);
     
     n = length(x);
     mux = mean(x);
@@ -37,7 +32,7 @@ for i = 1:Nfeatures
     str = [num2str(n) sprintf(' %f %f', xc, yc)];
     
     for k = 1:n        
-        str = [str sprintf(' %f %f %d %d',  w(k), s(k), x(k), y(k) )];
+        str = [str sprintf(' %f %f %d %d',  w(k), s(k), x(k), y(k) )]; %#ok<AGROW>
     end
     
     fprintf(fid, [str '\n']);
