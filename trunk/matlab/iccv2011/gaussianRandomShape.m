@@ -1,4 +1,4 @@
-function  [X Y W SIGMA] = gaussianRandomShape(IMSIZE, sigmas, k, Npos, Nneg, REFLECT)
+function  [X Y W SIGMA] = gaussianRandomShape(IMSIZE, sigmas, k, Npos, Nneg, REFLECT, CROSS, sigmaO)
 % Npos = # of pos paths
 % Nneg = # of neg paths
 % k = # of gaussians per path
@@ -12,7 +12,13 @@ numScales = numel(sigmas);
 M = true(IMSIZE);
 X = []; Y = []; W = []; SIGMA = [];
 
+if ~exist('sigmaO', 'var')
+    sigmaO = pi/6;
+end
 
+if ~exist('CROSS', 'var')
+    CROSS = .1;
+end
 
 polaritylist = [ones(1,Npos), -1*ones(1,Nneg)];
 polaritylist = polaritylist( randperm(numel(polaritylist)));
@@ -24,15 +30,18 @@ for i = 1:Npos+Nneg
             % reflect the previous curve
             [M,x,y,w,s]  = reflectPath(x,y,s,w,IMSIZE,M);
             %disp('reflected');
+        elseif (rand < CROSS) && (numel(x) > 1)
+            [M,x,y,w,s]  = crossPath(x,y,s,w,IMSIZE,M);
+            %disp('crossed');
         else
             % generate a new curve
-            [M,x,y,w,s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE);
+            [M,x,y,w,s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);
             %disp('not refl');
         end
         
     else
         % we must generate a new curve on 1st iteration
-        [M, x, y, w, s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE);     
+        [M, x, y, w, s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);     
     end
     
     %[M, x, y, w, s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE); %#ok<NASGU,ASGLU>
@@ -43,15 +52,14 @@ for i = 1:Npos+Nneg
     SIGMA = [SIGMA; s];
 end
 
-%keyboard;
 
-% mean center according to area (assume 2*sigma radius)
-winds = (W > 0);
-binds = (W <= 0);
-warea = sum( 4*pi*SIGMA(winds).^2);
-barea = sum( 4*pi*SIGMA(binds).^2);
-W(winds) = W(winds)/warea;
-W(binds) = W(binds)/barea;
+% BAD!!! mean center according to area (assume 2*sigma radius)
+% winds = (W > 0);
+% binds = (W <= 0);
+% warea = sum( 4*pi*SIGMA(winds).^2);
+% barea = sum( 4*pi*SIGMA(binds).^2);
+% W(winds) = W(winds)/warea;
+% W(binds) = W(binds)/barea;
 
 %[X Y W SIGMA]
 
@@ -84,14 +92,15 @@ end
 
 
 
-function [M, x, y, w, sigma] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE)
+function [M, x, y, w, sigma] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, orientationvariance)
 
 %orientationvariance = pi/8;
-orientationvariance = pi/6;
+%orientationvariance = pi/6;
 MAXITER = 100;
 
-scaleprobs = 1 ./ (sigmas.^2);
-scaleprobs(sigmas < 1) = median(scaleprobs);
+scaleprobs = 1 ./ ( (sigmas+1).^2);
+%scaleprobs(sigmas < 1) = median(scaleprobs);
+%scaleprobs(sigmas < 1) = scaleprobs(sigmas == 1);
 
 %keyboard;
 
@@ -103,7 +112,9 @@ validinds = find(M);
 if ~isempty(validinds)
     ind = randsample(validinds, 1);
 else
-    error('no valid indexes remain!');
+    disp('error: no valid indexes remain!');
+    x = []; y = []; w = []; sigma = []; 
+    return;
 end
 [y(i) x(i)] = ind2sub(IMSIZE, ind);
 %x(i) = randi(xmax,1);
@@ -181,11 +192,16 @@ for i = 2:k
     
     %imagesc(M); colormap gray;
     
-    %keyboard;
+
 end
-
-
 w = w./sum(w);
+
+    
+%keyboard;
+
+
+
+
 
 
 function M = updatemask(M, x, y, s)
@@ -282,8 +298,104 @@ for i = 1:length(x2)
     end
 end
 
-W = W./sum(W);
-W = W(:);
-S = S(:);
-X = X(:);
-Y = Y(:);
+if ~isempty(W)
+    W = W./sum(W);
+    W = W(:);
+    S = S(:);
+    X = X(:);
+    Y = Y(:);
+else
+    X = [];
+    Y = [];
+    S = [];
+    W = [];
+end
+
+
+
+
+function [M,X,Y,W,S]  = crossPath(x,y,s,w,IMSIZE,M)
+
+
+xc = mean(x);
+yc = mean(y);          
+
+x0 = x - xc;
+y0 = y - yc;
+
+%Theta = pi* randi([0 7]) /2;
+Theta = randsample([pi/4 pi/2 .75*pi 1.25*pi 1.5*pi 1.75*pi], 1);
+
+R = [cos(Theta) -sin(Theta); sin(Theta) cos(Theta)];
+
+for i =1:length(x0)
+    a = R*[x0(i); y0(i)];
+    xR(i) = a(1);
+    yR(i) = a(2);
+end
+
+x2 = xR + xc;
+y2 = yR + yc;
+
+iter = 1;
+while ~enoughInside(x2,y2, IMSIZE)     
+
+    x0 = x - xc;
+    y0 = y - yc;
+
+    %Theta = pi* randi([0 7]) /2;
+    Theta = randsample([pi/4 pi/2 .75*pi 1.25*pi 1.5*pi 1.75*pi], 1);
+
+    R = [cos(Theta) -sin(Theta); sin(Theta) cos(Theta)];
+
+    for i =1:length(x0)
+        a = R*[x0(i); y0(i)];
+        xR(i) = a(1);
+        yR(i) = a(2);
+    end
+
+    x2 = xR + xc;
+    y2 = yR + yc;
+
+    %disp('randomly selected a new angle');
+    iter = iter + 1;
+    if iter > 1000
+        %disp('too many iterations to cross!');
+        %keyboard;
+        break;
+    end
+end
+% figure(1); clf; hold on;
+% axis([0 25 0 25]);
+% plot(x,y,'bs');
+% plot(x2,y2,'ro');
+%          
+
+count = 1;
+for i = 1:length(x2)
+    if isInside(round(x2(i)),round(y2(i)), IMSIZE)
+        X(count) = round(x2(i));
+        Y(count) = round(y2(i));
+        S(count) = s(i);
+        W(count) = abs(w(i));
+        M = updatemask(M, X(count),Y(count),S(count));
+        count = count + 1;
+    end
+end
+
+if ~isempty(W)
+    W = W./sum(W);
+    W = W(:);
+    S = S(:);
+    X = X(:);
+    Y = Y(:);
+else
+    X = [];
+    Y = [];
+    S = [];
+    W = [];
+end
+
+
+
+
