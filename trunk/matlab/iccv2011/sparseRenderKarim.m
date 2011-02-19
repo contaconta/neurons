@@ -1,4 +1,4 @@
-function [R s] = sparseRenderKarim(f, IMSIZE,pol)
+function [R s] = sparseRenderKarim(f, IMSIZE,pol,xc,yc)
 
 if ~exist('B', 'var')
     B = zeros(IMSIZE);
@@ -19,10 +19,12 @@ p = 2;
 
 for i = 1:RANK
     
-    s(i) = f(p);
-    x(i) = f(p+1);
-    y(i) = f(p+2);
-    w(i) = pol*f(p+3);
+    w(i) = pol*f(p);
+    s(i) = f(p+1);
+    x(i) = f(p+2);
+    y(i) = f(p+3);
+    
+    %[w(i) s(i) x(i) y(i)]
     
     p = p + 4;
 end
@@ -31,5 +33,10 @@ end
 
 R = reconstruction(IMSIZE, x, y, w, s);
 
-imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray;
+imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray; hold on;
+plot(x(w > 0)+1, y(w > 0)+1, 'rs');
+        plot(x(w < 0)+1, y(w < 0)+1, 'g.'); 
+        plot(xc+1,yc+1, 'mo'); hold off;
 drawnow;
+
+%keyboard;

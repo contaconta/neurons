@@ -8,7 +8,7 @@ reflectProb = 1;
 Nfeatures = 500000;
 %Nfeatures = 1000;
 
-filename = ['sparseC' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+filename = ['pathC' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 
 fid = fopen(filename, 'w');

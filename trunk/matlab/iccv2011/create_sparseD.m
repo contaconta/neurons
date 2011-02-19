@@ -7,7 +7,7 @@ crossProb = .25;
 
 Nfeatures = 500000;
 
-filename = ['sparseD' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+filename = ['pathD' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 
 fid = fopen(filename, 'w');
@@ -21,12 +21,11 @@ for i = 1:Nfeatures
     %K = randi([1 10]);
     K = abs(round(3*randn(1)))+1;
     %K = randi([1 10],1);
-    NPOS = max(1,round(randn(1)));
-    NNEG = max(1,round(randn(1)));
+    N = randsample([2 3], 1, true, [2/3 1/3]);
     SIGO = pi/randi([1 6]);
     %[K rad2deg(SIGO) NPOS NNEG]
     
-    [x y w s] = gaussianRandomShape(IMSIZE, sigmas,K,NPOS,NNEG, reflectProb, crossProb, SIGO);
+    [x y w s] = gaussianRandomShape(IMSIZE, sigmas,K,N, reflectProb, crossProb, SIGO);
     
     n = length(x);
     mux = mean(x);

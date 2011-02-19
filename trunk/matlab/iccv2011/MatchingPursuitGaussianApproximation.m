@@ -2,7 +2,8 @@ function [X Y W S Mixture]= MatchingPursuitGaussianApproximation(Image, Sigmas, 
 % 
 %   
 %
-addpath('anigaussm/');
+%addpath('anigaussm/');
+%addpath('/home/ksmith/code/neurons/matlab/iccv2011/anigaussm/');
 
 IMSIZE = size(Image);
 PAD = round(  size(Image)/3 );
@@ -25,7 +26,9 @@ for i = 1:NbGaussians
        It_convs(:,:, j) = Sigmas(j)*anigauss_mex(It, Sigmas(j));
    end
    
-   argmax = find(abs(It_convs) == max(abs(It_convs(:))) );
+   argmax = find(abs(It_convs) == max(abs(It_convs(:))),1,'first');
+   
+   %keyboard;
    
    [x, y, r] = ind2sub(size(It_convs),  argmax(1));
    
