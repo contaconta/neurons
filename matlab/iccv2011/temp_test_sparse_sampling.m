@@ -1,6 +1,7 @@
 filename = 'violajones24x24.list';
 
 
+
 IMSIZE = [24 24]; BLANK = zeros(IMSIZE);
 
 fid=fopen(filename);

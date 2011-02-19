@@ -18,17 +18,23 @@ for i = 1:nfeatures
     tline = strrep(tline, 't', ' ');
     
     f = str2num(tline); %#ok<ST2NM>
+    %f
     
-    f = [f(2) f(6:end-1)];
+    xc = f(3);
+    yc = f(4);
+    f = [f(2) f(5:end-1)];
+ 
     pol = sign(f(end));
     
-    [R s] = sparseRenderKarim(f, IMSIZE, pol);
+    [R s] = sparseRenderKarim(f, IMSIZE, pol,xc,yc);
     
     S = [S; s];
     
     %ALL(:,:,i) = abs(f(end))*R;
     ALL(:,:,i) = R;
-    %pause;
+    pause;
+    %disp(num2str(i));
+    %keyboard;
     
 end
 

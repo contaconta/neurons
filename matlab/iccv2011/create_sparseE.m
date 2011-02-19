@@ -6,7 +6,7 @@ reflectProb = .85;
 
 Nfeatures = 500000;
 
-filename = ['sparseE' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+filename = ['pathE' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 
 fid = fopen(filename, 'w');
@@ -19,8 +19,9 @@ for i = 1:Nfeatures
     
     %K = randi([1 10]);
     K = abs(round(2.5*randn(1)))+1;
-    NPOS = max(1,round(randn(1)));
-    NNEG = max(1,round(randn(1)));
+    %NPOS = max(1,round(randn(1)));
+    %NNEG = max(1,round(randn(1)));
+    N = randsample([2 3], 1, true, [2/3 1/3]);
     SIGO = pi/randi([1 6]);
     %[K rad2deg(SIGO) NPOS NNEG]
     

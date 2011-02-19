@@ -1,6 +1,4 @@
-function  [X Y W SIGMA] = gaussianRandomShape(IMSIZE, sigmas, k, Npos, Nneg, REFLECT, CROSS, sigmaO)
-% Npos = # of pos paths
-% Nneg = # of neg paths
+function  [X Y W SIGMA] = gaussianRandomShape(IMSIZE, sigmas, k, N, typeProbs,sigmaO)
 % k = # of gaussians per path
 
 DISPLAY = 0;
@@ -20,19 +18,43 @@ if ~exist('CROSS', 'var')
     CROSS = .1;
 end
 
-polaritylist = [ones(1,Npos), -1*ones(1,Nneg)];
-polaritylist = polaritylist( randperm(numel(polaritylist)));
+%polaritylist = [ones(1,Npos), -1*ones(1,Nneg)];
+%polaritylist = polaritylist( randperm(numel(polaritylist)));
+polaritylist(1) = 1;
 
-for i = 1:Npos+Nneg
+TYPE = randsample(1:4, 1, true, typeProbs);
+switch TYPE
+    case 1
+        str = '2-binary';
+        N = 2;
+    case 2
+        str = '3-line';
+        N = 3;
+    case 3 
+        str = '2-cross';
+        N = 2;
+    case 4
+        str = '2-random';
+        N = 2;
+end
+%disp(['TYPE = ' num2str(str)  '  sigmaO = ' num2str(rad2deg(sigmaO))]);
     
+direction = randsample([-1 1], 1);
+
+for i = 1:N
+
     if i > 1
-        if rand < REFLECT
-            % reflect the previous curve
-            [M,x,y,w,s]  = reflectPath(x,y,s,w,IMSIZE,M);
+        polaritylist(i) = -1*polaritylist(1);
+        %if rand < REFLECT
+        if (TYPE == 1) || (TYPE == 2)
+            % reflect the first curve
+            direction = direction * -1;
+            [M,x,y,w,s]  = reflectPath(x1,y1,s1,w1,IMSIZE,M,direction);
             %disp('reflected');
-        elseif (rand < CROSS) && (numel(x) > 1)
+        %elseif (rand < CROSS) && (numel(x) > 1)
+        elseif (TYPE == 3) && (numel(x) > 1)
             [M,x,y,w,s]  = crossPath(x,y,s,w,IMSIZE,M);
-            %disp('crossed');
+            %disp('crossed');        
         else
             % generate a new curve
             [M,x,y,w,s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);
@@ -42,6 +64,7 @@ for i = 1:Npos+Nneg
     else
         % we must generate a new curve on 1st iteration
         [M, x, y, w, s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);     
+        x1 = x; y1 = y; w1 = w; s1 = s;
     end
     
     %[M, x, y, w, s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE); %#ok<NASGU,ASGLU>
@@ -50,6 +73,9 @@ for i = 1:Npos+Nneg
     Y = [Y; y-1]; %!!!!! IMPORTANT zero-indexing for c++ !!!!!!!
     W = [W; w];
     SIGMA = [SIGMA; s];
+    
+
+    %[s w x y]
 end
 
 
@@ -135,9 +161,9 @@ M = updatemask(M, x(i),y(i),sigma(i));
 for i = 2:k
     
     % first, select a scale at random prom prob distribution
-    idxlist = [s(i-1)-1 s(i-1) s(i-1)+1];
-    idxlist(idxlist == 0) = 1;
-    idxlist(idxlist > numScales) = numel(sigmas);
+    idxlist = [s(i-1)-1 s(i-1) s(i-1) s(i-1) s(i-1)+1];
+    idxlist(idxlist == 0) = [];
+    idxlist(idxlist > numScales) = [];
     s(i) = randsample(idxlist,1);
     sigma(i) = sigmas(s(i));
     
@@ -151,6 +177,7 @@ for i = 2:k
     while iter < MAXITER
     
         % randomly select an angle
+        %disp(['orientationvariance = ' num2str(rad2deg(orientationvariance))]);
         o = orientationvariance*randn(1) + O(i-1);        
         
         % find the point at s(i-1) + s(i)
@@ -235,23 +262,28 @@ TF = (x >= 1) & (x <= IMSIZE(2)) & (y >= 1) & (y <= IMSIZE(1));
 %keyboard;
 
 
-function [M,X,Y,W,S]  = reflectPath(x,y,s,w,IMSIZE,M)
+function [M,X,Y,W,S]  = reflectPath(x,y,s,w,IMSIZE,M,direction)
+% p = the direction to reflect
 
-reflectSigma = 3;
+%reflectSigma = 3;
 
 xc = mean(x);
 yc = mean(y);          
-smean = mean(s);
+%smean = mean(s);
+smedian = median(s);
 
 x = x - xc;
 y = y - yc;
 
-d = 2*smean + reflectSigma*smean*abs(randn(1));
+%d = 2*smean + reflectSigma*smean*abs(randn(1));
+d = 2*smedian; % OR d=smedian
 d = max(1, d);
+%disp(['d = ' num2str(d) '  direction = ' num2str(direction)]);
 
 p = polyfit(x,y,1);
 slope = -(1/p(1));
-dy = randsample([-1 1],1)*sqrt( d^2 / (1 + (1/slope)^2));
+%dy = randsample([-1 1],1)*sqrt( d^2 / (1 + (1/slope)^2));
+dy = direction*sqrt( d^2 / (1 + (1/slope)^2));
 dx = dy/slope;
 
 x = x + xc;
@@ -264,19 +296,17 @@ while ~enoughInside(x2,y2, IMSIZE)
     x2 = x + dx;
     y2 = y + dy;
 
-    d = 2*smean + reflectSigma*smean*abs(randn(1)); d = max(1,d);
+    %d = 2*smean + reflectSigma*smean*abs(randn(1)); d = max(1,d);
+    d = 2*smedian; d = max(1,d);
     angle = 2*pi*rand(1);
     dx = cos(angle)*d;
     dy = sin(angle)*d;
     %disp('randomly selected a new angle');
     iter = iter + 1;
-    if iter > 1000
-        disp('too many iterations to reflect!');
+    if iter > 30
+        %disp('too many iterations to reflect!');
         %keyboard;
         break;
-    end
-    if iter > 100
-        smean = 2;
     end
 end
 % figure(1); clf; hold on;
@@ -285,6 +315,8 @@ end
 % plot(x2,y2,'ro');
 %             f = polyval(p,1:25); 
 %             plot(1:25, f, 'g.');
+
+X = []; Y = []; S = []; W = [];
 
 count = 1;
 for i = 1:length(x2)
@@ -304,11 +336,6 @@ if ~isempty(W)
     S = S(:);
     X = X(:);
     Y = Y(:);
-else
-    X = [];
-    Y = [];
-    S = [];
-    W = [];
 end
 
 
@@ -361,7 +388,7 @@ while ~enoughInside(x2,y2, IMSIZE)
 
     %disp('randomly selected a new angle');
     iter = iter + 1;
-    if iter > 1000
+    if iter > 100
         %disp('too many iterations to cross!');
         %keyboard;
         break;
@@ -370,8 +397,10 @@ end
 % figure(1); clf; hold on;
 % axis([0 25 0 25]);
 % plot(x,y,'bs');
-% plot(x2,y2,'ro');
-%          
+% plot(xc,yc, 'mo');
+% plot(x2,y2,'g.');
+         
+X = []; Y = []; S = []; W = [];
 
 count = 1;
 for i = 1:length(x2)
@@ -385,19 +414,16 @@ for i = 1:length(x2)
     end
 end
 
+
+
 if ~isempty(W)
     W = W./sum(W);
     W = W(:);
     S = S(:);
     X = X(:);
     Y = Y(:);
-else
-    X = [];
-    Y = [];
-    S = [];
-    W = [];
 end
 
 
-
+% keyboard;
 

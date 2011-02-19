@@ -26,8 +26,14 @@ function I=imgaussian(I,sigma,hsize)
 
 %cls = class(I);
 I = double(I);
-hsize = [round(6*sigma + 1) 1];
+if sigma <= .5
+    hsize = [3 3];
+else
+    hsize = [round(5*sigma + 1) 1];
+end
 H = fspecial('gaussian',hsize, sigma);
+
+%keyboard;
 
 if(ndims(I)==1)
     I = imfilter(I,H,'same', 'replicate');
@@ -37,5 +43,5 @@ elseif(ndims(I) ==2)
     Hy = H;
     %I=imfilter(imfilter(I,Hy, 'replicate', 'conv'),Hx, 'replicate', 'conv');
     %I=imfilter(imfilter(I,Hy, 'replicate'),Hx, 'replicate');
-    I=imfilter(imfilter(I,Hy, 'symmetric'),Hx, 'symmetric');
+    I=imfilter(imfilter(I,Hy, 'replicate'),Hx, 'replicate');
 end

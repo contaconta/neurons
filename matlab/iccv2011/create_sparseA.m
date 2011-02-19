@@ -5,7 +5,7 @@ IMSIZE = [24 24];
 
 Nfeatures = 500000;
 
-filename = ['sparseA' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+filename = ['pathA' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 
 fid = fopen(filename, 'w');

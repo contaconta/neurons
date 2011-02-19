@@ -1,12 +1,12 @@
 
-gPerLine = 5;
+K = 5;
 sigmas = 1:8;
 IMSIZE = [24 24];
 reflectProb = .333;
 
 Nfeatures = 500000;
 
-filename = ['sparseB' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+filename = ['pathB' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 
 fid = fopen(filename, 'w');
@@ -17,7 +17,7 @@ disp(['...writing to ' filename]);
 
 for i = 1:Nfeatures
     
-    [x y w s] = gaussianRandomShape(IMSIZE, sigmas, gPerLine, 1, 1, reflectProb);
+    [x y w s] = gaussianRandomShape(IMSIZE, sigmas, K, 1, 1, reflectProb);
     
     %R = reconstruction(IMSIZE, x, y, w, s);
     %imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray;
