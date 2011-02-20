@@ -18,7 +18,7 @@ for j = 1:numel(x)
     else
         T = imgaussian(T, sigma(j));
     end
-    R = R + w(j).*T;
+               R = R + w(j).*T;
     
     %keyboard;
     

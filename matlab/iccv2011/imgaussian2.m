@@ -27,9 +27,12 @@ function I=imgaussian2(I,sigma,hsize)
 %cls = class(I);
 I = double(I);
 hsize = [max(3,round(2*sigma + 1)) 1];
-H = fspecial('gaussian',hsize, sigma);
 %H
 %keyboard;
+if mod(hsize(1),2) == 0
+    hsize(1) = hsize(1)+1;
+end
+H = fspecial('gaussian',hsize, sigma);
 
 if(ndims(I)==1)
     I = imfilter(I,H,'same', 'replicate');

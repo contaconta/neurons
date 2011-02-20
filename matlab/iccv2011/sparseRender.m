@@ -1,4 +1,4 @@
-function [R s] = sparseRender(f, IMSIZE,pol)
+function [R x y w s] = sparseRender(f, IMSIZE,pol)
 
 if ~exist('B', 'var')
     B = zeros(IMSIZE);
@@ -30,6 +30,8 @@ end
     
 
 R = reconstruction(IMSIZE, x, y, w, s);
+
+%keyboard;
 
 %imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]); colormap gray;
 %drawnow;
