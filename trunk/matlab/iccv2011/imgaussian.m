@@ -27,12 +27,16 @@ function I=imgaussian(I,sigma,hsize)
 %cls = class(I);
 I = double(I);
 if sigma <= .5
-    hsize = [3 3];
+    hsize = [3 1];
 else
     hsize = [round(5*sigma + 1) 1];
 end
-H = fspecial('gaussian',hsize, sigma);
+if mod(hsize(1),2) == 0
+    hsize(1) = hsize(1)+1;
+end
 
+H = fspecial('gaussian',hsize, sigma);
+%numel(H)
 %keyboard;
 
 if(ndims(I)==1)
