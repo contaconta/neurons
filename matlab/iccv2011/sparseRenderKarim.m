@@ -30,6 +30,7 @@ for i = 1:RANK
 end
     
     
+[x y w s]
 
 R = reconstruction(IMSIZE, x, y, w, s);
 
@@ -38,5 +39,7 @@ plot(x(w > 0)+1, y(w > 0)+1, 'rs');
         plot(x(w < 0)+1, y(w < 0)+1, 'g.'); 
         plot(xc+1,yc+1, 'mo'); hold off;
 drawnow;
+
+
 
 %keyboard;

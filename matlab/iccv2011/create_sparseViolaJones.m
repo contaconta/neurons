@@ -9,7 +9,7 @@ Kmin = 16;
 Kmax = 16;
 Afactor = 8;
 
-DISPLAY = 1;
+DISPLAY = 0;
 
 IMSIZE = [24 24]; BLANK = zeros(IMSIZE);
 fid=fopen(filename);
@@ -17,7 +17,7 @@ tline = fgetl(fid);
 
 nfeatures = str2double(tline);
 
-outname = ['mpursuitViolaJonesK' num2str(Kmin) '-' num2str(Kmax) '_' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+outname = ['mpursuitViolaJonesK' num2str(Kmin) 'MeanCentered' '_' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 
 fid2 = fopen(outname, 'w');
 fprintf(fid2, '%d\n', nfeatures);
@@ -63,11 +63,11 @@ for i = 1:nfeatures
       	R = sparseRender(str2num(f),IMSIZE); %#ok<ST2NM>
         R2 = reconstruction_coarse(IMSIZE,X,Y,W,S);
         Rfine = reconstruction_coarse(IMSIZE,X,Y,W,S,0);
+        disp(['feature ' num2str(i) ' (K=' num2str(k) '/X=' num2str(numel(X)) ') samples: ' f]);
         str = sprintf('analytic error: %2.4f  5sigma error: %2.4f', sum(sum(abs(R-B))), sum(sum(abs(Rfine-B))));
         disp(str);
         
         if DISPLAY
-            disp(['feature ' num2str(i) ' (K=' num2str(k) '/X=' num2str(numel(X)) ') samples: ' f]);
             subplot(2,2,1); imagesc(B,[-max(abs(B(:))) max(abs(B(:)))]); colormap gray; title('original mask');
             subplot(2,2,2); 
             cla; imagesc(R,[-max(abs(R(:))) max(abs(R(:)))]);  colormap gray; hold on; title('analytic');

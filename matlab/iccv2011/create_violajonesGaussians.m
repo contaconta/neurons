@@ -1,4 +1,4 @@
-function create_violajonesGaussians(IMSIZE, filename)
+function create_violajonesGaussians(IMSIZE, filename, ROTATABLE)
 
 N       = 16;   % max number of gaussians per row
 M       = 16;   % max num of gaussians per column
@@ -74,7 +74,7 @@ for sind = 1:length(Sigmas)
                     Y = y+r-1;
                     XC = xc+c-1;
                     YC = yc+r-1;
-                    writeToFeatureList(X,Y,s,w,XC,YC,fid);
+                    writeToFeatureList(X,Y,s,w,XC,YC,fid,ROTATABLE);
                     displayfunction(X,Y,s,w,XC,YC,IMSIZE,cnt);
                     cnt = cnt + 1;
                 end
@@ -135,7 +135,7 @@ for sind = 1:length(Sigmas)
                     Y = y+r-1;
                     XC = xc+c-1;
                     YC = yc+r-1;
-                    writeToFeatureList(X,Y,s,w,XC,YC,fid);
+                    writeToFeatureList(X,Y,s,w,XC,YC,fid,ROTATABLE);
                     displayfunction(X,Y,s,w,XC,YC,IMSIZE,cnt);
                     cnt = cnt + 1;
                 end
@@ -201,7 +201,7 @@ for sind = 1:length(Sigmas)
                     Y = y+r-1;
                     XC = xc+c-1;
                     YC = yc+r-1;
-                    writeToFeatureList(X,Y,s,w,XC,YC,fid);
+                    writeToFeatureList(X,Y,s,w,XC,YC,fid,ROTATABLE);
                     displayfunction(X,Y,s,w,XC,YC,IMSIZE,cnt);
                     cnt = cnt + 1;
                 end
@@ -267,7 +267,7 @@ for sind = 1:length(Sigmas)
                     Y = y+r-1;
                     XC = xc+c-1;
                     YC = yc+r-1;
-                    writeToFeatureList(X,Y,s,w,XC,YC,fid);
+                    writeToFeatureList(X,Y,s,w,XC,YC,fid,ROTATABLE);
                     displayfunction(X,Y,s,w,XC,YC,IMSIZE,cnt);
                     cnt = cnt + 1;
                 end
@@ -332,7 +332,7 @@ for sind = 1:length(Sigmas)
                     Y = y+r-1;
                     XC = xc+c-1;
                     YC = yc+r-1;
-                    writeToFeatureList(X,Y,s,w,XC,YC,fid);
+                    writeToFeatureList(X,Y,s,w,XC,YC,fid,ROTATABLE);
                     displayfunction(X,Y,s,w,XC,YC,IMSIZE,cnt);
                     cnt = cnt + 1;
                 end
@@ -363,19 +363,22 @@ disp('=======================================');
 
 fclose(fid);
 
-%keyboard;
-
-
-function writeToFeatureList(x,y,s,w,xc,yc,fid)
 
 
 
-n = length(x);
-f = [num2str(n) sprintf(' %f %f', xc, yc)];
-for k = 1:n        
-    f = [f sprintf(' %f %f %d %d',  w(k), s(k), x(k), y(k) )]; %#ok<*AGROW>
-end
-fprintf(fid, [f '\n']);
+
+
+
+function writeToFeatureList(x,y,s,w,xc,yc,fid,ROTATABLE)
+
+appendSparseFeature(fid,x,y,w,s,xc,yc,ROTATABLE,0);
+
+% n = length(x);
+% f = [num2str(n) sprintf(' %f %f', xc, yc)];
+% for k = 1:n        
+%     f = [f sprintf(' %f %f %d %d',  w(k), s(k), x(k), y(k) )]; %#ok<*AGROW>
+% end
+% fprintf(fid, [f '\n']);
 
 
 
@@ -384,15 +387,16 @@ function displayfunction(x,y,s,w,xc,yc,IMSIZE,count)
 if mod(count, 500) == 0
     %[x(:) y(:) s(:) w(:)]    
     R1 = reconstruction_coarse(IMSIZE,x,y,w,s,0);
-    subplot(1,2,1); imagesc(R1, [-max(abs(R1(:))) max(abs(R1(:)))]);  colormap gray; title('5sigma + 1');
+    %subplot(1,2,1); 
+    imagesc(R1, [-max(abs(R1(:))) max(abs(R1(:)))]);  colormap gray; title('5sigma + 1');
     hold on;
     plot(x(w > 0)+1, y(w > 0)+1, 'rs');
     plot(x(w < 0)+1, y(w < 0)+1, 'g.'); 
     plot(xc+1,yc+1, 'mo'); hold off;
 
     %R2 = reconstruction(IMSIZE,x,y,w,s);  % analytic
-    R2 = reconstruction_coarse(IMSIZE,x,y,w,s);
-    subplot(1,2,2); imagesc(R2, [-max(abs(R2(:))) max(abs(R2(:)))]);  colormap gray; title('2sigma + 1');
+    %R2 = reconstruction_coarse(IMSIZE,x,y,w,s);
+    %subplot(1,2,2); imagesc(R2, [-max(abs(R2(:))) max(abs(R2(:)))]);  colormap gray; title('2sigma + 1');
     drawnow;
     %pause;
 end

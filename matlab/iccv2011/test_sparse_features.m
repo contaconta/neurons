@@ -1,5 +1,6 @@
 %filename = 'strong.classifier.1500';
-filename = 'strong.classifier.1500_0';
+%filename = 'strong.classifier.1500_0';
+filename = 'strong.classifier.500_0';
 
 IMSIZE = [24 24];
 
@@ -22,19 +23,24 @@ for i = 1:nfeatures
     
     xc = f(3);
     yc = f(4);
-    f = [f(2) f(5:end-1)];
- 
-    pol = sign(f(end));
     
-    [R s] = sparseRenderKarim(f, IMSIZE, pol,xc,yc);
+    f = [f(2) f(5:end-1)];
+    pol = sign(f(end));
+    if pol == 0
+        pol = 1;
+    end
+    
+    
+    [R s] = sparseRenderKarim(f, IMSIZE, pol, xc, yc);
     
     S = [S; s];
+    
+    disp( num2str(i));
     
     %ALL(:,:,i) = abs(f(end))*R;
     ALL(:,:,i) = R;
     pause;
     %disp(num2str(i));
-    %keyboard;
     
 end
 

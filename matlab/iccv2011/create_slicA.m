@@ -11,11 +11,14 @@ cd(tmpfolder);
 
 % matching pursuits parameters
 Sigmas = [.5 1:8];
-K = 32;
-BLURFLAG = 1;
-DISPLAY = 0;
+K = 20;
+BLURFLAG = 0;
+DISPLAY = 1;
+MEANCENTER = 0;
 
-
+% superpixel search parameters
+SList = [40 60];         % number of superpixels in the image [30 40 50 60]
+plist = [1 2 3 6 10 17];    % p = spatial coherence of superpixels [1:2:10 11:3:20]
 
 
 d = dir([facefolder '*.png']); I = imread([facefolder d(1).name]); IMSIZE = size(I);
@@ -23,7 +26,7 @@ d = dir([facefolder '*.png']); I = imread([facefolder d(1).name]); IMSIZE = size
 if BLURFLAG; blrstr = 'Blur'; else blrstr = []; end;
 
 % feature list file stuff
-outname = [destfolder 'faceSuperpixelsK' num2str(K) blrstr '_' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
+outname = [destfolder 'superShort' num2str(K) blrstr '_' num2str(IMSIZE(1)) 'x' num2str(IMSIZE(2)) '.list'];
 fid2 = fopen(outname, 'w'); %fprintf(fid2, '%d\n', nfeatures);
 
 
@@ -34,10 +37,10 @@ for i = 1:length(d)
     facefile = [facefolder d(i).name];
     I = imread(facefile);
     
-    SList = [30 40 50 60];     % number of superpixels in the image
+    
 
     for s = SList;
-        for p = [1:2:10 11:3:20]  % p = spatial coherence of superpixels
+        for p = plist
 
 
             % run RK's superpixel code
@@ -62,7 +65,9 @@ for i = 1:length(d)
             %N = round(maxL / 8);
             if p > 10 
                 N = 1;
-            else                
+            elseif p < 3
+                N = 3;
+            else
                 N = 2;
             end
             
@@ -93,9 +98,13 @@ for i = 1:length(d)
                 M = zeros(size(L));
                 M(L == ind(1)) = 1;
                 M(L == ind(2)) = -1;
-                M(M == 1) = M(M == 1) ./ sum(sum(M == 1));
-                M(M == -1) = M(M == -1) ./ sum(sum(M == -1));
                 
+                % mean-center the desired signal
+                if MEANCENTER
+                    M(M == 1) = M(M == 1) ./ sum(sum(M == 1));
+                    M(M == -1) = M(M == -1) ./ sum(sum(M == -1));
+                end
+                    
                 [r,c] = find(M ~= 0);
                 XC = mean(c)-1;
                 YC = mean(r)-1;
@@ -106,21 +115,20 @@ for i = 1:length(d)
                     M = M - mean(M(:));
                 end
 
+                %[X Y W S] = distanceTransformApproximationV2(M, Sigmas, K);
+                %[X Y W S] =distanceTransformApproximation(M,Sigmas, K);
                 [X Y W S m] = MatchingPursuitGaussianApproximation(M, Sigmas, K);
                 X = X-1;
                 Y = Y-1;
+
+                % append the feature to the output file
+             	f = appendSparseFeature(fid2,X,Y,W,S,XC,YC,0,0);
                 
-                % create the feature description
-                numG = length(X);
-                f = [num2str(numG) sprintf(' %f %f', XC, YC)];
-                for k = 1:numG       
-                    f = [f sprintf(' %f %f %d %d',  W(k), S(k), X(k), Y(k) )]; %#ok<*AGROW>
-                end
                 
                 %% display
-                if mod(count, 200) == 0
+                if mod(count, 1) == 0
                     disp(outname);
-                    disp(['count = ' num2str(count) '  K = ' num2str(K) ' p = ' num2str(p) ' s = ' num2str(s) '  #superpixels = ' num2str(maxL)]);
+                    disp(['count = ' num2str(count) '  K = ' num2str(K) ' p = ' num2str(p) ' s = ' num2str(s) '  #superpixels = ' num2str(maxL)  ' face (' num2str(i) '/' num2str(length(d))]);
                     
                     if DISPLAY
                         figure(1); clf; cla; imshow(Irgb); set(gca, 'Position', [0 0 1 1]);
@@ -134,14 +142,14 @@ for i = 1:length(d)
                         plot(X(W > 0)+1, Y(W > 0)+1, 'rs');
                         plot(X(W < 0)+1, Y(W < 0)+1, 'g.'); 
                         plot(XC+1,YC+1, 'mo'); hold off;
-                        drawnow;
                     end
-                    %pause;
+                    
+                    
+                    
+                    pause;
                 end
                 
                 %% clean up
-                
-                fprintf(fid2, [f '\n']);
                 count = count + 1;
 
 
