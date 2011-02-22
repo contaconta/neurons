@@ -136,5 +136,5 @@ for i = 1:length(R)
  	%pause;
 end
 
-
+disp(['...wrote to ' filename]);
 fclose(fid);
