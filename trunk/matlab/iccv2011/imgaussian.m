@@ -29,7 +29,7 @@ I = double(I);
 if sigma <= .5
     hsize = [3 1];
 else
-    hsize = [round(5*sigma + 1) 1];
+    hsize = [round(4*sigma + 1) 1];
 end
 if mod(hsize(1),2) == 0
     hsize(1) = hsize(1)+1;

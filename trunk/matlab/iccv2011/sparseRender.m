@@ -27,7 +27,7 @@ for i = 1:RANK
     p = p + 4;
 end
     
-    
+    [x y w s]
 
 R = reconstruction(IMSIZE, x, y, w, s);
 

@@ -1,6 +1,6 @@
-%IMSIZE = [24 24];
+IMSIZE = [24 24];
 %IMSIZE = [34 34];
-IMSIZE = [20 20];
+%IMSIZE = [20 20];
 
 DISP = 0;
 
