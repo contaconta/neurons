@@ -1,4 +1,4 @@
-function [Mixture] = MatchingPursuitGaussianApproximation_WithCleanUp(Image, Sigmas, Kernels, G, L2_N, NbGaussians)
+function [Mixture residualGlobalReconstruction] = MatchingPursuitGaussianApproximation_WithCleanUp(Image, Sigmas, Kernels, G, L2_N, NbGaussians)
 %
 %
 %
@@ -16,6 +16,7 @@ Mixture.Sigmas  = [];
 Mixture.Mu      = [];
 Mixture.Weights = [];
 
+EnergyImage = sum(Image(:).^2);
 
 % some precomputations
 
@@ -38,6 +39,7 @@ Mixture.Weights = [];
 %     end
 % end
 L2_Norms = sqrt(L2_N);
+
 
 for i = 1:NbGaussians
     %progressbar(i, NbGaussians);
@@ -92,7 +94,7 @@ end
 Mixture.Mu = Mu;
 Mixture.Sigmas = sigmas;
 Mixture.Weights = M \ Z;
-% residualGlobalReconstruction = EnergyImage - Z'*(M\Z);
+residualGlobalReconstruction = EnergyImage - Z'*(M\Z);
 % secondReconstruction = zeros(size(Image));
 % for i = 1:length(Mixture.Weights)
 %     
