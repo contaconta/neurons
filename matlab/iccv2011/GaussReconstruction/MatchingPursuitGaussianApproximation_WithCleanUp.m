@@ -66,7 +66,7 @@ end
 %% cleanup
 AA = cat(1, Mixture.Mu, Mixture.Sigmas');
 
-[~, I] = unique(AA', 'rows', 'first');
+[blah, I] = unique(AA', 'rows', 'first'); clear blah;
 Mu     = Mixture.Mu(:, I');
 sigmas = Mixture.Sigmas(I);
 
