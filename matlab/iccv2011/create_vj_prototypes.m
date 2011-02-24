@@ -13,7 +13,7 @@ PAD = 8;
 ROTATABLE = 1;
 TRANSLATABLE = 1;
 DISPLAY = 0;
-GLOBAL_OPTIMIZATION = 0;
+GLOBAL_OPTIMIZATION = 1;
 thre_per = 8e-5;
 
 tmpfile = ['tempfile' num2str(KMAX) '.list'];
