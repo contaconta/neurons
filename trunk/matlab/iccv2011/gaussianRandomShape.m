@@ -56,8 +56,9 @@ for i = 1:N
             [M,x,y,w,s]  = crossPath(x,y,s,w,IMSIZE,M);
             %disp('crossed');        
         else
+            [M,x,y,w,s]  = reflectPath(x1,y1,s1,w1,IMSIZE,M,direction);
             % generate a new curve
-            [M,x,y,w,s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);
+            %[M,x,y,w,s] = generatecurve(M, sigmas, k, xmax, ymax, numScales, IMSIZE, sigmaO);
             %disp('not refl');
         end
         
@@ -124,7 +125,8 @@ function [M, x, y, w, sigma] = generatecurve(M, sigmas, k, xmax, ymax, numScales
 %orientationvariance = pi/6;
 MAXITER = 100;
 
-scaleprobs = 1 ./ ( (sigmas+1).^2);
+scaleprobs = (IMSIZE(1) - 2.*sigmas).^2;
+%scaleprobs = 1 ./ ( (sigmas+1).^2);
 %scaleprobs(sigmas < 1) = median(scaleprobs);
 %scaleprobs(sigmas < 1) = scaleprobs(sigmas == 1);
 
@@ -161,10 +163,12 @@ M = updatemask(M, x(i),y(i),sigma(i));
 for i = 2:k
     
     % first, select a scale at random prom prob distribution
-    idxlist = [s(i-1)-1 s(i-1) s(i-1) s(i-1) s(i-1)+1];
-    idxlist(idxlist == 0) = [];
-    idxlist(idxlist > numScales) = [];
-    s(i) = randsample(idxlist,1);
+%     idxlist = [s(i-1)-1 s(i-1) s(i-1) s(i-1) s(i-1)+1];
+%     idxlist(idxlist == 0) = [];
+%     idxlist(idxlist > numScales) = [];
+%     s(i) = randsample(idxlist,1);
+%     sigma(i) = sigmas(s(i));
+    s(i) = s(i-1);
     sigma(i) = sigmas(s(i));
     
     % assign weights accoring to area
