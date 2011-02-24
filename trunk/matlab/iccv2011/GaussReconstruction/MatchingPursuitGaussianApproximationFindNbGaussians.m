@@ -35,7 +35,7 @@ while i < MaxNbGaussians &&  residualGlobalReconstruction > Tolerance
     It = It - weight*G{x, y, r};
     AA = cat(1, Mixture.Mu, Mixture.Sigmas');
     
-    [~, I] = unique(AA', 'rows', 'first');
+    [tmp, I] = unique(AA', 'rows', 'first'); clear tmp;
     Mu     = Mixture.Mu(:, I');
     sigmas = Mixture.Sigmas(I);
     
