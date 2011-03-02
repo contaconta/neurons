@@ -229,6 +229,7 @@ parfor t = 1:TMAX
     %    keyboard;
     %end
     FIL{t} = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
+    disp(['...' num2str(t) ' completed']);
 end
 
 
