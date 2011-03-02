@@ -64,24 +64,19 @@ for t=1:maxt
 end
 
 
-cd(folder)
-
-str3 = ['zip original_images.zip *.TIF'];
-disp(str3);
-system(str3);
-
-str4 = ['rm *.TIF'];
-disp(str4);
-system(str4);
-
-cd(work_folder);
-
-% str3 = ['zip ' folder 'original_images.zip ' folder '*.TIF'];
+% cd(folder)
+% 
+% % zip up the original images, just in case
+% str3 = ['zip original_images.zip *.TIF'];
 % disp(str3);
 % system(str3);
 % 
-% str4 = ['rm ' folder '*.TIF'];
+% str4 = ['rm *.TIF'];
 % disp(str4);
 % system(str4);
-%         
 % 
+% cd(work_folder);
+
+str4 = ['rm ' folder '*.TIF'];
+disp(str4);
+system(str4);
