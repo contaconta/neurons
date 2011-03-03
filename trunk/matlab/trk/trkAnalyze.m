@@ -1,7 +1,7 @@
 
 matlabpool
 
-folder = '/media/basel/Basel/14-11-2010/';
+folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
 
 d = dir(folder);
 
