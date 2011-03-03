@@ -90,7 +90,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
   nrows = nrows1;
   ncols = ncols1;
 
-  mexPrintf("Arguments correct\n");
+  // mexPrintf("Arguments correct\n");
 
   /* Create matrix for the return argument. */
   plhs[0] = mxCreateDoubleMatrix(nrows,ncols, mxREAL);
@@ -100,12 +100,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
   Mask   = mxGetPr(prhs[1]);
   Output = mxGetPr(plhs[0]);
 
-  mexPrintf("Creating the graph\n");
+  // mexPrintf("Creating the graph\n");
 
   long num_nodes = (nrows)*(ncols);
   long num_arcs  = (nrows-1)*(ncols-1)*2; // Change afterwards to 8-connectivity
 
-  mexPrintf("  Number of nodes: %i, Number of Arcs: %i\n", num_nodes, num_arcs);
+  // mexPrintf("  Number of nodes: %i, Number of Arcs: %i\n", num_nodes, num_arcs);
 
   std::vector< Edge > edge_array(num_arcs);
   std::vector< double > weights(num_arcs);
@@ -158,13 +158,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
   }
 
 
-  mexPrintf("Done creating the graph\n");
+  // mexPrintf("Done creating the graph\n");
 
   // Check for negative edge weights
   for(unsigned int i = 0; i < num_arcs; i++)
     if(weights[i] <= 0){
       weights[i] = EPS;
-      printf("Edge[%i] = %f\n", i, weights[i]);
+      // printf("Edge[%i] = %f\n", i, weights[i]);
     }
 
   GraphType g(&edge_array[0], &edge_array[0] + num_arcs, &weights[0], num_nodes);
