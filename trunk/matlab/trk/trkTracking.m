@@ -1,4 +1,4 @@
-function trkTracking(folder, params)
+function trkTracking(folder, resultsFolder, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt, num_txt] = trkGetDateAndLabel(folder);
@@ -8,7 +8,7 @@ function trkTracking(folder, params)
 %matlabpool(schd)
 
 %% PARAMETER SETTING (override from command line, read from param file, or default)
-if nargin > 1
+if nargin > 2
     W_THRESH = params(1);
     %SOMA_PERCENT_THRESH = params(2);
     FRANGI_THRESH = params(2);
@@ -27,14 +27,11 @@ if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
 if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000005; end;
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
-% if ~exist('NUC_LOG_THRESH', 'var');   NUC_LOG_THRESH = -.00035; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 130; end;
-if ~exist('SOMA_PERCENT_THRESH','var'); SOMA_PERCENT_THRESH = .15; end;
 
 % other parameters
-%TMAX = 30;                         % hard-set the number of time steps
 MIN_FILAMENT_SIZE = 30;             % minimum size of a neurite/filopod
 MIN_TRACK_LENGTH = 7;               % minimum number of detections for a valid neuron track
 SHOW_FALSE_DETECTS = 0;             % show false detections
@@ -43,10 +40,7 @@ DISPLAY_FIGURES = 1;                % display figure with results
 
 % display important parameters
 disp(' -------------------------------------- ');
-%disp([' NUC_INT_THRESH       = ' num2str(NUC_INT_THRESH) ]);
-%disp([' NUC_MIN_AREA         = ' num2str(NUC_MIN_AREA) ]);
 disp([' W_THRESH             = ' num2str(W_THRESH)]);
-%disp([' SOMA_PERCENT_THRESH  = ' num2str(SOMA_PERCENT_THRESH)]);
 disp([' FRANGI_THRESH        = ' num2str(FRANGI_THRESH)]);
 disp([' TARGET_NUM_OBJECTS   = ' num2str(TARGET_NUM_OBJECTS)]);
 disp([' SOMA_THRESH =        = ' num2str(SOMA_THRESH)]);
@@ -63,8 +57,9 @@ opt.verbose = false;
 
 
 %% add necessary paths
-addpath([pwd '/frangi_filter_version2a/']);
-%addpath('/home/ksmith/code/neurons/matlab/toolboxes/kevin/');
+if ~isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
+    addpath([pwd '/frangi_filter_version2a/']);
+end
 
 
 % get a list of colors to use for display
@@ -90,6 +85,7 @@ disp('...reading raw images and determining intensity level limits');
 [rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
 
 
+
 %% preprocess images
 disp('...preprocessing images');
 h1 = fspecial('log',[30 30], 6);    % Laplacian filter kernel used to find nuclei
@@ -97,8 +93,6 @@ parfor t = 1:TMAX
     Rt = mat2gray(R{t}, [double(rmin) double(rmax)]);
     Rblur{t} = imgaussian(Rt,2);
     log1{t} = imfilter(Rt, h1, 'replicate');
-    %J{t} = mat2gray(imadjust(G{t}));
-    %f{t} = FrangiFilter2D(sqrt(J{t}), opt);
     J{t} = mat2gray(G{t}, [double(gmin) double(gmax)]);
     f{t} = FrangiFilter2D(J{t}, opt);
 end
@@ -115,6 +109,7 @@ disp('...detecting nuclei');
 for t = 1:TMAX
 
     M{t} = getNucleiBinaryMask(log1{t}, Rblur{t}, BEST_LOG_THRESH, NUC_INT_THRESH, NUC_MIN_AREA);
+    clear Rblur;
     L = bwlabel(M{t});
     detections_t = regionprops(L, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
 
@@ -145,6 +140,7 @@ for t = 1:TMAX
     end
     FrameMeasures(t).Entropy = entropy(Ia);
 end
+clear log1;
 
 
 %% create the adjacency matrix for all nearby detections
@@ -187,17 +183,14 @@ end
 %% detect the Somata using region growing
 disp('...detecting somata');
 [Soma SMASK SL] = detectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+clear J;
 
 
 %% assign filaments
-disp('...finding filaments');
+disp('...assigning filament priors');
 BLANK = zeros(size(G{1}));
 priors = cell(size(D));
 for t = 1:TMAX
-    %     if mod(t,5) == 0
-    %         disp(['   t = ' num2str(t) '/' num2str(TMAX)]);
-    %     end
-
     if t == 1
         priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
     else
@@ -223,18 +216,15 @@ for t = 1:TMAX
     priors{t} = priorList;
 end
 
+disp('...assigning filaments');
 parfor t = 1:TMAX
-    % get the filaments
-    %if (t == 24) || (t == 25) || (t == 26)
-    %    keyboard;
-    %end
     FIL{t} = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
-    disp(['...' num2str(t) ' completed']);
+    disp(['...' num2str(t) ' completed']); 
 end
-
+clear SL f;
 
 disp('...skeletonizing filaments');
-FILAMENTS = struct('PixelIdxList',[],'Endpoints',[]);
+FILAMENTS = struct('PixelIdxList',[],'Endpoints',[], 'Branchpoints',[]);
 FILAMENTS(length(D)).PixelIdxList = [];
 parfor d = 1:length(D)
     if D(d).ID ~= 0
@@ -244,178 +234,41 @@ parfor d = 1:length(D)
         FILSKEL = bwmorph(FILi, 'skel', Inf);
         FILAMENTS(d).PixelIdxList = find(FILSKEL);
         FILAMENTS(d).Endpoints = find(bwmorph(FILSKEL, 'endpoints'));
+        %FILAMENTS(d).Branchpoints = find(bwmorph(FILSKEL, 'branchpoints'));
+        FILAMENTS(d).Branchpoints = find( bwmorph(bwmorph(FILSKEL, 'branchpoints'), 'thin', Inf);
     end
 end
 
-% for t = 1:TMAX
-%     for i = 1:length(Dlist{t})
-%         dind = Dlist{t}(i);
-%         FILi = FIL{t} == dind;
-%         FILi = bwmorph(FILi, 'erode', 1);
-%         FILSKEL = bwmorph(FILi, 'skel', Inf);
-%         %FILLIST{dind} = tempstruct;
-%         FILAMENTS(dind).PixelIdxList = find(FILSKEL);
-%         %[EndP BranchP] = detectEndBranch(FILSKEL, TMAX, SMASK);
-%         FILAMENTS(dind).Endpoints = find(bwmorph(FILSKEL, 'endpoints'));
-%         %FILAMENTS(dind).Branchpoints = find(bwmorph(FILSKEL, 'branchpoints'));
-%     end
-% end
 
-
-%% detect filaments
-%disp('...detecting filaments');
-%F = detectFilaments(f, gmin, TMAX, MIN_FILAMENT_SIZE, SMASK);
-
-
-%% detect endpoints and branchpoints
-%disp('...detecting endpoints and branch points');
-%[EndP BranchP] = detectEndBranch(F, TMAX, SMASK);
 
 %% render results on the video
 % 1. draw results on the videos.
 % 2. draw text annotations on the image
 disp('...rendering images');
-B = zeros(size(G{1},1), size(G{1},2));
-if 0
-    for t = 1:TMAX
+mv = trkRenderImages(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
-        I = mv{t};
-        Ir = I(:,:,1); Ig = I(:,:,2); Ib = I(:,:,3);
-
-        %% 1. draw the objects
-
-        %     % draw the filaments
-        %     Ir(F{t}) = .8;
-        %     Ig(F{t}) = 0;
-        %     Ib(F{t}) = 0;
-
-        %     % draw endpoints/branchpoints
-        %     Ir(EndP{t}) = .9;
-        %     Ig(EndP{t}) = .5;
-        %     Ib(EndP{t}) = .5;
-        %     Ir(BranchP{t}) = 1;
-        %     Ig(BranchP{t}) = .4;
-        %     Ib(BranchP{t}) = .4;
-
-        % draw nucleus and soma
-        for d = 1:length(Dlist{t})
-            detect_ind = Dlist{t}(d);
-
-            if tracks(detect_ind) ~= 0
-
-                % color the filaments
-                %FILMASK = FIL{t} == detect_ind;
-                %Ir(FILMASK) = max(0, cols(tracks(detect_ind),1) - .3);
-                %Ig(FILMASK) = max(0, cols(tracks(detect_ind),2) - .3);
-                %Ib(FILMASK) = max(0, cols(tracks(detect_ind),3) - .3);
-
-                % color filament skeletons
-                FILMASK = BLANK > Inf;
-                FILMASK( FILAMENTS(detect_ind).PixelIdxList) = 1;
-                FILMASK(SMASK{t} > 0) = 0;
-                Ir(FILMASK) = max(0, cols(tracks(detect_ind),1) - .2);
-                Ig(FILMASK) = max(0, cols(tracks(detect_ind),2) - .2);
-                Ib(FILMASK) = max(0, cols(tracks(detect_ind),3) - .2);
-                ENDMASK = BLANK > Inf;
-                ENDMASK( FILAMENTS(detect_ind).Endpoints) = 1;
-                ENDMASK( Soma(detect_ind).PixelIdxList) = 0;
-                Ir( ENDMASK ) = .9;
-                Ig( ENDMASK ) = .1;
-                Ib( ENDMASK ) = .1;
-                %             BRANCHMASK = BLANK > Inf;
-                %             BRANCHMASK( FILAMENTS(detect_ind).Branchpoints) = 1;
-                %             BRANCHMASK( Soma(detect_ind).PixelIdxList) = 0;
-                %             Ir( BRANCHMASK ) = 1;
-                %             Ig( BRANCHMASK) = 1;
-                %             Ib( BRANCHMASK ) = .1;
-
-                % color the soma
-                SomaM = B > Inf;
-                SomaM(Soma(detect_ind).PixelIdxList) = 1;
-                SomaP = bwmorph(SomaM, 'remove');
-                SomaP = bwmorph(SomaP, 'dilate');
-                SomaP = bwmorph(SomaP, 'thin',1);
-                Ir(SomaP) = max(0, cols(tracks(detect_ind),1) - .2);
-                Ig(SomaP) = max(0, cols(tracks(detect_ind),2) - .2);
-                Ib(SomaP) = max(0, cols(tracks(detect_ind),3) - .2);
-
-                % color the nucleus
-                Ir(D(detect_ind).PixelIdxList) = cols(tracks(detect_ind),1);
-                Ig(D(detect_ind).PixelIdxList) = cols(tracks(detect_ind),2);
-                Ib(D(detect_ind).PixelIdxList) = cols(tracks(detect_ind),3);
-
-
-
-            else
-                if SHOW_FALSE_DETECTS
-                    % color the false detections!
-                    Ir(D(detect_ind).PixelIdxList) = 1; %#ok<UNRCH>
-                    Ig(D(detect_ind).PixelIdxList) = 0;
-                    Ib(D(detect_ind).PixelIdxList) = 0;
-                end
-            end
-        end
-
-
-        I(:,:,1) = Ir; I(:,:,2) = Ig; I(:,:,3) = Ib;
-
-        %% 2. render text annotations
-        I = uint8(255*I);
-
-        for d = 1:length(Dlist{t})
-            detect_ind = Dlist{t}(d);
-
-            % add text annotation
-            if tracks(detect_ind) ~= 0
-                col = min(cols(tracks(detect_ind),:) + [.2 .2 .2],1);
-                rloc = max(1,D(detect_ind).Centroid(2) - 30);
-                cloc = max(1,D(detect_ind).Centroid(1) + 20);
-                I=trkRenderText(I,['id=' num2str(D(detect_ind).ID)], floor(255*col), [rloc, cloc], 'bnd', 'left');
-                %I=trkRenderText(I,[num2str(round(D(detect_ind).TravelDistance)) 'px'], floor(255*col), [rloc+30, cloc], 'bnd', 'left');
-                %I=trkRenderText(I,[num2str(D(detect_ind).Speed) 'px/f'], floor(255*col), [rloc+60, cloc], 'bnd', 'left');
-            else
-                if SHOW_FALSE_DETECTS
-                    rloc = max(1,D(detect_ind).Centroid(2) - 30); %#ok<UNRCH>
-                    cloc = max(1,D(detect_ind).Centroid(1) + 20);
-                    I=trkRenderText(I,'false_detection', [255 0 0], [rloc, cloc], 'bnd', 'left');
-                end
-            end
-        end
-
-        % print the name of the experiment on top of the video
-        I=trkRenderText(I,date_txt, [255 255 255], [10, 20], 'bnd', 'left');
-        I=trkRenderText(I,num_txt, [255 255 255], [10, 180], 'bnd', 'left');
-        I=trkRenderText(I,label_txt, [255 255 255], [10, 240], 'bnd', 'left');
-
-        % show the image
-        if DISPLAY_FIGURES
-            imshow(I);     pause(0.05);
-        end
-
-        % store the image for writing a movie file
-        mv{t} = I;
-
-    end
-end
 
 
 
 %% make time-dependent measurements
-%disp('...time-dependent measurements');
-%[D Soma] = timeMeasurements(trkSeq, timeSeq, D, Soma);
-%FrameMeasures = getFrameMeasures(G, F, EndP, BranchP, TMAX);
+disp('...time-dependent measurements');
+[D Soma] = timeMeasurements(trkSeq, timeSeq, D, Soma);
+FrameMeasures = getFrameMeasures(G, FIL, EndP, BranchP, TMAX);
 
 % put everything into a nice structure for the xml writer
-%Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
+Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
+
 
 % write the xml file
 %xmlFileName = [folder num_txt '.xml'];
 %disp(['...writing ' xmlFileName]);
 %trkWriteXMLFile(Experiment, xmlFileName);
 
+
 % save the parameters in the experiment folder
-disp(['...saving parameters to ' folder 'params.mat']);
-save([folder 'params.mat'], 'NUC_INT_THRESH',...
+paramfile = [resultsFolder date_txt '_' num_txt '.mat'];
+disp(['...saving parameters to ' paramfile]);
+save(paramfile, 'NUC_INT_THRESH',...
      'NUC_MIN_AREA',...
      'WT',...
      'WSH',...
@@ -428,11 +281,27 @@ save([folder 'params.mat'], 'NUC_INT_THRESH',...
      'rmax');
 
 % make a movie of the results
-if 0
-makemovie(mv, folder, [num_txt '.avi']); disp('');
-end
+movfile = [  date_txt '_' num_txt '.avi'];
+trkMovie(mv, folder, resultsFolder, movfile); disp('');
+%makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
+
 
 %matlabpool close;
+
+
+keyboard;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -724,28 +593,31 @@ B = imfill(B,'holes');              % fill holes
 
 
 %% make a movie output of the image sequence
-function makemovie(mv, folder, outputFilename)
-
-disp('...writing temporary image files');
-for i = 1:length(mv)
-    imwrite(mv{i}, [folder sprintf('%03d',i) '.png'], 'PNG');
-end
-disp('...encoding movie');
-oldpath = pwd;
-cd(folder);
-ENCODERATE = '5000';
-cmd = ['mencoder "mf://*.png" -mf fps=10 -o ' outputFilename ' -ovc xvid -xvidencopts bitrate=' ENCODERATE ' -really-quiet'];
-%disp(cmd);
-system(cmd);
-cd(oldpath);
-
-cmd = ['rm ' folder '*.png'];
-%disp(cmd);
-system(cmd);
+% function makemovie(mv, folder, resultsFolder, outputFilename)
+% 
+% disp('...writing temporary image files');
+% for i = 1:length(mv)
+%     imwrite(mv{i}, [folder sprintf('%03d',i) '.png'], 'PNG');
+% end
+% disp('...encoding movie');
+% oldpath = pwd;
+% cd(folder);
+% ENCODERATE = '5000';
+% cmd = ['mencoder "mf://*.png" -mf fps=10 -o ' resultsFolder outputFilename ' -ovc xvid -xvidencopts bitrate=' ENCODERATE ' -really-quiet'];
+% % cmd = ['ffmpeg -r 10 -b 600k -i %03d.png ' resultsFolder outputFilename];
+% %disp(cmd);
+% system(cmd);
+% cd(oldpath);
+% 
+% cmd = ['rm ' folder '*.png'];
+% %disp(cmd);
+% system(cmd);
 
 
 %% compute frame-based measurements
 function FrameMeasures = getFrameMeasures(G, F, EndP, BranchP, TMAX)
+
+F = F > 0;
 
 for t = 1:TMAX
     Ia = G{t};
