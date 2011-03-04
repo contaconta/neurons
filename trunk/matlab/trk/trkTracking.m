@@ -248,7 +248,7 @@ trkMovie(mv, folder, resultsFolder, movfile); disp('');
 
 %% save everything we need for the analysis
 datafile = [resultsFolder date_txt '_' num_txt '.mat'];
-trkSaveEssentialData(datafile, D, Dlist, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
+trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
 
 % % put everything into a nice structure for the xml writer
 % Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
