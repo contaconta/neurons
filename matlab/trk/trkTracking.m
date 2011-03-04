@@ -25,14 +25,14 @@ if ~exist('WT', 'var');                 WT = 50; end;
 if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
-if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000005; end;
+if ~exist('FRANGI_THRESH', 'var');     FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000005; end;
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 130; end;
 
 % other parameters
-MIN_FILAMENT_SIZE = 30;             % minimum size of a neurite/filopod
+%MIN_FILAMENT_SIZE = 30;             % minimum size of a neurite/filopod
 MIN_TRACK_LENGTH = 7;               % minimum number of detections for a valid neuron track
 SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 1;                % display figure with results
@@ -57,7 +57,7 @@ opt.verbose = false;
 
 
 %% add necessary paths
-if ~isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
+if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
     addpath([pwd '/frangi_filter_version2a/']);
 end
 
@@ -77,7 +77,7 @@ if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 D = [];                     % structure containing nucleus detections
 Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
 count = 1;                  % detection counter
-FILAMENTS = [];
+
 
 
 % get intensity level limits for the sequence
@@ -109,14 +109,15 @@ disp('...detecting nuclei');
 for t = 1:TMAX
 
     M{t} = getNucleiBinaryMask(log1{t}, Rblur{t}, BEST_LOG_THRESH, NUC_INT_THRESH, NUC_MIN_AREA);
-    clear Rblur;
     L = bwlabel(M{t});
     detections_t = regionprops(L, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
 
     % add some measurements, create a list of detections
     if ~isempty(detections_t)
         for i = 1:length(detections_t)
-            detections_t(i).MeanIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+            detections_t(i).MeanGreenIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+            detections_t(i).MeanRedIntensity = sum(R{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+            
             detections_t(i).Time = t;
             if count == 1
                 D = detections_t(i);
@@ -140,7 +141,8 @@ for t = 1:TMAX
     end
     FrameMeasures(t).Entropy = entropy(Ia);
 end
-clear log1;
+clear log1; clear Rblur;
+
 
 
 %% create the adjacency matrix for all nearby detections
@@ -168,8 +170,7 @@ disp('...graph coloring');
 
 %% assign ID's to each detections
 for t = 1:TMAX
-    % loop through detections in this time step
-    for d = 1:length(Dlist{t})
+    for d = 1:length(Dlist{t}) % loop through detections in this time step
         detect_ind = Dlist{t}(d);
         D(detect_ind).ID = tracks(detect_ind); %#ok<*AGROW>
     end
@@ -188,85 +189,31 @@ clear J;
 
 %% assign filaments
 disp('...assigning filament priors');
-BLANK = zeros(size(G{1}));
-priors = cell(size(D));
-for t = 1:TMAX
-    if t == 1
-        priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
-    else
-        priorList = zeros(1,numel(Dlist{t})) ./ numel(Dlist{t});
-        for i = 1:length(Dlist{t})
-            trkID = D(Dlist{t}(i)).ID;
-            if trkID ~= 0
-                ind = find(trkSeq{trkID} == Dlist{t}(i));
+priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
 
-                if ind ~= 1
-                    prevID =  trkSeq{trkID}( ind - 1  );
-                    priorList(i) = sum(sum(SL{t-1} == prevID));
-                end
-            end
-        end
-
-        minval = min( priorList( find (priorList)));
-        priorList(find(priorList == 0)) = minval;
-        % set zeros in the prior list to be the min value
-
-    end
-    priorList = priorList / sum(priorList);
-    priors{t} = priorList;
-end
 
 disp('...assigning filaments');
 parfor t = 1:TMAX
-    FIL{t} = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
+    [FIL{t} f{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
     disp(['...' num2str(t) ' completed']); 
 end
-clear SL f;
+clear SL;
 
 disp('...skeletonizing filaments');
-FILAMENTS = struct('PixelIdxList',[],'Endpoints',[], 'Branchpoints',[]);
-FILAMENTS(length(D)).PixelIdxList = [];
-parfor d = 1:length(D)
-    if D(d).ID ~= 0
-        t = D(d).Time;
-        FILi = FIL{t} == d; %#ok<PFBNS>
-        FILi = bwmorph(FILi, 'erode', 1);
-        FILSKEL = bwmorph(FILi, 'skel', Inf);
-        FILAMENTS(d).PixelIdxList = find(FILSKEL);
-        FILAMENTS(d).Endpoints = find(bwmorph(FILSKEL, 'endpoints'));
-        %FILAMENTS(d).Branchpoints = find(bwmorph(FILSKEL, 'branchpoints'));
-        FILAMENTS(d).Branchpoints = find( bwmorph(bwmorph(FILSKEL, 'branchpoints'), 'thin', Inf);
-    end
-end
-
-
-
-%% render results on the video
-% 1. draw results on the videos.
-% 2. draw text annotations on the image
-disp('...rendering images');
-mv = trkRenderImages(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
-
-
+BLANK = zeros(size(mv{1},1), size(mv{1},2));
+FILAMENTS = trkSkeletonize(D, FIL, BLANK);
 
 
 %% make time-dependent measurements
 disp('...time-dependent measurements');
 [D Soma] = timeMeasurements(trkSeq, timeSeq, D, Soma);
-FrameMeasures = getFrameMeasures(G, FIL, EndP, BranchP, TMAX);
+%FrameMeasures = getFrameMeasures(G, FIL, EndP, BranchP, TMAX);
 
-% put everything into a nice structure for the xml writer
-Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
-
-
-% write the xml file
-%xmlFileName = [folder num_txt '.xml'];
-%disp(['...writing ' xmlFileName]);
-%trkWriteXMLFile(Experiment, xmlFileName);
-
+%% get global experiment measures
+GlobalMeasures = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt);
 
 % save the parameters in the experiment folder
-paramfile = [resultsFolder date_txt '_' num_txt '.mat'];
+paramfile = [folder 'params.mat'];
 disp(['...saving parameters to ' paramfile]);
 save(paramfile, 'NUC_INT_THRESH',...
      'NUC_MIN_AREA',...
@@ -280,16 +227,34 @@ save(paramfile, 'NUC_INT_THRESH',...
      'rmin',...
      'rmax');
 
+
+%% render results on the video
+disp('...rendering images');
+mv = trkRenderImages(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+
 % make a movie of the results
 movfile = [  date_txt '_' num_txt '.avi'];
 trkMovie(mv, folder, resultsFolder, movfile); disp('');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
 
+
+%% save everything we need for the analysis
+datafile = [resultsFolder date_txt '_' num_txt '.mat'];
+trkSaveEssentialData(datafile, D, Dlist, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
+
+% % put everything into a nice structure for the xml writer
+% Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
+% 
+% % write the xml file
+% xmlFileName = [folder num_txt '.xml'];
+% disp(['...writing ' xmlFileName]);
+% trkWriteXMLFile(Experiment, xmlFileName);
+
 %matlabpool close;
 
 
-keyboard;
+%keyboard;
 
 
 
@@ -314,6 +279,36 @@ keyboard;
 %
 % =========================================================================
 
+
+
+function priors = assignPriors(D, Dlist, trkSeq, SL, TMAX)
+
+priors = cell(size(D));
+for t = 1:TMAX
+    if t == 1
+        priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
+    else
+        priorList = zeros(1,numel(Dlist{t})) ./ numel(Dlist{t});
+        for i = 1:length(Dlist{t})
+            trkID = D(Dlist{t}(i)).ID;
+            if trkID ~= 0
+                ind = find(trkSeq{trkID} == Dlist{t}(i));
+
+                if ind ~= 1
+                    prevID =  trkSeq{trkID}( ind - 1  );
+                    priorList(i) = sum(sum(SL{t-1} == prevID));
+                end
+            end
+        end
+
+        minval = min( priorList( find (priorList))); %#ok<FNDSB>
+        priorList(find(priorList == 0)) = minval; %#ok<FNDSB>
+        % set zeros in the prior list to be the min value
+
+    end
+    priorList = priorList / sum(priorList);
+    priors{t} = priorList;
+end
 
 
 %% detect endpoints and branch points
@@ -364,7 +359,8 @@ for t = 1:TMAX
             soma_prop = regionprops(SomaM, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
             soma_prop(1).ID = tracks(detect_ind);
             soma_prop(1).Time = t;
-            soma_prop(1).MeanIntensity = sum(J{t}(soma_prop(1).PixelIdxList))/soma_prop(1).Area;
+            soma_prop(1).MeanGreenIntensity = sum(J{t}(soma_prop(1).PixelIdxList))/soma_prop(1).Area;
+            %soma_prop(1).MeanRedIntensity = sum(R{t}(soma_prop(1).PixelIdxList))/soma_prop(1).Area;
 
             % fill the soma structure
             if isempty(Soma)
@@ -400,7 +396,7 @@ for i = 1:length(trkSeq)
         d1 = dseq(1);
         D(d1).deltaArea = 0;
         D(d1).deltaPerimeter = 0;
-        D(d1).deltaMeanIntensity = 0;
+        D(d1).deltaMeanGreenIntensity = 0;
         D(d1).deltaEccentricity = 0;
         D(d1).Speed = 0;
         D(d1).Acc = 0;
@@ -408,7 +404,7 @@ for i = 1:length(trkSeq)
 
         Soma(d1).deltaArea = 0;
         Soma(d1).deltaPerimeter = 0;
-        Soma(d1).deltaMeanIntensity = 0;
+        Soma(d1).deltaMeanGreenIntensity = 0;
         Soma(d1).deltaEccentricity = 0;
         Soma(d1).Speed = 0;
         Soma(d1).Acc = 0;
@@ -422,7 +418,7 @@ for i = 1:length(trkSeq)
 
             D(d2).deltaArea = D(d2).Area - D(d1).Area;
             D(d2).deltaPerimeter = D(d2).Perimeter - D(d1).Perimeter;
-            D(d2).deltaMeanIntensity = D(d2).MeanIntensity - D(d1).MeanIntensity;
+            D(d2).deltaMeanGreenIntensity = D(d2).MeanGreenIntensity - D(d1).MeanGreenIntensity;
             D(d2).deltaEccentricity = D(d2).Eccentricity - D(d1).Eccentricity;
             D(d2).Speed = sqrt( (D(d2).Centroid(1) - D(d1).Centroid(1))^2 + (D(d2).Centroid(2) - D(d1).Centroid(2))^2) / abs(t2 -t1);
             D(d2).Acc = D(d2).Speed - D(d1).Speed;
@@ -431,7 +427,7 @@ for i = 1:length(trkSeq)
 
             Soma(d2).deltaArea = Soma(d2).Area - Soma(d1).Area;
             Soma(d2).deltaPerimeter = Soma(d2).Perimeter - Soma(d1).Perimeter;
-            Soma(d2).deltaMeanIntensity = Soma(d2).MeanIntensity - Soma(d1).MeanIntensity;
+            Soma(d2).deltaMeanGreenIntensity = Soma(d2).MeanGreenIntensity - Soma(d1).MeanGreenIntensity;
             Soma(d2).deltaEccentricity = Soma(d2).Eccentricity - Soma(d1).Eccentricity;
             Soma(d2).Speed = sqrt( (Soma(d2).Centroid(1) - Soma(d1).Centroid(1))^2 + (Soma(d2).Centroid(2) - Soma(d1).Centroid(2))^2) / abs(t2 -t1);
             Soma(d2).Acc = Soma(d2).Speed - Soma(d1).Speed;
@@ -555,11 +551,19 @@ disp('');
 %% generate a list of colors for rendering the results
 function cols = color_list()
 
-cols1 = summer(6);
+% cols1 = summer(6);
+% cols1 = cols1(randperm(6),:);
+% cols2 = summer(8);
+% cols2 = cols2(randperm(8),:);
+% cols3 = summer(180);
+% cols3 = cols3(randperm(180),:);
+% cols = [cols1; cols2; cols3];
+
+cols1 = jet(6);
 cols1 = cols1(randperm(6),:);
-cols2 = summer(8);
+cols2 = jet(8);
 cols2 = cols2(randperm(8),:);
-cols3 = summer(180);
+cols3 = jet(180);
 cols3 = cols3(randperm(180),:);
 cols = [cols1; cols2; cols3];
 
@@ -646,8 +650,20 @@ for t = 1:TMAX
     FrameMeasures(t).Entropy = entropy(Ia);
 end
 
+% replicate t = 2 for t = 1
+FrameMeasures(1) = FrameMeasures(2);
 
-function Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt)
+
+function Experiment = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt)
+
+Experiment.Date = date_txt;
+Experiment.Label = label_txt;
+Experiment.NumberOfCells = max(tracks);
+Experiment.Length = length(Dlist);
+Experiment.AssayPosition = num_txt;
+
+
+function Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt) %#ok<*DEFNU>
 
 Experiment.Date = date_txt;
 Experiment.Label = label_txt;
