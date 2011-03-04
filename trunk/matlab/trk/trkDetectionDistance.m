@@ -22,7 +22,7 @@ p = abs((d1.Perimeter - d2.Perimeter) / (d1.Perimeter + d2.Perimeter));
 %disp(['Perimeter Distance       = ', num2str(p)]);
 
 %% Mean Intensity
-i = abs((d1.MeanIntensity - d2.MeanIntensity) / (d1.MeanIntensity + d2.MeanIntensity));
+i = abs((d1.MeanGreenIntensity - d2.MeanGreenIntensity) / (d1.MeanGreenIntensity + d2.MeanGreenIntensity));
 %disp(['Mean Intensity Distance  = ', num2str(i)]);
 
 time_d  = abs(d1.Time - d2.Time);

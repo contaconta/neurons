@@ -1,17 +1,18 @@
-function ASSIGN = assignFilaments(L, FRANGI, indList, priorList)
+function [ASSIGN P] = assignFilaments(L, FRANGI, indList, priorList)
 
 
 % parameters
 A = -1.5524;
 B = -31.1269;
 BORDER = 10;
-NEURON_PROB_THRESH = 0.001;
+NEURON_PROB_THRESH = 0.000001;  %.001
 
 % determine the # of somas
 nSomas = numel(indList);
 
 % compute frangi probability
-P = 1./(1+exp(A*log(FRANGI)+B));
+%P = 1./(1+exp(A*log(FRANGI)+B));
+P = 0.001 + .998./(1+exp(A*log(FRANGI)+B));
 
 % make image border mask
 M = zeros(size(FRANGI));
@@ -40,6 +41,7 @@ end
 
 Pneuron = sum(Iret,3);  % ./ nSomas;
 idx = find(Pneuron >= NEURON_PROB_THRESH);
+%idx = find(P >= 0.7);
 FGMASK = zeros(size(P));
 FGMASK(idx) = 1;
 
@@ -61,4 +63,3 @@ for i = 1:nSomas
     ASSIGN(MaxInd == i) = indList(i);
 end
 
-%keyboard;

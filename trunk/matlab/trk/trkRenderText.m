@@ -49,7 +49,7 @@ n=uint16(numel(text));
 base=uint8(1-logical(imread('chars.bmp')));
 base=cat(3, base*r, base*g, base*b);
 
-table='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''м!"Ј$%&/()=?^и+тащ,.-<\|;:_>з°§й*@#[]{} ';
+table='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''пїЅ!"пїЅ$%&/()=?^пїЅ+пїЅпїЅпїЅ,.-<\|;:_>з°§пїЅ*@#[]{} ';
 
 coord(2,n)=0;
 for i=1:n    
@@ -85,16 +85,25 @@ pos = min(dim_img,pos+dim)-dim;
 area_y = pos(1):(pos(1)+size(overlay,1)-1);
 area_x = pos(2):(pos(2)+size(overlay,2)-1);
 
+%keyboard;
+
 if strcmp(mode1, 'ovr') == 1
   target(area_y, area_x,:)=overlay; 
 elseif strcmp(mode1,'bnd') == 1
   area = target(area_y, area_x, :);
   area(overlay~=0) = 0;
   target(area_y, area_x, :) = overlay + area;
+elseif strcmp(mode1, 'bnd2') == 1
+  area = target(area_y, area_x, :);
+  ovmask = rgb2gray(overlay) > 0;
+  ovm = repmat(ovmask,[1 1 3]);
+  area(ovm ~= 0) = overlay(ovm ~= 0);
+  target(area_y, area_x, :) = area;
 else
   error('%s is a wrong overlay mode (allowed: ovr or bnd)', mode1)
 end
 
+%keyboard;
 out=target;
 
 
