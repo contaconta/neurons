@@ -3,6 +3,8 @@ function trkTracking(folder, resultsFolder, params)
 % get the experiment label, data, and assay position
 [date_txt, label_txt, num_txt] = trkGetDateAndLabel(folder);
 
+RECURSIONLIMIT = 5000;
+set(0,'RecursionLimit',RECURSIONLIMIT);
 
 %schd = findResource('scheduler', 'configuration', defaultParallelConfig);
 %matlabpool(schd)
@@ -25,14 +27,14 @@ if ~exist('WT', 'var');                 WT = 50; end;
 if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
-if ~exist('FRANGI_THRESH', 'var');     FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000005; end;
+if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000005; end;
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
-if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 130; end;
+if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 250; end;
 
 % other parameters
-%MIN_FILAMENT_SIZE = 30;             % minimum size of a neurite/filopod
+%TMAX = 20;
 MIN_TRACK_LENGTH = 7;               % minimum number of detections for a valid neuron track
 SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 0;                % display figure with results
@@ -53,13 +55,6 @@ opt.FrangiBetaOne = .5;
 opt.FrangiBetaTwo = 15;
 opt.BlackWhite = false;
 opt.verbose = false;
-
-
-
-%% add necessary paths
-% if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
-%     addpath([pwd '/frangi_filter_version2a/']);
-% end
 
 
 % get a list of colors to use for display
@@ -183,7 +178,7 @@ end
 
 %% detect the Somata using region growing
 disp('...detecting somata');
-[Soma SMASK SL] = detectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
 clear J;
 
 
@@ -205,7 +200,12 @@ FILAMENTS = trkSkeletonize(D, FIL, BLANK);
 %% break filaments into neurites
 disp('...magically turning filaments into neurites');
 for dd = 1:length(D)
-    [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
+    ftemp{dd} = f{D(dd).Time};
+end  
+for dd = 1:length(D)
+   	set(0,'RecursionLimit',RECURSIONLIMIT);
+    [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(ftemp{dd}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);    
+%     [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
     FILAMENTS(dd).Parents = parents;
     FILAMENTS(dd).NeuriteID = neuriteId;
     FILAMENTS(dd).NumKids = branchesLeafs;
@@ -288,7 +288,7 @@ trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, Gl
 
 
 
-function priors = assignPriors(D, Dlist, trkSeq, SL, TMAX)
+function priors = assignPriors(D, Dlist, trkSeq, SL, TMAX)  %#ok<INUSL>
 
 % priors = cell(size(D));
 % for t = 1:TMAX
@@ -338,77 +338,7 @@ end
 
 
 
-%% detect somata
-function [Soma SMASK SL] = detectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J)
 
-BLANK = zeros(size(J{1}));
-Soma = [];
-SL = [];
-
-s.Area = []; 
-s.Centroid = []; 
-s.MajorAxisLength = []; 
-s.MinorAxisLength = []; 
-s.Eccentricity = []; 
-s.Orientation = []; 
-s.PixelIdxList = []; 
-s.Perimeter = []; 
-s.ID = []; 
-s.Time = []; 
-s.MeanGreenIntensity = []; 
-
-
-for t = 1:TMAX
-    SMASK{t} = BLANK;
-    SL{t} = BLANK;
-    for d = 1:length(Dlist{t})
-        detect_ind = Dlist{t}(d);
-
-        r = max(1,round(D(detect_ind).Centroid(2)));
-        c = max(1,round(D(detect_ind).Centroid(1)));
-        DET = BLANK;
-        DET(D(detect_ind).PixelIdxList) = 1;
-        DET = DET > 0;
-        SOMA_INT_DIST =  SOMA_THRESH * mean(J{t}(DET));
-
-
-        % segment the Soma using region growing
-        SomaM    = trkRegionGrow3(J{t},DET,SOMA_INT_DIST,r,c);
-
-        % fill holes in the somas, and find soma perimeter
-        SomaM  	= imfill(SomaM, 'holes');
-        SomaM   = bwmorph(SomaM, 'dilate', 2);
-
-        if tracks(detect_ind) ~= 0
-            % collect information about the soma region
-            soma_prop = regionprops(SomaM, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
-            soma_prop(1).ID = tracks(detect_ind);
-            soma_prop(1).Time = t;
-            soma_prop(1).MeanGreenIntensity = sum(J{t}(soma_prop(1).PixelIdxList))/soma_prop(1).Area;
-            %soma_prop(1).MeanRedIntensity = sum(R{t}(soma_prop(1).PixelIdxList))/soma_prop(1).Area;
-
-            % fill the soma structure
-            if isempty(Soma)
-                Soma = soma_prop(1);
-            end
-
-            % store properties into the Soma struct
-            Soma(detect_ind) = soma_prop(1);
-
-            % add the soma to a label mask
-            SL{t}(soma_prop(1).PixelIdxList) = detect_ind;
-        else
-            Soma(detect_ind) = s;
-        end
-
-        SMASK{t}(SomaM) = 1;
-
-
-    end
-
-    SMASK{t} = SMASK{t} > 0;
-    %     SMASK{t} = bwmorph(SMASK{t}, 'dilate', 2);
-end
 
 
 %% make time-dependent measurements
