@@ -1,4 +1,4 @@
-function vret =  BranchingPointsPerNeurite(E, NeuriteThreshold)
+function vret =  fBranchingPointsPerNeurite(E, NeuriteThreshold)
 
 vret = zeros(300000,1);
 

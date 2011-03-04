@@ -1,4 +1,4 @@
-function vlengths = NeuriteLength(E, NeuriteThreshold)
+function vlengths = fNeuriteLength(E, NeuriteThreshold)
 
 if ~exist('NeuriteThreshold', 'var');
     NeuriteThreshold = 0;
