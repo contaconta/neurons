@@ -11,9 +11,9 @@ parfor d = 1:length(D)
         FILi = bwmorph(FILi, 'erode', 1);
         FILSKEL = bwmorph(FILi, 'skel', Inf);
         FILAMENTS(d).PixelIdxList = find(FILSKEL);
-        FILAMENTS(d).Endpoints = find(bwmorph(FILSKEL, 'endpoints'));
-        %FILAMENTS(d).Branchpoints = find(bwmorph(FILSKEL, 'branchpoints'));
-        FILAMENTS(d).Branchpoints = find( bwmorph(bwmorph(FILSKEL, 'branchpoints'), 'thin', Inf));
+        %FILAMENTS(d).Endpoints = find(bwmorph(FILSKEL, 'endpoints'));
+        %%FILAMENTS(d).Branchpoints = find(bwmorph(FILSKEL, 'branchpoints'));
+        %FILAMENTS(d).Branchpoints = find( bwmorph(bwmorph(FILSKEL, 'branchpoints'), 'thin', Inf));
         FILAMENTS(d).IMSIZE = size(BLANK);
     end
 end

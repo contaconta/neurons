@@ -13,10 +13,22 @@ resultsFolder = '/home/ksmith/data/Sinergia/Basel/Results/';
 
 d = dir(folder);
 
-addpath('code/');
+
+% -------------- paths -----------------------
+if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
+    addpath([pwd '/frangi_filter_version2a']);
+end
+if isempty( strfind(path, [pwd '/code']) )
+    addpath([pwd '/code']);
+end
+if isempty( strfind(path, [pwd '/gaimc']) )
+    addpath([pwd '/gaimc']);
+end
+
+
 
 count = 1;
-for i = 4:4
+for i = 79:79
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end
