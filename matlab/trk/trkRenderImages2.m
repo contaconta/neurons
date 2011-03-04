@@ -3,7 +3,7 @@ function mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, col
 % 2. draw text annotations on the image
 
 CONTRAST = 0.4;  %[0,1] 1 is normal contrast, 0 is VERY stretched contrast
-RedIntensityThresh  = 250; %280;
+RedIntensityThresh  = 200; %280;
 
 
 B = zeros(size(G{1},1), size(G{1},2));
@@ -42,7 +42,8 @@ for t = 1:TMAX
             numNeurites = max(FILAMENTS(detect_ind).NeuriteID);
             for i = 1:numNeurites
                 neuritepixels = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NeuriteID == i);
-                coloffset = 0.8 * rand(1)  - .4;
+                %coloffset = 0.8 * rand(1)  - .4;
+                coloffset = -.2;
                 Ir(neuritepixels) = min(1,max(0, color(1) - coloffset));
                 Ig(neuritepixels) = min(1,max(0, color(2) - coloffset));
                 Ib(neuritepixels) = min(1,max(0, color(3) - coloffset));
@@ -92,7 +93,7 @@ for t = 1:TMAX
     %% 2. render text annotations
     I = uint8(255*I);
     coloroffset = [-.1 -.1 -.1];    % [.2 .2 .2];
-    blk = [0 0 0];
+    blk = [80 80 80];
     
     for d = 1:length(Dlist{t})
         detect_ind = Dlist{t}(d);
@@ -121,14 +122,14 @@ for t = 1:TMAX
     end
 
     % print the name of the experiment on top of the video
-    
     I=trkRenderText(I,date_txt, blk, [10, 20], 'bnd2', 'left');
-    I=trkRenderText(I,num_txt, blk, [10, 180], 'bnd2', 'left');
+    I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
     I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
-
+    
     % show the image
     if DISPLAY_FIGURES
-        imshow(I);     pause(0.05);
+        imshow(I);
+        drawnow;
     end
 
     % store the image for writing a movie file
