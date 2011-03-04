@@ -57,9 +57,9 @@ opt.verbose = false;
 
 
 %% add necessary paths
-if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
-    addpath([pwd '/frangi_filter_version2a/']);
-end
+% if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
+%     addpath([pwd '/frangi_filter_version2a/']);
+% end
 
 
 % get a list of colors to use for display
@@ -190,8 +190,6 @@ clear J;
 %% assign filaments
 disp('...assigning filament priors');
 priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
-
-
 disp('...assigning filaments');
 parfor t = 1:TMAX
     [FIL{t} f{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
@@ -199,10 +197,19 @@ parfor t = 1:TMAX
 end
 clear SL;
 
+%% skeletonize filaments
 disp('...skeletonizing filaments');
 BLANK = zeros(size(mv{1},1), size(mv{1},2));
 FILAMENTS = trkSkeletonize(D, FIL, BLANK);
 
+%% break filaments into neurites
+disp('...magically turning filaments into neurites');
+for dd = 1:length(D)
+    [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
+    FILAMENTS(dd).Parents = parents;
+    FILAMENTS(dd).NeuriteID = neuriteId;
+    FILAMENTS(dd).NumKids = branchesLeafs;
+end
 
 %% make time-dependent measurements
 disp('...time-dependent measurements');
@@ -230,7 +237,7 @@ save(paramfile, 'NUC_INT_THRESH',...
 
 %% render results on the video
 disp('...rendering images');
-mv = trkRenderImages(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
 % make a movie of the results
 movfile = [  date_txt '_' num_txt '.avi'];
@@ -254,7 +261,7 @@ trkSaveEssentialData(datafile, D, Dlist, FILAMENTS, Soma, FrameMeasures, GlobalM
 %matlabpool close;
 
 
-%keyboard;
+keyboard;
 
 
 
@@ -283,33 +290,38 @@ trkSaveEssentialData(datafile, D, Dlist, FILAMENTS, Soma, FrameMeasures, GlobalM
 
 function priors = assignPriors(D, Dlist, trkSeq, SL, TMAX)
 
+% priors = cell(size(D));
+% for t = 1:TMAX
+%     if t == 1
+%         priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
+%     else
+%         priorList = zeros(1,numel(Dlist{t})) ./ numel(Dlist{t});
+%         for i = 1:length(Dlist{t})
+%             trkID = D(Dlist{t}(i)).ID;
+%             if trkID ~= 0
+%                 ind = find(trkSeq{trkID} == Dlist{t}(i));
+% 
+%                 if ind ~= 1
+%                     prevID =  trkSeq{trkID}( ind - 1  );
+%                     priorList(i) = sum(sum(SL{t-1} == prevID));
+%                 end
+%             end
+%         end
+% 
+%         minval = min( priorList( find (priorList))); %#ok<FNDSB>
+%         priorList(find(priorList == 0)) = minval; %#ok<FNDSB>
+%         % set zeros in the prior list to be the min value
+% 
+%     end
+%     priorList = priorList / sum(priorList);
+%     priors{t} = priorList;
+% end
+
 priors = cell(size(D));
 for t = 1:TMAX
-    if t == 1
-        priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
-    else
-        priorList = zeros(1,numel(Dlist{t})) ./ numel(Dlist{t});
-        for i = 1:length(Dlist{t})
-            trkID = D(Dlist{t}(i)).ID;
-            if trkID ~= 0
-                ind = find(trkSeq{trkID} == Dlist{t}(i));
-
-                if ind ~= 1
-                    prevID =  trkSeq{trkID}( ind - 1  );
-                    priorList(i) = sum(sum(SL{t-1} == prevID));
-                end
-            end
-        end
-
-        minval = min( priorList( find (priorList))); %#ok<FNDSB>
-        priorList(find(priorList == 0)) = minval; %#ok<FNDSB>
-        % set zeros in the prior list to be the min value
-
-    end
-    priorList = priorList / sum(priorList);
+    priorList = ones(1,numel(Dlist{t})) ./ numel(Dlist{t});
     priors{t} = priorList;
 end
-
 
 %% detect endpoints and branch points
 function [EndP BranchP] = detectEndBranch(F, TMAX, SMASK)
