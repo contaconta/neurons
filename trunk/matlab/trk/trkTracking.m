@@ -35,7 +35,7 @@ if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 130; end;
 %MIN_FILAMENT_SIZE = 30;             % minimum size of a neurite/filopod
 MIN_TRACK_LENGTH = 7;               % minimum number of detections for a valid neuron track
 SHOW_FALSE_DETECTS = 0;             % show false detections
-DISPLAY_FIGURES = 1;                % display figure with results
+DISPLAY_FIGURES = 0;                % display figure with results
 
 
 % display important parameters
@@ -261,7 +261,7 @@ trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, Gl
 %matlabpool close;
 
 
-keyboard;
+%keyboard;
 
 
 
