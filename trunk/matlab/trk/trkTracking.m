@@ -186,10 +186,15 @@ clear J;
 disp('...assigning filament priors');
 priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
 disp('...assigning filaments');
+g = cell(size(f));
 parfor t = 1:TMAX
-    [FIL{t} f{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
+    [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
     disp(['...' num2str(t) ' completed']); 
 end
+for t = 1:length(g)
+    f{t} = g{t};
+end
+clear g;
 clear SL;
 
 %% skeletonize filaments
