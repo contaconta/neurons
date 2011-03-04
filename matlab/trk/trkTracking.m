@@ -345,6 +345,19 @@ BLANK = zeros(size(J{1}));
 Soma = [];
 SL = [];
 
+s.Area = []; 
+s.Centroid = []; 
+s.MajorAxisLength = []; 
+s.MinorAxisLength = []; 
+s.Eccentricity = []; 
+s.Orientation = []; 
+s.PixelIdxList = []; 
+s.Perimeter = []; 
+s.ID = []; 
+s.Time = []; 
+s.MeanGreenIntensity = []; 
+
+
 for t = 1:TMAX
     SMASK{t} = BLANK;
     SL{t} = BLANK;
@@ -384,6 +397,8 @@ for t = 1:TMAX
 
             % add the soma to a label mask
             SL{t}(soma_prop(1).PixelIdxList) = detect_ind;
+        else
+            Soma(detect_ind) = s;
         end
 
         SMASK{t}(SomaM) = 1;
