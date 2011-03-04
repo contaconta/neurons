@@ -2,12 +2,12 @@
 matlabpool
 
 %% ICFILER
-%folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
-%resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/Results/';
+folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
+resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/Results/';
 
 %% kevin's laptop
-folder = '/home/ksmith/data/Sinergia/Basel/14-11-2010/';
-resultsFolder = '/home/ksmith/data/Sinergia/Basel/Results/';
+%folder = '/home/ksmith/data/Sinergia/Basel/14-11-2010/';
+%resultsFolder = '/home/ksmith/data/Sinergia/Basel/Results/';
 
 
 
@@ -28,7 +28,7 @@ end
 
 
 count = 1;
-for i = 79:79
+for i = 1:140
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end
