@@ -186,7 +186,7 @@ clear J;
 disp('...assigning filament priors');
 priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
 disp('...assigning filaments');
-g = cell(size(f));
+g = cell(1, TMAX);
 parfor t = 1:TMAX
     [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
     disp(['...' num2str(t) ' completed']); 
