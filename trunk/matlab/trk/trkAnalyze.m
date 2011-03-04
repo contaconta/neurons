@@ -28,7 +28,7 @@ end
 
 
 count = 1;
-for i = 97:97
+for i = 34:34
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end

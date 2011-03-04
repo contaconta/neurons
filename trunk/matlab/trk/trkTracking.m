@@ -271,7 +271,7 @@ trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, Gl
 %matlabpool close;
 
 
-keyboard;
+%keyboard;
 
 
 
