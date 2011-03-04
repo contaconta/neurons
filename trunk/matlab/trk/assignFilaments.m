@@ -5,7 +5,7 @@ function [ASSIGN P] = assignFilaments(L, FRANGI, indList, priorList)
 A = -1.5524;
 B = -31.1269;
 BORDER = 10;
-NEURON_PROB_THRESH = 0.000001;  %.001
+NEURON_PROB_THRESH = 0.000001; %0.000001;  %.001
 
 % determine the # of somas
 nSomas = numel(indList);

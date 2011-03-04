@@ -27,7 +27,7 @@ if ~exist('WT', 'var');                 WT = 50; end;
 if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
-if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000005; end;
+if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
@@ -49,7 +49,7 @@ disp([' SOMA_THRESH =        = ' num2str(SOMA_THRESH)]);
 disp(' -------------------------------------- ');
 
 % frangi parameters
-opt.FrangiScaleRange = [1 2];
+opt.FrangiScaleRange = [1 3];
 opt.FrangiScaleRatio = 1;
 opt.FrangiBetaOne = .5;
 opt.FrangiBetaTwo = 15;
@@ -178,7 +178,9 @@ end
 
 %% detect the Somata using region growing
 disp('...detecting somata');
-[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+%[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+[Soma SL] = trkDetectSomata2(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+SMASK = zeros(size(SL{1}));
 clear J;
 
 
@@ -207,13 +209,16 @@ disp('...magically turning filaments into neurites');
 for dd = 1:length(D)
     ftemp{dd} = f{D(dd).Time};
 end  
-for dd = 1:length(D)
-   	set(0,'RecursionLimit',RECURSIONLIMIT);
-    [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(ftemp{dd}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);    
-%     [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
-    FILAMENTS(dd).Parents = parents;
-    FILAMENTS(dd).NeuriteID = neuriteId;
-    FILAMENTS(dd).NumKids = branchesLeafs;
+parfor dd = 1:length(D)
+    if D(dd).ID ~= 0
+        set(0,'RecursionLimit',RECURSIONLIMIT);
+        [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(ftemp{dd}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);    
+    %     [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
+        FILAMENTS(dd).Parents = parents;
+        FILAMENTS(dd).NeuriteID = neuriteId;
+        FILAMENTS(dd).NumKids = branchesLeafs;
+        FILAMENTS(dd).NucleusID = D(dd).ID;
+    end
 end
 
 %% make time-dependent measurements
@@ -266,7 +271,7 @@ trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, Gl
 %matlabpool close;
 
 
-%keyboard;
+keyboard;
 
 
 
