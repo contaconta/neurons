@@ -2,7 +2,7 @@ function FILAMENTS = trkSkeletonize(D, FIL, BLANK)
 
 %FILAMENTS = [];
 
-FILAMENTS = struct('PixelIdxList',[],'Endpoints',[], 'Branchpoints',[]);
+FILAMENTS = struct('PixelIdxList',[]);
 FILAMENTS(length(D)).PixelIdxList = [];
 parfor d = 1:length(D)
     if D(d).ID ~= 0
