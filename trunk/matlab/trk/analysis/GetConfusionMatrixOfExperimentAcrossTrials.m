@@ -8,7 +8,7 @@ nTrials = length(TRIALS);
 
 % Gets the responses for the function for each experiment
 for nT = 1:nTrials
-   resp{nT} = ExtractStatisticalValuesFromExperiment(...
+   resp{nT} = GetValuesFromExperiment(...
         TRIALS(nT).EXPERIMENTS(nExperiment), functionHandle, vaargin);
 
    maxv = max(resp{nT});
