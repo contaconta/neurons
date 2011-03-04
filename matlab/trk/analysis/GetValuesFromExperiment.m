@@ -1,4 +1,4 @@
-function values = ExtractStatisticalValuesFromExperiment( Experiment, functionHandle, vaargin)
+function values = GetValuesFromExperiment( Experiment, functionHandle, vaargin)
 
 % values = EXTRACTSTATISTICALVALUESFROMEXPERIMENT
 %             ( experiment,functionHandle, vaargin)
