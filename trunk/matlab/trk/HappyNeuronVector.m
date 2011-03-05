@@ -1,7 +1,7 @@
-function happyVector = HappyNeuronVector(RUN)
+function [RUN, happyVector] = HappyNeuronVector(RUN)
 
 
-HAPPY_THRESHOLD = 100;
+HAPPY_THRESHOLD = 25;  %100;
 
 % By default neurons are unhappy
 happyVector = zeros(size(RUN.tracks));
@@ -43,3 +43,8 @@ for nTrack = 1:length(RUN.trkSeq)
    end
    
 end
+
+for i = 1:length(RUN.D)
+   RUN.D(i).Happy = happyVector(i); 
+end
+

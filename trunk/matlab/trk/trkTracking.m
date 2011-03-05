@@ -32,6 +32,7 @@ if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 250; end;
+if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 2500; end;
 
 % other parameters
 %TMAX = 20;
