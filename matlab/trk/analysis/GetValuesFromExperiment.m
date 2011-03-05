@@ -1,4 +1,4 @@
-function values = GetValuesFromExperiment( Experiment, functionHandle, vaargin)
+function values = GetValuesFromExperiment( Experiment, functionHandle, varargin)
 
 % values = EXTRACTSTATISTICALVALUESFROMEXPERIMENT
 %             ( experiment,functionHandle, vaargin)
@@ -9,7 +9,7 @@ function values = GetValuesFromExperiment( Experiment, functionHandle, vaargin)
 
 values = [];
 for i = 1:1:length(Experiment.RUNS)
-   valtmp = functionHandle(Experiment.RUNS(i), vaargin);
+   valtmp = functionHandle(Experiment.RUNS(i), varargin{:});
    values = [values; valtmp];
 end
 

@@ -5,8 +5,9 @@ clear all;
 %% Loads the experiments
 
 disp('... loading experiments');
+addpath('../');
 
-TRIALS(1) = LoadTrial('/media/mnemosyne/tmp/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
+TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
 
 % TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
 % TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
@@ -19,26 +20,51 @@ disp('... pfew');
 
 %% Creats an statistical function handle
 % statistic = @ffNeuriteLength;
-% statistic = @ffBranchingPointsPerNeurite;
-% statistic = @ffAreaNuclei;
 %statistic = @ffMeanGreenIntensitySomata;
+% statistic = @ffNumberOfNeuritesPerDetection;
+% statistic = @fnMeanNeuriteLength;
 
+% statistic = @ffAreaSomata;
+% statistic = @ffAreaNuclei;
+% statistic = @ffTravelDistanceNuclei;
+
+
+% statistic = @ffBranchingPointsPerNeurite;
 % statistic = @ffNumberOfNeuritesPerDetection;
 statistic = @fnMeanNeuriteLength;
 
 
-st_arg = 0;
-
-%% This is the tool
-CompareFeatureHistogramInExperiments(TRIALS(1), statistic, st_arg)
-
-
-
-
-
 %% Computes the mean value of the function among the experiments of the trial
+close all;
+LookOnlyAtHappyNeurons = 1;
+
+figure;
+CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
+figure;
 [Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, st_arg);
-errorbar(1:length(Mean)', Mean, STD);
+errorbar(1:length(Mean)', Mean, (STD));
+
+
+
+
+%% Compares the statistic in all neurons or only happy ones
+close all;
+nBins = 100;
+LookOnlyAtHappyNeurons = 1;
+[fig1, s1] = CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
+LookOnlyAtHappyNeurons = 0;
+[fig2, s2] = CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
+LookOnlyAtHappyNeurons = 1;
+
+s3 = [min(s1(1), s2(1)), max(s1(2), s2(2)), min(s1(3), s2(3)), max(s1(4), s2(4))];
+figure(fig1);
+axis(s3);
+figure(fig2);
+axis(s3);
+
+
+
+
 
 
 %% Plots the histogram of the values on the trial
