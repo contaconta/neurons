@@ -1,4 +1,4 @@
-function rvc = ffdeltaPerimeterNuclei(R, varargin)
+function rvc = ffSpeedSomata(R, varargin)
 
 
 rvc = zeros(length(R.D),1);
@@ -9,7 +9,7 @@ for d = 1:length(R.D)
        continue;
    end
    nPoints = nPoints+1;
-   rvc(nPoints) = R.D(d).deltaPerimeter;
+   rvc(nPoints) = R.Soma(d).Speed;
 end
 
 rvc = rvc(1:nPoints);
