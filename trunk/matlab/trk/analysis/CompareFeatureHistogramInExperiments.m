@@ -25,9 +25,11 @@ end
 
 X = min_val:(max_val - min_val)/nBins:max_val;
 max_bin = 0;
+nPoints = zeros(1, nExperiments);
 for nE = 1:1:nExperiments
    n{nE} = hist(resp{nE}, X);
-   n{nE} = n{nE} ./ sum(n{nE});
+   nPoints(nE) = sum(n{nE});
+   n{nE} = n{nE} ./ nPoints(nE);
    if(max(n{nE}) > max_bin)
       max_bin = max(n{nE}); 
    end
@@ -35,9 +37,9 @@ end
 
 figure;
 for i = 1:nExperiments
- subplot(1,nExperiments,i)
+ ax(i) = subplot(1,nExperiments,i);
  bar(X, n{i});
  axis([min(X), max(X), 0, max_bin]);
- title(TRIAL.EXPERIMENTS(i).RUNS(1).GlobalMeasures.Label);
+ title([TRIAL.EXPERIMENTS(i).RUNS(1).GlobalMeasures.Label ' ' num2str(nPoints(i))]);
 end
-
+linkaxes(ax, 'xy');
