@@ -1,5 +1,5 @@
 
-matlabpool
+
 
 %% ICFILER
 %folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
@@ -34,15 +34,16 @@ for i = 87:87
 end
 
 for i = 1:size(exp_num,1)
+    matlabpool local
     tic
     folder_n = [folder exp_num(i,:) '/'];
     trkTracking(folder_n, resultsFolder);
     toc
+    % kill the matlab pool
+    matlabpool close force
     disp('');
     disp('=============================================================')
     disp('');
 
 end
 
-% kill the matlab pool
-matlabpool close force

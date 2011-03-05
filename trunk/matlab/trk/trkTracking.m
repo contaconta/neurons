@@ -199,7 +199,7 @@ parfor t = 1:TMAX
     %fprintf('|');
     %disp(sprintf('\b|')); %#ok<DSPS>
     str = sprintf('   %03d completed', t);
-    disp(str);
+    disp([str  '     run ' num_txt ' ' date_txt]);
     %disp(['   ' num2str(t) ' completed']);
 end
 for t = 1:length(g)
