@@ -1,10 +1,9 @@
 function CompareFeatureHistogramInExperiments(TRIAL, featureHandle, varargin)
 
 
-nBins = 100;
-
 max_val = -1000000;
 min_val =  1000000;
+minDetectLength = 1e10;
 
 nExperiments = length(TRIAL.EXPERIMENTS);
 
@@ -14,6 +13,9 @@ for nE = 1:nExperiments
         TRIAL.EXPERIMENTS(nE), featureHandle, varargin);
    maxv = max(resp{nE});
    minv = min(resp{nE});
+   if(length(resp{nE}) < minDetectLength)
+       minDetectLength = length(resp{nE});
+   end
    if( maxv > max_val)
        max_val = maxv;
    end
@@ -21,6 +23,9 @@ for nE = 1:nExperiments
        min_val = minv;
    end
 end
+
+nBins = max(minDetectLength/10, 10);
+
 
 
 X = min_val:(max_val - min_val)/nBins:max_val;
