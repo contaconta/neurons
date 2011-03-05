@@ -15,6 +15,7 @@ for nFile = run_begin:run_step:run_end
    if(exist(name)>0)
        disp(['loading ' name ]);
        R = load(name);
+       R = HappyNeuronVector(R);
        R.FIL = [];
        RType = R.GlobalMeasures.Label;
        % If there is already another run of the same experiment
