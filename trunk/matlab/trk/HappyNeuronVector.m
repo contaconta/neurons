@@ -16,7 +16,7 @@ for nTrack = 1:length(RUN.trkSeq)
    mean_number_d = zeros(size(track));
 
    for nDtc = 1:length(track)
-       nd = RUN.track(nDtc);
+       nd = track(nDtc);
        nmbr_dendrites = max(RUN.FILAMENTS(nd).NeuriteID);
        dendrite_lengths = zeros(1,nmbr_dendrites);
        for nddr = 1:nmbr_dendrites
