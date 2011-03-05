@@ -1,4 +1,4 @@
-function rvc = ffAreaNuclei(R, varargin)
+function rvc = ffEccentricityNuclei(R, varargin)
 
 
 rvc = zeros(length(R.D),1);
@@ -9,7 +9,7 @@ for d = 1:length(R.D)
        continue;
    end
    nPoints = nPoints+1;
-   rvc(nPoints) = R.D(d).Area;
+   rvc(nPoints) = R.D(d).Eccentricity;
 end
 
 rvc = rvc(1:nPoints);
