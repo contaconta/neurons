@@ -160,7 +160,7 @@ T = trkGreedyConnect(W,A,D,W_THRESH);
 
 
 %% get the track labels from T assigned to each detection
-disp('...graph coloring');
+%disp('...graph coloring');
 [T tracks] = trkGraphColoring(T, MIN_TRACK_LENGTH); %#ok<*ASGLU>
 
 
@@ -189,17 +189,23 @@ clear J;
 
 
 %% assign filaments
-disp('...assigning filament priors');
+%disp('...assigning filament priors');
 priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
-disp('...assigning filaments');
+disp('...assigning filaments'); 
 g = cell(1, TMAX); 
 parfor t = 1:TMAX
     [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
-    disp(['...' num2str(t) ' completed']); 
+    %if mod(t,10) == 0; fprintf('\n'); disp(['   [' num2str(t) ' completed] ']); end;
+    %fprintf('|');
+    %disp(sprintf('\b|')); %#ok<DSPS>
+    str = sprintf('   %03d completed', t);
+    disp(str);
+    %disp(['   ' num2str(t) ' completed']);
 end
 for t = 1:length(g)
     f{t} = g{t};
 end
+%disp(['   (' num2str(TMAX) '/' num2str(TMAX) ') completed']);
 clear g;
 clear SL;
 
@@ -209,7 +215,7 @@ BLANK = zeros(size(mv{1},1), size(mv{1},2));
 FILAMENTS = trkSkeletonize2(D, FIL, BLANK);
 
 %% break filaments into neurites
-disp('...magically turning filaments into neurites');
+disp('...breaking skeletons into neurite trees');
 for dd = 1:length(D)
     ftemp{dd} = f{D(dd).Time};
 end  
@@ -254,7 +260,7 @@ mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dl
 
 % make a movie of the results
 movfile = [  date_txt '_' num_txt '.avi'];
-trkMovie(mv, folder, resultsFolder, movfile); disp('');
+trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
 
@@ -479,43 +485,6 @@ for i = 1:max(tracks(:))
 end
 
 
-%% find the intensity limits of the image sequences, [rmin rmax] [gmin gmax]
-function [rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles)
-
-rmax = 0;  rmin = 255;  gmax = 0;  gmin = 2^16;
-R = cell(1,TMAX);
-G = R;
-mv = R;
-
-
-for t = 1:TMAX
-    if mod(t,10) == 0
-        disp(['   t = ' num2str(t) '/' num2str(TMAX)]);
-    end
-
-    R{t} = imread([Rfolder Rfiles(t).name]);
-    rmax = max(rmax, max(R{t}(:)));
-    rmin = min(rmin, min(R{t}(:)));
-    G{t} = imread([Gfolder Gfiles(t).name]);
-    gmax = max(gmax, max(G{t}(:)));
-    gmin = min(gmin, min(G{t}(:)));
-
-    if t == 1
-        lims = stretchlim(G{t});
-    end
-    G8bits = trkTo8Bits(G{t}, lims);
-
-    % make an output image
-    Ir = mat2gray(G8bits);
-    I(:,:,1) = Ir;
-    I(:,:,2) = Ir;
-    I(:,:,3) = Ir;
-
-    mv{t} = I;
-end
-disp('');
-
-
 
 
 %% generate a list of colors for rendering the results
@@ -538,11 +507,7 @@ cols3 = cols3(randperm(180),:);
 cols = [cols1; cols2; cols3];
 
 
-%% convert 16-bit image to 8-bit image
-function J = trkTo8Bits(I, lims)
 
-J = imadjust(I, lims, []);
-J = uint8(J/2^8);
 
 
 %% get a binary mask containing nuclei

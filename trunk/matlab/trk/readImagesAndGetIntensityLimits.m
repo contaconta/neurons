@@ -6,10 +6,11 @@ R = cell(1,TMAX);
 G = R;
 mv = R;
 
-
+disp('');
 for t = 1:TMAX
     if mod(t,10) == 0
-        disp(['   t = ' num2str(t) '/' num2str(TMAX)]);
+        %disp(['   t = ' num2str(t) '/' num2str(TMAX)]);
+        fprintf('|');
     end
     
     R{t} = imread([Rfolder Rfiles(t).name]);
@@ -32,4 +33,13 @@ for t = 1:TMAX
     
     mv{t} = I;
 end
+fprintf('\n');
+disp(['   loaded (' num2str(t) '/' num2str(TMAX) ') images from:  ' Gfolder]);
 disp('');
+
+
+%% convert 16-bit image to 8-bit image
+function J = trkTo8Bits(I, lims)
+
+J = imadjust(I, lims, []);
+J = uint8(J/2^8);
