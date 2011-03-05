@@ -1,13 +1,15 @@
-function vret =  fBranchingPointsPerNeurite(E, NeuriteThreshold)
+function vret =  ffBranchingPointsPerNeurite(E, varargin)
+
+
+optargin = size(varargin,2);
+NeuriteThreshold = 0;
+if optargin > 1
+    NeuriteThreshold = varargin{1}
+end
 
 vret = zeros(300000,1);
 
 nCount = 1;
-if ~exist('NeuriteThreshold', 'var');
-    NeuriteThreshold = 0;
-end
-
-
 % for each neuron
 for nTrack = 1:length(E.trkSeq)
     trck = E.trkSeq{nTrack};
