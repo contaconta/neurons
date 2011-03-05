@@ -6,7 +6,7 @@ clear all;
 
 disp('... loading experiments');
 
-TRIALS(1) = LoadTrial('/media/mnemosyne/tmp/MICCAI11/', '14-11-2010_%03i.mat',1, 31, 10);
+TRIALS(1) = LoadTrial('/media/mnemosyne/tmp/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
 
 % TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
 % TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
@@ -18,11 +18,14 @@ disp('... pfew');
 
 
 %% Creats an statistical function handle
-statistic = @ffNeuriteLength;
+% statistic = @ffNeuriteLength;
 % statistic = @ffBranchingPointsPerNeurite;
 % statistic = @ffAreaNuclei;
-
 %statistic = @ffMeanGreenIntensitySomata;
+
+% statistic = @ffNumberOfNeuritesPerDetection;
+statistic = @fnMeanNeuriteLength;
+
 
 st_arg = 0;
 
@@ -34,8 +37,8 @@ CompareFeatureHistogramInExperiments(TRIALS(1), statistic, st_arg)
 
 
 %% Computes the mean value of the function among the experiments of the trial
-% [Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, st_arg);
-% errorbar(1:length(Mean)', Mean, STD);
+[Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, st_arg);
+errorbar(1:length(Mean)', Mean, STD);
 
 
 %% Plots the histogram of the values on the trial
