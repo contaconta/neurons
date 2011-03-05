@@ -177,6 +177,9 @@ end
 [trkSeq, timeSeq] = getTrackSequences(Dlist, tracks, D);
 
 
+%% remove any bad tracks
+[D tracks trkSeq timeSeq] = trkRemoveBadTracks(D, tracks, trkSeq, timeSeq, MAX_NUCLEUS_AREA);
+
 %% detect the Somata using region growing
 disp('...detecting somata');
 %[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
