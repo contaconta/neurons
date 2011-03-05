@@ -192,7 +192,7 @@ clear J;
 disp('...assigning filament priors');
 priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
 disp('...assigning filaments');
-g = cell(1, TMAX);
+g = cell(1, TMAX); 
 parfor t = 1:TMAX
     [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
     disp(['...' num2str(t) ' completed']); 
@@ -206,7 +206,7 @@ clear SL;
 %% skeletonize filaments
 disp('...skeletonizing filaments');
 BLANK = zeros(size(mv{1},1), size(mv{1},2));
-FILAMENTS = trkSkeletonize(D, FIL, BLANK);
+FILAMENTS = trkSkeletonize2(D, FIL, BLANK);
 
 %% break filaments into neurites
 disp('...magically turning filaments into neurites');
@@ -217,7 +217,6 @@ parfor dd = 1:length(D)
     if D(dd).ID ~= 0
         set(0,'RecursionLimit',RECURSIONLIMIT);
         [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(ftemp{dd}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);    
-    %     [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(f{D(dd).Time}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);
         FILAMENTS(dd).Parents = parents;
         FILAMENTS(dd).NeuriteID = neuriteId;
         FILAMENTS(dd).NumKids = branchesLeafs;
