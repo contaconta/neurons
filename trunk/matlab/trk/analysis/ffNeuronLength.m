@@ -1,4 +1,4 @@
-function vret =  ffNeuronLength(E, varargin)
+function vret =  ffNeuronLength(R, varargin)
 
 % By default look at happy neurons
 LookOnlyAtHappyNeurons = 0;
@@ -12,8 +12,8 @@ vret = zeros(300000,1);
 
 nCount = 0;
 % for each neuron
-for nTrack = 1:length(E.trkSeq)
-    trck = E.trkSeq{nTrack};
+for nTrack = 1:length(R.trkSeq)
+    trck = R.trkSeq{nTrack};
     
     %If the track is empty, we should continue
     if(numel(trck) == 0)
@@ -28,7 +28,7 @@ for nTrack = 1:length(E.trkSeq)
     
     
     for nNT = 1:length(trck)
-      vlength = length(find(E.FILAMENTS(trck(nNT)).NeuriteID > 0));
+      vlength = length(find(R.FILAMENTS(trck(nNT)).NeuriteID > 0));
       nCount = nCount + 1;
       vret(nCount) = vlength;
     end

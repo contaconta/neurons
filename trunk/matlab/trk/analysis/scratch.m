@@ -66,14 +66,16 @@ CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHapp
 [m,s]  = GetMeanAndSTDOfTrial(TRIALS(1), statistic, LookOnlyAtHappyNeurons);
 subplot(1,2,1);
 hold on;
-% adjust height accordingly
-x = -100:.1:1000;
+% gaussian fit
+x = -100:.1:3000;
 plot(x, 0.08*exp( - (x-m(1)).*(x-m(1))/(2*s(1)*s(1))),'r');
 subplot(1,2,2);
 hold on;
 % adjust height accordingly
-x = -100:.1:1000;
-plot(x, 0.08*exp( - (x-m(2)).*(x-m(2))/(2*s(2)*s(2))),'r');
+x = 0:.1:1000;
+lmbd = 1/m(2);
+% plot(x, 0.08*exp( - (x-m(2)).*(x-m(2))/(2*s(2)*s(2))),'r');
+plot(x, lmbd*exp(-lmbd*x),'r');
 
 
 
