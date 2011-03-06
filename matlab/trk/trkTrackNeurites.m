@@ -6,12 +6,12 @@ MIN_TRACK_LENGTH = 3;
 
 % extract a list of neurites and important properties
 disp('   extracting neurites');tic;
-[N Nlist R] = getNeurites(R); disp(['   ' toc]);
+[N Nlist R] = getNeurites(R); toc;
 
 
 % make and adjacency matrix of neurites
-disp('   making adjacency matrix');tic;
-A = make_adjacency(Nlist,1,N); disp(['   ' toc]);
+disp('   making adjacency matrix');
+A = make_adjacency(Nlist,1,N); 
 
 % fill out all the distances in the adjacency matrix
 edges = find(A == 1);
@@ -23,12 +23,12 @@ end
 
 %% apply the greedy tracking algorithm to link detections
 disp('   greedy tracking'); tic;
-T = trkGreedyConnect(W,A,N,W_THRESH); disp(['   ' toc]);
+T = trkGreedyConnect(W,A,N,W_THRESH); toc;
 
 
 %% get the track labels from T assigned to each detection
-disp('   graph coloring'); tic;
-[T ntracks] = trkGraphColoring(T, MIN_TRACK_LENGTH);  toc; clear T; %#ok<ASGLU>
+disp('   graph coloring');
+[T ntracks] = trkGraphColoring(T, MIN_TRACK_LENGTH); clear T; %#ok<ASGLU>
 
 %% assign NeuriteTrack ID's to each neurite
 for n = 1:length(N)
@@ -36,6 +36,17 @@ for n = 1:length(N)
 end
 
 R.N = N;
+
+%% store which neurites were tracked in the FILAMENTS structure
+R.FILAMENTS(1).NTrackedList = [];
+for d = 1:length(R.D)    
+    nlist = R.FILAMENTS(d).NIdxList;
+    for n = nlist
+        if N(n).NeuriteTrack > 0
+            R.FILAMENTS(d).NTrackedList = [R.FILAMENTS(d).NTrackedList n];
+        end
+    end
+end
 
 
 
