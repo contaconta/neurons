@@ -5,13 +5,13 @@ MIN_TRACK_LENGTH = 3;
 
 
 % extract a list of neurites and important properties
-disp('...extracting neurites');tic;
-[N Nlist R] = getNeurites(R); toc;
+disp('   extracting neurites');tic;
+[N Nlist R] = getNeurites(R); disp(['   ' toc]);
 
 
 % make and adjacency matrix of neurites
-disp('...making adjacency matrix');tic;
-A = make_adjacency(Nlist,1,N); toc;
+disp('   making adjacency matrix');tic;
+A = make_adjacency(Nlist,1,N); disp(['   ' toc]);
 
 % fill out all the distances in the adjacency matrix
 edges = find(A == 1);
@@ -22,12 +22,12 @@ for i = 1:length(edges)
 end
 
 %% apply the greedy tracking algorithm to link detections
-disp('...greedy tracking'); tic;
-T = trkGreedyConnect(W,A,N,W_THRESH); toc;
+disp('   greedy tracking'); tic;
+T = trkGreedyConnect(W,A,N,W_THRESH); disp(['   ' toc]);
 
 
 %% get the track labels from T assigned to each detection
-disp('...graph coloring'); tic;
+disp('   graph coloring'); tic;
 [T ntracks] = trkGraphColoring(T, MIN_TRACK_LENGTH);  toc; clear T; %#ok<ASGLU>
 
 %% assign NeuriteTrack ID's to each neurite
