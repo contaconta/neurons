@@ -7,7 +7,9 @@ clear all;
 disp('... loading experiments');
 addpath('../');
 
-TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
+% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
+TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
+
 
 % TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
 % TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
@@ -31,18 +33,39 @@ disp('... pfew');
 
 % statistic = @ffBranchingPointsPerNeurite;
 % statistic = @ffNumberOfNeuritesPerDetection;
-statistic = @fnMeanNeuriteLength;
+% statistic = @fnMeanNeuriteLength;
+% statistic = @fnMeanNeuronLength;
+% statistic = @ffNeuriteLength;
+% statistic = @fnDeltaNeuronLength;
+statistic = @fnMeanBranchingPoints;
+
+
 
 
 %% Computes the mean value of the function among the experiments of the trial
 close all;
-LookOnlyAtHappyNeurons = 1;
+LookOnlyAtHappyNeurons = 0;
+nBins = 100;
 
-figure;
 CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
 figure;
-[Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, st_arg);
+[Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, LookOnlyAtHappyNeurons);
 errorbar(1:length(Mean)', Mean, (STD));
+
+
+%% Sanity check for the mean and variance
+CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
+[m,s]  = GetMeanAndSTDOfTrial(TRIALS(1), statistic, LookOnlyAtHappyNeurons);
+subplot(1,2,1);
+hold on;
+% adjust height accordingly
+x = -100:.1:1000;
+plot(x, 0.08*exp( - (x-m(1)).*(x-m(1))/(2*s(1)*s(1))),'r');
+subplot(1,2,2);
+hold on;
+% adjust height accordingly
+x = -100:.1:1000;
+plot(x, 0.08*exp( - (x-m(2)).*(x-m(2))/(2*s(2)*s(2))),'r');
 
 
 
