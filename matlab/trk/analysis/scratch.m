@@ -8,7 +8,8 @@ disp('... loading experiments');
 addpath('../');
 
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
-TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
+% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
+TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11]);
 
 
 % TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
@@ -31,13 +32,20 @@ disp('... pfew');
 % statistic = @ffTravelDistanceNuclei;
 
 
+
 % statistic = @ffBranchingPointsPerNeurite;
+% statistic = @ffEndPointsPerNeurite;
+
+
 % statistic = @ffNumberOfNeuritesPerDetection;
 % statistic = @fnMeanNeuriteLength;
 % statistic = @fnMeanNeuronLength;
 % statistic = @ffNeuriteLength;
+statistic = @ffNeuronLength;
+
 % statistic = @fnDeltaNeuronLength;
-statistic = @fnMeanBranchingPoints;
+% statistic = @fnMeanBranchingPoints;
+% statistic = @fnMeanEndPoints;
 
 
 
