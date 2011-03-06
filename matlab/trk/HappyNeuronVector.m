@@ -1,7 +1,7 @@
 function [RUN, happyVector] = HappyNeuronVector(RUN)
 
 
-HAPPY_THRESHOLD = 25;  %100;
+HAPPY_THRESHOLD = 200; %25;  %100;
 
 % By default neurons are unhappy
 happyVector = zeros(size(RUN.tracks));
@@ -14,24 +14,30 @@ for nTrack = 1:length(RUN.trkSeq)
    track = RUN.trkSeq{nTrack};
    mean_neurite_t = zeros(size(track));
    mean_number_d = zeros(size(track));
+   soma_perimeter_t = zeros(size(track));
 
    for nDtc = 1:length(track)
-       nd = track(nDtc);
-       nmbr_dendrites = max(RUN.FILAMENTS(nd).NeuriteID);
+       d = track(nDtc);
+       nmbr_dendrites = max(RUN.FILAMENTS(d).NeuriteID);
        dendrite_lengths = zeros(1,nmbr_dendrites);
        for nddr = 1:nmbr_dendrites
-           dendrite_lengths(nddr) = size(find(RUN.FILAMENTS(nd).NeuriteID == nddr),1);
+           dendrite_lengths(nddr) = size(find(RUN.FILAMENTS(d).NeuriteID == nddr),1);
        end
        if(isempty(nmbr_dendrites) || nmbr_dendrites ==0 )
-         mean_number_d(nDtc) = 0;
-         mean_neurite_t(nDtc) = 0;       
+         mean_number_d(d) = 0;
+         mean_neurite_t(d) = 0;       
        else
-        mean_number_d(nDtc) = nmbr_dendrites;        
-        mean_neurite_t(nDtc) = mean(dendrite_lengths);
+        mean_number_d(d) = nmbr_dendrites;        
+        mean_neurite_t(d) = mean(dendrite_lengths);
        end
+       soma_perimeter_t(d) = RUN.Soma(d).Perimeter;
    end
    % if they are not many, the are long and variate, they have fun
-   happy_factor = mean(mean_neurite_t)*std(mean_neurite_t)/(mean(mean_number_d)+1);
+   %happy_factor = mean(mean_neurite_t)*std(mean_neurite_t)/(mean(mean_number_d)+1);
+   happy_factor = mean(mean_neurite_t)*std(mean_neurite_t)*std(soma_perimeter_t);
+   happy_factor = (mean(mean_neurite_t)*std(mean_neurite_t)*std(soma_perimeter_t))/(mean(mean_number_d)+1);;
+   
+%    happy_factor_list(nTrack) =  happy_factor;
    
    if(happy_factor > HAPPY_THRESHOLD)
       happyVector(track) = 1;
@@ -48,3 +54,8 @@ for i = 1:length(RUN.D)
    RUN.D(i).Happy = happyVector(i); 
 end
 
+% low_list = happy_factor_list < 1000;
+% 
+% find(low_list)
+% happy_factor_list(low_list)
+%keyboard;

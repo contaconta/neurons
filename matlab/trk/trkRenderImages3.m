@@ -9,7 +9,12 @@ FILAMENTS   = R.FILAMENTS;
 Soma        = R.Soma;
 tracks      = R.tracks;
 D           = R.D;
+
+NPROCESSED = 0;
+if exist('N', 'var')
 N           = R.N;
+NPROCESSED = 1;
+end
 
 CONTRAST = 0.4;  %[0,1] 1 is normal contrast, 0 is VERY stretched contrast
 
@@ -48,19 +53,17 @@ for t = TMIN:TMAX
 
             numNeurites = max(FILAMENTS(detect_ind).NeuriteID);
             for i = 1:numNeurites
-%                 if i == 1
-%                     neuritecolor = [.6 .6 .6];
-%                 elseif i == 2
-%                     neuritecolor = [.8 .3 .3];
-%                 else
-%                     neuritecolor = [ .6 .6 .6];
-%                 end
-                n = FILAMENTS(detect_ind).NIdxList(i);
-                if N(n).NeuriteTrack == 0
-                    neuritecolor = [.6 .6 .6];
+                if NPROCESSED
+
+                    n = FILAMENTS(detect_ind).NIdxList(i);
+                    if N(n).NeuriteTrack == 0
+                        neuritecolor = [.6 .6 .6];
+                    else
+                        nTrack = N(n).NeuriteTrack;
+                        neuritecolor = cols(nTrack,:);
+                    end
                 else
-                    nTrack = N(n).NeuriteTrack;
-                    neuritecolor = cols(nTrack,:);
+                    neuritecolor = color;
                 end
     
                 neuritepixels = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NeuriteID == i);
