@@ -1,15 +1,16 @@
-function TRIAL = LoadTrial(path, naming_scheme, run_begin, run_end, run_step)
+function TRIAL = LoadTrial(path, naming_scheme, runs)
+
+
+runs
+
+% if(~exist('runs','var')==0), runs = 1:1:200; end
 
 TRIAL.ExperimentNames = containers.Map();
 numberExperiments = 0;
 
-if(exist('run_begin','var')==0), run_begin=1; end
-if(exist('run_end','var')==0), run_end=200; end
-if(exist('run_end','var')==0), run_step=1; end
-
 
 schm = [path '/' naming_scheme];
-for nFile = run_begin:run_step:run_end
+for nFile = runs
    name = sprintf(schm, nFile);
    % if the file exists
    if(exist(name)>0)
