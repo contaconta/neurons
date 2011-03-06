@@ -21,20 +21,22 @@ cols1 = jet(6);
 cols1 = cols1(randperm(6),:);
 cols2 = jet(8);
 cols2 = cols2(randperm(8),:);
-cols3 = jet(180);
-cols3 = cols3(randperm(180),:);
+cols3 = jet(1000);
+cols3 = cols3(randperm(1000),:);
 colors = [cols1; cols2; cols3];
 
 %% draw our results on top of the images
 DISPLAY_FIGURES = 1;
-BLANK = zeros(size(mv{1}));
-mv = trkRenderImages3(R.GlobalMeasures.Length,R.GlobalMeasures.Date,R.GlobalMeasures.AssayPosition,R.GlobalMeasures.Label,colors,mv,R.Dlist,BLANK,R.FILAMENTS,R.Soma,R.tracks,R.D,DISPLAY_FIGURES);
-
+%BLANK = zeros(size(mv{1}));
+%mv = trkRenderImages3(1,R.GlobalMeasures.Length,R.GlobalMeasures.Date,R.GlobalMeasures.AssayPosition,R.GlobalMeasures.Label,colors,mv,R.Dlist,BLANK,R.FILAMENTS,R.Soma,R.tracks,R.D,DISPLAY_FIGURES);
+mv = trkRenderImages3(1,R.GlobalMeasures.Length,R,colors,mv,DISPLAY_FIGURES);
 
 %% write the movie
 movfile = [  R.GlobalMeasures.Date '_' R.GlobalMeasures.AssayPosition '.avi'];
 trkMovie(mv, destFolder, destFolder, movfile, ~keepFramesFlag); disp(' ');
 
+disp('');
+disp(['...encoded ' destFolder movfile]);
 
 %keyboard;
 
