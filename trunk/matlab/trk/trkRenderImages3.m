@@ -1,5 +1,17 @@
 %function mv = trkRenderImages3(TMIN,TMAX,date_txt, num_txt,label_txt,cols,mv,Dlist,BLANK,FILAMENTS,Soma,tracks,D,N,DISPLAY_FIGURES) 
 function mv = trkRenderImages3(TMIN,TMAX,R,cols,mv,DISPLAY_FIGURES)
+% mv = trkRenderImages3(TMIN,TMAX,R,cols,mv,DISPLAY_FIGURES)
+%
+%   TMIN = first time step to render
+%   TMAX = last time step to render
+%   R = run data structure containing all data from the experimental run
+%   cols = color map for drawing neurons
+%   mv = the original image sequence to draw on top of
+%   DISPLAY_FIGURES = flag to show the rendered figures
+
+
+
+
 date_txt    = R.GlobalMeasures.Date;
 num_txt     = R.GlobalMeasures.AssayPosition;
 label_txt   = R.GlobalMeasures.Label;

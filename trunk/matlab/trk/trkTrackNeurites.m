@@ -38,6 +38,7 @@ end
 R.N = N;
 
 %% store which neurites were tracked in the FILAMENTS structure
+disp('   cleanup and generate sequences');
 R.FILAMENTS(1).NTrackedList = [];
 for d = 1:length(R.D)    
     nlist = R.FILAMENTS(d).NIdxList;
@@ -49,7 +50,12 @@ for d = 1:length(R.D)
 end
 
 
+%% get a list of detections and associated time steps for each track
+[trkNSeq, timeNSeq] = getTrackSequences(Nlist, ntracks, N);
 
+R.trkNSeq = trkNSeq;
+R.timeNSeq = timeNSeq;
+keyboard;
 
 
 % %% temporary frame-rendering
@@ -206,6 +212,24 @@ for t = 2:length(Nlist)
 end
 
 
+%% extract series of track labels and time stamps for each valid track
+function [trkSeq, timeSeq] = getTrackSequences(Nlist, tracks, N)
+trkSeq = cell(1, max(tracks(:)));
+timeSeq = cell(1, max(tracks(:)));
+for i = 1:max(tracks(:))
+
+    for t = 1:length(Nlist)
+        detections = Nlist{t};
+        ids = [N(detections).NeuriteTrack];
+
+        n = detections(find(ids == i,1));
+
+        if ~isempty(n)
+            trkSeq{i} = [trkSeq{i} n];
+            timeSeq{i} = [timeSeq{i} t];
+        end
+    end
+end
 
 
 
