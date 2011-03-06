@@ -162,7 +162,7 @@ function [Ir Ig Ib] = colorNeurites(dlist, Ir,Ig,Ib,FILAMENTS,color)
 
 for n = dlist(:)'
     if ~isfield(FILAMENTS, 'FilopodiaFlag')
-        [FILAMENTS neuritePixList] = trkFindNeurites(n,FILAMENTS);
+        [FILAMENTS neuritePixList] = trkFindFilopodia(n,FILAMENTS);
     else
         neuriteIdxList = find(FILAMENTS(n).FilopodiaFlag);
         neuritePixList = FILAMENTS(n).PixelIdxList(neuriteIdxList); %#ok<FNDSB>

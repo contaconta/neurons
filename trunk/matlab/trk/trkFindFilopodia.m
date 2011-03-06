@@ -4,7 +4,7 @@ MAX_LENGTH_FILOPODIA = 20;
 
 neuritePixList = [];
 %neuriteinds = [];
-FILAMENTS(n).NeuriteFlag = zeros(size(FILAMENTS(n).PixelIdxList));
+FILAMENTS(n).FilopodiaFlag = zeros(size(FILAMENTS(n).PixelIdxList));
 
 if ~isempty(FILAMENTS(n).NeuriteID)
 
@@ -28,7 +28,9 @@ if ~isempty(FILAMENTS(n).NeuriteID)
                 %neuriteinds = [neuriteinds; plist];
                 FILAMENTS(n).FilopodiaFlag(plist) = 1;
                 neuritePixList = [neuritePixList; pixlist]; %#ok<AGROW>
-        	end
+            
+            end
+            
         end
     end    
 end
