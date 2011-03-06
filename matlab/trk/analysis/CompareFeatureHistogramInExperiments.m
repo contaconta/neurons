@@ -42,7 +42,7 @@ span = [min(X)-x_step*5, max(X)+x_step*5, 0, max_bin];
 
 fig = figure;
 for i = 1:nExperiments
- ax(i) = subplot(1,nExperiments,i);
+ ax(i) = subplot(3,ceil(nExperiments/3),i);
  bar(X, n{i});
  grid on;
  axis(span);
