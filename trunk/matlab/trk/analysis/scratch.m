@@ -9,10 +9,10 @@ addpath('../');
 
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
-TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11]);
+% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat');
 
 
-% TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
+TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
 % TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
 % TRIALS(3) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '16-11-2010_%03i.mat');
 % TRIALS(4) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '17-11-2010_%03i.mat');
@@ -38,21 +38,21 @@ disp('... pfew');
 
 
 % statistic = @ffNumberOfNeuritesPerDetection;
-% statistic = @fnMeanNeuriteLength;
-% statistic = @fnMeanNeuronLength;
 % statistic = @ffNeuriteLength;
-statistic = @ffNeuronLength;
 
 % statistic = @fnDeltaNeuronLength;
 % statistic = @fnMeanBranchingPoints;
 % statistic = @fnMeanEndPoints;
 
+% statistic = @ffNeuronLength;
+% statistic = @fnMeanNeuriteLength;
+statistic = @fnMeanNeuronLength;
 
 
 
 %% Computes the mean value of the function among the experiments of the trial
 close all;
-LookOnlyAtHappyNeurons = 0;
+LookOnlyAtHappyNeurons = 1;
 nBins = 100;
 
 CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
@@ -62,8 +62,12 @@ errorbar(1:length(Mean)', Mean, (STD));
 
 
 %% Sanity check for the mean and variance
+LookOnlyAtHappyNeurons = 0;
+nBins = 100;
 CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
 [m,s]  = GetMeanAndSTDOfTrial(TRIALS(1), statistic, LookOnlyAtHappyNeurons);
+
+
 subplot(1,2,1);
 hold on;
 % gaussian fit
@@ -74,8 +78,8 @@ hold on;
 % adjust height accordingly
 x = 0:.1:1000;
 lmbd = 1/m(2);
-% plot(x, 0.08*exp( - (x-m(2)).*(x-m(2))/(2*s(2)*s(2))),'r');
-plot(x, lmbd*exp(-lmbd*x),'r');
+plot(x, 0.08*exp( - (x-m(2)).*(x-m(2))/(2*s(2)*s(2))),'r');
+%plot(x, lmbd*exp(-lmbd*x),'r');
 
 
 

@@ -1,9 +1,7 @@
 function TRIAL = LoadTrial(path, naming_scheme, runs)
 
 
-runs
-
-% if(~exist('runs','var')==0), runs = 1:1:200; end
+if(exist('runs','var')==0), runs = 1:1:200; end
 
 TRIAL.ExperimentNames = containers.Map();
 numberExperiments = 0;
