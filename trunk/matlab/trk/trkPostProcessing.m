@@ -12,6 +12,6 @@ end
 disp('...postprocessing - labeling unhappy neurons');
 R = HappyNeuronVector(R);
 
-% track the neurites
-disp('...postprocessing - tracking neurites');
-R = trkTrackNeurites(R);
+% % track the neurites
+% disp('...postprocessing - tracking neurites');
+% R = trkTrackNeurites(R);
