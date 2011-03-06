@@ -76,7 +76,7 @@ switch exp_date
             label_txt = 'Map2K7_siRNA2'; 
         elseif exp_label <= 134
             label_txt = 'Map2K7_siRNA3';     
-        elseif exp_label <= 144
+        elseif exp_label <= 143
             label_txt = 'SrGAP2_siRNA1'; 
         else
             error('unknown experiment number!');
