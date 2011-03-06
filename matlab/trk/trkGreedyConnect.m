@@ -17,10 +17,6 @@ while min_W < W_THRESH
     min_ind = find(W == min_W);
     [r,c] = ind2sub(size(A), min_ind);
     
-%     if (r == 58) || (c == 58)
-%         keyboard;
-%     end
-    
     % assign the connection in the tracking solution
     T(r,c) = 1;
     A(r,c) = 0;
