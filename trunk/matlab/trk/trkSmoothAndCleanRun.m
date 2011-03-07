@@ -134,3 +134,20 @@ for t = 1:numTracks
         
     end    
 end
+
+numTracks = length(R.trkSeq);
+for t = 1:numTracks
+    seq = R.trkSeq{t};
+    
+    if ~isempty(seq)
+        R.CellTimeInfo(t).KevinTotalCableLength = imfilter(R.CellTimeInfo(t).KevinTotalCableLength, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).KevinTotalCableLengthFilopodia = imfilter(R.CellTimeInfo(t).KevinTotalCableLengthFilopodia, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).KevinBranchCount = imfilter(R.CellTimeInfo(t).KevinBranchCount, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).KevinFiloCount = imfilter(R.CellTimeInfo(t).KevinFiloCount, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).GermanTotalCableLength = imfilter(R.CellTimeInfo(t).GermanTotalCableLength, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).NumTrackedNeurites = imfilter(R.CellTimeInfo(t).NumTrackedNeurites, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).GermanNumNeurites = imfilter(R.CellTimeInfo(t).GermanNumNeurites, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).GermanTotalCableLengthFilopodia = imfilter(R.CellTimeInfo(t).GermanTotalCableLengthFilopodia, filt, 'same', 'replicate');
+    end
+end
+
