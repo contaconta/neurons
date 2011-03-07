@@ -7,13 +7,14 @@ min_W = 0;
 T = zeros(size(A));
 
 Ws = W + W';
+clear W;
 
 idxWisNot0 = find(max(Ws)~=0);
 
 reducedToComplete = idxWisNot0;
-completeToReduced = zeros(size(W,1),1);
+completeToReduced = zeros(size(Ws,1),1);
 nColumn = 1;
-for i = 1:size(W,1)
+for i = 1:size(Ws,1)
    if find(idxWisNot0 == i)
        completeToReduced(i) = nColumn;
        nColumn = nColumn + 1;
