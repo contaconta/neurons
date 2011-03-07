@@ -23,7 +23,7 @@ tracks      = R.tracks;
 D           = R.D;
 
 NPROCESSED = 0;
-if exist('N', 'var')
+if isfield(R, 'N')
 N           = R.N;
 NPROCESSED = 1;
 end

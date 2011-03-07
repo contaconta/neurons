@@ -156,7 +156,7 @@ end
 
 %% apply the greedy tracking algorithm to link detections
 disp('...greedy tracking');
-T = trkGreedyConnect(W,A,D,W_THRESH);
+T = trkGreedyConnect2(W,A,D,W_THRESH);
 
 
 %% get the track labels from T assigned to each detection

@@ -16,9 +16,12 @@ R = HappyNeuronVector(R);
 disp('...postprocessing - tracking neurites');
 R = trkTrackNeurites(R);
 
-% time-dependant measurements
-
-
 % smooth the statistics
 disp('...postprocessing - smoothing the data');
 R = trkSmoothAndCleanRun(R);
+
+keyboard;
+
+% time-dependant measurements
+disp('...postprocessing - time dependent measures');
+R = trkTimeDependentAnalysis(R);

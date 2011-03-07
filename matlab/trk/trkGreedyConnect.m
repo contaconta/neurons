@@ -2,7 +2,6 @@ function T = trkGreedyConnect(W,A,D,W_THRESH)
 
 W(W == 0) = Inf;
 
-
 min_W = 0;
 
 T = zeros(size(A));
@@ -10,12 +9,18 @@ T = zeros(size(A));
 while min_W < W_THRESH
     
     % find the minimum weight
-    min_W = min(min(W));
+    [min_W, min_ind] = min(W(:));
     if isinf(min_W)
         continue;
     end
-    min_ind = find(W == min_W);
     [r,c] = ind2sub(size(A), min_ind);
+    
+%     min_W = min(min(W));
+%     if isinf(min_W)
+%         continue;
+%     end
+%     min_ind = find(W == min_W);
+%     [r,c] = ind2sub(size(A), min_ind);
     
     % assign the connection in the tracking solution
     T(r,c) = 1;
