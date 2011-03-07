@@ -16,3 +16,9 @@ sed s/AreaSomata/${i}Somata/ < ffAreaSomata.m  > tmp
 sed s/Area/${i}/ < tmp  > ff${i}Somata.m
 rm -rf tmp
 done
+
+for i in NucleusTimeContracting  NucleusFreqExpansion SomaTimeExpanding  SomaTimeContracting GermanTotalCableLengthTimeExpanding GermanTotalCableLengthTimeContracting GermanTotalCableLengthFreqExpansion NumTrackedNeuritesTimeExpanding NumTrackedNeuritesTimeContracting NumTrackedNeuritesFreqExpansion GermanNumNeuritesTimeExpanding GermanNumNeuritesTimeContracting GermanNumNeuritesFreqExpansion GermanTotalCableLengthFilopodiaTimeExpanding GermanTotalCableLengthFilopodiaTimeContracting GermanTotalCableLengthFilopodiaFreqExpansion; do
+
+sed s/NucleusTimeExpanding/${i}/ < fnNucleusTimeExpanding.m > fn${i}.m
+
+done
