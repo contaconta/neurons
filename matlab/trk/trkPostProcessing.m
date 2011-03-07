@@ -20,8 +20,6 @@ R = trkTrackNeurites(R);
 disp('...postprocessing - smoothing the data');
 R = trkSmoothAndCleanRun(R);
 
-keyboard;
-
 % time-dependant measurements
 disp('...postprocessing - time dependent measures');
 R = trkTimeDependentAnalysis(R);
