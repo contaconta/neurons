@@ -4,7 +4,7 @@ function R = trkSmoothAndCleanRun(R)
 x = -3:1:3;
 sigma = 1.0;
 filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
-%totalMassFilt = imfilter(TotalMass, filt, 'same', 'replicate');
+%totalCableLengthFilt = imfilter(TotalCableLength, filt, 'same', 'replicate');
 
 numTracks = length(R.trkSeq);
 for t = 1:numTracks
@@ -108,12 +108,12 @@ for t = 1:numTracks
         sDistToSomaStandDev = imfilter( [R.N(seq).DistToSomaStandDev], filt, 'same', 'replicate');
         sEccentricity = imfilter( [R.N(seq).Eccentricity], filt, 'same', 'replicate');
         sFiloCount = imfilter( [R.N(seq).FiloCount], filt, 'same', 'replicate');
-        sFiloMass = imfilter( [R.N(seq).FiloMass], filt, 'same', 'replicate');
+        sFiloCableLength = imfilter( [R.N(seq).FiloCableLength], filt, 'same', 'replicate');
         sFiloPercent = imfilter( [R.N(seq).FiloPercent], filt, 'same', 'replicate');
         sMajorAxisLength = imfilter( [R.N(seq).MajorAxisLength], filt, 'same', 'replicate');
         sMinorAxisLength = imfilter( [R.N(seq).MinorAxisLength], filt, 'same', 'replicate');
         sRadialDotProd = imfilter( [R.N(seq).RadialDotProd], filt, 'same', 'replicate');
-        sTotalMass = imfilter( [R.N(seq).TotalMass], filt, 'same', 'replicate');
+        sTotalCableLength = imfilter( [R.N(seq).TotalCableLength], filt, 'same', 'replicate');
        
         for i = 1:length(seq)
             n = seq(i);
@@ -124,12 +124,12 @@ for t = 1:numTracks
             R.N(n).DistToSomaStandDev = sDistToSomaStandDev(i);
             R.N(n).Eccentricity = sEccentricity(i);
             R.N(n).FiloCount = sFiloCount(i);
-            R.N(n).FiloMass = sFiloMass(i);
+            R.N(n).FiloCableLength = sFiloCableLength(i);
             R.N(n).FiloPercent = sFiloPercent(i);
             R.N(n).MajorAxisLength = sMajorAxisLength(i);
             R.N(n).MinorAxisLength = sMinorAxisLength(i);
             R.N(n).RadialDotProd = sRadialDotProd(i);
-            R.N(n).TotalMass = sTotalMass(i);
+            R.N(n).TotalCableLength = sTotalCableLength(i);
         end
         
     end    

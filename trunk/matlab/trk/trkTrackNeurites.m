@@ -15,16 +15,17 @@ A = make_adjacency(Nlist,1,N);
 
 % fill out all the distances in the adjacency matrix
 edges = find(A == 1);
-W = A;
+W = A; 
 for i = 1:length(edges)
     [r,c] = ind2sub(size(A), edges(i));
     W(r,c) = trkNeuriteDistance(N(r), N(c));
 end
 
+
 %% apply the greedy tracking algorithm to link detections
 disp('   greedy tracking'); tic;
-T = trkGreedyConnect(W,A,N,W_THRESH); toc;
-
+T = trkGreedyConnect2(W,A,N,W_THRESH); toc;
+% tic; T = trkGreedyConnect(W,A,N,W_THRESH); toc;
 
 %% get the track labels from T assigned to each detection
 disp('   graph coloring');
@@ -55,31 +56,10 @@ end
 
 R.trkNSeq = trkNSeq;
 R.timeNSeq = timeNSeq;
-keyboard;
-
-
-% %% temporary frame-rendering
-% imgRootFolder = '/home/ksmith/data/Sinergia/Basel/';
-% imgFolder = [imgRootFolder R.GlobalMeasures.Date '/' R.GlobalMeasures.AssayPosition '/green/'];
-% Gfiles = dir([imgFolder '*.tif']);
-% mv = getImgFiles(imgFolder, Gfiles, R.GlobalMeasures.Length);
-% cols1 = jet(6);
-% cols1 = cols1(randperm(6),:);
-% cols2 = jet(8);
-% cols2 = cols2(randperm(8),:);
-% cols3 = jet(600);
-% cols3 = cols3(randperm(600),:);
-% colors = [cols1; cols2; cols3];
-% 
-% for t = 1:97
-%     mv = trkRenderImages3(t,t,R,colors,mv,1);
-%     pause;
-% end
-  
 
 
 
-%keyboard;
+
 
 
 
@@ -136,15 +116,16 @@ for d = 1:length(R.D)
             
             % get filopodia and branching measures
             Nn.FiloCount = length(find(R.FILAMENTS(d).NumKids(nIdx) == 0));
-            Nn.FiloMass = length(find(R.FILAMENTS(d).FilopodiaFlag(nIdx) == 1));
-            Nn.TotalMass = length(nIdx);
+            Nn.FiloCableLength = length(find(R.FILAMENTS(d).FilopodiaFlag(nIdx) == 1));
+            Nn.TotalCableLength = length(nIdx);
             Nn.BranchCount = length(find(R.FILAMENTS(d).NumKids(nIdx) > 1));
-            Nn.FiloPercent = (Nn.FiloMass / Nn.TotalMass) * 100;
+            Nn.FiloPercent = (Nn.FiloCableLength / Nn.TotalCableLength) * 100;
             
             % get some essential labels
-            Nn.NucleusID = R.D(d).ID;
+            Nn.NucleusTrackID = R.D(d).ID;
+            Nn.NucleusD = d;
             neuriteids = R.FILAMENTS(d).NeuriteID(nIdx);
-            Nn.NeuriteID = neuriteids(1);
+            Nn.NeuriteTrackID = neuriteids(1);
             Nn.Time = R.D(d).Time;
             
             % update a time-ordered list of all the neurite IDs
@@ -194,14 +175,14 @@ A = zeros(Ndetection);
 for t = 2:length(Nlist)
     for d = 1:length(Nlist{t})
         n_i = Nlist{t}(d);              % neurite index
-        nuc_i = N(n_i).NucleusID;       % neurite's nucleus
+        nuc_i = N(n_i).NucleusTrackID;       % neurite's nucleus track
         filp_i = N(n_i).FiloPercent;
         
         min_t = max(1, t-WIN_SIZE);
         for p = min_t:t-1
             for dp = 1:length(Nlist{p})
                 n_p = Nlist{p}(dp);             % past neurite index
-                nuc_p = N(n_p).NucleusID;   % past neurite's nucleus
+                nuc_p = N(n_p).NucleusTrackID;   % past neurite's nucleus
                 filp_p = N(n_p).FiloPercent;
                 if (nuc_i == nuc_p) && (filp_i < 95) && (filp_p < 95)
                     A(n_i, n_p) = 1;

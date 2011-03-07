@@ -1,4 +1,4 @@
-function [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqCableExpansion] = trkTemporalAnalysisVector(v)
+function [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(v)
 
 
 expContractVector = zeros(size(v));
@@ -6,7 +6,6 @@ expContractVector = zeros(size(v));
 numberInflexionPoints = 0;
 timeExpanding = 0;
 timeContracting = 0;
-freqCableExpansion = 0;
 
 for i = 1:length(v)-1
     if(v(i+1) > v(i))
@@ -31,4 +30,4 @@ for i = 1:length(v)-1
     end
 end
 
-freqCableExpansion = numberInflexionPoints/length(v);
+freqExpansion = numberInflexionPoints/length(v);
