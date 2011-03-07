@@ -6,13 +6,14 @@ clear all;
 
 disp('... loading experiments');
 addpath('../');
+dir = '/media/data/PostResults/';
 
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
 % TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat');
 
 
-TRIALS(1) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '14-11-2010_%03i.mat');
+TRIALS(1) = LoadTrial(dir, '14-11-2010_%03i.mat',[1:10:31]);
 % TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
 % TRIALS(3) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '16-11-2010_%03i.mat');
 % TRIALS(4) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '17-11-2010_%03i.mat');
@@ -46,8 +47,9 @@ disp('... pfew');
 
 % statistic = @ffNeuronLength;
 % statistic = @fnMeanNeuriteLength;
-statistic = @fnMeanNeuronLength;
+% statistic = @fnMeanNeuronLength;
 
+statistic = @fnNucleusTimeExpanding;
 
 
 %% Computes the mean value of the function among the experiments of the trial
