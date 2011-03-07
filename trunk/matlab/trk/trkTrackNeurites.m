@@ -125,7 +125,7 @@ for d = 1:length(R.D)
             Nn.NucleusTrackID = R.D(d).ID;
             Nn.NucleusD = d;
             neuriteids = R.FILAMENTS(d).NeuriteID(nIdx);
-            Nn.NeuriteTrackID = neuriteids(1);
+            Nn.NeuriteID = neuriteids(1);
             Nn.Time = R.D(d).Time;
             
             % update a time-ordered list of all the neurite IDs
