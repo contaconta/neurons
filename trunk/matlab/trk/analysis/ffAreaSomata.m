@@ -12,9 +12,18 @@ nPoints = 0;
 
 for d = 1:length(R.D)
    if (isempty(R.D(d).ID)) || R.D(d).ID==0 || ... % Check for validity of detection
-      (LookOnlyAtHappyNeurons && R.D(d).Happy==0) % Shall we remove sad neurons from statistics?    
+      (LookOnlyAtHappyNeurons && R.D(d).Happy==0) % Shall we remove sad neurons from statistics?
        continue;
    end
+   if(isempty(R.Soma(d).Area))
+     disp('encountered an empty value in ffAreaSomata');
+     keyboard;
+   end
+   if(R.Soma(d).Time == 1)
+     continue;
+   end
+
+
    nPoints = nPoints+1;
    rvc(nPoints) = R.Soma(d).Area;
 end

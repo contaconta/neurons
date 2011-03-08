@@ -6,20 +6,64 @@ clear all;
 
 disp('... loading experiments');
 addpath('../');
-dir = '/media/data/PostResults/';
+dir = '/net/cvlabfiler1/home/ksmith/Basel/PostResults/';
 
-% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat',1, 30, 1);
-% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat', [1 11 21 31]);
-% TRIALS(1) = LoadTrial('/media/data/MICCAI11/', '14-11-2010_%03i.mat');
-
-
-TRIALS(1) = LoadTrial(dir, '14-11-2010_%03i.mat',[1:10:31]);
-% TRIALS(2) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '15-11-2010_%03i.mat');
-% TRIALS(3) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '16-11-2010_%03i.mat');
-% TRIALS(4) = LoadTrial('/net/cvlabfiler1/home/ksmith/Basel/Results/', '17-11-2010_%03i.mat');
+TRIALS(1) = LoadTrial(dir, '14-11-2010_%03i.mat');
+TRIALS(2) = LoadTrial(dir, '15-11-2010_%03i.mat');
+TRIALS(3) = LoadTrial(dir, '16-11-2010_%03i.mat');
+% TRIALS(4) = LoadTrial(dir, '17-11-2010_%03i.mat');
 
 disp('... pfew');
 
+%%
+
+
+
+%% FIGURE OF THE NEURITE LENGTHS
+LookOnlyAtHappyNeurons = 1;
+statistic = @ffMajorAxisLengthNeurite;
+[Mean, STD] = GetMeanAndSTDOfExperimentsAcrossTrials(TRIALS(1:3), statistic, LookOnlyAtHappyNeurons);
+
+%% FIGURE OF THE NUMBER OF NEURITES
+LookOnlyAtHappyNeurons = 1;
+statistic = @fnMeanNumTrackedNeurites;
+[Mean, STD] = GetMeanAndSTDOfExperimentsAcrossTrials(TRIALS(1:3), statistic, LookOnlyAtHappyNeurons);
+
+%% Look for the FILOPODIA
+LookOnlyAtHappyNeurons = 1;
+% statistic = @faMeanFiloPercentNeurite; % Not working
+% statistic = @faMeanFiloCountNeurite; % WORKING
+statistic = @faMeanFiloCableLengthNeurite;
+[Mean, STD] = GetMeanAndSTDOfExperimentsAcrossTrials(TRIALS(1:3), statistic, LookOnlyAtHappyNeurons);
+
+%% Test to see which functional works best
+close all;
+clc;
+display = 0;
+LookOnlyAtHappyNeurons = 1;
+nBins = 100;
+statistics = {};
+statistics{1} = @faMaxDistToSomaExtremeNeurite;
+statistics{2} = @faMaxDistToSomaMedianNeurite;
+statistics{3} = @faMaxDistToSomaStandDevNeurite;
+statistics{4} = @faMaxDistToSomaMeanNeurite;
+statistics{5} = @faMaxMajorAxisLengthNeurite;
+statistics{6} = @faMaxTotalCableLengthNeurite;
+statistics{7} = @ffDistToSomaExtremeNeurite;
+statistics{8} = @ffDistToSomaMeanNeurite;
+statistics{9} = @ffDistToSomaMedianNeurite;
+statistics{10} = @ffDistToSomaStandDevNeurite;
+statistics{11} = @ffMajorAxisLengthNeurite;
+statistics{12} = @ffTotalCableLengthNeurite;
+
+for trial = 1:1
+disp(['=============== TRIAL ' num2str(trial) '===============']);
+for nE = 1:12
+   [Mean, STD, perc] = GetMeanAndSTDOfTrial(TRIALS(trial), display, statistics{nE}, LookOnlyAtHappyNeurons);
+   distance = ComputeDistanceToDesiredOtuput(perc);
+   disp(['Distance with measurement ' func2str(statistics{nE}) ' = ' num2str(distance)]);
+end
+end
 
 
 %% Creats an statistical function handle
@@ -49,7 +93,47 @@ disp('... pfew');
 % statistic = @fnMeanNeuriteLength;
 % statistic = @fnMeanNeuronLength;
 
-statistic = @fnNucleusTimeExpanding;
+% statistic = @fnNucleusTimeExpanding;
+% statistic = @fnMeanKevinTotalCableLength;
+% statistic = @fnGermanTotalCableLengthFreqExpansion;
+statistic = @fnMaxKevinTotalCableLength;
+% statistic = @fnMeanNumTrackedNeurites;
+% statistic = @ffBranchCountNeurite;
+
+
+
+
+
+%% %% Computes the mean value of the function among the experiments of all trial
+close all;
+clc;
+nBins = 100;
+
+CompareFeatureHistogramInExperimentsAcrossTrials(TRIALS, nBins, statistic, LookOnlyAtHappyNeurons);
+
+
+
+%% TRY TO FIND A FIGURE FOR STEADY GROWTH
+% fail
+LookOnlyAtHappyNeurons = 1;
+statistic = @fnGermanTotalCableLengthFreqExpansion;
+statistic = @fnGermanTotalCableLengthTimeExpanding;
+[Mean, STD] = GetMeanAndSTDOfExperimentsAcrossTrials(TRIALS(1:3), statistic, LookOnlyAtHappyNeurons);   
+
+
+
+%%
+
+figure;
+errorbar(1:length(Mean)', Mean, STD);
+vals = TRIALS(1).ExperimentNames.values;
+keys = TRIALS(1).ExperimentNames.keys;
+for t = 1:length(Mean)
+    idx = find([vals{:}] == t);
+   text( t-0.5, Mean(t), keys(idx));
+end
+
+
 
 
 %% Computes the mean value of the function among the experiments of the trial
@@ -58,9 +142,39 @@ LookOnlyAtHappyNeurons = 1;
 nBins = 100;
 
 CompareFeatureHistogramInExperiments(TRIALS(1), nBins, statistic, LookOnlyAtHappyNeurons);
+
+
+%% close all;
+[Mean, STD, perc] = GetMeanAndSTDOfTrial(TRIALS(2), 1, statistics{11}, LookOnlyAtHappyNeurons);
+
+%%
+nBins = 100;
+% statistic = @faMaxMajorAxisLengthNeurite;
+statistic = @faMaxDistToSomaExtremeNeurite;
+LookOnlyAtHappyNeurons = 1;
+
+yLimMax = 0;
+yLimMin = 50000;
+
 figure;
-[Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(1), statistic, LookOnlyAtHappyNeurons);
-errorbar(1:length(Mean)', Mean, (STD));
+for t = 1:4
+   ax(t) = subplot(2,2,t);
+   [Mean, STD] = GetMeanAndSTDOfTrial(TRIALS(t), 1, statistics{11}, LookOnlyAtHappyNeurons);
+   title(['TRIAL ' num2str(t)]);
+   YL = get(gca, 'YLim');
+   if (YL(1) < yLimMin)
+       yLimMin = YL(1);
+   end
+   if(YL(2) > yLimMax)
+       yLimMax = YL(2);
+   end
+end
+linkaxes(ax, 'xy');
+
+for t = 1:4
+    subplot(2,2,t);
+    set(gca, 'YLim', [yLimMin, yLimMax]);
+end
 
 
 %% Sanity check for the mean and variance
@@ -100,6 +214,29 @@ figure(fig1);
 axis(s3);
 figure(fig2);
 axis(s3);
+
+
+
+%% Check for the labels of the experiment
+vals = TRIALS(1).ExperimentNames.values;
+keys = TRIALS(1).ExperimentNames.keys;
+
+clc;
+for nExperiment = 1:length(TRIALS(1).EXPERIMENTS)
+    idx = find([vals{:}] == nExperiment);
+    nameExp = keys{idx};
+    if ~isequal(nExperiment, vals{idx})
+       disp(['Error between experiment value and map at nExperiment = ' num2str(nExperiment) ' idx=' num2str(idx)]); 
+    end
+    for nRun = 1:length(TRIALS(1).EXPERIMENTS(nExperiment).RUNS)
+        if ~isequal(nameExp, TRIALS(1).EXPERIMENTS(nExperiment).RUNS(nRun).GlobalMeasures.Label)
+            disp(['nRun= ' num2str(nRun)]);
+            disp(['Error between RunName = ' TRIALS(1).EXPERIMENTS(nExperiment).RUNS(nRun).GlobalMeasures.Label ' ; nExperiment = ' nameExp]); 
+        end
+        
+    end
+end
+
 
 
 
