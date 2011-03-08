@@ -2,6 +2,8 @@ function R = reconstruction(IMSIZE, x, y, w, sigma)
 
 [X, Y] = meshgrid(1:IMSIZE(1), 1:IMSIZE(2));
 
+x = x + 1;
+y = y + 1;
 
 badinds = find (x < 1);
 badinds = [badinds; find( x > IMSIZE(2))];
@@ -19,8 +21,7 @@ w(badinds) = [];
 sigma(badinds) = [];
 
 
-x = x + 1;
-y = y + 1;
+
 
 R = zeros(IMSIZE);
 

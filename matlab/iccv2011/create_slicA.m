@@ -76,11 +76,11 @@ for i = 1:length(d)
 
             %N = round(maxL / 8);
             if p > 10 
-                N = 1;
+                N = 2;
             elseif p < 3
                 N = 1;
             else
-                N = 1;
+                N = 2;
             end
             
             for n = 1:N
