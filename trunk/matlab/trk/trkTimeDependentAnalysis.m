@@ -84,6 +84,9 @@ end
 
 
 
+
+
+
 numTracks = length(R.trkNSeq);
 for t = 1:numTracks
     seq = R.trkNSeq{t};
@@ -103,7 +106,7 @@ for t = 1:numTracks
         R.NTimeInfo(t).DistToSomaExtremeFreqExpansion = freqE;
         
         MajorAxisLength = [R.N(seq).MajorAxisLength];
-        [expV, timeE, timeC, numberI, freqE] = trkTemporalAnalysisVector(MajorAxisLength); %#ok<ASGLU>
+        [expV, timeE, timeC, numberI, freqE] = trkTemporalAnalysisVector(MajorAxisLength); %#ok<*ASGLU,ASGLU>
         R.NTimeInfo(t).MajorAxisLengthExpanding = timeE;
         R.NTimeInfo(t).MajorAxisLengthContracting = timeC;
         R.NTimeInfo(t).MajorAxisLengthFreqExpansion = freqE;
@@ -145,12 +148,7 @@ for t = 1:numTracks
         R.NTimeInfo(t).TotalCableLengthExpanding = timeE;
         R.NTimeInfo(t).TotalCableLengthContracting = timeC;
         R.NTimeInfo(t).TotalCableLengthFreqExpansion = freqE;
-%         for i = 1:length(seq)
-%             n = seq(i);
-%             R.N(n).Expand = expV(i);
-%         end
 
-         
         % put some statistics into CellTimeInfo
         for i = 1:length(seq)
             n = seq(i);
@@ -164,17 +162,60 @@ for t = 1:numTracks
             R.CellTimeInfo(dID).KevinBranchCount(di) = R.CellTimeInfo(dID).KevinBranchCount(di) + R.N(n).BranchCount;
             R.CellTimeInfo(dID).KevinFiloCount(di) = R.CellTimeInfo(dID).KevinFiloCount(di) + R.N(n).FiloCount;
         end
-            
-%         % compute some stats using FILAMENTS
-%         for i = 1:length(seq)
-%             d = seq(i);
-%             R.CellTimeInfo(t).GermanTotalCableLength(i) = length(find(R.FILAMENTS(d).NeuriteID > 0));
-%             R.CellTimeInfo(t).NumTrackedNeurites(i) = length(R.FILAMENTS(d).NTrackedList);
-%             R.CellTimeInfo(t).GermanNumNeurites(i) = length(R.FILAMENTS(d).NIdxList);
-%             R.CellTimeInfo(t).GermanTotalCableLengthFilopodia(i) = sum(R.FILAMENTS(d).FilopodiaFlag);
-%         end
     end
 end
+
+R.N(1).deltaBranchCount = [];
+R.N(1).deltaDistToSomaExtreme = [];
+R.N(1).deltaDistToSomaStandDev = [];
+R.N(1).deltaEccentricity = [];
+R.N(1).deltaFiloCableLength = [];
+R.N(1).deltaFiloCount = [];
+R.N(1).deltaFiloPercent = [];
+R.N(1).deltaMajorAxisLength = [];
+R.N(1).deltaRadialDotProd = [];
+R.N(1).deltaTotalCableLength = [];
+
+
+
+
+numTracks = length(R.trkNSeq);
+for t = 1:numTracks
+    seq = R.trkNSeq{t};
+    if ~isempty(seq)
+        for i = 2:length(seq)
+            n2 = seq(i);
+            n1 = seq(i-1);
+            
+            R.N(n2).deltaBranchCount = R.N(n2).BranchCount - R.N(n1).BranchCount ;
+            R.N(n2).deltaDistToSomaExtreme = R.N(n2).DistToSomaExtreme - R.N(n1).DistToSomaExtreme ;
+            R.N(n2).deltaDistToSomaStandDev = R.N(n2).DistToSomaStandDev - R.N(n1).DistToSomaStandDev ;
+            R.N(n2).deltaEccentricity = R.N(n2).Eccentricity - R.N(n1).Eccentricity ;
+            R.N(n2).deltaFiloCableLength = R.N(n2).FiloCableLength - R.N(n1).FiloCableLength ;
+            R.N(n2).deltaFiloCount = R.N(n2).FiloCount - R.N(n1).FiloCount ;
+            R.N(n2).deltaFiloPercent = R.N(n2).FiloPercent - R.N(n1).FiloPercent ;
+            R.N(n2).deltaMajorAxisLength = R.N(n2).MajorAxisLength - R.N(n1).MajorAxisLength ;
+            R.N(n2).deltaRadialDotProd = R.N(n2).RadialDotProd - R.N(n1).RadialDotProd ;
+            R.N(n2).deltaTotalCableLength = R.N(n2).TotalCableLength - R.N(n1).TotalCableLength ;
+        end
+        
+        n1 = seq(1);
+        n2 = seq(2);
+        R.N(n1).deltaBranchCount = R.N(n2).deltaBranchCount;
+        R.N(n1).deltaDistToSomaExtreme = R.N(n2).deltaDistToSomaExtreme; 
+        R.N(n1).deltaDistToSomaStandDev = R.N(n2).deltaDistToSomaStandDev; 
+        R.N(n1).deltaEccentricity = R.N(n2).deltaEccentricity; 
+        R.N(n1).deltaFiloCableLength = R.N(n2).deltaFiloCableLength; 
+        R.N(n1).deltaFiloCount = R.N(n2).deltaFiloCount;
+        R.N(n1).deltaFiloPercent = R.N(n2).deltaFiloPercent; 
+        R.N(n1).deltaMajorAxisLength = R.N(n2).deltaMajorAxisLength; 
+        R.N(n1).deltaRadialDotProd = R.N(n2).deltaRadialDotProd; 
+        R.N(n1).deltaTotalCableLength = R.N(n2).deltaTotalCableLength; 
+    end
+end    
+
+
+
 
 R.D(1).KevinTotalCableLengthExpand = [];
 
@@ -187,8 +228,8 @@ for t = 1:numTracks
     if ~isempty(seq)
         
         KevinTotalCableLength = R.CellTimeInfo(t).KevinTotalCableLength;
-        x = -5:1:5;
-        sigma = 3.0;
+        x = -3:1:3;
+        sigma = 1.0;
         filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
         KevinTotalCableLength=imfilter(KevinTotalCableLength, filt, 'same', 'replicate');
         [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(KevinTotalCableLength); %#ok<*ASGLU>
@@ -199,6 +240,49 @@ for t = 1:numTracks
         R.CellTimeInfo(t).KevinTotalCableLengthTimeExpanding = timeExpanding;
         R.CellTimeInfo(t).KevinTotalCableLengthTimeContracting = timeContracting;
         R.CellTimeInfo(t).KevinTotalCableLengthFreqExpansion = freqExpansion;
+        
+        KevinTotalCableLengthFilopodia = R.CellTimeInfo(t).KevinTotalCableLengthFilopodia;
+        x = -3:1:3;
+        sigma = 1.0;
+        filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
+        KevinTotalCableLengthFilopodia=imfilter(KevinTotalCableLengthFilopodia, filt, 'same', 'replicate');
+        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(KevinTotalCableLengthFilopodia); %#ok<*ASGLU>
+        for i = 1:length(seq)
+            d = seq(i);
+            R.D(d).KevinTotalCableLengthExpand = expContractVector(i);
+        end
+        R.CellTimeInfo(t).KevinTotalCableLengthFilopodiaTimeExpanding = timeExpanding;
+        R.CellTimeInfo(t).KevinTotalCableLengthFilopodiaTimeContracting = timeContracting;
+        R.CellTimeInfo(t).KevinTotalCableLengthFilopodiaFreqExpansion = freqExpansion;
+        
+        KevinBranchCount = R.CellTimeInfo(t).KevinBranchCount;
+        x = -3:1:3;
+        sigma = 1.0;
+        filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
+        KevinBranchCount=imfilter(KevinBranchCount, filt, 'same', 'replicate');
+        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(KevinBranchCount); %#ok<*ASGLU>
+        for i = 1:length(seq)
+            d = seq(i);
+            R.D(d).KevinTotalCableLengthExpand = expContractVector(i);
+        end
+        R.CellTimeInfo(t).KevinBranchCountTimeExpanding = timeExpanding;
+        R.CellTimeInfo(t).KevinBranchCountTimeContracting = timeContracting;
+        R.CellTimeInfo(t).KevinBranchCountFreqExpansion = freqExpansion;
+        
+        
+        KevinFiloCount = R.CellTimeInfo(t).KevinFiloCount;
+        x = -3:1:3;
+        sigma = 1.0;
+        filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
+        KevinFiloCount=imfilter(KevinFiloCount, filt, 'same', 'replicate');
+        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(KevinFiloCount); %#ok<*ASGLU>
+        for i = 1:length(seq)
+            d = seq(i);
+            R.D(d).KevinTotalCableLengthExpand = expContractVector(i);
+        end
+        R.CellTimeInfo(t).KevinFiloCountTimeExpanding = timeExpanding;
+        R.CellTimeInfo(t).KevinFiloCountTimeContracting = timeContracting;
+        R.CellTimeInfo(t).KevinFiloCountFreqExpansion = freqExpansion;
         
         
         

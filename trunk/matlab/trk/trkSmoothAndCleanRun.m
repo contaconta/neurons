@@ -115,6 +115,17 @@ for t = 1:numTracks
         sRadialDotProd = imfilter( [R.N(seq).RadialDotProd], filt, 'same', 'replicate');
         sTotalCableLength = imfilter( [R.N(seq).TotalCableLength], filt, 'same', 'replicate');
        
+        sdeltaBranchCount = imfilter( [R.N(seq).deltaBranchCount], filt, 'same', 'replicate');
+        sdeltaDistToSomaExtreme = imfilter( [R.N(seq).deltaDistToSomaExtreme], filt, 'same', 'replicate');
+        sdeltaDistToSomaStandDev = imfilter( [R.N(seq).deltaDistToSomaStandDev], filt, 'same', 'replicate');
+        sdeltaEccentricity = imfilter( [R.N(seq).deltaEccentricity], filt, 'same', 'replicate');
+        sdeltaFiloCableLength = imfilter( [R.N(seq).deltaFiloCableLength], filt, 'same', 'replicate');
+        sdeltaFiloCount = imfilter( [R.N(seq).deltaFiloCount], filt, 'same', 'replicate');
+        sdeltaFiloPercent = imfilter( [R.N(seq).deltaFiloPercent], filt, 'same', 'replicate');
+        sdeltaMajorAxisLength = imfilter( [R.N(seq).deltaMajorAxisLength], filt, 'same', 'replicate');
+        sdeltaRadialDotProd = imfilter( [R.N(seq).deltaRadialDotProd], filt, 'same', 'replicate');
+        sdeltaTotalCableLength = imfilter( [R.N(seq).deltaTotalCableLength], filt, 'same', 'replicate');
+        
         for i = 1:length(seq)
             n = seq(i);
             R.N(n).BranchCount = sBranchCount(i);
@@ -130,6 +141,17 @@ for t = 1:numTracks
             R.N(n).MinorAxisLength = sMinorAxisLength(i);
             R.N(n).RadialDotProd = sRadialDotProd(i);
             R.N(n).TotalCableLength = sTotalCableLength(i);
+            
+            R.N(n).deltaBranchCount = sdeltaBranchCount(i);
+            R.N(n).deltaDistToSomaExtreme = sdeltaDistToSomaExtreme(i);
+            R.N(n).deltaDistToSomaStandDev = sdeltaDistToSomaStandDev(i);
+            R.N(n).deltaEccentricity = sdeltaEccentricity(i);
+            R.N(n).deltaFiloCableLength = sdeltaFiloCableLength(i);
+            R.N(n).deltaFiloCount = sdeltaFiloCount(i);
+            R.N(n).deltaFiloPercent = sdeltaFiloPercent(i);
+            R.N(n).deltaMajorAxisLength = sdeltaMajorAxisLength(i);
+            R.N(n).deltaRadialDotProd = sdeltaRadialDotProd(i);
+            R.N(n).deltaTotalCableLength = sdeltaTotalCableLength(i);
         end
         
     end    

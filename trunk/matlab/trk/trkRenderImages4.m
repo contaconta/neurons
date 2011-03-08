@@ -33,6 +33,9 @@ CONTRAST = 0.4;  %[0,1] 1 is normal contrast, 0 is VERY stretched contrast
 
 
 for t = TMIN:TMAX
+    if mod(t,10) == 0
+        disp(['...rendering frame ' num2str(t)]);
+    end
     I = imadjust(mv{t}, [0; CONTRAST], [1; 0]);
     Ir = I(:,:,1); Ig = I(:,:,2); Ib = I(:,:,3);
 
