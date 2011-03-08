@@ -29,7 +29,7 @@ colors = [cols1; cols2; cols3];
 DISPLAY_FIGURES = 1;
 %BLANK = zeros(size(mv{1}));
 %mv = trkRenderImages3(1,R.GlobalMeasures.Length,R.GlobalMeasures.Date,R.GlobalMeasures.AssayPosition,R.GlobalMeasures.Label,colors,mv,R.Dlist,BLANK,R.FILAMENTS,R.Soma,R.tracks,R.D,DISPLAY_FIGURES);
-mv = trkRenderImages3(1,R.GlobalMeasures.Length,R,colors,mv,DISPLAY_FIGURES);
+mv = trkRenderImages4(1,R.GlobalMeasures.Length,R,colors,mv,DISPLAY_FIGURES);
 
 %% write the movie
 movfile = [  R.GlobalMeasures.Date '_' R.GlobalMeasures.AssayPosition '.avi'];
