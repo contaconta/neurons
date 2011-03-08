@@ -1,6 +1,9 @@
 function R = trkTimeDependentAnalysis(R)
 
 
+MINIUMUM_NEURITE_LENGTH_FOR_EXPAND = 20;
+
+
 %% Time-Dependent analysis for D
 R.D(1).ExpandArea = [];
 
@@ -29,7 +32,6 @@ for t = 1:numTracks
         
         Area = [R.Soma(seq).Area];
         [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(Area); %#ok<*ASGLU>
-        
         for i = 1:length(seq)
             d = seq(i);
             R.Soma(d).Expand = expContractVector(i);
@@ -100,16 +102,25 @@ for t = 1:numTracks
         R.NTimeInfo(t).DistToSomaExtremeContracting = timeC;
         R.NTimeInfo(t).DistToSomaExtremeFreqExpansion = freqE;
         
-        
         MajorAxisLength = [R.N(seq).MajorAxisLength];
         [expV, timeE, timeC, numberI, freqE] = trkTemporalAnalysisVector(MajorAxisLength); %#ok<ASGLU>
-        for i = 1:length(seq)
-            n = seq(i);
-            R.N(n).Expand = expV(i);
-        end
         R.NTimeInfo(t).MajorAxisLengthExpanding = timeE;
         R.NTimeInfo(t).MajorAxisLengthContracting = timeC;
         R.NTimeInfo(t).MajorAxisLengthFreqExpansion = freqE;
+        
+        x = -5:1:5;
+        sigma = 1.5;
+        filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
+        MajorAxisLength =imfilter(MajorAxisLength, filt, 'same', 'replicate');
+        [expV, timeE, timeC, numberI, freqE] = trkTemporalAnalysisVector(MajorAxisLength); %#ok<ASGLU>
+        for i = 1:length(seq)
+            n = seq(i);
+            if R.N(n).MajorAxisLength > MINIUMUM_NEURITE_LENGTH_FOR_EXPAND
+                R.N(n).Expand = expV(i);
+            else
+                R.N(n).Expand = 0;
+            end
+        end
 
         Eccentricity = [R.N(seq).Eccentricity];
         [expV, timeE, timeC, numberI, freqE] = trkTemporalAnalysisVector(Eccentricity); %#ok<ASGLU>
@@ -134,7 +145,11 @@ for t = 1:numTracks
         R.NTimeInfo(t).TotalCableLengthExpanding = timeE;
         R.NTimeInfo(t).TotalCableLengthContracting = timeC;
         R.NTimeInfo(t).TotalCableLengthFreqExpansion = freqE;
-        
+%         for i = 1:length(seq)
+%             n = seq(i);
+%             R.N(n).Expand = expV(i);
+%         end
+
          
         % put some statistics into CellTimeInfo
         for i = 1:length(seq)
@@ -159,4 +174,34 @@ for t = 1:numTracks
 %             R.CellTimeInfo(t).GermanTotalCableLengthFilopodia(i) = sum(R.FILAMENTS(d).FilopodiaFlag);
 %         end
     end
+end
+
+R.D(1).KevinTotalCableLengthExpand = [];
+
+
+numTracks = length(R.trkSeq);
+for t = 1:numTracks
+
+    seq = R.trkSeq{t};
+    
+    if ~isempty(seq)
+        
+        KevinTotalCableLength = R.CellTimeInfo(t).KevinTotalCableLength;
+        x = -5:1:5;
+        sigma = 3.0;
+        filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
+        KevinTotalCableLength=imfilter(KevinTotalCableLength, filt, 'same', 'replicate');
+        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(KevinTotalCableLength); %#ok<*ASGLU>
+        for i = 1:length(seq)
+            d = seq(i);
+            R.D(d).KevinTotalCableLengthExpand = expContractVector(i);
+        end
+        R.CellTimeInfo(t).KevinTotalCableLengthTimeExpanding = timeExpanding;
+        R.CellTimeInfo(t).KevinTotalCableLengthTimeContracting = timeContracting;
+        R.CellTimeInfo(t).KevinTotalCableLengthFreqExpansion = freqExpansion;
+        
+        
+        
+    end
+    
 end

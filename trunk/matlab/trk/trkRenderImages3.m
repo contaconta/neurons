@@ -39,59 +39,77 @@ for t = TMIN:TMAX
     %% 1. draw the objects
 
     % draw nucleus and soma
-    for d = 1:length(Dlist{t})
-        detect_ind = Dlist{t}(d);
+    for i = 1:length(Dlist{t})
+        d = Dlist{t}(i);
         
-        if tracks(detect_ind) ~= 0
+        if tracks(d) ~= 0
             if isfield(D, 'Happy')
-                if D(detect_ind).Happy == 0
+                if D(d).Happy == 0
                     color = [.5 .5 .5];
                 else
-                    color = cols(tracks(detect_ind),:);
+                    color = cols(tracks(d),:);
                     color = hsv2rgb(rgb2hsv(color) + [0 -.25 -.1]);
                 end
             else
-                color = cols(tracks(detect_ind),:);
+                color = cols(tracks(d),:);
                 color = hsv2rgb(rgb2hsv(color) + [0 -.25 -.1]);
             end
 
             % color basic filament skeletons
             FILMASK = BLANK > Inf;
-            FILMASK( FILAMENTS(detect_ind).PixelIdxList) = 1;
-            FILMASK(Soma(detect_ind).PixelIdxList) = 0;
+            FILMASK( FILAMENTS(d).PixelIdxList) = 1;
+            FILMASK(Soma(d).PixelIdxList) = 0;
             Ir(FILMASK) = max(0, color(1) - .2);
             Ig(FILMASK) = max(0, color(2) - .2);
             Ib(FILMASK) = max(0, color(3) - .2);
 
-            numNeurites = max(FILAMENTS(detect_ind).NeuriteID);
-            for i = 1:numNeurites
+            numNeurites = max(FILAMENTS(d).NeuriteID);
+            filoIdxList = find(FILAMENTS(d).FilopodiaFlag);
+            filoPixList = FILAMENTS(d).PixelIdxList(filoIdxList); %#ok<FNDSB>
+            for j = 1:numNeurites
                 if NPROCESSED
-
-                    n = FILAMENTS(detect_ind).NIdxList(i);
-                    if N(n).NeuriteTrack == 0
-                        neuritecolor = [.6 .6 .6];
-                    else
+                    if D(d).Happy ~= 0
+                        n = FILAMENTS(d).NIdxList(j);
                         nTrack = N(n).NeuriteTrack;
-                        neuritecolor = cols(nTrack,:);
+                        %MajorAxisLength = N(n).MajorAxisLength;
+                        if nTrack == 0
+                            neuritecolor = [.6 .6 .6];
+                        else
+                            neuritecolor = cols(nTrack,:);
+                            %neuritecolor = getNeuriteColor(nTrack, color);
+                            %neuritecolor = getNeuriteColor2(MajorAxisLength, color);
+                        end
+                    else
+                        neuritecolor = [.6 .6 .6];
                     end
                 else
                     neuritecolor = color;
                 end
-    
-                neuritepixels = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NeuriteID == i);
-                Ir(neuritepixels) = neuritecolor(1);
-                Ig(neuritepixels) = neuritecolor(2);
-                Ib(neuritepixels) = neuritecolor(3);
+                
+                
+                neuritepixels = FILAMENTS(d).PixelIdxList( FILAMENTS(d).NeuriteID == j);
+               [Ir Ig Ib] = colorHighlight(Ir,Ig,Ib,neuritepixels, neuritecolor);
+               
+%                 Ir(neuritepixels) = neuritecolor(1);
+%                 Ig(neuritepixels) = neuritecolor(2);
+%                 Ib(neuritepixels) = neuritecolor(3);
+                Ir(neuritepixels) = color(1);
+                Ig(neuritepixels) = color(2);
+                Ib(neuritepixels) = color(3);
+                
+                %[Ir Ig Ib] = colorNeurites2(Ir,Ig,Ib,neuritepixels,filoPixList,neuritecolor);
             end
             
             % draw filopodia
 %             filohsv = rgb2hsv(color) + [.085 0  .075];
 %             filohsv(filohsv > 1) = filohsv(filohsv > 1) - 1;
 %             filocolor = hsv2rgb(filohsv);
-%             [Ir Ig Ib] = colorNeurites(detect_ind, Ir,Ig,Ib,FILAMENTS,filocolor);
+%             filocolor = color;
+%             [Ir Ig Ib] = colorNeurites(d, Ir,Ig,Ib,FILAMENTS,filocolor);
+            
             
 %             % draw branch points
-%             branchpts = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NumKids >= 2);
+%             branchpts = FILAMENTS(d).PixelIdxList( FILAMENTS(d).NumKids >= 2);
 %             branchcolor = hsv2rgb(rgb2hsv(color) + [0 0 .3]);
 %             Ir(branchpts) = branchcolor(1);
 %             Ig(branchpts) = branchcolor(2);
@@ -99,7 +117,7 @@ for t = TMIN:TMAX
             
             % color the soma
             SomaM = B > Inf;
-            SomaM(Soma(detect_ind).PixelIdxList) = 1;
+            SomaM(Soma(d).PixelIdxList) = 1;
             SomaP = bwmorph(SomaM, 'remove');
             SomaP = bwmorph(SomaP, 'dilate');
             SomaP = bwmorph(SomaP, 'thin',1);
@@ -109,9 +127,9 @@ for t = TMIN:TMAX
             Ib(SomaP) = somacolor(3);
 
             % color the nucleus
-            Ir(D(detect_ind).PixelIdxList) = somacolor(1);
-            Ig(D(detect_ind).PixelIdxList) = somacolor(2);
-            Ib(D(detect_ind).PixelIdxList) = somacolor(3);
+            Ir(D(d).PixelIdxList) = somacolor(1);
+            Ig(D(d).PixelIdxList) = somacolor(2);
+            Ib(D(d).PixelIdxList) = somacolor(3);
         end
     end
 
@@ -121,27 +139,27 @@ for t = TMIN:TMAX
     I = uint8(255*I);
     blk = [80 80 80];
     
-    for d = 1:length(Dlist{t})
-        detect_ind = Dlist{t}(d);
+    for i = 1:length(Dlist{t})
+        d = Dlist{t}(i);
 
         % add text annotation
-        if tracks(detect_ind) ~= 0
+        if tracks(d) ~= 0
             if isfield(D, 'Happy')
-                if D(detect_ind).Happy == 0
+                if D(d).Happy == 0
                     color = [.7 .7 .7];
                 else
-                    color = cols(tracks(detect_ind),:);
+                    color = cols(tracks(d),:);
                     color = hsv2rgb(rgb2hsv(color) + [0 -.25 -.1]);
                 end
             else
-                color = cols(tracks(detect_ind),:);
+                color = cols(tracks(d),:);
                 color = hsv2rgb(rgb2hsv(color) + [0 -.25 -.1]);
             end
             
             col = max(color, 0);
-            rloc = max(1,D(detect_ind).Centroid(2) - 30);
-            cloc = max(1,D(detect_ind).Centroid(1) + 20);
-            I=trkRenderText(I,['id=' num2str(D(detect_ind).ID)], floor(255*col), [rloc, cloc], 'bnd2', 'left');
+            rloc = max(1,D(d).Centroid(2) - 30);
+            cloc = max(1,D(d).Centroid(1) + 20);
+            I=trkRenderText(I,['id=' num2str(D(d).ID)], floor(255*col), [rloc, cloc], 'bnd2', 'left');
         end
     end
 
@@ -165,7 +183,7 @@ end
 
 
 %             % draw leaf points
-%             leafpts   = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NumKids == 0);
+%             leafpts   = FILAMENTS(d).PixelIdxList( FILAMENTS(d).NumKids == 0);
 %             Ir(leafpts) = 0;
 %             Ig(leafpts) = 1;
 %             Ib(leafpts) = 0;
@@ -187,4 +205,111 @@ for n = dlist(:)'
     Ig(neuritePixList) = color(2);
     Ib(neuritePixList) = color(3);
 end
+
+
+function [Ir Ig Ib] = colorNeurites2(Ir,Ig,Ib,NeuriteList,FiloList,color)
+
+
+DrawList = intersect(NeuriteList, FiloList);
+
+Ir(DrawList) = color(1);
+Ig(DrawList) = color(2);
+Ib(DrawList) = color(3);
+
+
+
+% function ncolor = getNeuriteColor(Ntrack, color)
+% 
+% MODNUM = 8;
+% 
+% hoffset = (mod(Ntrack,MODNUM) + 1)/(MODNUM*2);
+% if abs(hoffset) < .05
+%     if sign(hoffset) == 1
+%         hoffset = hoffset + .1;
+%     else
+%         hoffset = hoffset - .1;
+%     end
+% end
+%     
+%     
+% hsign = double(mod(ceil(Ntrack/MODNUM),3) == 0);
+% hsign(hsign == 0) = -1;
+% hoffset = hoffset.*hsign;
+% 
+% hoffset
+% 
+% hcolor = rgb2hsv(color);
+% hcolor = [hcolor(1) .66 hcolor(2)] + [0 hoffset 0];
+% %hcolor(hcolor > 1) = hcolor(hcolor > 1) - 1;
+% %hcolor(hcolor < 0) = hcolor(hcolor < 0) + 1;
+% if hcolor(2) > 1
+%     hcolor(2) = 1;
+% end
+% if hcolor(2) < .2
+%     hcolor(2) = .2;
+% end
+% 
+% 
+% ncolor = hsv2rgb(hcolor);
+% 
+% % if mean(ncolor < .2)
+% %     keyboard;
+% % end
+% % if isnan(ncolor)
+% %     keyboard;
+% % end
+% 
+% %ncolor = mean([ncolor; color]);
+
+
+
+function [Ir Ig Ib] = colorHighlight(Ir,Ig,Ib,PixelIdxList, color)
+
+H = size(Ir,1);
+badinds = find(mod(PixelIdxList,H) == 0);
+PixelIdxList(badinds) = [];  %#ok<FNDSB>
+
+PixelIdxList = PixelIdxList + 1;
+
+
+Ir(PixelIdxList) = color(1);
+Ig(PixelIdxList) = color(2);
+Ib(PixelIdxList) = color(3);
+
+
+function ncolor = getNeuriteColor(Ntrack, color)
+
+MODNUM = 8;
+
+sval = (mod(Ntrack,MODNUM))/(MODNUM) + (1/MODNUM);
+    
+hcolor = rgb2hsv(color);
+hcolor = [hcolor(1) sval hcolor(2)];
+
+
+ncolor = hsv2rgb(hcolor);
+
+
+
+
+
+function ncolor = getNeuriteColor2(val, color)
+
+hcolor = rgb2hsv(color);
+
+cl = (val - 20)/80;
+s = cl;
+s(s > 1) = 1;
+
+ncolor = hsv2rgb([hcolor(1) s hcolor(3)]);
+
+
+
+function I = colortips(I, N)
+
+% CC.Connectivity = 8;
+% CC.ImageSize = R.FILAMENTS(d).IMSIZE;
+% CC.NumObjects = 1;
+% CC.PixelIdxList = N.PixelIdxList;
+
 
