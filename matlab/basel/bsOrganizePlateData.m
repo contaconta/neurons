@@ -2,9 +2,9 @@ function bsOrganizePlateData(srcfolder, destfolder)
 
 % dafault parameters
 prefixPat = 'Experiment2';
-channelsPat = {'_w2LED red_', '_w1LED green_'}; 
-channelFolderNames = {'red', 'green'};
-sitePat = '_s(\d*)_'; sitePrecisionStr = '%03d';
+channelsPat = sort({'_w2LED red_', '_w1LED green_'}); 
+channelFolderNames = sort({'red', 'green'});
+sitePat = '_s(\d*)'; sitePrecisionStr = '%03d';
 timePat = '_t(\d*)'; timePrecisionStr = '%04d';
 extPat = '.TIF';
 
@@ -35,7 +35,7 @@ if ~strcmp(destfolder(end), '/')
 end 
 
 % define an image file pattern used find valid filenames
-tmp = input(['\nThe pattern to locate image files is:\n' prefixPat '\n\nPlease type a new pattern to replace it, or press enter to accept:\n'], 's');
+tmp = input(['\nThe file prefix pattern to locate valid images is:\n' prefixPat '\n\nPlease type a new pattern to replace it, or press enter to accept:\n'], 's');
 if ~strcmp('', tmp)
     prefixPat = tmp;
 else
@@ -48,6 +48,11 @@ d = [];
 for c = 1:length(channelsPat)
     dtemp = dir([ srcfolder prefixPat channelsPat{c} '*' extPat]);
     d = [d; dtemp]; %#ok<AGROW>
+end
+numFiles = length(d);
+disp(['...' num2str(numFiles) ' matching files found in ' srcfolder]);
+if isempty(d)
+    error(['No files matching the specified pattern were found: ' srcfolder prefixPat channelsPat{c} '*' extPat]);
 end
 
 % enumerate the list of sites and channels for this plate
@@ -70,6 +75,7 @@ sites = unique(sites);
 
 
 % create the directory structure in the destination folder, and copy images
+disp('...copying files and creating data structures (this may take a while).');
 for i = 1:numel(sites)
 
     % create the site folder
@@ -78,6 +84,7 @@ for i = 1:numel(sites)
     if ~exist(siteFolder, 'dir')
         mkdir(siteFolder);
     end
+    disp(['...organizing ' siteFolder]);
     
     % create the channel subfolders
     for j = 1:length(channels)
@@ -94,7 +101,7 @@ for i = 1:numel(sites)
     timelist = [];
     for k = 1:length(d)
         tstr = regexp(d(k).name, timePat, 'match');
-        n = regexp(tstr{1}, '\d*', 'match');
+        n = regexp(tstr{end}, '\d*', 'match');
         t_k = str2num(n{end}); %#ok<ST2NM>
         timelist = unique( [timelist t_k]);
     end
@@ -107,7 +114,9 @@ for i = 1:numel(sites)
                 channelFolder = [destfolder  sprintf(sitePrecisionStr, sites(i)) '/' channels{c} '/'];        
                 %str = ['cp "' srcfolder prefixPat channels{c} '*_s' num2str(sites(i)) '*_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
                 
-                str = ['cp "' srcfolder 'Experiment2_w1LED green_s' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
+                %str = ['cp "' srcfolder 'Experiment2_w1LED green_s' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
+                
+                str = ['cp "' srcfolder prefixPat channelsPat{c} 's' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
                 
                 system(str);
                 
@@ -118,13 +127,14 @@ for i = 1:numel(sites)
     end
 end
     
+disp('...finished organizing!');
+disp(['...files are now located in: ' destfolder]);
 
 
 
 
 
 
-keyboard;
 
 
 
