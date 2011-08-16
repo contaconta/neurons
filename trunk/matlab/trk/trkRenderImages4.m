@@ -1,5 +1,5 @@
 %function mv = trkRenderImages3(TMIN,TMAX,date_txt, num_txt,label_txt,cols,mv,Dlist,BLANK,FILAMENTS,Soma,tracks,D,N,DISPLAY_FIGURES) 
-function mv = trkRenderImages4(TMIN,TMAX,R,cols,mv,DISPLAY_FIGURES)
+function [mv mv0 mv1 mv2 mv3]= trkRenderImages4(TMIN,TMAX,R,cols,mv,DISPLAY_FIGURES)
 % mv = trkRenderImages3(TMIN,TMAX,R,cols,mv,DISPLAY_FIGURES)
 %
 %   TMIN = first time step to render
@@ -67,6 +67,11 @@ for t = TMIN:TMAX
     % store the image for writing a movie file
     mv{t} = Ibig;
     
+    mv0{t} = I0;
+    mv1{t} = I1;
+    mv2{t} = I2;
+    mv3{t} = I3;
+    
     
 end
 
@@ -84,7 +89,11 @@ blk = [80 80 80];
 I=trkRenderText(I,date_txt, blk, [10, 20], 'bnd2', 'left');
 I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
 I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
-I=trkRenderText(I,'Original', blk, [10, 460], 'bnd2', 'left');
+I=trkRenderText(I,'Original(Lifeact_GFP)', blk, [10, 420], 'bnd2', 'left');
+
+time_tex = num2str((t-1) * 10) ;
+I=trkRenderText(I,time_tex, blk, [550 630], 'bnd2', 'right');
+I=trkRenderText(I,'min', blk, [550 680], 'bnd2', 'right');
 
 function I = drawI1(t,cols,Ir,Ig,Ib,date_txt,num_txt,label_txt,Dlist,BLANK,FILAMENTS,Soma,tracks,D,N)
 
@@ -196,8 +205,9 @@ I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
 I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
 I=trkRenderText(I,'Neuron_Tracking', blk, [10, 460], 'bnd2', 'left');
 
-
-
+time_tex = num2str((t-1) * 10) ;
+I=trkRenderText(I,time_tex, blk, [550 630], 'bnd2', 'right');
+I=trkRenderText(I,'min', blk, [550 680], 'bnd2', 'right');
 
 
 
@@ -312,6 +322,14 @@ I=trkRenderText(I,date_txt, blk, [10, 20], 'bnd2', 'left');
 I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
 I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
 I=trkRenderText(I,'Neurite_Tracking', blk, [10, 460], 'bnd2', 'left');
+
+time_tex = num2str((t-1) * 10) ;
+I=trkRenderText(I,time_tex, blk, [550 630], 'bnd2', 'right');
+I=trkRenderText(I,'min', blk, [550 680], 'bnd2', 'right');
+
+
+
+
 
 function I = drawI3(t,cols,Ir,Ig,Ib,date_txt,num_txt,label_txt,Dlist,BLANK,FILAMENTS,Soma,tracks,D,N)
 
@@ -431,6 +449,13 @@ I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
 I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
 I=trkRenderText(I,'Filopodia', blk, [10, 460], 'bnd2', 'left');
 
+time_tex = num2str((t-1) * 10) ;
+I=trkRenderText(I,time_tex, blk, [550 630], 'bnd2', 'right');
+I=trkRenderText(I,'min', blk, [550 680], 'bnd2', 'right');
+
+
+
+
 
 function I = drawI4(t,cols,Ir,Ig,Ib,date_txt,num_txt,label_txt,Dlist,BLANK,FILAMENTS,Soma,tracks,D,N)
 
@@ -545,6 +570,9 @@ I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
 I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
 
 
+time_tex = num2str((t-1) * 10) ;
+I=trkRenderText(I,time_tex, blk, [550 630], 'bnd2', 'right');
+I=trkRenderText(I,'min', blk, [550 680], 'bnd2', 'right');
 
 
 

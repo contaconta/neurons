@@ -24,9 +24,10 @@ cols2 = cols2(randperm(8),:);
 cols3 = jet(1000);
 cols3 = cols3(randperm(1000),:);
 colors = [cols1; cols2; cols3];
+save colors.mat colors;
 
 %% draw our results on top of the images
-DISPLAY_FIGURES = 0;
+DISPLAY_FIGURES = 1;
 %BLANK = zeros(size(mv{1}));
 %mv = trkRenderImages3(1,R.GlobalMeasures.Length,R.GlobalMeasures.Date,R.GlobalMeasures.AssayPosition,R.GlobalMeasures.Label,colors,mv,R.Dlist,BLANK,R.FILAMENTS,R.Soma,R.tracks,R.D,DISPLAY_FIGURES);
 mv = trkRenderImages4(1,R.GlobalMeasures.Length,R,colors,mv,DISPLAY_FIGURES);

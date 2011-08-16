@@ -8,7 +8,7 @@ function [RAY1 RAY3 RAY4] = rays(E, gv, gh, angle, varargin)
 %   contains type 4 norm features. Type 2 Ray difference features can be
 %   computed from type 1 features.  See example below.
 %
-%   Example (compute Rays at 30 degrees):
+%   Example Part 1 (compute Rays at 30 degrees):
 %   -------------------------------------
 %   I = imread('coins.png');
 %   gh = imfilter(I,fspecial('sobel')' /8,'replicate');
@@ -16,7 +16,7 @@ function [RAY1 RAY3 RAY4] = rays(E, gv, gh, angle, varargin)
 %   E = bwmorph(edge(I, 'canny', .5,1), 'diag');
 %   [Rdist Rori Rnorm] = rays(E, gv, gh, 30); imagesc(Rdist); axis image;
 %
-%   Example (Rays extracted at multiple orientations):
+%   Example Part 2 (Rays extracted at multiple orientations):
 %   --------------------------------------------------
 %   angles = 0:30:330; 
 %   Rdist = zeros([size(I,1) size(I,2) length(angles)]);
@@ -26,7 +26,7 @@ function [RAY1 RAY3 RAY4] = rays(E, gv, gh, angle, varargin)
 %       imagesc(Rdist(:,:,i)); axis image; drawnow; refresh; 
 %   end
 %
-%   Example (re-orient Rays to be rotationally invariant by shifting them 
+%   Example Part 3 (re-orient Rays to be rotationally invariant by shifting them 
 %            so orientation with longest ray becomes 0 degrees, SLOW):
 %   ------------------------------------------------------------------
 %   for r = 1:size(I,1)
@@ -40,7 +40,7 @@ function [RAY1 RAY3 RAY4] = rays(E, gv, gh, angle, varargin)
 %       end
 %   end
 %
-%   Example (compute type 2 difference features from Type 1 features):
+%   Example Part 4 (compute type 2 difference features from Type 1 features):
 %   ------------------------------------------------------------------
 %   pairs = combnk(angles, 2); eta = 1;
 %   for c = 1:size(pairs,1);

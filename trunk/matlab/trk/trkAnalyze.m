@@ -28,17 +28,17 @@ end
 
 
 count = 1;
-for i = 87:87
+for i = 81:81
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end
 
 for i = 1:size(exp_num,1)
     matlabpool local
-    tic
+    %tic
     folder_n = [folder exp_num(i,:) '/'];
     trkTracking(folder_n, resultsFolder);
-    toc
+    %toc
     % kill the matlab pool
     matlabpool close force
     disp('');

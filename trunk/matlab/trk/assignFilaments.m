@@ -62,11 +62,11 @@ if nSomas ~= 0
     clear Max;
     MaxInd = MaxInd.*FGMASK;
     ASSIGN = MaxInd.*FGMASK;
-
+    
     for i = 1:nSomas
         ASSIGN(MaxInd == i) = indList(i);
     end
-
+    
 else
     ASSIGN = zeros(size(L));
 end
