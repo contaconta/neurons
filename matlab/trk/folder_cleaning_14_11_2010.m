@@ -9,7 +9,7 @@ pat = '\d*';
 maxt = 1;
 for i = 1:length(d)
     n = regexp(d(i).name, pat, 'match');
-    t_i = str2num(n{end});
+    t_i = str2num(n{end}); %#ok<ST2NM>
     if t_i > maxt
         maxt = t_i;
     end
