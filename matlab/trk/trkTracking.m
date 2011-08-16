@@ -80,7 +80,7 @@ count = 1;                  % detection counter
 disp('...reading raw images and determining intensity level limits');
 [rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
 
-
+tic;
 
 %% preprocess images
 disp('...preprocessing images');
@@ -238,50 +238,52 @@ disp('...time-dependent measurements');
 %% get global experiment measures
 GlobalMeasures = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt);
 
-% save the parameters in the experiment folder
-paramfile = [folder 'params.mat'];
-disp(['...saving parameters to ' paramfile]);
-save(paramfile, 'NUC_INT_THRESH',...
-     'NUC_MIN_AREA',...
-     'WT',...
-     'WSH',...
-     'WIN_SIZE',...
-     'W_THRESH',...
-     'FRANGI_THRESH',...
-     'TARGET_NUM_OBJECTS',...
-     'SOMA_THRESH',...
-     'rmin',...
-     'rmax');
+toc;
 
-
-%% render results on the video
-disp('...rendering images');
-mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
-
-% make a movie of the results
-movfile = [  date_txt '_' num_txt '.avi'];
-trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
-%makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
-
-
-
-%% save everything we need for the analysis
-datafile = [resultsFolder date_txt '_' num_txt '.mat'];
-trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
-
-% % put everything into a nice structure for the xml writer
-% Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
+% % save the parameters in the experiment folder
+% paramfile = [folder 'params.mat'];
+% disp(['...saving parameters to ' paramfile]);
+% save(paramfile, 'NUC_INT_THRESH',...
+%      'NUC_MIN_AREA',...
+%      'WT',...
+%      'WSH',...
+%      'WIN_SIZE',...
+%      'W_THRESH',...
+%      'FRANGI_THRESH',...
+%      'TARGET_NUM_OBJECTS',...
+%      'SOMA_THRESH',...
+%      'rmin',...
+%      'rmax');
 % 
-% % write the xml file
-% xmlFileName = [folder num_txt '.xml'];
-% disp(['...writing ' xmlFileName]);
-% trkWriteXMLFile(Experiment, xmlFileName);
 
-%matlabpool close;
-
-
-%keyboard;
-
+% %% render results on the video
+% disp('...rendering images');
+% mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+% 
+% % make a movie of the results
+% movfile = [  date_txt '_' num_txt '.avi'];
+% trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
+% %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
+% 
+% 
+% 
+% %% save everything we need for the analysis
+% datafile = [resultsFolder date_txt '_' num_txt '.mat'];
+% trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
+% 
+% % % put everything into a nice structure for the xml writer
+% % Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
+% % 
+% % % write the xml file
+% % xmlFileName = [folder num_txt '.xml'];
+% % disp(['...writing ' xmlFileName]);
+% % trkWriteXMLFile(Experiment, xmlFileName);
+% 
+% %matlabpool close;
+% 
+% 
+% %keyboard;
+% 
 
 
 

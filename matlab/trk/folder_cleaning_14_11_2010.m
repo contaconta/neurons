@@ -44,19 +44,9 @@ for t=1:maxt
     
     if ~isempty(fname1) && ~isempty(fname2)
         
-        %str1 = ['cp ' folder fname1 ' ' folder 'green/' sprintf('im%02d', count) '.tif'];
-        %disp(str1);
-        %system(str1);
         copyfile([folder fname1], [folder 'green/' sprintf('im%02d', count) '.tif']);
-        
-        
-%         str2 = ['cp ' folder fname2 ' ' folder 'red/' sprintf('im%02d', count) '.tif'];
-%         disp(str2);
-%         system(str2);
         copyfile([folder fname2], [folder 'red/' sprintf('im%02d', count) '.tif']);
-        
 
-        
     	count = count + 1;
     end
 
@@ -64,18 +54,7 @@ for t=1:maxt
 end
 
 
-% cd(folder)
-% 
-% % zip up the original images, just in case
-% str3 = ['zip original_images.zip *.TIF'];
-% disp(str3);
-% system(str3);
-% 
-% str4 = ['rm *.TIF'];
-% disp(str4);
-% system(str4);
-% 
-% cd(work_folder);
+
 
 str4 = ['rm ' folder '*.TIF'];
 disp(str4);

@@ -67,6 +67,8 @@ close(handles.hStats);
 
 handles = clearAnnotations(handles);
 
+handles.t = 1;
+
 % start matlabpool for parallel processing
 if matlabpool('size') > 0
     matlabpool close;
@@ -75,8 +77,10 @@ matlabpool
 
 %% ========================== DEFAULT PARAMETERS ==========================
 
-%handles.folder = pwd;
 handles.folder = '/home/ksmith/data/Sinergia/Geneva/Laurence/2010-09-16/RMS04/RMS04TTX/';
+if ~exist(handles.folder, 'dir')
+    handles.folder = pwd;
+end
 %handles.CLim = [0 255];
 handles.CLim = [0 65535];
 
@@ -153,6 +157,11 @@ handles.t = get(hObject, 'Value');
 
 handles = updateImage(handles);
 
+if ~isempty(handles.D(1).Area)
+    handles = updateStats(handles);
+    guidata(hObject, handles);
+end
+
 %get(hObject,'Value')
 guidata(hObject, handles);
 
@@ -180,7 +189,6 @@ function loadbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles = clearAnnotations(handles);
 handles = openFolder(handles);
 guidata(hObject, handles);
 
@@ -248,46 +256,68 @@ handles.api.setMagnification(mag);
 function handles = openFolder(handles)
 
 
-folder = uigetdir(handles.folder, 'Select folder containing TIF sequence');
-
-if folder ~= 0
-
-    prompt={'Sample size in x-direction (\mu m):', 'Sample size in y-direction (\mu m):', 'Sample size in z-direction (\mu m):'};
-    name = 'Stack dimensions';
-    numlines = 1;
-    defaultanswer = {'200', '200', '30'};
-    options.Resize='on';
-    options.WindowStyle='normal';
-    options.Interpreter='tex';
-    answer=inputdlg(prompt,name,numlines,defaultanswer,options);
-    dx = str2double(answer{1});
-    dy = str2double(answer{2});
-    dz = str2double(answer{3});
-    d = [dx dy dz];
-    if isempty(d)
-        disp('err1');
-        keyboard;
-        return;
-    end
-    if ~isa(d, 'double')
-        disp('err2');
-        keyboard;
-        return;
-    end
-    pause(0.1);
-    
-    handles.folder = [folder '/'];
-    handles = loadData(handles);
-    
-    handles.spacing(1) = dy / size(handles.Data{1},1);
-    handles.spacing(2) = dx / size(handles.Data{1},2);
-    handles.spacing(3) = dz / size(handles.Data{1},3);
-
-    disp([ '[' num2str(handles.spacing) '] um / voxel']);
+if isfield(handles, 'Data')
+    choice = questdlg('Loading new data will clear the annotations. Continue?', 'Load New Data',...
+    'Load New Data', 'Cancel', 'Cancel');
 else
-    disp('no folder selected');
+    choice = '';
 end
 
+
+switch choice
+    case 'Cancel'
+        return;
+    otherwise
+        handles = clearAnnotations(handles);
+
+        folder = uigetdir(handles.folder, 'Select folder containing TIF sequence');
+
+        if folder ~= 0
+
+            prompt={'Sample size in x-direction (\mu m):', 'Sample size in y-direction (\mu m):', 'Sample size in z-direction (\mu m):'};
+            name = 'Stack dimensions';
+            numlines = 1;
+            defaultanswer = {'200', '200', '30'};
+            options.Resize='on';
+            options.WindowStyle='normal';
+            options.Interpreter='tex';
+            answer=inputdlg(prompt,name,numlines,defaultanswer,options);
+            d =[];
+            
+            if isempty(answer)
+                dx = 1;
+                dy = 1;
+                dz = 1;
+            else
+                dx = str2double(answer{1});
+                dy = str2double(answer{2});
+                dz = str2double(answer{3});
+                d = [dx dy dz];
+            end
+            if isempty(d)
+                disp('Cancelled');
+                %keyboard;
+                return;
+            end
+            if ~isa(d, 'double')
+                disp('Cancelled');
+                %keyboard;
+                return;
+            end
+            pause(0.1);
+
+            handles.folder = [folder '/'];
+            handles = loadData(handles);
+
+            handles.spacing(1) = dy / size(handles.Data{1},1);
+            handles.spacing(2) = dx / size(handles.Data{1},2);
+            handles.spacing(3) = dz / size(handles.Data{1},3);
+
+            disp([ '[' num2str(handles.spacing) '] um / voxel']);
+        else
+            disp('no folder selected');
+        end
+end
 
 
 
@@ -349,7 +379,8 @@ set(handles.pushMeasure, 'Value', 0);
 
 % set the image to be the first std projection
 handles = updateImage(handles);
-%handles = updateStats(handles);
+handles = updateIDList(handles);
+handles = updateStats(handles);
 
 
 
@@ -859,11 +890,11 @@ function [zsmooth handles] = smoothZselection(zdata, handles)
 zsmooth = smooth(zdata, 9, 'loess');
 
 % figure(99);
-% plot(zdata, 'b--'); 
+% plot(zdata, 1:handles.zmax, 'b--'); 
 % hold on;
-% plot(zsmooth, 'r');
+% plot( zsmooth, 1:handles.zmax, 'r');
 % hold off;
-% axis([0 handles.zmax 0 max(zsmooth)]);
+% %axis([1 handles.zmax 0 max(zsmooth)]);
 
 
 
@@ -985,8 +1016,6 @@ end
 handles = updateImage(handles);
 handles = updateStats(handles);
 guidata(hObject, handles);
-
-
 
 
 
@@ -1166,6 +1195,10 @@ switch evnt.Key
             set(handles.listID, 'Value', 9);
             listID_Callback(handles.listID, [], handles);
         end    
+    case 'equal'
+        zoomin_Callback(handles.zoomin, [], handles);
+    case 'hyphen'
+        zoomout_Callback(handles.zoomout, [], handles); 
     otherwise
         disp('unrecognized key command');
 end
@@ -1421,24 +1454,40 @@ set(handles.pushMeasure, 'Value', 0);
 
 function handles = saveAnnotations(handles)
 
-%folder = uigetfile(handles.folder, 'Select folder to save the annotations');
-[filename, pathname, filterindex] = uiputfile( ...
-       {'*.mat','MAT-files (*.mat)'; ...
-        '*.mdl','Models (*.mdl)'; ...
-        '*.*',  'All Files (*.*)'}, ...
-        'Save as', 'Untitled.mat');
 
-D = handles.D;
-dlist = handles.dlist;
-G = handles.G;
-glist = handles.glist;
-IDs = handles.IDs;
-
-if pathname ~= 0
-    filenm = [pathname filename];
-    save(filenm, 'D', 'dlist', 'G', 'glist', 'IDs');
+if isempty(handles.D(1).Area)
+    choice = questdlg('The annotations appear to be empty. Save anyway?', 'Save annotations',...
+    'Save', 'Cancel', 'Cancel');
+else
+    choice = '';
 end
-    
+
+
+switch choice
+    case 'Cancel'
+        return;
+    otherwise
+
+
+    %folder = uigetfile(handles.folder, 'Select folder to save the annotations');
+    [filename, pathname, filterindex] = uiputfile( ...
+           {'*.mat','MAT-files (*.mat)'; ...
+            '*.mdl','Models (*.mdl)'; ...
+            '*.*',  'All Files (*.*)'}, ...
+            'Save as', 'Untitled.mat');
+
+    D = handles.D;
+    dlist = handles.dlist;
+    G = handles.G;
+    glist = handles.glist;
+    IDs = handles.IDs;
+
+    if pathname ~= 0
+        filenm = [pathname filename];
+        save(filenm, 'D', 'dlist', 'G', 'glist', 'IDs');
+        disp(['saved ' filenm]);
+    end
+end    
     
     
 function [handles pathname] = loadAnnotations(handles)
@@ -1473,6 +1522,7 @@ if p ~= 0
     handles = updateImage(handles);
     handles = updateIDList(handles);
     set(handles.listID, 'Value', 1);
+    handles = updateStats(handles);
     guidata(hObject, handles);
 end
 
@@ -1495,6 +1545,7 @@ function pushMeasure_Callback(hObject, eventdata, handles)
 
 if ~isvalid(handles.hMeasure)
     handles.hMeasure = imdistlinescaled(handles.hFigAxis);
+    %handles.spacing
     handles.hMeasure.setScale(handles.spacing);
     handles.hMeasure.setLabelTextFormatter('%2.2f microns');
 else
@@ -1744,10 +1795,12 @@ function listID_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns listID contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listID
 
-handles = updateImage(handles);
-handles = updateStats(handles);
-guidata(hObject, handles);
-
+if ~isempty(handles.D(1).Area)
+    handles = updateImage(handles);
+    handles = updateStats(handles);
+    guidata(hObject, handles);
+end
+    
 % --- Executes during object creation, after setting all properties.
 function listID_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to listID (see GCBO)
@@ -2058,48 +2111,41 @@ if ishandle(h)
         % Nucleus stats
         Nvolume = getStat(handles.D, currentID, 'Volume', 1:handles.tmax) * prod(handles.spacing); 
         subplot(2,3,1); plot(Nvolume); title('Volume (\mu m^3)'); grid on;
+        hold on; plot(handles.t, Nvolume(handles.t), 'b.'); hold off;
         
         Nlen = getStat(handles.D, currentID, 'MajorAxisLength', 1:handles.tmax) * handles.spacing(1); 
         subplot(2,3,2); plot(Nlen); title('Length (\mu m)'); grid on;
+        hold on; plot(handles.t, Nlen(handles.t), 'b.'); hold off;
         
         NmI = getStat(handles.D, currentID, 'meanIntensity', 1:handles.tmax);
         subplot(2,3,3); plot(NmI); title('Mean Intensity'); grid on;
+        hold on; plot(handles.t, NmI(handles.t), 'b.'); hold off;
         
         NsI = getStat(handles.D, currentID, 'stdIntensity', 1:handles.tmax);
         subplot(2,3,6); plot(NsI); title('S. Dev. Intensity'); grid on;
+        hold on; plot(handles.t, NsI(handles.t), 'b.'); hold off;
         
         Necc = getStat(handles.D, currentID, 'Eccentricity', 1:handles.tmax);
         subplot(2,3,4); plot(Necc); title('Elongation'); grid on;
+        hold on; plot(handles.t, Necc(handles.t), 'b.'); hold off;
         
         Nvel = getDistanceTraveled(handles.D, currentID, 1:handles.tmax) * handles.spacing(1); 
         subplot(2,3,5); plot(Nvel); title('Velocity (\mu m / frame)'); grid on;
+        hold on; plot(handles.t, Nvel(handles.t), 'b.'); hold off;
         
         figure(handles.hFig);
-    end
         
-%     if ~isempty(handles.G(1).Area)
-% 
-%         %figure(h);
-%         set(0,'CurrentFigure',h);
-%         
-%         % Growth Cone stats
-%         Gvolume = getStat(handles.G, currentID, 'Volume', 1:handles.tmax) * prod(handles.spacing); 
-%         subplot(2,5,6); plot(Gvolume); title('Volume (\mu m^3)'); grid on;
-%         
-%         Glen = getStat(handles.G, currentID, 'MajorAxisLength', 1:handles.tmax) * handles.spacing(1); 
-%         subplot(2,5,7); plot(Glen); title('Length (\mu m)'); grid on;
-%         
-%         GmI = getStat(handles.G, currentID, 'meanIntensity', 1:handles.tmax);
-%         subplot(2,5,8); plot(GmI); title('Mean Intensity'); grid on;
-%         
-%         Gecc = getStat(handles.G, currentID, 'Eccentricity', 1:handles.tmax);
-%         subplot(2,5,9); plot(Gecc); title('Elongation'); grid on;
-%         
-%         Gvel = getDistanceTraveled(handles.G, currentID, 1:handles.tmax) * handles.spacing(1); 
-%         subplot(2,5,10); plot(Gvel); title('Velocity (\mu m / frame)'); grid on;
-%         
-%         figure(handles.hFig);
-%     end
+    else
+        set(0,'CurrentFigure',h);
+        subplot(2,3,1); cla;
+        subplot(2,3,2); cla;
+        subplot(2,3,3); cla;
+        subplot(2,3,4); cla;
+        subplot(2,3,5); cla;
+        subplot(2,3,6); cla;
+        figure(handles.hFig);
+    end
+   
 end
 
 
