@@ -1,9 +1,10 @@
-function [ASSIGN P] = assignFilaments(L, FRANGI, indList, priorList)
+function [ASSIGN P] = assignFilaments(L, FRANGI, indList, priorList, A, B)
 
 
 % parameters
-A = -1.5524;
-B = -31.1269;
+%A = -1.25;    % sigmoid center
+%B = -19;     % sigmoid width
+
 BORDER = 10;
 NEURON_PROB_THRESH = 0.000001; %0.000001;  %.001
 
@@ -14,6 +15,9 @@ nSomas = numel(indList);
 % compute frangi probability
 %P = 1./(1+exp(A*log(FRANGI)+B));
 P = 0.001 + .998./(1+exp(A*log(FRANGI)+B));
+
+%keyboard;
+
 
 % make image border mask
 M = zeros(size(FRANGI));

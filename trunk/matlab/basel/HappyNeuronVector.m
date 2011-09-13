@@ -1,7 +1,7 @@
 function [RUN, happyVector] = HappyNeuronVector(RUN)
 
 
-HAPPY_THRESHOLD = 200; %25;  %100;
+HAPPY_THRESHOLD = 50; %200; %25;  %100;
 
 % By default neurons are unhappy
 happyVector = zeros(size(RUN.tracks));
@@ -44,6 +44,9 @@ for nTrack = 1:length(RUN.trkSeq)
 %        str = sprintf('Neuron %i HAPPY %f\n', D(track(1)).ID, happy_factor);
 %        disp(str);
    else
+       
+       
+       
 %        str = sprintf('Neuron %i SAD %f\n', D(track(1)).ID, happy_factor);
 %        disp(str);
    end
