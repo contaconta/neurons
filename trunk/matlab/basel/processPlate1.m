@@ -1,11 +1,11 @@
 
 %% ICFILER
-%folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
-%resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/Results/';
+folder = '/net/cvlabfiler1/home/ksmith/Basel/ControlScreen/Plate1_10-5-2010/';
+resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/ControlScreen/Results/';
 
 %% kevin's laptop
-folder = '/home/ksmith/data/basel/ControlScreen/Plate1_10-5-2010/';
-resultsFolder = '/home/ksmith/data/basel/ControlScreen/Results/Plate1/';
+%folder = '/home/ksmith/data/basel/ControlScreen/Plate1_10-5-2010/';
+%resultsFolder = '/home/ksmith/data/basel/ControlScreen/Results/Plate1/';
 
 
 
