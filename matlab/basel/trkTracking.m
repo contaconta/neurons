@@ -29,7 +29,7 @@ if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
-if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 250; end;
+if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
 if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 2500; end;
 
 % other parameters
@@ -38,6 +38,14 @@ MIN_TRACK_LENGTH = 7;               % minimum number of detections for a valid n
 SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 0;                % display figure with results
 
+% image adjustment parameters
+G_MED = 2537;
+G_STD = 28.9134;
+G_MAX = 11234;
+R_MED = 205;
+R_STD = 3.0508;
+R_MAX = 327;
+rmin = []; rmax = []; % unused variables, kept for stability
 
 % display important parameters
 disp(' -------------------------------------- ');
@@ -75,22 +83,30 @@ count = 1;                  % detection counter
 
 
 % get intensity level limits for the sequence
-disp('...reading raw images and determining intensity level limits');
-[rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
+%disp('...reading raw images and determining intensity level limits');
+%[rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
+%[rmin rmax gmin gmax R G mvold] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
+[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, Rfiles, R_MAX, R_STD);
+[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, Gfiles, G_MAX, G_STD);
+
+%keyboard;
 
 tic;
 
 %% preprocess images
 disp('...preprocessing images');
 h1 = fspecial('log',[30 30], 6);    % Laplacian filter kernel used to find nuclei
-parfor t = 1:TMAX
-    Rt = mat2gray(R{t}, [double(rmin) double(rmax)]);
-    Rblur{t} = imgaussian(Rt,2);
-    log1{t} = imfilter(Rt, h1, 'replicate');
-    J{t} = mat2gray(G{t}, [double(gmin) double(gmax)]);
-    f{t} = FrangiFilter2D(J{t}, opt);
+parfor  t1 = 1:TMAX
+    %Rt = mat2gray(R{t}, [double(rmin) double(rmax)]);
+    Rt = mat2gray(double(R{t1}));
+    Rblur{t1} = imgaussian(Rt,2);
+    log1{t1} = imfilter(Rt, h1, 'replicate');
+    %J{t} = mat2gray(G{t}, [double(gmin) double(gmax)]);
+    J{t1} = mat2gray(double(G{t1}));
+    f{t1} = FrangiFilter2D(J{t1}, opt);
+    %M = J{t} < 3*(G_STD/G_MAX);     % add a mask to get rid of background Frangi resp.
+    %f{t} = FrangiFilter2D(J{t}, opt) .* ~M;
 end
-
 
 % estimate the best threshold for detecting nuclei
 BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJECTS);
@@ -102,7 +118,7 @@ BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJECTS);
 
 %% collect nucleus detections
 disp('...detecting nuclei');
-for t = 1:TMAX
+for  t = 1:TMAX
 
     M{t} = getNucleiBinaryMask(log1{t}, Rblur{t}, BEST_LOG_THRESH, NUC_INT_THRESH, NUC_MIN_AREA);
     L = bwlabel(M{t});
@@ -185,6 +201,11 @@ disp('...detecting somata');
 %[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
 [Soma SL] = trkDetectSomata2(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
 SMASK = zeros(size(SL{1}));
+
+
+%% find the proper sigmoid parameters to convert Frangi to probabilities
+disp('...selecting sigmoid parameters');
+[Asig Bsig] = trkSetSigmoid(SL, f, J, G_STD, G_MAX, Dlist{t});
 clear J;
 
 
@@ -194,20 +215,22 @@ priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
 disp('...assigning filaments'); 
 g = cell(1, TMAX); 
 parfor t = 1:TMAX
-    [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t});
-    %if mod(t,10) == 0; fprintf('\n'); disp(['   [' num2str(t) ' completed] ']); end;
-    %fprintf('|');
-    %disp(sprintf('\b|')); %#ok<DSPS>
+    [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t}, Asig, Bsig);
     str = sprintf('   %03d completed', t);
     disp([str  '     run ' num_txt ' ' date_txt]);
-    %disp(['   ' num2str(t) ' completed']);
 end
 for t = 1:length(g)
     f{t} = g{t};
 end
-%disp(['   (' num2str(TMAX) '/' num2str(TMAX) ') completed']);
+
+%keyboard;
+
+
 clear g;
 clear SL;
+
+
+
 
 %% skeletonize filaments
 disp('...skeletonizing filaments');

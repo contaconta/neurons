@@ -24,7 +24,7 @@ end
 
 % --------- generate list of folders to process -----------
 count = 1;
-for i = 2:2  %1:240
+for i = 4:4  %1:240
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end

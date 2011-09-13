@@ -2,8 +2,8 @@ function mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, col
 % 1. draw results on the videos.
 % 2. draw text annotations on the image
 
-CONTRAST = 0.4;  %[0,1] 1 is normal contrast, 0 is VERY stretched contrast
-RedIntensityThresh  = 200; %280;
+CONTRAST = 0.25;  %.4;  %[0,1] 1 is normal contrast, 0 is VERY stretched contrast
+RedIntensityThresh  = 1; %200; %280;
 
 
 B = zeros(size(G{1},1), size(G{1},2));

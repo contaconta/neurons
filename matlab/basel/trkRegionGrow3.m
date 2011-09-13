@@ -1,6 +1,6 @@
 function J=trkRegionGrow3(I,M,THRESH,r,c)
 
-WEIGHT_I = 400;     % controls influence of intensity vs distance from nuclues
+WEIGHT_I = 800; %400;     % controls influence of intensity vs distance from nuclues
                     % higher = more inetensity influence, lower = more distance
 
 

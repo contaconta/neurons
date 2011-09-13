@@ -1,6 +1,6 @@
 function R = trkPostProcessing(R)
 
-
+%TODO:handle case when no filaments are found
 
 % label the filopodia
 disp('...postprocessing - labeling filopodia');
