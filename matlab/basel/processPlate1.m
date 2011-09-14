@@ -38,7 +38,7 @@ for i = 1:size(exp_num,1)
     trkTracking(folder_n, resultsFolder);
     
     % perform post-processing
-    a = dir([resultsFolder '*' exp_num '*.mat']);
+    a = dir([resultsFolder '*' exp_num(i,:) '*.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
