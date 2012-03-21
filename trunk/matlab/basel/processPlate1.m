@@ -1,7 +1,7 @@
 
 %% ICFILER
-folder = '/net/cvlabfiler1/home/ksmith/Basel/ControlScreen/Plate1_10-5-2010/';
-resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/ControlScreen/Results/';
+folder = '/cvlabfiler1/home/ksmith/Basel/ControlScreen/Plate3_13-5-2011/';
+resultsFolder = '/cvlabfiler1/home/ksmith/Basel/ControlScreen/Results/Plate3__/';
 
 %% kevin's laptop
 %folder = '/home/ksmith/data/basel/ControlScreen/Plate1_10-5-2010/';
@@ -24,7 +24,7 @@ end
 
 % --------- generate list of folders to process -----------
 count = 1;
-for i = 4:4  %1:240
+for i = 10:191:201
     exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end
@@ -38,7 +38,7 @@ for i = 1:size(exp_num,1)
     trkTracking(folder_n, resultsFolder);
     
     % perform post-processing
-    a = dir([resultsFolder '*' exp_num(i,:) '*.mat']);
+    a = dir([resultsFolder '*' exp_num(i,:) '.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
