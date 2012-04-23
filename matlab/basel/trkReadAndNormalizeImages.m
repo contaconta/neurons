@@ -8,8 +8,11 @@ for t = 1:TMAX
     if mod(t,10) == 0
         fprintf('|');
     end
-    
-    filename = [folder 'experiment1_w2LED ' channel '_s1_t' num2str(t) '.TIF'];
+    if(channel = 'red')
+        filename = [folder 'experiment1_w2LED ' channel '_s1_t' num2str(t) '.TIF'];
+    else
+        filename = [folder 'experiment1_w1LED ' channel '_s1_t' num2str(t) '.TIF'];
+    end
     I{t} = imread( filename );
 
     Ilist = double(I{t}(:));
