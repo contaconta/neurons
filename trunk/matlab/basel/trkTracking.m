@@ -1,4 +1,4 @@
-function trkTracking(folder, resultsFolder, params)
+function trkTracking(folder, resultsFolder, SeqIndex, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt, num_txt] = trkGetDateAndLabel(folder);
@@ -8,7 +8,9 @@ set(0,'RecursionLimit',RECURSIONLIMIT);
 
 
 %% PARAMETER SETTING (override from command line, read from param file, or default)
-if nargin > 2
+paramfile = [resultsFolder num2str(SeqIndex) 'params.mat'];
+
+if nargin > 3
     W_THRESH = params(1);
     %SOMA_PERCENT_THRESH = params(2);
     FRANGI_THRESH = params(2);
@@ -16,8 +18,8 @@ if nargin > 2
     SOMA_THRESH = params(4);
     disp('  OVERRIDING PARAMETERS!');
 else
-    if exist([folder 'params.mat' ], 'file');
-     	load([folder 'params.mat']);
+    if exist(paramfile, 'file');
+     	load(paramfile);
         disp(['reading from ' folder 'params.mat']);
     end
 end
@@ -73,6 +75,8 @@ Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
 Gfiles = dir([Gfolder '*.TIF']);
 Rfiles = dir([Rfolder '*.TIF']);
+%experiment1_w2LED red_s1_t26
+
 if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 
 
@@ -87,8 +91,8 @@ count = 1;                  % detection counter
 %disp('...reading raw images and determining intensity level limits');
 %[rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
 %[rmin rmax gmin gmax R G mvold] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
-[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, Rfiles, R_MAX, R_STD);
-[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, Gfiles, G_MAX, G_STD);
+[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, 'red', R_MAX, R_STD);
+[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, 'green', G_MAX, G_STD);
 
 %keyboard;
 
