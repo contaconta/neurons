@@ -289,8 +289,8 @@ disp('...rendering images');
 mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
 % make a movie of the results
-movfile = [  date_txt '_' num_txt '.avi'];
-trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
+movfile = [  date_txt '_' num_txt '.mp4'];
+trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
 
