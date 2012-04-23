@@ -91,8 +91,8 @@ count = 1;                  % detection counter
 %disp('...reading raw images and determining intensity level limits');
 %[rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
 %[rmin rmax gmin gmax R G mvold] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
-[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, 'red', R_MAX, R_STD);
-[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, 'green', G_MAX, G_STD);
+[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, SeqIndex, 'red', R_MAX, R_STD);
+[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, SeqIndex, 'green', G_MAX, G_STD);
 
 %keyboard;
 
