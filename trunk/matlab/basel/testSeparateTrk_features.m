@@ -28,7 +28,7 @@ for i = 1:240
     count = count + 1;
 end
 
-filename_input = 'OriginalDataDirectory.txt';
+filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
 fid = fopen(filename_input);
 fprintf(fid, folder);
 fclose(fid);
