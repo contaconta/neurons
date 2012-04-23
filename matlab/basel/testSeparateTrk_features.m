@@ -34,7 +34,7 @@ end
 for i = 1:size(exp_num,1)
     matlabpool local
     tic
-    folder_n = [folder exp_num(i,:) '/'];
+    folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
     trkTracking(folder_n, resultsFolder);
     % perform post-processing
     a = dir([resultsFolder '*'  num2str(str2num(exp_num(i,:))) '.mat']);
