@@ -71,8 +71,8 @@ cols = color_list();
 % define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
-Gfiles = dir([Gfolder '*.tif']);
-Rfiles = dir([Rfolder '*.tif']);
+Gfiles = dir([Gfolder '*.TIF']);
+Rfiles = dir([Rfolder '*.TIF']);
 if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 
 
