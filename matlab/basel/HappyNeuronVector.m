@@ -35,7 +35,7 @@ for nTrack = 1:length(RUN.trkSeq)
    % if they are not many, the are long and variate, they have fun
    %happy_factor = mean(mean_neurite_t)*std(mean_neurite_t)/(mean(mean_number_d)+1);
    happy_factor = mean(mean_neurite_t)*std(mean_neurite_t)*std(soma_perimeter_t);
-   happy_factor = (mean(mean_neurite_t)*std(mean_neurite_t)*std(soma_perimeter_t))/(mean(mean_number_d)+1);;
+   happy_factor = (mean(mean_neurite_t)*std(mean_neurite_t)*std(soma_perimeter_t))/(mean(mean_number_d)+1);
    
 %    happy_factor_list(nTrack) =  happy_factor;
    
