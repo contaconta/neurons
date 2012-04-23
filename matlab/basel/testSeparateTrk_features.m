@@ -29,9 +29,9 @@ for i = 1:240
 end
 
 filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
-fid = fopen(filename_input, 'w');
-fprintf(fid, folder);
-fclose(fid);
+FID = fopen(filename_input, 'w');
+fprintf(FID, folder);
+fclose(FID);
 
 
 
