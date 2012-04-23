@@ -39,6 +39,7 @@ SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 0;                % display figure with results
 
 % image adjustment parameters
+% to adjust (normalize) intensities
 G_MED = 2537;
 G_STD = 28.9134;
 G_MAX = 11234;
@@ -301,30 +302,8 @@ trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, Gl
 % xmlFileName = [folder num_txt '.xml'];
 % disp(['...writing ' xmlFileName]);
 % trkWriteXMLFile(Experiment, xmlFileName);
-
 %matlabpool close;
-
-
 %keyboard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 % ===================== SUPPORTING FUNCTIONS ==============================
 %
 %
@@ -378,12 +357,6 @@ for t = 1:TMAX
     EndP{t}(SM) = 0;
     BranchP{t}(SM) = 0;
 end
-
-
-
-
-
-
 
 %% make time-dependent measurements
 function [D Soma] = timeMeasurements(trkSeq, timeSeq, D, Soma)
