@@ -24,7 +24,7 @@ end
 % --------- generate list of folders to process -----------
 count = 1;
 for i = 1:240
-    exp_num(count,:) = sprintf('%d', i); %#ok<SAGROW>
+    exp_num(count,:) = sprintf('%03d', i); %#ok<SAGROW>
     count = count + 1;
 end
 
@@ -37,7 +37,7 @@ for i = 1:size(exp_num,1)
     folder_n = [folder exp_num(i,:) '/'];
     trkTracking(folder_n, resultsFolder);
     % perform post-processing
-    a = dir([resultsFolder '*' exp_num(i,:) '*.mat']);
+    a = dir([resultsFolder '*'  num2str(str2num(exp_num(i,:))) '.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
