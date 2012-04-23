@@ -1,4 +1,4 @@
-function [I mv] = trkReadAndNormalizeImages(TMAX, folder, files, MAX, STD)
+function [I mv] = trkReadAndNormalizeImages(TMAX, folder, channel, MAX, STD)
 
 I = cell(1,TMAX);
 mv = I;
@@ -9,7 +9,8 @@ for t = 1:TMAX
         fprintf('|');
     end
     
-    I{t} = imread([folder files(t).name]);
+    filename = [folder 'experiment1_w2LED ' channel '_s1_t' num2str(t) '.TIF'];
+    I{t} = imread( filename );
 
     Ilist = double(I{t}(:));
     

@@ -28,6 +28,11 @@ for i = 1:240
     count = count + 1;
 end
 
+filename_input = 'OriginalDataDirectory.txt';
+fid = fopen(filename_input);
+fprintf(fid, folder);
+fclose(fid);
+
 
 
 % ------------ process the specified folders --------------
@@ -35,7 +40,7 @@ for i = 1:size(exp_num,1)
     matlabpool local
     tic
     folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
-    trkTracking(folder_n, resultsFolder);
+    trkTracking(folder_n, resultsFolder, i );
     % perform post-processing
     a = dir([resultsFolder '*'  num2str(str2num(exp_num(i,:))) '.mat']);
     matFileName = a.name;
@@ -44,7 +49,7 @@ for i = 1:size(exp_num,1)
         R = load([resultsFolder matFileName]);
         R = trkTrackingPostProcessing(R);
         trackingFileName = [resultsFolder matFileName(1:end-4) '_trkSeg.mat'];
-        save([resultsFolder matFileName], '-struct', 'R');
+        save(trackingFileName, '-struct', 'R');
         R = trkFeaturesExtraction(R);
         %TODO: add Riwal's code for cleaning 
         
