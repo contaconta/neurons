@@ -3,7 +3,7 @@ function [exp_date, label_txt, num_txt] = trkGetDateAndLabel(folder)
 
 % TODO: rewrite handle general case
 label_txt = 'Plate1_Control';
-exp_date = '10-5-2010';
+exp_date = '4-23-2012';
 num_txt = folder(end-3:end-1);
 
 

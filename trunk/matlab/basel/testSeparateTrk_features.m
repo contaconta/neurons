@@ -43,9 +43,12 @@ for i = 1:size(exp_num,1)
     if( exist([resultsFolder matFileName], 'file') > 0)
         R = load([resultsFolder matFileName]);
         R = trkTrackingPostProcessing(R);
-        trackingFileName = [resultsFolder exp_num(i,:) '_trkSeg.mat'];
+        trackingFileName = [resultsFolder matFileName(1:end-4) '_trkSeg.mat'];
         save([resultsFolder matFileName], '-struct', 'R');
         R = trkFeaturesExtraction(R);
+        %TODO: add Riwal's code for cleaning 
+        
+        %TODO: add Riwal's code for cleaning 
         save([resultsFolder matFileName], '-struct', 'R');
     end
     
