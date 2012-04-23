@@ -270,7 +270,6 @@ GlobalMeasures = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt);
 toc;
 
 % save the parameters in the experiment folder
-paramfile = [folder 'params.mat'];
 disp(['...saving parameters to ' paramfile]);
 save(paramfile, 'NUC_INT_THRESH',...
      'NUC_MIN_AREA',...
