@@ -1,7 +1,8 @@
 function trkTracking(folder, resultsFolder, SeqIndex, params)
 
 % get the experiment label, data, and assay position
-[date_txt, label_txt, num_txt] = trkGetDateAndLabel(folder);
+[date_txt, label_txt] = trkGetDateAndLabel(folder);
+num_txt = num2str(SeqIndex);
 
 RECURSIONLIMIT = 5000;
 set(0,'RecursionLimit',RECURSIONLIMIT);
