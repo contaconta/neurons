@@ -1,18 +1,20 @@
-function [I mv] = trkReadAndNormalizeImages(TMAX, folder, sequenceIdx, channel, MAX, STD)
+function [I mv] = trkReadAndNormalizeImagesNew(TMAX, folder, MAX, STD)
 
 I = cell(1,TMAX);
 mv = I;
 
 disp('');
+
+list = dir(fullfile('.', '*.TIF'));
+names = {list.name};
+sorted_filenames = sort_nat(names);
+
 for t = 1:TMAX
     if mod(t,10) == 0
         fprintf('|');
     end
-    if(isequal(channel, 'red'))
-        filename = [folder 'experiment1_w2LED ' channel '_s' num2str(sequenceIdx) '_t' num2str(t) '.TIF'];
-    else
-        filename = [folder 'experiment1_w1LED ' channel '_s' num2str(sequenceIdx) '_t' num2str(t) '.TIF'];
-    end
+    
+    filename = [folder sorted_filenames(t)];
     I{t} = imread( filename );
 
     Ilist = double(I{t}(:));
