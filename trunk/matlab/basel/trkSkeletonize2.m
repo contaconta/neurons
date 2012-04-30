@@ -18,5 +18,7 @@ parfor d = 1:length(D)
         FILSKEL = bwmorph(fil{d}, 'skel', Inf);
         FILAMENTS(d).PixelIdxList = find(FILSKEL);
         FILAMENTS(d).IMSIZE = size(BLANK);
+        FILAMENTS(d).FilopodiaLengths = [];
+        FILAMENTS(d).FilopodiaLengthMean = 0;
     end
 end
