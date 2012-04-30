@@ -76,7 +76,12 @@ R.FILAMENTS(1).NIdxList = []; % add a new field to the struct
 Nlist = cell(1,R.GlobalMeasures.Length);
 
 count = 1;
+
 for d = 1:length(R.D)
+    R.FILAMENTS(d).FethTotalCableLength = 0;
+    R.FILAMENTS(d).FethTotalCableLengthWithoutFilo = 0;
+    R.FILAMENTS(d).FethBranchesLengths = [];
+    R.FILAMENTS(d).FilopodiaFlags = [];
     if R.D(d).ID ~= 0
         numNeurites = max(R.FILAMENTS(d).NeuriteID);
         for n = 1:numNeurites
@@ -121,6 +126,8 @@ for d = 1:length(R.D)
             Nn.TotalCableLength = length(nIdx);
             Nn.BranchCount = length(find(R.FILAMENTS(d).NumKids(nIdx) > 1));
             Nn.FiloPercent = (Nn.FiloCableLength / Nn.TotalCableLength) * 100;
+            % cable length of a neurite without filopodia
+            Nn.NeuriteOnlyCableLength = Nn.TotalCableLength - Nn.FiloCableLength;
             
             % get some essential labels
             Nn.NucleusTrackID = R.D(d).ID;
@@ -129,6 +136,23 @@ for d = 1:length(R.D)
             Nn.NeuriteID = neuriteids(1);
             Nn.Time = R.D(d).Time;
             
+            % Get braching points and the list of branches.
+            filament  = trkFindBranches(d, n, R.FILAMENTS);
+            
+            Nn.BranchLengthsDistribution             = filament.BranchLengthsDistribution;
+            Nn.NeuriteBranches                       = filament.NeuriteBranches;
+            Nn.MeanBranchLength                      = filament.MeanBranchLength;
+            Nn.FilopodiaFlags                        = filament.FilopodiaFlags;
+            Nn.MeanBranchLengthWithoutFilo           = filament.MeanBranchLengthWithoutFilo;
+            Nn.FethTotalCableLength                  = filament.FethTotalCableLength;
+            Nn.FethTotalCableLengthWithoutFilopodia  = filament.FethTotalCableLengthWithoutFilopodia;
+            
+            R.FILAMENTS(d).FethTotalCableLength            = R.FILAMENTS(d).FethTotalCableLength + filament.FethTotalCableLength;
+            R.FILAMENTS(d).FethTotalCableLengthWithoutFilo = R.FILAMENTS(d).FethTotalCableLengthWithoutFilo + filament.FethTotalCableLengthWithoutFilopodia;
+            R.FILAMENTS(d).FethBranchesLengths = [R.FILAMENTS(d).FethBranchesLengths; {filament.BranchLengthsDistribution}];
+            R.FILAMENTS(d).FethBranchesLengths = R.FILAMENTS(d).FethBranchesLengths{:};
+            R.FILAMENTS(d).FilopodiaFlags      = [R.FILAMENTS(d).FilopodiaFlags; {filament.FilopodiaFlags}];
+            R.FILAMENTS(d).FilopodiaFlags = R.FILAMENTS(d).FilopodiaFlags{:};
             % update a time-ordered list of all the neurite IDs
             Nlist{Nn.Time} = [Nlist{Nn.Time} count];
 
