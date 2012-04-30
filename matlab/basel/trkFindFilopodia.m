@@ -28,9 +28,12 @@ if ~isempty(FILAMENTS(n).NeuriteID)
                 %neuriteinds = [neuriteinds; plist];
                 FILAMENTS(n).FilopodiaFlag(plist) = 1;
                 neuritePixList = [neuritePixList; pixlist]; %#ok<AGROW>
-            
+                FILAMENTS(n).FilopodiaLengths = [FILAMENTS(n).FilopodiaLengths length(plist)];
             end
             
         end
-    end    
+    end
+    if( ~isempty( FILAMENTS(n).FilopodiaLengths ) )
+       FILAMENTS(n).FilopodiaMeanLengths = mean( FILAMENTS(n).FilopodiaLengths );
+    end
 end
