@@ -218,11 +218,6 @@ for t = 1:numTracks
             R.CellTimeInfo(dID).TotalCableLengthFilopodiaTracked(di) = R.CellTimeInfo(dID).TotalCableLengthFilopodiaTracked(di) + R.N(n).FiloCableLength;
             R.CellTimeInfo(dID).BranchCountTracked(di) = R.CellTimeInfo(dID).BranchCountTracked(di) + R.N(n).BranchCount;
             R.CellTimeInfo(dID).FiloCountTracked(di) = R.CellTimeInfo(dID).FiloCountTracked(di) + R.N(n).FiloCount;
-            
-            R.CellTimeInfo(dID).TrackedFethTotalCableLength(di)                   = R.CellTimeInfo(dID).TrackedFethTotalCableLength(di) + R.N(n).FethTotalCableLength;
-            R.CellTimeInfo(dID).TrackedFethTotalCableLengthWithoutFilopodia(di)   = R.CellTimeInfo(dID).TrackedFethTotalCableLengthWithoutFilopodia(di) + R.N(n).FethTotalCableLengthWithoutFilopodia;
-            R.CellTimeInfo(dID).TrackedFethBranchesLengths{di}                    = [R.CellTimeInfo(dID).TrackedFethBranchesLengths{di} R.N(n).BranchLengthsDistribution];
-            R.CellTimeInfo(dID).TrackedFethBranchesFilopodiaFlags{di}             = [R.CellTimeInfo(dID).TrackedFethBranchesFilopodiaFlags{di} R.N(n).FilopodiaFlags];
         end
     end
 end
@@ -345,21 +340,6 @@ for t = 1:numTracks
         R.CellTimeInfo(t).FiloCountTrackedTimeExpanding = timeExpanding;
         R.CellTimeInfo(t).FiloCountTrackedTimeContracting = timeContracting;
         R.CellTimeInfo(t).FiloCountTrackedFreqExpansion = freqExpansion;
-        
-        
-%         FethNeuriteOnlyCableLength = R.CellTimeInfo(t).FethNeuriteOnlyCableLength;
-%         x = -3:1:3;
-%         sigma = 1.0;
-%         filt = exp(-x.*x/(2*sigma*sigma))/sqrt(2*pi*sigma*sigma);
-%         FethNeuriteOnlyCableLength = imfilter(FethNeuriteOnlyCableLength, filt, 'same', 'replicate');
-%         [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(FethNeuriteOnlyCableLength); %#ok<*ASGLU>
-%         for i = 1:length(seq)
-%             d = seq(i);
-%             R.D(d).FethNeuriteOnlyCableLengthExpand = expContractVector(i);
-%         end
-%         R.CellTimeInfo(t).FethNeuriteOnlyCableLengthTimeExpanding = timeExpanding;
-%         R.CellTimeInfo(t).FethNeuriteOnlyCableLengthTimeContracting = timeContracting;
-%         R.CellTimeInfo(t).FethNeuriteOnlyCableLengthFreqExpansion = freqExpansion;
     end
     
 end
