@@ -1,11 +1,11 @@
-function R = trkPostProcessing(R)
+function R = trkPostProcessing(R, Greens)
 
 %TODO:handle case when no filaments are found
 
 % label the filopodia
 disp('...postprocessing - labeling filopodia');
 for d = 1:length(R.D)
-    R.FILAMENTS = trkFindFilopodia(d, R.FILAMENTS);
+    R.FILAMENTS = trkFindFilopodia(d, R.FILAMENTS, Greens{R.D(d).Time});
 end    
 
 % flag the unhappy neurons
