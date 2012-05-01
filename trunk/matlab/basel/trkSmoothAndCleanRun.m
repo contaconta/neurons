@@ -162,14 +162,34 @@ for t = 1:numTracks
     seq = R.trkSeq{t};
     
     if ~isempty(seq)
-        R.CellTimeInfo(t).KevinTotalCableLength = imfilter(R.CellTimeInfo(t).KevinTotalCableLength, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).KevinTotalCableLengthFilopodia = imfilter(R.CellTimeInfo(t).KevinTotalCableLengthFilopodia, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).KevinBranchCount = imfilter(R.CellTimeInfo(t).KevinBranchCount, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).KevinFiloCount = imfilter(R.CellTimeInfo(t).KevinFiloCount, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).GermanTotalCableLength = imfilter(R.CellTimeInfo(t).GermanTotalCableLength, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).TotalCableLengthTracked = imfilter(R.CellTimeInfo(t).TotalCableLengthTracked, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).TotalCableLengthFilopodiaTracked = imfilter(R.CellTimeInfo(t).TotalCableLengthFilopodiaTracked, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).TotalCableLengthAll = imfilter(R.CellTimeInfo(t).TotalCableLengthAll, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).TotalCableLengthFilopodiaAll = imfilter(R.CellTimeInfo(t).TotalCableLengthFilopodiaAll, filt, 'same', 'replicate');
+        
+        R.CellTimeInfo(t).TotalF_Actin = imfilter(R.CellTimeInfo(t).TotalF_Actin , filt, 'same', 'replicate');
+        
+        R.CellTimeInfo(t).TotalCableLength2 = imfilter(R.CellTimeInfo(t).TotalCableLength2 , filt, 'same', 'replicate');
+        R.CellTimeInfo(t).TotalCableLengthNoFilopodia2 = imfilter(R.CellTimeInfo(t).TotalCableLengthNoFilopodia2 , filt, 'same', 'replicate');
+        
+        
+        
+        
+        % does it make sense to smooth averaged measures ? 
+        R.CellTimeInfo(t).MeanF_Actin = imfilter(R.CellTimeInfo(t).MeanF_Actin , filt, 'same', 'replicate');
+        R.CellTimeInfo(t).MeanFiloLength = imfilter(R.CellTimeInfo(t).MeanFiloLength , filt, 'same', 'replicate');
+
+        
+        
+        % Question, does it make sense to smooth a count ?
+        R.CellTimeInfo(t).NumNeuritesAll = imfilter(R.CellTimeInfo(t).NumNeuritesAll, filt, 'same', 'replicate');
         R.CellTimeInfo(t).NumTrackedNeurites = imfilter(R.CellTimeInfo(t).NumTrackedNeurites, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).GermanNumNeurites = imfilter(R.CellTimeInfo(t).GermanNumNeurites, filt, 'same', 'replicate');
-        R.CellTimeInfo(t).GermanTotalCableLengthFilopodia = imfilter(R.CellTimeInfo(t).GermanTotalCableLengthFilopodia, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).FiloCountTracked = imfilter(R.CellTimeInfo(t).FiloCountTracked, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).BranchCountTracked = imfilter(R.CellTimeInfo(t).BranchCountTracked, filt, 'same', 'replicate');
+        
+        R.CellTimeInfo(t).BranchCountAll = imfilter(R.CellTimeInfo(t).BranchCountAll, filt, 'same', 'replicate');
+        R.CellTimeInfo(t).FiloCountAll = imfilter(R.CellTimeInfo(t).FiloCountAll, filt, 'same', 'replicate');
+        
     end
 end
 
