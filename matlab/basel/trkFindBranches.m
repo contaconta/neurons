@@ -58,8 +58,10 @@ if ~isempty(filament.NeuriteID)
        filament.MeanBranchLength = mean(BranchesLength);
        filament.FethTotalCableLength = sum(BranchesLength);
        filament.FethTotalCableLengthWithoutFilopodia  = sum(BranchesLength(~logical(FilopodiaFlags)));
-       if(~isempty(~logical(FilopodiaFlags)))
+       if( ~isempty( find(~logical(FilopodiaFlags), 1) ) )
            filament.MeanBranchLengthWithoutFilo = mean(BranchesLength(~logical(FilopodiaFlags)));
+       else
+           filament.MeanBranchLengthWithoutFilo = 0;
        end
     else
        filament.NeuriteBranches = [];
