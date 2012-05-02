@@ -5,7 +5,7 @@ function R = trkPostProcessing(R, Greens)
 % label the filopodia
 disp('...postprocessing - labeling filopodia');
 for d = 1:length(R.D)
-    R.FILAMENTS = trkFindFilopodia(d, R.FILAMENTS, Greens{R.D(d).Time});
+    R.FILAMENTS = trkFindFilopodia(d, R.FILAMENTS, Greens{R.D(d).Time}, R.Soma(d).MeanGreenIntensity);
 end    
 
 % flag the unhappy neurons
