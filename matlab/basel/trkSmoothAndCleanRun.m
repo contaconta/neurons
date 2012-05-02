@@ -167,7 +167,7 @@ for t = 1:numTracks
         R.CellTimeInfo(t).TotalCableLengthAll = imfilter(R.CellTimeInfo(t).TotalCableLengthAll, filt, 'same', 'replicate');
         R.CellTimeInfo(t).TotalCableLengthFilopodiaAll = imfilter(R.CellTimeInfo(t).TotalCableLengthFilopodiaAll, filt, 'same', 'replicate');
         
-        R.CellTimeInfo(t).TotalF_Actin = imfilter(R.CellTimeInfo(t).TotalF_Actin , filt, 'same', 'replicate');
+        %R.CellTimeInfo(t).TotalF_Actin = imfilter(R.CellTimeInfo(t).TotalF_Actin , filt, 'same', 'replicate');
         
         R.CellTimeInfo(t).TotalCableLength2 = imfilter(R.CellTimeInfo(t).TotalCableLength2 , filt, 'same', 'replicate');
         R.CellTimeInfo(t).TotalCableLengthNoFilopodia2 = imfilter(R.CellTimeInfo(t).TotalCableLengthNoFilopodia2 , filt, 'same', 'replicate');
@@ -176,7 +176,7 @@ for t = 1:numTracks
         
         
         % does it make sense to smooth averaged measures ? 
-        R.CellTimeInfo(t).MeanF_Actin = imfilter(R.CellTimeInfo(t).MeanF_Actin , filt, 'same', 'replicate');
+        R.CellTimeInfo(t).NormalizedMeanF_Actin = imfilter(R.CellTimeInfo(t).NormalizedMeanF_Actin , filt, 'same', 'replicate');
         R.CellTimeInfo(t).MeanFiloLength = imfilter(R.CellTimeInfo(t).MeanFiloLength , filt, 'same', 'replicate');
 
         
