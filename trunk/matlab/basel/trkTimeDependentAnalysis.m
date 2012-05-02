@@ -26,6 +26,7 @@ for t = 1:numTracks
             d = seq(i);
             R.D(d).Expand = expContractVector(i);
         end
+        
         R.CellTimeInfo(t).NucleusTimeExpanding = timeExpanding;
         R.CellTimeInfo(t).NucleusTimeContracting = timeContracting;
         R.CellTimeInfo(t).NucleusFreqExpansion = freqExpansion;
@@ -55,8 +56,8 @@ for t = 1:numTracks
         R.CellTimeInfo(t).NumTrackedNeurites               = zeros(size(seq));
         R.CellTimeInfo(t).NumNeuritesAll                   = zeros(size(seq));
         
-        R.CellTimeInfo(t).TotalF_Actin                     = zeros(size(seq));
-        R.CellTimeInfo(t).MeanF_Actin                      = zeros(size(seq));
+        %R.CellTimeInfo(t).TotalF_Actin                     = zeros(size(seq));
+        R.CellTimeInfo(t).NormalizedMeanF_Actin            = zeros(size(seq));
         R.CellTimeInfo(t).MeanFiloLength                   = zeros(size(seq));
         
         % Cumulted over all detected neurites
@@ -75,8 +76,8 @@ for t = 1:numTracks
             R.CellTimeInfo(t).NumTrackedNeurites(i)           = length(R.FILAMENTS(d).NTrackedList);
             R.CellTimeInfo(t).NumNeuritesAll(i)               = length(R.FILAMENTS(d).NIdxList);
             
-            R.CellTimeInfo(t).TotalF_Actin(i)                 = R.FILAMENTS(d).FilopodiaTotalF_Actin;
-            R.CellTimeInfo(t).MeanF_Actin(i)                  = R.FILAMENTS(d).FilopodiaMeanF_Actin;
+            %R.CellTimeInfo(t).TotalF_Actin(i)                 = R.FILAMENTS(d).FilopodiaTotalF_Actin;
+            R.CellTimeInfo(t).NormalizedMeanF_Actin(i)        = R.FILAMENTS(d).FilopodiaMeanNormalizedF_Actin;
             R.CellTimeInfo(t).MeanFiloLength(i)               = R.FILAMENTS(d).FilopodiaMeanLengths;
             
             R.CellTimeInfo(t).TotalCableLength2(i)            = R.FILAMENTS(d).FethTotalCableLength;
@@ -117,15 +118,15 @@ for t = 1:numTracks
         R.CellTimeInfo(t).FiloCountAllFreqExpansion = freqExpansion;
         
         
-        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(R.CellTimeInfo(t).TotalF_Actin); %#ok<ASGLU>
-        R.CellTimeInfo(t).TotalF_ActinTimeExpanding = timeExpanding;
-        R.CellTimeInfo(t).TotalF_ActinTimeContracting = timeContracting;
-        R.CellTimeInfo(t).TotalF_ActinFreqExpansion = freqExpansion;
+%         [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(R.CellTimeInfo(t).TotalF_Actin); %#ok<ASGLU>
+%         R.CellTimeInfo(t).TotalF_ActinTimeExpanding = timeExpanding;
+%         R.CellTimeInfo(t).TotalF_ActinTimeContracting = timeContracting;
+%         R.CellTimeInfo(t).TotalF_ActinFreqExpansion = freqExpansion;
         
-        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(R.CellTimeInfo(t).MeanF_Actin); %#ok<ASGLU>
-        R.CellTimeInfo(t).MeanF_ActinTimeExpanding = timeExpanding;
-        R.CellTimeInfo(t).MeanF_ActinTimeContracting = timeContracting;
-        R.CellTimeInfo(t).MeanF_ActinFreqExpansion = freqExpansion;
+        [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(R.CellTimeInfo(t).NormalizedMeanF_Actin); %#ok<ASGLU>
+        R.CellTimeInfo(t).NormalizedMeanF_ActinTimeExpanding = timeExpanding;
+        R.CellTimeInfo(t).NormalizedMeanF_ActinTimeContracting = timeContracting;
+        R.CellTimeInfo(t).NormalizedMeanF_ActinFreqExpansion = freqExpansion;
         
         [expContractVector, timeExpanding, timeContracting, numberInflexionPoints, freqExpansion] = trkTemporalAnalysisVector(R.CellTimeInfo(t).MeanFiloLength); %#ok<ASGLU>
         R.CellTimeInfo(t).MeanFiloLengthTimeExpanding = timeExpanding;

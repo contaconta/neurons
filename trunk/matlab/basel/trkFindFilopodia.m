@@ -1,4 +1,4 @@
-function [FILAMENTS neuritePixList] = trkFindFilopodia(n,FILAMENTS, Green)
+function [FILAMENTS neuritePixList] = trkFindFilopodia(n,FILAMENTS, Green, SomaMeanGreenIntensity)
 
 MAX_LENGTH_FILOPODIA = 20;
 
@@ -7,11 +7,12 @@ neuritePixList = [];
 
 FILAMENTS(n).FilopodiaFlag = zeros(size(FILAMENTS(n).PixelIdxList));
 
+J = mat2gray(double(Green));
+
 %added by Fethallah
 FILAMENTS(n).FilopodiaLengths = [];
-FILAMENTS(n).FilopodiaF_Actin = [];
-FILAMENTS(n).FilopodiaTotalF_Actin = 0;
-FILAMENTS(n).FilopodiaMeanF_Actin  = 0;
+FILAMENTS(n).FilopodiaNormalizedF_Actin = [];
+FILAMENTS(n).FilopodiaMeanNormalizedF_Actin  = 0;
 FILAMENTS(n).FilopodiaMeanLengths  = 0;
 
 if ~isempty(FILAMENTS(n).NeuriteID)
@@ -38,14 +39,14 @@ if ~isempty(FILAMENTS(n).NeuriteID)
                 neuritePixList = [neuritePixList; pixlist]; %#ok<AGROW>
                 
                 FILAMENTS(n).FilopodiaLengths = [FILAMENTS(n).FilopodiaLengths length(plist)];
-                FILAMENTS(n).FilopodiaF_Actin = [FILAMENTS(n).FilopodiaF_Actin sum(Green(pixlist))];
+                FILAMENTS(n).FilopodiaNormalizedF_Actin = [FILAMENTS(n).FilopodiaNormalizedF_Actin mean(J(pixlist))/SomaMeanGreenIntensity];
             end
             
         end
     end
     if( ~isempty( FILAMENTS(n).FilopodiaLengths ) )
        FILAMENTS(n).FilopodiaMeanLengths  = mean( FILAMENTS(n).FilopodiaLengths );
-       FILAMENTS(n).FilopodiaTotalF_Actin = sum(FILAMENTS(n).FilopodiaF_Actin);
-       FILAMENTS(n).FilopodiaMeanF_Actin  = mean(FILAMENTS(n).FilopodiaF_Actin);
+       %FILAMENTS(n).FilopodiaTotalF_Actin = sum(FILAMENTS(n).FilopodiaF_Actin);
+       FILAMENTS(n).FilopodiaMeanNormalizedF_Actin  = mean(FILAMENTS(n).FilopodiaNormalizedF_Actin);
     end
 end
