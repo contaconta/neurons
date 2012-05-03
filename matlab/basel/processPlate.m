@@ -1,4 +1,4 @@
-function processPlate(folder, resultsFolder, Sample)
+function processPlate(folder, resultsFolder, Sample, Identifier)
 
 
 
@@ -26,6 +26,10 @@ filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
 %system(['touch ' filename_input]);
 FID = fopen(filename_input, 'w');
 fprintf(FID, folder);
+fprintf(FID, '\n');
+fprintf(FID, Sample);
+fprintf(FID, '\n');
+fprintf(FID, Identifier);
 fclose(FID);
 
 
