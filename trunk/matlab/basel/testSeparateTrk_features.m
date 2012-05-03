@@ -1,7 +1,7 @@
 clear all; close all; clc;
 %% ICFILER
 folder = '/raid/data/store/1/C5E670E7-CF20-403C-8169-27047AFD1E9F/2e/af/31/20120417175816880-1940/original/plate3-G7/';
-resultsFolder = '/home/fbenmans/plate3-G7/';
+resultsFolder = '/raid/data/analysis/plate3-G7_new/';
 %% kevin's laptop
 %folder = '/home/ksmith/data/basel/ControlScreen/Plate1_10-5-2010/';
 %resultsFolder = '/home/ksmith/data/basel/ControlScreen/Results/Plate1/';
@@ -29,6 +29,7 @@ for i = 1:240
 end
 
 filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
+%system(['touch ' filename_input]);
 FID = fopen(filename_input, 'w');
 fprintf(FID, folder);
 fclose(FID);
@@ -40,20 +41,14 @@ for i = 1:size(exp_num,1)
     matlabpool local
     tic
     folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
-    trkTracking(folder_n, resultsFolder, i );
+    G = trkTracking(folder_n, resultsFolder, i );
     % perform post-processing
     a = dir([resultsFolder '*'  num2str(str2num(exp_num(i,:))) '.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
         R = load([resultsFolder matFileName]);
-        R = trkTrackingPostProcessing(R);
-        trackingFileName = [resultsFolder matFileName(1:end-4) '_trkSeg.mat'];
-        save(trackingFileName, '-struct', 'R');
-        R = trkFeaturesExtraction(R);
-        %TODO: add Riwal's code for cleaning 
-        
-        %TODO: add Riwal's code for cleaning 
+        R = trkPostProcessing(R, G); 
         save([resultsFolder matFileName], '-struct', 'R');
     end
     
