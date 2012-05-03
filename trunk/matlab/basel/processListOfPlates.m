@@ -30,5 +30,5 @@ for i= 1:length(C{1})
 %   if( ~exist(resultsFolder, 'dir') )
        mkdir(resultsFolder);
 %   end
-   processPlate(inputFolder , resultsFolder, Sample{1}); 
+   processPlate(inputFolder , resultsFolder, Sample{1}, Identifier{1}); 
 end
