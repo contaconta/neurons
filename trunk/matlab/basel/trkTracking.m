@@ -1,7 +1,9 @@
-function G =  trkTracking(folder, resultsFolder, SeqIndex, params)
+function G =  trkTracking(folder, resultsFolder, SeqIndex, Sample, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt] = trkGetDateAndLabel(folder);
+date_txt = date;
+label_txt = Sample;
 num_txt = num2str(SeqIndex);
 
 RECURSIONLIMIT = 5000;
@@ -11,7 +13,7 @@ set(0,'RecursionLimit',RECURSIONLIMIT);
 %% PARAMETER SETTING (override from command line, read from param file, or default)
 paramfile = [resultsFolder 'params' num2str(SeqIndex) '.mat'];
 
-if nargin > 3
+if nargin > 4
     W_THRESH = params(1);
     %SOMA_PERCENT_THRESH = params(2);
     FRANGI_THRESH = params(2);
