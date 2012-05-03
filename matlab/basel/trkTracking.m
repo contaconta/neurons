@@ -1,4 +1,4 @@
-function trkTracking(folder, resultsFolder, SeqIndex, params)
+function G =  trkTracking(folder, resultsFolder, SeqIndex, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt] = trkGetDateAndLabel(folder);
@@ -9,7 +9,7 @@ set(0,'RecursionLimit',RECURSIONLIMIT);
 
 
 %% PARAMETER SETTING (override from command line, read from param file, or default)
-paramfile = [resultsFolder num2str(SeqIndex) 'params.mat'];
+paramfile = [resultsFolder 'params' num2str(SeqIndex) '.mat'];
 
 if nargin > 3
     W_THRESH = params(1);
@@ -290,7 +290,7 @@ disp('...rendering images');
 mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
 % make a movie of the results
-movfile = [  date_txt '_' num_txt '.mp4'];
+movfile = [  date_txt '_' num_txt '.ogv'];
 trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 

@@ -1,11 +1,11 @@
-function [I mv] = trkReadAndNormalizeImagesNew(TMAX, folder, MAX, STD)
+function [I mv] = trkReadAndNormalizeImages(TMAX, folder, MAX, STD)
 
 I = cell(1,TMAX);
 mv = I;
 
 disp('');
 
-list = dir(fullfile('.', '*.TIF'));
+list = dir(fullfile(folder, '*.TIF'));
 names = {list.name};
 sorted_filenames = sort_nat(names);
 
@@ -14,7 +14,7 @@ for t = 1:TMAX
         fprintf('|');
     end
     
-    filename = [folder sorted_filenames(t)];
+    filename = [folder sorted_filenames{t}];
     I{t} = imread( filename );
 
     Ilist = double(I{t}(:));
