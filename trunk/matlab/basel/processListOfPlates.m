@@ -16,11 +16,19 @@ for i= 1:length(C{1})
    Sample	 = C{3}(i);
    Identifier = C{4}(i);
    Location = C{5}(i);
-   keyboard;
-   inputFolder = [inputDataRoot Location];
-   resultsFolder = [outputAnalisysRoot 'original/' Identifier '/'];
-   if( ~exist(resultsFolder, 'dir') )
-       mkdir(resultsFolder);
+%   keyboard;
+   inputFolder = [inputDataRoot Location{1} '/original/'];
+   a = dir(inputFolder);
+   for i = 1:length(a)
+	if(a(i).isdir)
+		directoryName = a(i).name;
+	end
    end
-   processPlate(inputFolder , resultsFolder, Sample); 
+   inputFolder = [inputFolder   directoryName '/' ];
+   disp(inputFolder);
+	resultsFolder = [outputAnalisysRoot  Sample{1} '/'];
+%   if( ~exist(resultsFolder, 'dir') )
+       mkdir(resultsFolder);
+%   end
+   processPlate(inputFolder , resultsFolder, Sample{1}); 
 end
