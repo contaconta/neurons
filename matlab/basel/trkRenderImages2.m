@@ -122,7 +122,7 @@ for t = 1:TMAX
     end
 
     % print the name of the experiment on top of the video
-    I=trkRenderText(I,date_txt, blk, [10, 20], 'bnd2', 'left');
+    %I=trkRenderText(I,date_txt, blk, [10, 20], 'bnd2', 'left');
     I=trkRenderText(I,num_txt, blk, [10, 175], 'bnd2', 'left');
     I=trkRenderText(I,label_txt, blk, [10, 240], 'bnd2', 'left');
     
