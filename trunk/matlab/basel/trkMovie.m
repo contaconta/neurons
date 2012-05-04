@@ -27,9 +27,17 @@ BITRATE = 4000000;
 %cmd1 = ['mencoder -ovc x264 -x264encopts bitrate=' num2str(BITRATE) 'pass=1 nr=2000 -mf type=png:fps=10 -nosound -o /dev/null mf://*.png -really-quiet'];
 %cmd2 = ['mencoder -ovc x264 -x264encopts bitrate=' num2str(BITRATE) 'pass=2 nr=2000 -mf type=png:fps=10 -nosound -o -nosound -o ' resultsFolder filename ' mf://*.png -really-quiet'];
 % use ffmpeg, it's much better
-cmd = [ 'ffmpeg -i %03d.png -acodec libvorbis -q 10 -r 10 '   resultsFolder filename]
+keyboard;
+cmd_vorbis    = ['ffmpeg -i %03d.png -acodec libvorbis -q 10 -r 10 ' resultsFolder filename '.ogv'];
 
-system(cmd);
+cmd_thumbnail = ['ffmpeg -i %03d.png -deinterlace -an -ss $number -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg" 2>&1'];
+cmd_webm      = ['ffmpeg -i %03d.png -acodec libvorbis -ac 2 -ab 96k -ar 44100 -b 345k ' resultsFolder filename '.webm'];
+cmd_mp4       = ['ffmpeg -i %03d.png -acodec libfaac -ab 96k -vcodec libx264 -level 21 -refs 2 -b 345k -bt 345k -threads 0 ' resultsFolder filename '.mp4'];
+
+system(cmd_vorbis);
+system(cmd_thumbnail);
+system(cmd_webm);
+system(cmd_mp4);
 %system(cmd2);
 
 %delete([folder 'divx2pass.log']);
