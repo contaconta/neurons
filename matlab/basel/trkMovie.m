@@ -28,14 +28,15 @@ BITRATE = 4000000;
 %cmd2 = ['mencoder -ovc x264 -x264encopts bitrate=' num2str(BITRATE) 'pass=2 nr=2000 -mf type=png:fps=10 -nosound -o -nosound -o ' resultsFolder filename ' mf://*.png -really-quiet'];
 % use ffmpeg, it's much better
 %keyboard;
-cmd_vorbis    = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x520 -r 10 ' resultsFolder filename '.ogv'];
-system(cmd_vorbis);
-cmd_webm      = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x520 -r 10 ' resultsFolder filename '.webm'];
+%cmd_vorbis    = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x520 -r 10 ' resultsFolder filename '.ogv'];
+%system(cmd_vorbis);
+cmd_webm      = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 800k -y -s 696x520 -r 10 ' resultsFolder filename '.webm'];
 system(cmd_webm);
-cmd_mp4       = ['ffmpeg -r 10 -i %03d.png  -vcodec libx264 -b 600k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
+cmd_mp4       = ['ffmpeg -r 10 -i %03d.png  -vcodec libx264 -b 800k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
 system(cmd_mp4);
 cmd_thumbnail = ['mv 050.png ' resultsFolder filename '.png'];
 system(cmd_thumbnail);
+keyboard;
 
 %system(cmd2);
 
