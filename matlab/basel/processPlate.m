@@ -35,8 +35,10 @@ fclose(FID);
 
 
 % ------------ process the specified folders --------------
+matlabpool local
+
 for i = 1:size(exp_num,1)
-    matlabpool local
+    
     tic
     folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
     G = trkTracking(folder_n, resultsFolder, i , Sample);
@@ -51,16 +53,17 @@ for i = 1:size(exp_num,1)
     end
     
     toc
-    matlabpool close
     disp('');
     disp('=============================================================')
     disp('');
 end
 
+matlabpool close
+
 
 
 % kill the matlab pool
-matlabpool close force
+%matlabpool close force
 
 
 
