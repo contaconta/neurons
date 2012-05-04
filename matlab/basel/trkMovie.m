@@ -34,10 +34,6 @@ cmd_webm      = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x5
 system(cmd_webm);
 cmd_mp4       = ['ffmpeg -r 10 -i %03d.png  -vcodec libx264 -b 600k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
 system(cmd_mp4);
-
- 
-cmd_thumbnail = ['ffmpeg -i "' resultsFolder filename '.mp4" -deinterlace -an -ss 50 -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg' '" 2>&1'];
-system(cmd_thumbnail);
 cmd_thumbnail = ['mv 050.png ' resultsFolder filename '.png'];
 system(cmd_thumbnail);
 
@@ -48,11 +44,13 @@ system(cmd_thumbnail);
 cd(oldpath);
 
 
-if rmFileFlag
-    cmd = ['rm ' folder '*.png'];  
-    system(cmd);
-end
 
+if rmFileFlag
+    for i=1:97
+        cmd = ['rm ' folder sprintf('%03d', i) '.png']; 
+        system(cmd);
+    end
+end
 
 
 
