@@ -11,7 +11,7 @@ set(0,'RecursionLimit',RECURSIONLIMIT);
 
 
 %% PARAMETER SETTING (override from command line, read from param file, or default)
-paramfile = [resultsFolder 'params' sprintf('%03d', SeqIndex) '.mat'];
+paramfile = [resultsFolder sprintf('%03d', SeqIndex) 'params.mat'];
 
 
 if nargin > 4
@@ -293,7 +293,7 @@ disp('...rendering images');
 mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
 % make a movie of the results
-movfile = ['m' sprintf('%03d', SeqIndex)];
+movfile = [sprintf('%03d', SeqIndex) 'm'];
 trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
