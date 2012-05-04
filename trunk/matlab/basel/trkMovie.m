@@ -34,23 +34,16 @@ cmd_webm      = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 800k -y -s 696x5
 system(cmd_webm);
 cmd_mp4       = ['ffmpeg -r 10 -i %03d.png  -vcodec libx264 -b 800k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
 system(cmd_mp4);
-cmd_thumbnail = ['mv 050.png ' resultsFolder filename '.png'];
-system(cmd_thumbnail);
-keyboard;
-
-%system(cmd2);
-
-%delete([folder 'divx2pass.log']);
+A = imread([resultsFolder filename '.png']);
+imwrite(A, [resultsFolder filename '.jpg']);
 
 cd(oldpath);
 
 
 
 if rmFileFlag
-    for i=1:97
-        cmd = ['rm ' folder sprintf('%03d', i) '.png']; 
-        system(cmd);
-    end
+	cmd = ['rm ' folder '*.png']; 
+    system(cmd);
 end
 
 
