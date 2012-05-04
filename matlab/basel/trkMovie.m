@@ -27,16 +27,20 @@ BITRATE = 4000000;
 %cmd1 = ['mencoder -ovc x264 -x264encopts bitrate=' num2str(BITRATE) 'pass=1 nr=2000 -mf type=png:fps=10 -nosound -o /dev/null mf://*.png -really-quiet'];
 %cmd2 = ['mencoder -ovc x264 -x264encopts bitrate=' num2str(BITRATE) 'pass=2 nr=2000 -mf type=png:fps=10 -nosound -o -nosound -o ' resultsFolder filename ' mf://*.png -really-quiet'];
 % use ffmpeg, it's much better
-keyboard;
-cmd_vorbis    = ['ffmpeg -i %03d.png -acodec libvorbis -q 10 -r 10 ' resultsFolder filename '.ogv'];
-cmd_thumbnail = ['ffmpeg -i ' resultsFolder filename '.ogv -deinterlace -an -ss 50 -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg" 2>&1'];
-cmd_webm      = ['ffmpeg -i %03d.png -acodec libvorbis -ac 2 -ab 96k -ar 44100 -b 345k ' resultsFolder filename '.webm'];
-cmd_mp4       = ['ffmpeg -i %03d.png -acodec libfaac -ab 96k -vcodec libx264 -level 21 -refs 2 -b 345k -bt 345k -threads 0 ' resultsFolder filename '.mp4'];
-
+%keyboard;
+cmd_vorbis    = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x520 -r 10 ' resultsFolder filename '.ogv'];
 system(cmd_vorbis);
-system(cmd_thumbnail);
+cmd_webm      = ['ffmpeg -r 10 -i %03d.png -acodec libvorbis -b 600k -y -s 696x520 -r 10 ' resultsFolder filename '.webm'];
 system(cmd_webm);
+cmd_mp4       = ['ffmpeg -r 10 -i %03d.png  -vcodec libx264 -b 600k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
 system(cmd_mp4);
+
+ 
+cmd_thumbnail = ['ffmpeg -i "' resultsFolder filename '.mp4" -deinterlace -an -ss 50 -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg' '" 2>&1'];
+system(cmd_thumbnail);
+cmd_thumbnail = ['mv 050.png ' resultsFolder filename '.png'];
+system(cmd_thumbnail);
+
 %system(cmd2);
 
 %delete([folder 'divx2pass.log']);

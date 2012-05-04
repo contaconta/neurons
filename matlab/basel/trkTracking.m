@@ -2,7 +2,7 @@ function G =  trkTracking(folder, resultsFolder, SeqIndex, Sample, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt] = trkGetDateAndLabel(folder);
-date_txt = date;
+date_txt = ' ';
 label_txt = Sample;
 num_txt = num2str(SeqIndex);
 
@@ -11,7 +11,8 @@ set(0,'RecursionLimit',RECURSIONLIMIT);
 
 
 %% PARAMETER SETTING (override from command line, read from param file, or default)
-paramfile = [resultsFolder 'params' num2str(SeqIndex) '.mat'];
+paramfile = [resultsFolder 'params' sprintf('%03d', SeqIndex) '.mat'];
+
 
 if nargin > 4
     W_THRESH = params(1);
@@ -292,13 +293,13 @@ disp('...rendering images');
 mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 
 % make a movie of the results
-movfile = [  date_txt '_' num_txt];
+movfile = ['m' sprintf('%03d', SeqIndex)];
 trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
 
 %% save everything we need for the analysis
-datafile = [resultsFolder date_txt '_' num_txt '.mat'];
+datafile = [resultsFolder sprintf('%03d', SeqIndex) '.mat'];
 trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
 
 % % put everything into a nice structure for the xml writer
