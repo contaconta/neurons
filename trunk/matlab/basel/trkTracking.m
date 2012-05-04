@@ -2,7 +2,7 @@ function G =  trkTracking(folder, resultsFolder, SeqIndex, Sample, params)
 
 % get the experiment label, data, and assay position
 [date_txt, label_txt] = trkGetDateAndLabel(folder);
-date_txt = ' ';
+date_txt = '';
 label_txt = Sample;
 num_txt = num2str(SeqIndex);
 
