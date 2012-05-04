@@ -41,7 +41,7 @@ for i = 1:size(exp_num,1)
     folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
     G = trkTracking(folder_n, resultsFolder, i , Sample);
     % perform post-processing
-    a = dir([resultsFolder '*'  num2str(str2num(exp_num(i,:))) '.mat']);
+    a = dir([resultsFolder  sprintf('%03d', i) '.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
