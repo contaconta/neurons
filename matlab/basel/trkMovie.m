@@ -29,8 +29,7 @@ BITRATE = 4000000;
 % use ffmpeg, it's much better
 keyboard;
 cmd_vorbis    = ['ffmpeg -i %03d.png -acodec libvorbis -q 10 -r 10 ' resultsFolder filename '.ogv'];
-
-cmd_thumbnail = ['ffmpeg -i %03d.png -deinterlace -an -ss 50 -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg" 2>&1'];
+cmd_thumbnail = ['ffmpeg -i ' resultsFolder filename '.ogv -deinterlace -an -ss 50 -t 00:00:01 -r 1 -y -vcodec mjpeg -f mjpeg "' resultsFolder filename '.jpg" 2>&1'];
 cmd_webm      = ['ffmpeg -i %03d.png -acodec libvorbis -ac 2 -ab 96k -ar 44100 -b 345k ' resultsFolder filename '.webm'];
 cmd_mp4       = ['ffmpeg -i %03d.png -acodec libfaac -ab 96k -vcodec libx264 -level 21 -refs 2 -b 345k -bt 345k -threads 0 ' resultsFolder filename '.mp4'];
 
