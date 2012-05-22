@@ -38,33 +38,42 @@ numberOfCompleteProcessedPlates = 0
 numberOfUncompleteProcessedPlates = 0
 numberOfUnprocessedPlates = 0
 
+ShowSummaryOnly = 1
+
 for plateName in os.listdir(AnalysisDir):
 	PlateDir = os.path.join(AnalysisDir, plateName)
 	if os.path.isdir(PlateDir):
-		print colored(plateName, 'cyan')
+		if ShowSummaryOnly != 1:
+			print colored(plateName, 'cyan')
+			
 		platePropertiesFile = os.path.join(PlateDir, 'OriginalDataDirectory.txt');
 		if os.path.exists(platePropertiesFile):
-			os.system('cat ' + platePropertiesFile)
-			print '\n'
+			if ShowSummaryOnly != 1:
+				os.system('cat ' + platePropertiesFile)
+				print '\n'
 			numberOfProcessedPlates = numberOfProcessedPlates + 1
 			for extension in ExtenstionsList:
 				kkk = os.path.join(PlateDir, '*' + extension)
 				cmd_ = 'ls ' + kkk + ' | wc -w' 
 				numberOfFilesExt = GetFloatingPointNumberFromExecOutput(cmd_)
 				if numberOfFilesExt[0] == 240:
-					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
+					if ShowSummaryOnly != 1:
+						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
 					if extension == '.jpg':
 						numberOfCompleteProcessedPlates = numberOfCompleteProcessedPlates + 1
 				elif numberOfFilesExt[0] > 0:
-					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
+					if ShowSummaryOnly != 1:
+						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
 					if extension == '.jpg':
 						numberOfUncompleteProcessedPlates = numberOfUncompleteProcessedPlates + 1
 				else:
-					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
+					if ShowSummaryOnly != 1:
+						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
 					if extension == '.jpg':
 						numberOfUnprocessedPlates = numberOfUnprocessedPlates + 1
-			print '---------------------------------------------------------------'
-			print '\n'
+			if ShowSummaryOnly != 1:
+				print '---------------------------------------------------------------'
+				print '\n'
 
 
 print_red_on_white('---------------------------------------------------------------')
