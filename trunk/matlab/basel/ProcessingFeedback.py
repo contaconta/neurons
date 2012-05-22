@@ -28,6 +28,7 @@ from termcolor import colored, cprint
 print_red_on_white = lambda x: cprint(x, 'red', 'on_white')
 print_green_on_white = lambda x: cprint(x, 'green', 'on_white')
 print_blue_on_white = lambda x: cprint(x, 'blue', 'on_white')
+print_white_on_blue = lambda x: cprint(x, 'white', 'on_blue')
 
 
 AnalysisDir = '/raid/data/analysis/'
@@ -37,6 +38,10 @@ numberOfProcessedPlates = 0
 numberOfCompleteProcessedPlates = 0
 numberOfUncompleteProcessedPlates = 0
 numberOfUnprocessedPlates = 0
+
+ListOfNonCompletePlates = []
+ListOfSizeNonCompletePlates = []
+
 
 ShowSummaryOnly = 0
 
@@ -66,6 +71,8 @@ for plateName in os.listdir(AnalysisDir):
 						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
 					if extension == '.jpg':
 						numberOfUncompleteProcessedPlates = numberOfUncompleteProcessedPlates + 1
+						ListOfNonCompletePlates(0:0) = [plateName]
+						ListOfSizeNonCompletePlates(0:0) = [numberOfFilesExt[0]]
 				else:
 					if ShowSummaryOnly != 1:
 						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
@@ -82,4 +89,9 @@ print_red_on_white('------------------------------------------------------------
 print_green_on_white('Total number of plates                          :            ' + str( numberOfProcessedPlates ))
 print_green_on_white('Number of plates with 240 stages                :            ' + str( numberOfCompleteProcessedPlates ))
 print_blue_on_white( 'Number of plates with less than 240 stages      :             ' + str( numberOfUncompleteProcessedPlates ))
+i = 0
+for a in ListOfNonCompletePlates:
+	print_white_on_blue(str(ListOfSizeNonCompletePlates[i]) + ' stages in ' a )
+	i = i+1
+
 print_red_on_white(  'Number of plates not processed ( no red channel):             ' + str( numberOfUnprocessedPlates ))
