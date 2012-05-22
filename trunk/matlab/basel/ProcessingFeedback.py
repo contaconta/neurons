@@ -38,7 +38,7 @@ numberOfCompleteProcessedPlates = 0
 numberOfUncompleteProcessedPlates = 0
 numberOfUnprocessedPlates = 0
 
-ShowSummaryOnly = 1
+ShowSummaryOnly = 0
 
 for plateName in os.listdir(AnalysisDir):
 	PlateDir = os.path.join(AnalysisDir, plateName)
@@ -79,7 +79,7 @@ for plateName in os.listdir(AnalysisDir):
 print_red_on_white('---------------------------------------------------------------')
 print_red_on_white('-------------------------  Summary  ---------------------------')
 print_red_on_white('---------------------------------------------------------------')
-print_green_on_white('Total number of plates                         :             ' + str( numberOfProcessedPlates ))
-print_green_on_white('Number of plates with 240 stages               :             ' + str( numberOfCompleteProcessedPlates ))
+print_green_on_white('Total number of plates                          :            ' + str( numberOfProcessedPlates ))
+print_green_on_white('Number of plates with 240 stages                :            ' + str( numberOfCompleteProcessedPlates ))
 print_blue_on_white( 'Number of plates with less than 240 stages      :             ' + str( numberOfUncompleteProcessedPlates ))
 print_red_on_white(  'Number of plates not processed ( no red channel):             ' + str( numberOfUnprocessedPlates ))
