@@ -25,9 +25,9 @@ sys.path.append("termcolor")
 from GetFloatingPointNumberFromExecOutput import *
 from termcolor import colored, cprint
 
-print_red_on_cyan = lambda x: cprint(x, 'red', 'on_cyan')
-print_green_on_cyan = lambda x: cprint(x, 'green', 'on_cyan')
-print_blue_on_cyan = lambda x: cprint(x, 'blue', 'on_cyan')
+print_red_on_white = lambda x: cprint(x, 'red', 'on_white')
+print_green_on_white = lambda x: cprint(x, 'green', 'on_white')
+print_blue_on_white = lambda x: cprint(x, 'blue', 'on_white')
 
 
 AnalysisDir = '/raid/data/analysis/'
@@ -53,24 +53,24 @@ for plateName in os.listdir(AnalysisDir):
 				numberOfFilesExt = GetFloatingPointNumberFromExecOutput(cmd_)
 				if numberOfFilesExt[0] == 240:
 					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
-					if extension == 'jpg':
+					if extension == '.jpg':
 						numberOfCompleteProcessedPlates = numberOfCompleteProcessedPlates + 1
 				elif numberOfFilesExt[0] > 0:
 					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
-					if extension == 'jpg':
+					if extension == '.jpg':
 						numberOfUncompleteProcessedPlates = numberOfUncompleteProcessedPlates + 1
 				else:
 					print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
-					if extension == 'jpg':
+					if extension == '.jpg':
 						numberOfUnprocessedPlates = numberOfUnprocessedPlates + 1
 			print '---------------------------------------------------------------'
 			print '\n'
 
 
-print_red_on_cyan('---------------------------------------------------------------')
-print_red_on_cyan('Summary')
-print_red_on_cyan('---------------------------------------------------------------')
-print_green_on_cyan('Total number of plates      : ' + str( numberOfProcessedPlates ))
-print_green_on_cyan('Number of plates with 240   : ' + str( numberOfCompleteProcessedPlates ))
-print_blue_on_cyan('Number of plates with < 240 : ' + str( numberOfProcessedPlates ))
-print_red_on_cyan('Number of plates not processed (probably no red channel): ' + str( numberOfUnprocessedPlates ))
+print_red_on_white('---------------------------------------------------------------')
+print_red_on_white('Summary')
+print_red_on_white('---------------------------------------------------------------')
+print_green_on_white('Total number of plates      : ' + str( numberOfProcessedPlates ))
+print_green_on_white('Number of plates with 240   : ' + str( numberOfCompleteProcessedPlates ))
+print_blue_on_white('Number of plates with < 240 : ' + str( numberOfProcessedPlates ))
+print_red_on_white('Number of plates not processed (probably no red channel): ' + str( numberOfUnprocessedPlates ))
