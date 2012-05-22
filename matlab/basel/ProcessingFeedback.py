@@ -90,10 +90,8 @@ print_green_on_white('Total number of plates                          :         
 print_green_on_white('Number of plates with 240 stages                :            ' + str( numberOfCompleteProcessedPlates ))
 print_blue_on_white( 'Number of plates with less than 240 stages      :             ' + str( numberOfUncompleteProcessedPlates ))
 i = 0
-print ListOfNonCompletePlates
-print ListOfSizeNonCompletePlates
 for a in ListOfNonCompletePlates:
-	#print_white_on_blue(str(ListOfSizeNonCompletePlates[i]) + ' stages in ' a )
+	print_white_on_blue(str(ListOfSizeNonCompletePlates[i]) + ' stages in ' + a )
 	i = i+1
 
 print_red_on_white(  'Number of plates not processed ( no red channel):             ' + str( numberOfUnprocessedPlates ))
