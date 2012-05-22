@@ -38,6 +38,7 @@ for plateName in os.listdir(AnalysisDir):
 		platePropertiesFile = os.path.join(PlateDir, 'OriginalDataDirectory.txt');
 		if os.path.exists(platePropertiesFile):
 			os.system('cat ' + platePropertiesFile)
+			print '\n'
 		for extension in ExtenstionsList
 			kkk = os.path.join(PlateDir, '*' + extension)
 			cmd_ = 'ls ' + kkk + ' | wc -w' 
