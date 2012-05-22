@@ -19,11 +19,11 @@
 
 import os
 import sys
-import colored
-from termcolor import colored
 
 sys.path.append("./")
+sys.path.append("termcolor")
 from GetFloatingPointNumberFromExecOutput import *
+from termcolor import colored
 
 AnalysisDir = '/raid/data/analysis/'
 
@@ -33,7 +33,7 @@ ExtenstionsList = ['.jpg', 'params.mat', '.webm', '.mp4', '.mat']
 for plateName in os.listdir(AnalysisDir):
 	PlateDir = os.path.join(AnalysisDir, plateName)
 	if os.path.isdir(PlateDir):
-		print colored('plateName', 'magenta')
+		print colored(plateName, 'cyan')
 		print '\n'
 		platePropertiesFile = os.path.join(PlateDir, 'OriginalDataDirectory.txt');
 		if os.path.exists(platePropertiesFile):
@@ -44,7 +44,7 @@ for plateName in os.listdir(AnalysisDir):
 			cmd_ = 'ls ' + kkk + ' | wc -w' 
 			numberOfFilesExt = GetFloatingPointNumberFromExecOutput(cmd_)
 			if numberOfFilesExt == 240:
-				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
+				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'yellow')
 			elif  numberOfFilesExt > 0:
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
 			else:	
