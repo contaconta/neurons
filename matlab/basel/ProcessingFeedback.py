@@ -34,7 +34,6 @@ for plateName in os.listdir(AnalysisDir):
 	PlateDir = os.path.join(AnalysisDir, plateName)
 	if os.path.isdir(PlateDir):
 		print colored(plateName, 'cyan')
-		print '\n'
 		platePropertiesFile = os.path.join(PlateDir, 'OriginalDataDirectory.txt');
 		if os.path.exists(platePropertiesFile):
 			os.system('cat ' + platePropertiesFile)
@@ -49,7 +48,8 @@ for plateName in os.listdir(AnalysisDir):
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
 			else:	
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
-		print 'done!!'
+		print '---------------------------------------------------------------'
+		print '\n'
 
 
 
