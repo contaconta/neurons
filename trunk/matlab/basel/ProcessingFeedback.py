@@ -95,7 +95,7 @@ print_red_on_white('------------------------------------------------------------
 print_green_on_white('Total number of plates                          :            ' + str( numberOfProcessedPlates ))
 print_green_on_white('Number of plates with 240 stages                :            ' + str( numberOfCompleteProcessedPlates ))
 for a in ListOfCompletePlates:
-	print_white_on_green(a + 'complete !! ' )
+	print_white_on_green(a + '    complete !! ' )
 print_blue_on_white( 'Number of plates with less than 240 stages      :             ' + str( numberOfUncompleteProcessedPlates ))
 i = 0
 for a in ListOfNonCompletePlates:
