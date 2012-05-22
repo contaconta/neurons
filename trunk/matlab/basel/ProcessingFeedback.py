@@ -39,15 +39,15 @@ for plateName in os.listdir(AnalysisDir):
 		if os.path.exists(platePropertiesFile):
 			os.system('cat ' + platePropertiesFile)
 			print '\n'
-		for extension in ExtenstionsList
+		for extension in ExtenstionsList:
 			kkk = os.path.join(PlateDir, '*' + extension)
 			cmd_ = 'ls ' + kkk + ' | wc -w' 
 			numberOfFilesExt = GetFloatingPointNumberFromExecOutput(cmd_)
-			if numberOfFilesExt == 240
+			if numberOfFilesExt == 240:
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
-			elif  numberOfFilesExt > 0 
+			elif  numberOfFilesExt > 0:
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
-			else	
+			else:	
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
 		print 'done!!'
 
