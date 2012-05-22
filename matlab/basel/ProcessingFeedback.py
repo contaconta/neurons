@@ -71,8 +71,8 @@ for plateName in os.listdir(AnalysisDir):
 						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'blue')
 					if extension == '.jpg':
 						numberOfUncompleteProcessedPlates = numberOfUncompleteProcessedPlates + 1
-						ListOfNonCompletePlates(0:0) = [plateName]
-						ListOfSizeNonCompletePlates(0:0) = [numberOfFilesExt[0]]
+						ListOfNonCompletePlates(1:1) = [plateName]
+						ListOfSizeNonCompletePlates(1:1) = [numberOfFilesExt[0]]
 				else:
 					if ShowSummaryOnly != 1:
 						print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
