@@ -72,7 +72,7 @@ for plateName in os.listdir(AnalysisDir):
 					if extension == '.jpg':
 						numberOfUnprocessedPlates = numberOfUnprocessedPlates + 1
 			if ShowSummaryOnly != 1:
-				print '---------------------------------------------------------------'
+				print_red_on_white( '---------------------------------------------------------------')
 				print '\n'
 
 
