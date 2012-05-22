@@ -43,7 +43,7 @@ ListOfNonCompletePlates = []
 ListOfSizeNonCompletePlates = []
 
 
-ShowSummaryOnly = 0
+ShowSummaryOnly = 1
 
 for plateName in os.listdir(AnalysisDir):
 	PlateDir = os.path.join(AnalysisDir, plateName)
