@@ -68,7 +68,7 @@ for plateName in os.listdir(AnalysisDir):
 
 
 print_red_on_white('---------------------------------------------------------------')
-print_red_on_white('Summary')
+print_red_on_white('-------------------------  Summary  ---------------------------')
 print_red_on_white('---------------------------------------------------------------')
 print_green_on_white('Total number of plates      : ' + str( numberOfProcessedPlates ))
 print_green_on_white('Number of plates with 240   : ' + str( numberOfCompleteProcessedPlates ))
