@@ -42,7 +42,7 @@ for plateName in os.listdir(AnalysisDir):
 			kkk = os.path.join(PlateDir, '*' + extension)
 			cmd_ = 'ls ' + kkk + ' | wc -w' 
 			numberOfFilesExt = GetFloatingPointNumberFromExecOutput(cmd_)
-			if numberOfFilesExt != 240:
+			if numberOfFilesExt[0] != 240:
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'red')
 			else:
 				print colored(str(numberOfFilesExt) +' ' + extension + ' files', 'green')
