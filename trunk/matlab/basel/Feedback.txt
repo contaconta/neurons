@@ -1,0 +1,59 @@
+[47m[31m---------------------------------------------------------------[0m
+[47m[31m-------------------------  Summary  ---------------------------[0m
+[47m[31m---------------------------------------------------------------[0m
+[47m[32mTotal number of plates                          :            52[0m
+[47m[32mNumber of plates with 240 stages                :            44[0m
+[42m[37mPLATE3-G1-REP    complete !! [0m
+[42m[37mPLATE1-G1    complete !! [0m
+[42m[37mPLATE2-G1    complete !! [0m
+[42m[37mPLATE4-G1-REP    complete !! [0m
+[42m[37mPLATE4-G1    complete !! [0m
+[42m[37mPLATE2-G1-REP    complete !! [0m
+[42m[37mPLATE3-G1    complete !! [0m
+[42m[37mPLATE1-G1-REP    complete !! [0m
+[42m[37mPLATE4-G2-REP    complete !! [0m
+[42m[37mPLATE2-G2    complete !! [0m
+[42m[37mPLATE1B-G2-REP    complete !! [0m
+[42m[37mPLATE3-G2    complete !! [0m
+[42m[37mPLATE1D-G2-REP    complete !! [0m
+[42m[37mPLATE4-G2    complete !! [0m
+[42m[37mPLATE1A-G2-REP    complete !! [0m
+[42m[37mPLATE4-G2-2ND    complete !! [0m
+[42m[37mPLATE1C-G2-REP    complete !! [0m
+[42m[37mPLATE2-G2-REP    complete !! [0m
+[42m[37mPLATE1-G3-2ND    complete !! [0m
+[42m[37mPLATE1-G3    complete !! [0m
+[42m[37mPLATE3-G2-REP    complete !! [0m
+[42m[37mPLATE2-G3    complete !! [0m
+[42m[37mPLATE1-G3-REP    complete !! [0m
+[42m[37mPLATE2-G3-REP    complete !! [0m
+[42m[37mPLATE3-G3    complete !! [0m
+[42m[37mPLATE3-G3-REP    complete !! [0m
+[42m[37mPLATE1-G4    complete !! [0m
+[42m[37mPLATE4-G3-REP    complete !! [0m
+[42m[37mPLATE2-G4    complete !! [0m
+[42m[37mPLATE1-G4-REP    complete !! [0m
+[42m[37mPLATE4-G6    complete !! [0m
+[42m[37mPLATE4-G7    complete !! [0m
+[42m[37mPLATE1-G7    complete !! [0m
+[42m[37mPLATE3-G4    complete !! [0m
+[42m[37mPLATE2-G7    complete !! [0m
+[42m[37mPLATE3-G7    complete !! [0m
+[42m[37mPLATE4-G4    complete !! [0m
+[42m[37mPLATE2-G8    complete !! [0m
+[42m[37mPLATE2-G5    complete !! [0m
+[42m[37mPLATE1-G5    complete !! [0m
+[42m[37mPLATE3-G8    complete !! [0m
+[42m[37mPLATE3-G5    complete !! [0m
+[42m[37mPLATE3-G6    complete !! [0m
+[42m[37mPLATE2-G6    complete !! [0m
+[47m[34mNumber of plates with less than 240 stages      :             6[0m
+[44m[37m220.0 stages in PLATE1-G2[0m
+[44m[37m210.0 stages in PLATE1-G6[0m
+[44m[37m230.0 stages in PLATE1-G8[0m
+[44m[37m150.0 stages in PLATE4-G8[0m
+[44m[37m230.0 stages in PLATE4-G3[0m
+[44m[37m131.0 stages in PLATE4-G5[0m
+[47m[31mNumber of plates not processed ( no red channel):             2[0m
+[41m[37mNo red channels for this plate : PLATE2-G2-2ND[0m
+[41m[37mNo red channels for this plate : PLATE4-G3-2ND[0m
