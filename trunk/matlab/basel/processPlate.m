@@ -17,10 +17,18 @@ end
 
 % --------- generate list of folders to process -----------
 count = 1;
-for i = 1:240
-    exp_num(count,:) = sprintf('%03d', i); 
-    count = count + 1;
+listOfDirs = dir(folder);
+for i = 1:length(listOfDirs)
+    if listOfDirs(i).isdir && length(listOfDirs(i).name) > 2
+        exp_num(count,:) = listOfDirs(i).name; 
+        count  = count + 1;
+    end
 end
+    
+% for i = 1:240
+%     exp_num(count,:) = sprintf('%03d', i); 
+%     count = count + 1;
+% end
 
 filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
 %system(['touch ' filename_input]);
@@ -40,7 +48,7 @@ matlabpool local
 for i = 1:size(exp_num,1)
     
     tic
-    folder_n = [folder num2str(str2num(exp_num(i,:))) '/'];
+    folder_n = [folder exp_num(i,:) '/'];
     G = trkTracking(folder_n, resultsFolder, i , Sample);
     % perform post-processing
     a = dir([resultsFolder  sprintf('%03d', i) '.mat']);
