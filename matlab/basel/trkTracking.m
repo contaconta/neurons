@@ -32,11 +32,11 @@ if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
 if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
-if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 150; end;
-if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 6.5; end;
+if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 50; end; % TODO
+if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 26; end; % TODO
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
-if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 2500; end;
+if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 100; end;
 
 % other parameters
 %TMAX = 20;
@@ -518,7 +518,7 @@ cols = [cols1; cols2; cols3];
 %% get a binary mask containing nuclei
 function B = getNucleiBinaryMask(LAPL, J, LAPL_THRESH, NUC_INT_THRESH, NUC_MIN_AREA)
 
-
+keyboard;
 
 Blap = LAPL <  LAPL_THRESH;
 Blap = bwareaopen(Blap, NUC_MIN_AREA);
