@@ -518,7 +518,6 @@ cols = [cols1; cols2; cols3];
 %% get a binary mask containing nuclei
 function B = getNucleiBinaryMask(LAPL, J, LAPL_THRESH, NUC_INT_THRESH, NUC_MIN_AREA)
 
-keyboard;
 
 Blap = LAPL <  LAPL_THRESH;
 Blap = bwareaopen(Blap, NUC_MIN_AREA);
