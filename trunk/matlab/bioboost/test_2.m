@@ -39,6 +39,7 @@ Apad = padarray(A, PADSIZE, 'symmetric', 'both');
 L = zeros(size(Apad,1), size(Apad,2));
 L(Apad(:,:,1) > 200) = 1;
 L(L == 0) = -1;
+
 %% precompute features=
 
 % gradient
