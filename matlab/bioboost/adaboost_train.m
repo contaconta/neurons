@@ -16,6 +16,8 @@ W = ones(size(L));          % example weights
 W = W/sum(W);
 %W(L == 1) = .5 * (W(L == 1) / sum(W(L == 1)));
 %W(L == -1) = .5 * (W(L == -1) / sum(W(L == -1)));
+
+
 %% PERFORM BOOSTING
 
 [pathstr, name, ext, versn] = fileparts([results_folder EXP_NAME '-' host '-' date '.mat']);

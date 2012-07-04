@@ -2,11 +2,11 @@
 
 EXP_NAME = 'TEST';          % name of experiment 
 
-N_features = 22;          % # of features to consider each boosting round
-N_pos = 2136;               % # of requested positive training examples
-N_total = 2*2136;           % # of total training examples
-N_SAMPLES = 2136;          % # of negative examples to use when choosing optimal learner parameters
-T = 2000;                   % maximum rounds of boosting
+N_features = 2000;          % # of features to consider each boosting round
+N_pos = 3000;               % # of requested positive training examples
+N_total = 200000;           % # of total training examples
+N_SAMPLES = 20000;          % # of negative examples to use when choosing optimal learner parameters
+T = 150;                   % maximum rounds of boosting
 EVAL = 1;                   % 1 = evaluate every boosting round/ 0 = no evaluation (faster)
 SE = 'francois';            % example sampling method: 'kevin' or 'francois'
 
