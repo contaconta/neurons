@@ -1,7 +1,7 @@
 function bsOrganizePlateData(srcfolder, destfolder)
 
 % dafault parameters
-prefixPat = 'Experiment2';
+prefixPat = 'experiment2';
 channelsPat = sort({'_w2LED red_', '_w1LED green_'}); 
 channelFolderNames = sort({'red', 'green'});
 sitePat = '_s(\d*)'; sitePrecisionStr = '%03d';
@@ -116,7 +116,7 @@ for i = 1:numel(sites)
                 
                 %str = ['cp "' srcfolder 'Experiment2_w1LED green_s' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
                 
-                str = ['cp "' srcfolder prefixPat channelsPat{c} 's' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
+                str = ['cp "' srcfolder prefixPat channelsPat{c} 's' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.TIF'];
                 
                 system(str);
                 

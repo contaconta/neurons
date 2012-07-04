@@ -1,9 +1,17 @@
 function collect_features_1()
 
-ann_folder = '/osshare/Work/Data/phase/annotations/';
-img_folder = '/osshare/Work/Data/phase/images/';
-load DATA_LOCS.mat
+ann_folder = 'phase/annotations/';
+img_folder = 'phase/images/';
+addpath(ann_folder);
+addpath(img_folder);
+%%
 
+%%load DATA_LOCS.mat
+files = [146];
+datapoints{1} = [[1; 2] [3; 4]];
+labels{1} = [1 2];
+
+%%
 % add path to frangi filter
 addpath('/osshare/Work/neurons/matlab/toolboxes/frangi_filter_version2a/');
 
