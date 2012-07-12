@@ -77,17 +77,12 @@ cols = color_list();
 % define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
-Gfiles = dir([Gfolder '*.TIF']);
-Rfiles = dir([Rfolder '*.TIF']);
+%Gfiles = dir([Gfolder '*.TIF']);
+%Rfiles = dir([Rfolder '*.TIF']);
 %experiment1_w2LED red_s1_t26
 
-if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
+%if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 
-
-%% important data structures
-D = [];                     % structure containing nucleus detections
-Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
-count = 1;                  % detection counter
 
 
 
@@ -95,8 +90,14 @@ count = 1;                  % detection counter
 %disp('...reading raw images and determining intensity level limits');
 %[rmin rmax gmin gmax R G mv] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
 %[rmin rmax gmin gmax R G mvold] = readImagesAndGetIntensityLimits(TMAX, Rfolder, Rfiles, Gfolder, Gfiles);
-[R mv] = trkReadAndNormalizeImages(TMAX, Rfolder, R_MAX, R_STD);
-[G mv] = trkReadAndNormalizeImages(TMAX, Gfolder, G_MAX, G_STD);
+[R mv TMAX] = trkReadAndNormalizeImages( Rfolder, R_MAX, R_STD);
+[G mv] = trkReadAndNormalizeImages( Gfolder, G_MAX, G_STD);
+
+%% important data structures
+D = [];                     % structure containing nucleus detections
+Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
+count = 1;                  % detection counter
+
 
 %keyboard;
 
