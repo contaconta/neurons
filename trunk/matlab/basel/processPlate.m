@@ -3,7 +3,6 @@ function processPlate(folder, resultsFolder, Sample, Identifier)
 
 
 % ------------------- set the paths -----------------------
-d = dir(folder);
 if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
     addpath([pwd '/frangi_filter_version2a']);
 end
@@ -20,10 +19,17 @@ count = 1;
 listOfDirs = dir(folder);
 for i = 1:length(listOfDirs)
     if listOfDirs(i).isdir && length(listOfDirs(i).name) > 2
-        exp_num(count,:) = listOfDirs(i).name; 
+        exp_num{count} = listOfDirs(i).name; %#ok<*AGROW>
         count  = count + 1;
     end
 end
+
+% for i = 1:length(listOfDirs)
+%     if listOfDirs(i).isdir && length(listOfDirs(i).name) > 2
+%         exp_num(count,:) = listOfDirs(i).name; 
+%         count  = count + 1;
+%     end
+% end
     
 % for i = 1:240
 %     exp_num(count,:) = sprintf('%03d', i); 
@@ -48,15 +54,15 @@ matlabpool local
 for i = 1:size(exp_num,1)
     
     tic
-    folder_n = [folder exp_num(i,:) '/'];
-    G = trkTracking(folder_n, resultsFolder, i , Sample);
+    folder_n = [folder exp_num{i} '/'];
+    G = trkTracking(folder_n, resultsFolder, str2double(exp_num{i}) , Sample);
     % perform post-processing
-    a = dir([resultsFolder  sprintf('%03d', i) '.mat']);
+    a = dir([resultsFolder  exp_num{i} '.mat']);
     matFileName = a.name;
     disp(matFileName);
     if( exist([resultsFolder matFileName], 'file') > 0)
         R = load([resultsFolder matFileName]);
-        R = trkPostProcessing(R, G); 
+        R = trkPostProcessing(R, G); %#ok
         save([resultsFolder matFileName], '-struct', 'R');
     end
     
