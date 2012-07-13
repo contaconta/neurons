@@ -35,13 +35,8 @@ for i = 1:length(listOfDirs)
     end
 end
     
-% for i = 1:240
-%     exp_num(count,:) = sprintf('%03d', i); 
-%     count = count + 1;
-% end
 
 filename_input = [resultsFolder 'OriginalDataDirectory.txt'];
-%system(['touch ' filename_input]);
 FID = fopen(filename_input, 'w');
 fprintf(FID, folder);
 fprintf(FID, '\n');
@@ -54,21 +49,19 @@ fclose(FID);
 
 % ------------ process the specified folders --------------
 matlabpool local
-
 for i = 1:size(exp_num,1)
     
     tic
     folder_n = [folder exp_num(i,:) '/'];
-    G = trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample);
-    % perform post-processing
+    G = trkTracking2(folder_n, resultsFolder, exp_num(i,:), Sample);
     a = dir([resultsFolder  exp_num(i,:) '.mat']);
-    matFileName = a.name;
-    disp(matFileName);
-    if( exist([resultsFolder matFileName], 'file') > 0)
-        R = load([resultsFolder matFileName]);
-        R = trkPostProcessing(R, G); %#ok
-        save([resultsFolder matFileName], '-struct', 'R');
-    end
+%     matFileName = a.name;
+%     disp(matFileName);
+%     if( exist([resultsFolder matFileName], 'file') > 0)
+%         R = load([resultsFolder matFileName]);
+%         R = trkPostProcessing(R, G); %#ok
+%         save([resultsFolder matFileName], '-struct', 'R');
+%     end
     
     toc
     disp('');

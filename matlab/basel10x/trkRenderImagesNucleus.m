@@ -28,47 +28,6 @@ for t = 1:TMAX
             else
                 color = cols(tracks(detect_ind),:);
             end
-            
-%             % color basic filament skeletons
-%             FILMASK = BLANK > Inf;
-%             FILMASK( FILAMENTS(detect_ind).PixelIdxList) = 1;
-%             FILMASK(Soma(detect_ind).PixelIdxList) = 0;
-%             Ir(FILMASK) = max(0, color(1) - .2);
-%             Ig(FILMASK) = max(0, color(2) - .2);
-%             Ib(FILMASK) = max(0, color(3) - .2);
-%             
-%             
-%             numNeurites = max(FILAMENTS(detect_ind).NeuriteID);
-%             for i = 1:numNeurites
-%                 neuritepixels = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NeuriteID == i);
-%                 %coloffset = 0.8 * rand(1)  - .4;
-%                 coloffset = -.2;
-%                 Ir(neuritepixels) = min(1,max(0, color(1) - coloffset));
-%                 Ig(neuritepixels) = min(1,max(0, color(2) - coloffset));
-%                 Ib(neuritepixels) = min(1,max(0, color(3) - coloffset));
-%             end
-%             
-%             branchpts = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NumKids >= 2);
-%             leafpts   = FILAMENTS(detect_ind).PixelIdxList( FILAMENTS(detect_ind).NumKids == 0);
-%             
-%             Ir(branchpts) = 1;
-%             Ig(branchpts) = 0;
-%             Ib(branchpts) = 0;
-%             
-%             Ir(leafpts) = 0;
-%             Ig(leafpts) = 1;
-%             Ib(leafpts) = 0;
-%             
-%             % color the soma
-%             SomaM = B > Inf;
-%             SomaM(Soma(detect_ind).PixelIdxList) = 1;
-%             SomaP = bwmorph(SomaM, 'remove');
-%             SomaP = bwmorph(SomaP, 'dilate');
-%             SomaP = bwmorph(SomaP, 'thin',1);
-%             Ir(SomaP) = max(0, color(1) - .2);
-%             Ig(SomaP) = max(0, color(2) - .2);
-%             Ib(SomaP) = max(0, color(3) - .2);
-
             % color the nucleus
             Ir(D(detect_ind).PixelIdxList) = color(1);
             Ig(D(detect_ind).PixelIdxList) = color(2);
@@ -94,9 +53,6 @@ for t = 1:TMAX
     
     for d = 1:length(Dlist{t})
         detect_ind = Dlist{t}(d);
-
-        
-        
         % add text annotation
         if tracks(detect_ind) ~= 0
             if D(detect_ind).MeanRedIntensity < RedIntensityThresh
