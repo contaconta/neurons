@@ -34,7 +34,7 @@ if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
 if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
-if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 80; end; % TODO, it was 150 at the 20x resolution
+if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 5; end; % TODO, it was 150 at the 20x resolution
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 10; end; % TODO, it was 6.5 (= 26/ (2*2)) at the 20x resoltuion
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
@@ -102,12 +102,12 @@ G = trkReadImages(TMAX, Gfolder);
 disp('...preprocessing images');
 tic;
 LoG = fspecial('log',[5*sigma_log_red 5*sigma_log_red], sigma_log_red);    % Laplacian filter kernel used to find nuclei
-[log1, f, J] = preprocessImages(R, G, LoG, opt);
+[log1, f, J] = preprocessImages2(R, G, LoG, opt);
 dt = toc;
 disp(['computation time is preprocessing is' num2str(dt)]);
 %%
 % estimate the best threshold for detecting nuclei
-BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJECTS);
+BEST_LOG_THRESH = -3;
 
 %% collect nucleus detections
 disp('...detecting nuclei');
