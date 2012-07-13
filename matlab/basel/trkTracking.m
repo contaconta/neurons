@@ -111,6 +111,7 @@ parfor  t1 = 1:TMAX
     Rt = mat2gray(double(R{t1}));
     Rblur{t1} = imgaussian(Rt,2);
     log1{t1} = imfilter(Rt, h1, 'replicate');
+    WLV_D{t1} = WLV(h1, Rt, 1e-4);%#ok
     %J{t} = mat2gray(G{t}, [double(gmin) double(gmax)]);
     J{t1} = mat2gray(double(G{t1}));
     f{t1} = FrangiFilter2D(J{t1}, opt);
@@ -529,7 +530,8 @@ for i = 1:length(Bprop)
     end
 end
 Bint = J > NUC_INT_THRESH;
-B = Blap | Bint;
+%B = Blap | Bint;TODO
+B = Blap;
 B = bwareaopen(B, NUC_MIN_AREA);    % get rid of small components
 B = imfill(B,'holes');              % fill holes
 
