@@ -196,18 +196,18 @@ mvNucleus = trkRenderImagesNucleus(TMAX, G, date_txt, num_txt, label_txt, cols, 
 movfile = [SeqIndexStr 'nucTrack'];
 trkMovie(mvNucleus, resultsFolder, resultsFolder, movfile); fprintf('\n');
 
-%% detect the Somata using region growing
-disp('...detecting somata');
-%[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
-[Soma SL] = trkDetectSomata2(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
-SMASK = zeros(size(SL{1}));
-
-
-%%
-mvNucleiSoma = trkRenderImagesNuceliSomata(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist,  Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS); %#ok<*INUSL>
-% make a movie of the results
-movfile = [SeqIndexStr 'SomaTrack'];
-trkMovie(mvNucleiSoma, resultsFolder, resultsFolder, movfile); fprintf('\n');
+% %% detect the Somata using region growing
+% disp('...detecting somata');
+% %[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+% [Soma SL] = trkDetectSomata2(TMAX, Dlist, tracks, D, SOMA_THRESH, J);
+% SMASK = zeros(size(SL{1}));
+% 
+% 
+% %%
+% mvNucleiSoma = trkRenderImagesNuceliSomata(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist,  Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS); %#ok<*INUSL>
+% % make a movie of the results
+% movfile = [SeqIndexStr 'SomaTrack'];
+% trkMovie(mvNucleiSoma, resultsFolder, resultsFolder, movfile); fprintf('\n');
 
 
 % %% find the proper sigmoid parameters to convert Frangi to probabilities
