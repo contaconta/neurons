@@ -7,13 +7,14 @@ WEIGHT_I = 800; %400;     % controls influence of intensity vs distance from nuc
 WIN = 100;
 MAX_ITER = 5000;
 MAX_N = 10000;
-MAX_AREA = 5000;
+
 
 J = 2*double(M);
 SIZE = size(J);
 
 muI = mean(I(M));
 area = sum(sum(M));
+MAX_AREA = 2.25*area;
 
 
 % create a distance map

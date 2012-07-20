@@ -3,8 +3,7 @@ function BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJEC
 
 
 
-thresh_list = -.0007:.00005:-.00005;
-%Blap = zeros(size(log1{1},1),size(log1{1},2));
+thresh_list = -0.002:.00005:-0.00005;%TODO
 
 for j = 1:length(thresh_list)
     tcount = 1;
@@ -20,14 +19,14 @@ for j = 1:length(thresh_list)
         end
         L = bwlabel(Blap);
 
-        det_table(j,tcount) = max(max(L));
+        det_table(j,tcount) = max(max(L));%#ok
         tcount = tcount + 1;
     end
 
 end
 
 dists = abs(mean(det_table,2) - TARGET_NUM_OBJECTS);
-[min_val, best_ind] = min(dists);
+[min_val, best_ind] = min(dists);%#ok
 
 BEST_LOG_THRESH = thresh_list(best_ind);
 disp(['...selected BEST_LOG_THRESH = ' num2str(BEST_LOG_THRESH)]);
