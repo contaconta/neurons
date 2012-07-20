@@ -35,14 +35,14 @@ if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
 if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
 if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 80; end; % TODO, it was 150 at the 20x resolution
-if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 10; end; % TODO, it was 6.5 (= 26/ (2*2)) at the 20x resoltuion
+if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 20; end; % TODO, it was 6.5 (= 26/ (2*2)) at the 20x resoltuion
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
-if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 450; end;%TODO pi *12 * 12
+if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 650; end;%TODO pi *12 * 12
 
 % other parameters
 %TMAX = 20;
-MIN_TRACK_LENGTH = 20;               % minimum number of detections for a valid neuron track
+MIN_TRACK_LENGTH = 10;               % minimum number of detections for a valid neuron track
 SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 0;                % display figure with results
 
@@ -57,7 +57,7 @@ R_MAX = 327;
 
 % smoothing parameters
 sigma_red = 1;
-sigma_log_red = 3;
+sigma_log_red = 5;
 
 % frangi parameters
 opt.FrangiScaleRange = [1 1.5];
@@ -104,15 +104,21 @@ tic;
 LoG = fspecial('log',[5*sigma_log_red 5*sigma_log_red], sigma_log_red);    % Laplacian filter kernel used to find nuclei
 [log1, f, J] = preprocessImages(R, G, LoG, opt);
 dt = toc;
-disp(['computation time is preprocessing is' num2str(dt)]);
+disp(['computation time preprocessing is  ' num2str(dt)]);
 %%
 % estimate the best threshold for detecting nuclei
+tic
 BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJECTS);
-
+dt = toc;
+disp(['computation time for estimating the threshold is  ' num2str(dt)]);
 %% collect nucleus detections
 disp('...detecting nuclei');
-for  t = 1:TMAX
+M = cell(size(R));
+parfor  t = 1:TMAX
     M{t} = getNucleiBinaryMask(log1{t}, BEST_LOG_THRESH, NUC_MIN_AREA);
+end
+
+for  t = 1:TMAX
     L = bwlabel(M{t});
     detections_t = regionprops(L, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
     
@@ -132,18 +138,6 @@ for  t = 1:TMAX
             count = count + 1;
         end
     end
-    
-    % compute frame-based measurements
-    Ia = mv{t}; Ia = Ia(:,:,1);
-    if t == 1
-        FrameMeasures.ImgDiff1 = 0;
-        FrameMeasures.ImgDiff2 = 0;
-    else
-        Ib = mv{t-1}; Ib = Ib(:,:,1);
-        FrameMeasures(t).ImgDiff1 = (sum(sum(Ia)) - sum(sum(Ib(:))) ) / sum(sum(Ia));
-        FrameMeasures(t).ImgDiff2 =  sum(sum( abs( Ia - Ib))) / sum(sum(Ia));
-    end
-    FrameMeasures(t).Entropy = entropy(Ia);
 end
 clear log1;
 
@@ -186,11 +180,11 @@ end
 %% remove any bad tracks
 [D tracks trkSeq timeSeq] = trkRemoveBadTracks(D, tracks, trkSeq, timeSeq, MAX_NUCLEUS_AREA);
 tNucleus = toc;
-disp(['...elapsed time for nucleus detection and tracking is ' tNucleus])
+disp(['...elapsed time for nucleus detection and tracking is ' num2str(tNucleus)])
 
 %% render results on the video
 disp('...rendering images');
-mvNucleus = trkRenderImagesNucleus(TMAX, G, date_txt, num_txt, label_txt, cols, mv, Dlist, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+mvNucleus = trkRenderImagesNucleus(TMAX, G, date_txt, num_txt, label_txt, cols, Dlist, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
 %%
 % make a movie of the results
 movfile = [SeqIndexStr 'nucTrack'];

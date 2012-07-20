@@ -198,7 +198,7 @@ end
 %% remove any bad tracks
 [D tracks trkSeq timeSeq] = trkRemoveBadTracks(D, tracks, trkSeq, timeSeq, MAX_NUCLEUS_AREA);
 tNucleus = toc;
-disp(['...elapsed time for nucleus detection and tracking is ' tNucleus])
+disp(['...elapsed time for nucleus detection and tracking is ' num2str(tNucleus)])
 
 %% render results on the video
 disp('...rendering images');
