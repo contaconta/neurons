@@ -38,7 +38,8 @@ if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 5; end; % TODO, it was 15
 if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 10; end; % TODO, it was 6.5 (= 26/ (2*2)) at the 20x resoltuion
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
-if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 450; end;%TODO pi *12 * 12
+if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 320; end;%TODO pi *12 * 12
+if ~exist('MIN_NUCLEUS_AREA', 'var');   MIN_NUCLEUS_AREA = 80; end;
 
 % other parameters
 %TMAX = 20;
@@ -57,7 +58,7 @@ R_MAX = 327;
 
 % smoothing parameters
 sigma_red = 1;
-sigma_log_red = 3;
+sigma_log_red = 8;
 
 % frangi parameters
 opt.FrangiScaleRange = [1 1.5];
@@ -94,20 +95,20 @@ Dlist = cell(1,TMAX);       % cell containing detections indexes in each time st
 count = 1;                  % detection counter
 
 %% Load the raw data
-
 R = trkReadImages(TMAX, Rfolder);
 G = trkReadImages(TMAX, Gfolder);
-
 %% preprocess images
 disp('...preprocessing images');
 tic;
 LoG = fspecial('log',[5*sigma_log_red 5*sigma_log_red], sigma_log_red);    % Laplacian filter kernel used to find nuclei
-[log1, f, J] = preprocessImages2(R, G, LoG, opt);
+[log1, f, J, Rblur] = preprocessImages(R, G, LoG, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, opt);
 dt = toc;
-disp(['computation time preprocessing is ' num2str(dt)]);
-%%
+disp(['computation time for preprocessing ' num2str(dt)]);
+
+disp('...detecting nuclei');
+
 % estimate the best threshold for detecting nuclei
-BEST_LOG_THRESH = -3;
+BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJECTS);
 
 %% collect nucleus detections
 disp('...detecting nuclei');
@@ -133,8 +134,39 @@ for  t = 1:TMAX
         end
     end
 end
-clear log1;
-
+% 
+% M = cell(size(R));
+% tic
+% for t = 1:TMAX
+%     
+%     mm = zeros(size(R{1}));
+%     for x = Ellipses{t}'
+%         s = vl_erfill(log1{t}, x);
+%         mm(s) = mm(s)+1;
+%     end
+%     M{t} = mm;
+%     L = bwlabel(M{t});
+%     detections_t = regionprops(L, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
+%     
+%     % add some measurements, create a list of detections
+%     if ~isempty(detections_t)
+%         for i = 1:length(detections_t)
+%             detections_t(i).MeanGreenIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+%             detections_t(i).MeanRedIntensity = sum(R{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+%             
+%             detections_t(i).Time = t;
+%             if count == 1
+%                 D = detections_t(i);
+%             else
+%                 D(count) = detections_t(i);
+%             end
+%             Dlist{t} = [Dlist{t} count];
+%             count = count + 1;
+%         end
+%     end
+%     
+% end
+toc
 %% create the adjacency matrix for all nearby detections
 Ndetection = count-1;
 A = make_adjacency(Dlist, WIN_SIZE, Ndetection);
@@ -174,7 +206,7 @@ end
 %% remove any bad tracks
 [D tracks trkSeq timeSeq] = trkRemoveBadTracks(D, tracks, trkSeq, timeSeq, MAX_NUCLEUS_AREA);
 tNucleus = toc;
-disp(['...elapsed time for nucleus detection and tracking is ' num2str(tNucleus])
+disp(['...elapsed time for nucleus detection and tracking is ' num2str(tNucleus)])
 
 %% render results on the video
 disp('...rendering images');
@@ -184,6 +216,12 @@ mvNucleus = trkRenderImagesNucleus(TMAX, G, date_txt, num_txt, label_txt, cols, 
 movfile = [SeqIndexStr 'nucTrack'];
 trkMovie(mvNucleus, resultsFolder, resultsFolder, movfile); fprintf('\n');
 
+%%
+movfile = [SeqIndexStr 'Original'];
+for t = 1:TMAX
+    G{t} =uint8(255*mat2gray(double(G{t})));
+end
+trkMovie(G, resultsFolder, resultsFolder, movfile); fprintf('\n');
 %% detect the Somata using region growing
 % disp('...detecting somata');
 % %[Soma SMASK SL] = trkDetectSomata(TMAX, Dlist, tracks, D, SOMA_THRESH, J);

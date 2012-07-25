@@ -39,6 +39,7 @@ if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 20; end; % TODO, it
 if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
 if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 650; end;%TODO pi *12 * 12
+if ~exist('MIN_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 650; end;%TODO pi *12 * 12
 
 % other parameters
 %TMAX = 20;
