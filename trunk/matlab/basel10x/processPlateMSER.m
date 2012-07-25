@@ -1,4 +1,4 @@
-function processPlate3(folder, resultsFolder, Sample, Identifier)
+function processPlateMSER(folder, resultsFolder, Sample, Identifier)
 
 
 % processPlate: process one plate containing sub-directories
@@ -54,7 +54,7 @@ for i = 1:size(exp_num,1)
     
     tic
     folder_n = [folder exp_num(i,:) '/'];
-    G = trkTracking3(folder_n, resultsFolder, exp_num(i,:), Sample);
+    G = trkTrackingMSER(folder_n, resultsFolder, exp_num(i,:), Sample);
     a = dir([resultsFolder  exp_num(i,:) '.mat']);
 %     matFileName = a.name;
 %     disp(matFileName);

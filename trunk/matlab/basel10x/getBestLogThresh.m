@@ -3,7 +3,7 @@ function BEST_LOG_THRESH = getBestLogThresh(log1, NUC_MIN_AREA, TARGET_NUM_OBJEC
 
 
 
-thresh_list = -0.002:.00005:-0.00005;%TODO
+thresh_list = -0.004:.00005:-0.00005;%TODO
 
 for j = 1:length(thresh_list)
     tcount = 1;
