@@ -33,15 +33,11 @@ if ~exist('WT', 'var');                 WT = 50; end;
 if ~exist('WSH', 'var');                WSH = 40; end;
 if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
 if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
+if ~exist('SPATIAL_DIST_THRESH', 'var');           SPATIAL_DIST_THRESH = 40; end;
 if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
-if ~exist('NUC_MIN_AREA', 'var');       NUC_MIN_AREA = 5;% #ok 
-end; 
-% TODO, it was 150 at the 20x resolution
-if ~exist('TARGET_NUM_OBJECTS', 'var'); TARGET_NUM_OBJECTS = 5; end; % TODO, it was 6.5 (= 26/ (2*2)) at the 20x resoltuion
-if ~exist('NUC_INT_THRESH', 'var');     NUC_INT_THRESH = .25; end;% #ok 
 if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
 if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 155; end;%TODO pi*7*7
-if ~exist('MIN_NUCLEUS_AREA', 'var');   MIN_NUCLEUS_AREA = 80; end;%TODO  pi*5*5
+if ~exist('MIN_NUCLEUS_AREA', 'var');   MIN_NUCLEUS_AREA = 50; end;%TODO  pi*5*5
 
 % other parameters
 %TMAX = 20;
@@ -49,18 +45,8 @@ MIN_TRACK_LENGTH = 20;               % minimum number of detections for a valid 
 SHOW_FALSE_DETECTS = 0;             % show false detections
 DISPLAY_FIGURES = 0;                % display figure with results
 
-% image adjustment parameters
-% to adjust (normalize) intensities
-G_MED = 2537;
-G_STD = 28.9134;
-G_MAX = 11234;
-R_MED = 205;
-R_STD = 3.0508;
-R_MAX = 327;
-
 % smoothing parameters
-sigma_red = 1;
-sigma_log_red = 2;
+sigma_red = 2.0;
 
 % frangi parameters
 opt.FrangiScaleRange = [1 1.5];
@@ -70,11 +56,17 @@ opt.FrangiBetaTwo = 15;
 opt.BlackWhite = false;
 opt.verbose = false;
 
+G_MED = 2537;
+G_STD = 28.9134;
+G_MAX = 11234;
+R_MED = 205;
+R_STD = 3.0508;
+R_MAX = 327;
+
 % display important parameters
 disp(' -------------------------------------- ');
 disp([' W_THRESH             = ' num2str(W_THRESH)]);
 disp([' FRANGI_THRESH        = ' num2str(FRANGI_THRESH)]);
-disp([' TARGET_NUM_OBJECTS   = ' num2str(TARGET_NUM_OBJECTS)]);
 disp([' SOMA_THRESH =        = ' num2str(SOMA_THRESH)]);
 disp(' -------------------------------------- ');
 
@@ -102,80 +94,123 @@ G = trkReadImages(TMAX, Gfolder);
 %% preprocess images
 disp('...preprocessing images');
 tic;
-% LoG = fspecial('log',[5*sigma_log_red 5*sigma_log_red], sigma_log_red);    % Laplacian filter kernel used to find nuclei
-[Rblur,  J, D, Dlist, count] = preprocessImagesMSER(R, G, sigma_log_red, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, D, Dlist, count);
+[Rblur,  J, D, Dlist, M, f, branches, count] = preprocessImagesMSER(R, G, sigma_red, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, D, Dlist, count);
+% [Rblur,  J, D, Dlist, M, f, count] = preprocessImagesMSER(R, G, sigma_red, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, D, Dlist, count, opt);
+dt = toc;
+disp(['computation time for preprocessing and nuclei detection with MSER ' num2str(dt)]);
 
-
-
-%% create the adjacency matrix for all nearby detections
-Ndetection = count-1;
-A = make_adjacency(Dlist, WIN_SIZE, Ndetection);
-
-% fill out all the distances in the adjacency matrix
-edges = find(A == 1);
-W = edges;
+%% detect the Somata using region growing
+disp('...detecting somata');
 tic
-parfor i =1:length(edges)
-    [r,c] = ind2sub(size(A), edges(i));
-    W(i) = trkDetectionDistance(D(r), D(c), WT, WSH);%#ok
-end
+Soma = trkDetectSomata(D, SOMA_THRESH, J);
 toc
-WW = A;
-WW(edges) = W;
-W = WW;
-
-
-%% apply the greedy tracking algorithm to link detections
-disp('...greedy tracking');
-T = trkGreedyConnect2(W,A,D,W_THRESH);
-
-
-%% get the track labels from T assigned to each detection
-%disp('...graph coloring');
-[T tracks] = trkGraphColoring(T, MIN_TRACK_LENGTH); %#ok<*ASGLU>
-
-
-%% assign ID's to each detections
-for t = 1:TMAX
-    for d = 1:length(Dlist{t}) % loop through detections in this time step
-        detect_ind = Dlist{t}(d);
-        D(detect_ind).ID = tracks(detect_ind); %#ok<*AGROW>
-    end
-end
-
-
-%% get a list of detections and associated time steps for each track
-[trkSeq, timeSeq] = getTrackSequences(Dlist, tracks, D);
-
-
-%% remove any bad tracks
-[D tracks trkSeq timeSeq] = trkRemoveBadTracks(D, tracks, trkSeq, timeSeq, MAX_NUCLEUS_AREA);
-tNucleus = toc;
-disp(['...elapsed time for nucleus detection and tracking is ' num2str(tNucleus)])
-
-%% render results on the video
-disp('...rendering images');
-mvNucleus = trkRenderImagesNucleus(TMAX, G, date_txt, num_txt, label_txt, cols,  Dlist, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+% SMASK = zeros(size(SL{1}));
 %%
+mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, branches);
 % make a movie of the results
-movfile = [SeqIndexStr 'nucTrack'];
-trkMovie(mvNucleus, resultsFolder, resultsFolder, movfile); fprintf('\n');
+movfile = [SeqIndexStr 'noTRK'];
+trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 
-%% generate a list of colors for rendering the results
-function cols = color_list()
+%%
+% tic
+% [D, T, tracks, trkSeq, timeSeq] = trkGenerateNucleiGraphAndTrack(count, Dlist, D, WIN_SIZE, WT, WSH, W_THRESH, MIN_TRACK_LENGTH, SPATIAL_DIST_THRESH);
+% 
+% 
+% %% render results on the video
+% % tic
+% % disp('...rendering images');
+% % mvNucleusSomata = trkRenderImagesNucleiSomata(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, Dlist, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+% % 
+% % %% make a movie of the results
+% % movfile = [SeqIndexStr 'nucTrack'];
+% % trkMovie(mvNucleusSomata, resultsFolder, resultsFolder, movfile); fprintf('\n');
+% % dt = toc;
+% % disp(['computation time for making the video ' num2str(dt)]);
+% 
+% %% find the proper sigmoid parameters to convert Frangi to probabilities
+% t = 50;
+% disp('...selecting sigmoid parameters');
+% [Asig Bsig] = trkSetSigmoid(SL, f, J, G_STD, G_MAX, Dlist{t});
+% clear J;
+% 
+% 
+% %% assign filaments
+% %disp('...assigning filament priors');
+% priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
+% disp('...assigning filaments'); 
+% g = cell(1, TMAX); 
+% parfor t = 1:TMAX
+%     [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t}, Asig, Bsig);
+%     str = sprintf('   %03d completed', t);
+%     disp([str  '     run ' num_txt ' ' date_txt]);
+% end
+% for t = 1:length(g)
+%     f{t} = g{t};
+% end
+% 
+% %%
+% %keyboard;
+% clear g;
+% clear SL;
+% 
+% %% skeletonize filaments
+% disp('...skeletonizing filaments');
+% BLANK = zeros(size(R{1},1), size(R{1},2));
+% FILAMENTS = trkSkeletonize2(D, FIL, BLANK);
+% 
+% 
+% %% break filaments into neurites
+% disp('...breaking skeletons into neurite trees');
+% for dd = 1:length(D)
+%     ftemp{dd} = f{D(dd).Time};
+% end  
+% parfor dd = 1:length(D)
+%     if D(dd).ID ~= 0
+%         set(0,'RecursionLimit',RECURSIONLIMIT);
+%         [parents, neuriteId, branchesLeafs] = breakSkeletonIntoNeurites(ftemp{dd}, Soma(dd).PixelIdxList, D(dd).Centroid, FILAMENTS(dd).PixelIdxList);    
+%         FILAMENTS(dd).Parents = parents;
+%         FILAMENTS(dd).NeuriteID = neuriteId;
+%         FILAMENTS(dd).NumKids = branchesLeafs;
+%         FILAMENTS(dd).NucleusID = D(dd).ID;
+%     end
+% end
+% 
+% %% make time-dependent measurements
+% disp('...time-dependent measurements');
+% [D Soma] = timeMeasurements(trkSeq, timeSeq, D, Soma);
+% %FrameMeasures = getFrameMeasures(G, FIL, EndP, BranchP, TMAX);
+% 
+% %% get global experiment measures
+% GlobalMeasures = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt);
+% 
+% toc;
+% 
+% % save the parameters in the experiment folder
+% disp(['...saving parameters to ' paramfile]);
+% % save(paramfile, 'NUC_INT_THRESH',...
+% %      'NUC_MIN_AREA',...
+% %      'WT',...
+% %      'WSH',...
+% %      'WIN_SIZE',...
+% %      'W_THRESH',...
+% %      'FRANGI_THRESH',...
+% %      'TARGET_NUM_OBJECTS',...
+% %      'SOMA_THRESH',...
+% %      'rmin',...
+% %      'rmax');
+% 
+% 
+% %% render results on the video
+% disp('...rendering images');
+% mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, R, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+% 
+% % make a movie of the results
+% movfile = SeqIndexStr;
+% trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
+%makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
 
-% cols1 = summer(6);
-% cols1 = cols1(randperm(6),:);
-% cols2 = summer(8);
-% cols2 = cols2(randperm(8),:);
-% cols3 = summer(180);
-% cols3 = cols3(randperm(180),:);
-% cols = [cols1; cols2; cols3];
 
-cols1 = jet(6);
-cols1 = cols1(randperm(6),:);
-cols2 = jet(8);
-cols2 = cols2(randperm(8),:);
-cols3 = jet(250);
-cols3 = cols3(randperm(250),:);
-cols = [cols1; cols2; cols3];
+%% save everything we need for the analysis
+% datafile = [resultsFolder exp_num(i,:) '.mat'];
+% trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
+

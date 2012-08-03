@@ -4,7 +4,7 @@ WEIGHT_I = 800; %400;     % controls influence of intensity vs distance from nuc
                     % higher = more inetensity influence, lower = more distance
 
 
-WIN = 100;
+WIN = 50;
 MAX_ITER = 5000;
 MAX_N = 10000;
 
@@ -14,7 +14,7 @@ SIZE = size(J);
 
 muI = mean(I(M));
 area = sum(sum(M));
-MAX_AREA = 2.25*area;
+MAX_AREA = 2.0*area;
 
 
 % create a distance map
@@ -78,7 +78,7 @@ while(pixdist<THRESH && area<MAX_AREA && iter<MAX_ITER)
     
     
     % distance calculation
-    distI = abs(N(plist,3) - muI);
+    distI = discriminateLowerIntensityDistance(muI - N(plist,3));
     dist = WEIGHT_I.*distI + N(plist,4);
     
     % find the pixel with the min distance
@@ -103,27 +103,15 @@ while(pixdist<THRESH && area<MAX_AREA && iter<MAX_ITER)
     plist(pindex) = [];
     iter = iter + 1;
     
-    %imagesc(J);
-    %pause(0.05);
-    %keyboard;
 end
 
 J = J > 1;
-
-% Ir = I;
-% Ig = I;
-% Ib = I;
-% Ir(J) = 0;
-% Ig(J) = 1;
-% Ib(J) = 0;
-% 
-% K = Ir;
-% K(:,:,2) = Ig;
-% K(:,:,3) = Ib;
-% 
-% imshow(K);
-% 
-% keyboard;
+return;
 
 
+%%
+function dist = discriminateLowerIntensityDistance(V)
 
+dist = V;
+dist(V > 0) = V(V>0);
+dist(V <0)  = -0.5*V(V<0);
