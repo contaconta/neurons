@@ -1,4 +1,4 @@
-function mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS) %#ok<*INUSL>
+function mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, R, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS) %#ok<*INUSL>
 % 1. draw results on the videos.
 % 2. draw text annotations on the image
 
@@ -9,11 +9,9 @@ RedIntensityThresh  = 1; %200; %280;
 B = zeros(size(G{1},1), size(G{1},2));
 
 for t = 1:TMAX
-
     %I = mv{t};
-    I = imadjust(mv{t}, [0; CONTRAST], [1; 0]);
-    Ir = I(:,:,1); Ig = I(:,:,2); Ib = I(:,:,3);
-
+    I = 1- mat2gray(G{t});
+    Ir = I; Ig = I; Ib = I;
     
     %% 1. draw the objects
 

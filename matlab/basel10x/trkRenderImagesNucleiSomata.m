@@ -8,7 +8,7 @@ RedIntensityThresh  = 1; %200; %280;
 
 B = zeros(size(G{1},1), size(G{1},2));
 
-for t = 1:TMAX
+parfor t = 1:TMAX
 
     I = double(G{t});
     I = ( 1-((I - min(I(:))) / (max(I(:)) - min(I(:)))));
