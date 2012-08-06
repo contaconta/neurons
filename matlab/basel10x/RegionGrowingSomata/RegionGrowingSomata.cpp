@@ -6,7 +6,7 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	//------------------------------------------------------------------
 	/* retrive arguments */
 	//------------------------------------------------------------------
-	if( (nrhs!=4) && (nrhs!=5) )
+	if( (nrhs!=6) && (nrhs!=7) )
     {
 		mexErrMsgTxt("4 or 5 arguments are required.");
     }

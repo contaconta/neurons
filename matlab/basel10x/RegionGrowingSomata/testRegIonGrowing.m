@@ -22,6 +22,8 @@ for i=1:max(M{imageIdx}(:))
    mean_std(2, i) = std(J{imageIdx}(M{imageIdx} == i));
 end
 multFactor = 1.5;
+meanGlobal = mean(M{imageIdx}(:));
+stdGlobal  = std(M{imageIdx}(:));
 tic
-[U, V, L] = RegionGrowingSomata(h, J{imageIdx}, M{imageIdx}, mean_std, multFactor);
+[U, V, L] = RegionGrowingSomata(h, J{imageIdx}, M{imageIdx}, mean_std, multFactor, meanGlobal, stdGlobal);
 toc

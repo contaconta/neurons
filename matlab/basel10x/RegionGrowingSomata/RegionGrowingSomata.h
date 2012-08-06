@@ -410,7 +410,7 @@ COMMENTS :
 		double meanInt = mean_std[2*regionIdx];
 		double stdInt  = mean_std[2*regionIdx+1];
 		double weight = 1.0 / (1e7* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
-		weight = MIN(weight, weightBackground);
+		weight = (weight + weightBackground) /2.0;
 		for(unsigned int i = 0; i < connectivity_small; i++)
 		{
 				
@@ -455,7 +455,7 @@ COMMENTS :
 				 double meanInt = mean_std[2*regionIdx];
 				 double stdInt  = mean_std[2*regionIdx+1];
 			   double weight = 1.0 / (1e7* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
-				 weight = MIN(weight, weightBackground);
+				 weight = (weight+ weightBackground) /2.0;
 				 for(unsigned int i = 0; i < connectivity_small; i++)
 				 {
 
