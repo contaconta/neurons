@@ -6,9 +6,9 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	//------------------------------------------------------------------
 	/* retrive arguments */
 	//------------------------------------------------------------------
-	if( (nrhs!=4) && (nrhs!=5) )
+	if( (nrhs!=3)  )
     {
-		mexErrMsgTxt("4 or 5 arguments are required.");
+		mexErrMsgTxt("3 arguments are required.");
     }
 	//------------------------------------------------------------------
 	// first argument : spacing and dimensions
@@ -43,8 +43,6 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	{
 			mexErrMsgTxt("tforth input shoud be an array containing the [mean_i, std_i] intensities of the nuclei regions") ;
 	}
-	mean_std = mxGetPr(prhs[3]);
-	number_of_regions = mxGetDimensions(prhs[3])[1];
 	//------------------------------------------------------------------
     //==================================================================
 	// Outputs
