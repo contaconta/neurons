@@ -47,6 +47,9 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	number_of_regions = mxGetDimensions(prhs[3])[1];
 	
 	multFactor = mxGetScalar(prhs[4]);
+	
+	meanGlobalInt = mxGetScalar(prhs[5]);
+	stdGlobalInt  = mxGetScalar(prhs[6]);
 	//------------------------------------------------------------------
   //==================================================================
 	// Outputs

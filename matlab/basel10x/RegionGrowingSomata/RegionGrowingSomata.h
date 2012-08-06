@@ -28,6 +28,8 @@ double* Nuclei = NULL;
 double* mean_std = NULL;
 unsigned int number_of_regions = 0;
 double multFactor = 0;
+double meanGlobalInt = 0;
+double stdGlobalInt = 0;
 
 int   connectivity_small;
 int*    NeighborhoodSmall = NULL;
@@ -364,8 +366,10 @@ COMMENTS :
 	double	  Ur = U[point];
 	short	    Vr = V[point];
 	double	  Lr = L[point];
-	
 	bool is_updated = false;
+	
+	double weightBackground = 1.0 / (1e7* exp((Pc-meanGlobalInt)*(Pc-meanGlobalInt) / (2.0*stdGlobalInt*stdGlobalInt) ) +1);
+	
 	//--------------------------------------------------------------
 	// Get the U & L values for each neighbor.
 	std::vector<unsigned int> listOfRegionIdx;
@@ -406,6 +410,7 @@ COMMENTS :
 		double meanInt = mean_std[2*regionIdx];
 		double stdInt  = mean_std[2*regionIdx+1];
 		double weight = 1.0 / (1e7* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
+		weight = MIN(weight, weightBackground);
 		for(unsigned int i = 0; i < connectivity_small; i++)
 		{
 				
@@ -420,7 +425,6 @@ COMMENTS :
 	}
 	else if(chockPoint)
 	{
-//		 mexPrintf("a chock Point\n");
 		 sort(listOfRegionIdx.begin(), listOfRegionIdx.begin()+listOfRegionIdx.size()); 
 		 std::vector<unsigned int>::iterator it;
 		 it = unique (listOfRegionIdx.begin(), listOfRegionIdx.end()); // 10 20 30 20 10 ?  ?  ?  ?
@@ -433,8 +437,6 @@ COMMENTS :
 		 
 		 for(unsigned int j = 0; j < listOfRegionIdx.size(); j++)
 		 {
-				 
-//				 mexPrintf("Region idx  = %d\n", listOfRegionIdx[j]);
 				 for (unsigned int i = 0; i< connectivity_small+1; i++)
 				 {
 						 npoint=point+NeighborhoodSmall[i];
@@ -450,10 +452,10 @@ COMMENTS :
 						 }
 				 }
 				 unsigned int regionIdx = listOfRegionIdx[j];
-//             Vr = regionIdx;
 				 double meanInt = mean_std[2*regionIdx];
 				 double stdInt  = mean_std[2*regionIdx+1];
-				 double weight = 1.0 / (1e4* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
+			   double weight = 1.0 / (1e7* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
+				 weight = MIN(weight, weightBackground);
 				 for(unsigned int i = 0; i < connectivity_small; i++)
 				 {
 
