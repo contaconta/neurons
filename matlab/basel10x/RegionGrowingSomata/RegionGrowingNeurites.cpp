@@ -37,12 +37,6 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 			mexErrMsgTxt("Nuclei detections must be a 2D double array AND \n must be of class double") ;
 	}
 	Nuclei = mxGetPr(prhs[2]);
-	// Fourth argument : array of [mean_i, std_i] for intensities for each region
-	if( (mxGetClassID(prhs[3]) != mxDOUBLE_CLASS) || (mxGetNumberOfDimensions(prhs[3])!= 2) 
-		||    mxGetDimensions(prhs[3])[0] != 2 ) 
-	{
-			mexErrMsgTxt("tforth input shoud be an array containing the [mean_i, std_i] intensities of the nuclei regions") ;
-	}
 	//------------------------------------------------------------------
     //==================================================================
 	// Outputs

@@ -27,3 +27,8 @@ stdGlobal  = std(M{imageIdx}(:));
 tic
 [U, V, L] = RegionGrowingSomata(h, J{imageIdx}, M{imageIdx}, mean_std, multFactor, meanGlobal, stdGlobal);
 toc
+%%
+load Soma_tubularity;
+tic
+[U, V, L] = RegionGrowingNeurites(h, f{imageIdx}, double(S{imageIdx}));
+toc
