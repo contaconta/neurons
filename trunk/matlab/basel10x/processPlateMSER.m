@@ -24,7 +24,7 @@ if isempty( strfind(path, [pwd '/../basel/gaimc']) )
     addpath([pwd '/../basel/gaimc']);
 end
 
-run('/home/fbenmans/Downloads/vlfeat-0.9.14/toolbox/vl_setup');
+run('~/Downloads/vlfeat-0.9.14/toolbox/vl_setup');
 addpath(genpath('~/Downloads/MatlabFns/'));
 addpath('~/Downloads/BM3D/')
 
