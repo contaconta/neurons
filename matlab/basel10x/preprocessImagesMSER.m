@@ -65,7 +65,7 @@ for t = 1:TMAX
         mm(s) = mm(s)+1;
     end
     M{t} = mm;
-    M{t}  	= imfill(M{t}, 'holes');
+    M{t}  	= imfill(M{t} > 0, 'holes');
     M{t} = bwlabel(M{t});
     detections_t = regionprops(M{t}, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
     % add some measurements, create a list of detections
