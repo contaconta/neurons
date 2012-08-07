@@ -9,8 +9,6 @@ timePat = '_t(\d*)'; timePrecisionStr = '%04d';
 extPat = '.TIF';
 
 
-
-
 % get the source and destination folders
 if ~exist('srcfolder', 'var')
     srcfolder = input('Please provide the path to the folder containing the raw images:\n', 's');
@@ -115,8 +113,8 @@ for i = 1:numel(sites)
                 %str = ['cp "' srcfolder prefixPat channels{c} '*_s' num2str(sites(i)) '*_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
                 
                 %str = ['cp "' srcfolder 'Experiment2_w1LED green_s' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
-                
-                str = ['cp "' srcfolder prefixPat channelsPat{c} 's' num2str(sites(i)) '_t' num2str(timelist(t)) extPat '" '  channelFolder sprintf(['im' timePrecisionStr], timelist(t)) '.tif'];
+                filename =[ prefixPat channelsPat{c} 's' num2str(sites(i)) '_t' num2str(timelist(t)) extPat];
+                str = ['cp "' srcfolder filename '" "'  channelFolder filename '"'];
                 
                 system(str);
                 

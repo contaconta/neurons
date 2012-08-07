@@ -82,7 +82,8 @@ for i = 1:length(sigmas),
     Lambda1(Lambda1==0) = eps;
     Rb = (Lambda2./Lambda1).^2;
     S2 = Lambda1.^2 + Lambda2.^2;
-   
+    % TODO
+    c = max(S2(:))/2;
     % Compute the output image
     Ifiltered = exp(-Rb/beta) .*(ones(size(I))-exp(-S2/c));
     
