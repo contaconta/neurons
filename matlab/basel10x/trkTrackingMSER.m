@@ -102,14 +102,16 @@ disp(['computation time for preprocessing and nuclei detection with MSER ' num2s
 %% detect the Somata using region growing
 disp('...detecting somata');
 tic
-Soma = trkDetectSomata(D, SOMA_THRESH, J);
+[Soma, S] = trkDetectSomataGrouped(M, J);
 toc
+
+
 % SMASK = zeros(size(SL{1}));
 %%
-mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, branches);
-% make a movie of the results
-movfile = [SeqIndexStr 'noTRK'];
-trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
+% mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, branches);
+% % make a movie of the results
+% movfile = [SeqIndexStr 'noTRK'];
+% trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 
 %%
 % tic
@@ -134,30 +136,33 @@ trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 % clear J;
 % 
 % 
-% %% assign filaments
-% %disp('...assigning filament priors');
-% priors = assignPriors(D, Dlist, trkSeq, SL, TMAX);
-% disp('...assigning filaments'); 
-% g = cell(1, TMAX); 
-% parfor t = 1:TMAX
-%     [FIL{t} g{t}] = assignFilaments(SL{t}, f{t}, Dlist{t}, priors{t}, Asig, Bsig);
-%     str = sprintf('   %03d completed', t);
-%     disp([str  '     run ' num_txt ' ' date_txt]);
-% end
-% for t = 1:length(g)
-%     f{t} = g{t};
-% end
+%% assign filaments
+%disp('...assigning filament priors');
+disp('...assigning filaments'); 
+tic
+[FIL V L] = assignFilamentsGlobal(S, f);
+toc
+%keyboard;
 % 
 % %%
 % %keyboard;
 % clear g;
 % clear SL;
 % 
-% %% skeletonize filaments
-% disp('...skeletonizing filaments');
-% BLANK = zeros(size(R{1},1), size(R{1},2));
-% FILAMENTS = trkSkeletonize2(D, FIL, BLANK);
-% 
+%% skeletonize filaments
+disp('...skeletonizing filaments');
+% NEURITES_THRESHOLD = 0.00001;
+NEURITES_THRESHOLD = 1e5;
+tic
+FILAMENTS = trkSkeletonize3(FIL, L, S, NEURITES_THRESHOLD);
+toc
+
+
+mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, FILAMENTS);
+% make a movie of the results
+movfile = [SeqIndexStr 'noTRK'];
+trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
+
 % 
 % %% break filaments into neurites
 % disp('...breaking skeletons into neurite trees');

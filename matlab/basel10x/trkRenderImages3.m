@@ -34,8 +34,7 @@ parfor t = 1:TMAX
     Ir(branches{t}) = 0;
     Ig(branches{t}) = 0;
     Ib(branches{t}) = 1;
-    
-    
+        
     I(:,:,1) = Ir; I(:,:,2) = Ig; I(:,:,3) = Ib;
 
     %% 2. render text annotations

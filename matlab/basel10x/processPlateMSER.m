@@ -24,9 +24,11 @@ if isempty( strfind(path, [pwd '/../basel/gaimc']) )
     addpath([pwd '/../basel/gaimc']);
 end
 
+addpath('/home/fbenmans/src/neurons/matlab/basel10x/RegionGrowingSomata/');
+addpath('/home/fbenmans/src/WLV/main/');
+addpath('/home/fbenmans/src/WLV/matlab/');
 run('~/Downloads/vlfeat-0.9.14/toolbox/vl_setup');
 addpath(genpath('~/Downloads/MatlabFns/'));
-addpath('~/Downloads/BM3D/')
 
 % --------- generate list of folders to process -----------
 count = 1;
@@ -52,7 +54,7 @@ fclose(FID);
 
 % ------------ process the specified folders --------------
 % matlabpool local
-for i = 1:size(exp_num,1)
+for i = 9:size(exp_num,1)
     
     tic
     folder_n = [folder exp_num(i,:) '/'];

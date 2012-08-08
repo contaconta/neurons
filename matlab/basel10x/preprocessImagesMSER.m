@@ -16,7 +16,18 @@ mult = 1.8;
 sigmaOnf = 0.55;
 k = 2;
 polarity = 1;
+
+
+
+% frangi parameters
+opt.FrangiScaleRange = [1 2];
+opt.FrangiScaleRatio = 1;
+opt.FrangiBetaOne = .5;
+opt.FrangiBetaTwo = 15;
+opt.BlackWhite = false;
+opt.verbose = false;
 %%
+H = fspecial('log', [8, 8], 2);
 parfor  t = 1:TMAX
     Rt = mat2gray(double(R{t}));
     J{t} = mat2gray(double(G{t}));
@@ -31,31 +42,43 @@ parfor  t = 1:TMAX
         'MaxArea', maxArea/numel(I), ...
         'BrightOnDark', 1, ...
         'Delta',2) ;
-%     f{t} = FrangiFilter2D(J{t}, opt);
-    Jblur = imgaussian(J{t}, 1);
-    f{t} = phasesym(Jblur, numOfScales, numOrientations, minWaveLength, mult, sigmaOnf, k, polarity);
-    level = graythresh(f{t});
-    BW = im2bw(f{t}, level);
-    BW = bwmorph(BW, 'thin');
-    detections = regionprops(BW, 'Eccentricity', 'PixelIdxList');
-    if(~isempty(detections))
-       for i =1:length(detections) 
-          if length(detections(i).PixelIdxList) < 5
-              BW(detections(i).PixelIdxList) = 0;
-          elseif length(detections(i).PixelIdxList) > 30
-              if detections(i).Eccentricity < 0.90
-                  BW(detections(i).PixelIdxList) = 0;
-              end
-          end
-       end
-       branches{t} = BW;
-    end
+    f{t} = FrangiFilter2D(J{t}, opt);
+%     Jblur = imgaussian(J{t}, 1);
+%     TT = zeros(size(Jblur, 1), size(Jblur, 2), 2, 2);
+%     UsedScale = 2;
+%     spacing = [1;1];
+%     epsilon = 10;
+%     sigma0 = 0.51;
+%     TT(:, :, 1, 1) = WLV_OFxx(sigma0, UsedScale , spacing, J{t}, epsilon);
+%     TT(:, :, 2, 2) = WLV_OFyy(sigma0, UsedScale , spacing, J{t}, epsilon);
+%     TT(:, :, 1, 2) = WLV_OFxy(sigma0, UsedScale , spacing, J{t}, epsilon);
+%     TT(:, :, 2, 1) = TT(:, :, 1, 2);
+%     [~, ~, l1, l2] = perform_tensor_decomp(TT);
+%     f{t} = 1-mat2gray(min(l2, 0));
+%     f{t} = phasesym(Jblur, numOfScales, numOrientations, minWaveLength, mult, sigmaOnf, k, polarity);
+    
+%     level = graythresh(f{t});
+%     BW = im2bw(f{t}, level);
+%     BW = bwmorph(BW, 'thin');
+%     detections = regionprops(BW, 'Eccentricity', 'PixelIdxList');
+%     if(~isempty(detections))
+%        for i =1:length(detections) 
+%           if length(detections(i).PixelIdxList) < 5
+%               BW(detections(i).PixelIdxList) = 0;
+%           elseif length(detections(i).PixelIdxList) > 30
+%               if detections(i).Eccentricity < 0.90
+%                   BW(detections(i).PixelIdxList) = 0;
+%               end
+%           end
+%        end
+%        branches{t} = BW;
+%     end
     Mask = ones(size(f{t}));
     Mask(5:end-5, 5:end-5) = 0;
-    f{t}(Mask > 0.5) = 0;
-    branches{t}(Mask > 0.5) = 0;
+    f{t}(Mask > 0.5) = min(f{t}(Mask <= 0.5));
+%     branches{t}(Mask > 0.5) = 0;
+      branches{t} = zeros(size(R{t}));
 end
-%% Ask Mario if there's any garentee for not obtaining duplicates
 %%
 for t = 1:TMAX
     
@@ -71,22 +94,47 @@ for t = 1:TMAX
     % add some measurements, create a list of detections
     if ~isempty(detections_t)
         for i = 1:length(detections_t)
-            if detections_t(i).Eccentricity < 0.90
-                detections_t(i).MeanGreenIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
-                detections_t(i).MeanRedIntensity = sum(R{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
-            
-                detections_t(i).Time = t;
-                if count == 1
-                    D = detections_t(i);
-                else
-                    D(count) = detections_t(i);
-                end
-                Dlist{t} = [Dlist{t} count];
-                count = count + 1;
-            
+            detections_t(i).MeanGreenIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+            detections_t(i).MeanRedIntensity = sum(R{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+
+            detections_t(i).Time = t;
+            if count == 1
+                D = detections_t(i);
             else
-                 M{t}(detections_t(i).PixelIdxList) = 0;
+                D(count) = detections_t(i);
             end
+            Dlist{t} = [Dlist{t} count];
+            count = count + 1;
         end
     end
+    
+%     if ~isempty(detections_t)
+%         for i = 1:length(detections_t)
+%             if detections_t(i).Eccentricity >= 0.90
+%                 M{t}(detections_t(i).PixelIdxList) = 0;
+%             end
+%         end
+%     end
+%     M{t} = bwlabel(M{t});
+%     detections_t = regionprops(M{t}, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
+%     if ~isempty(detections_t)
+%         for i = 1:length(detections_t)
+%             if detections_t(i).Eccentricity < 0.90
+%                 detections_t(i).MeanGreenIntensity = sum(G{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+%                 detections_t(i).MeanRedIntensity = sum(R{t}(detections_t(i).PixelIdxList))/detections_t(i).Area;
+%             
+%                 detections_t(i).Time = t;
+%                 if count == 1
+%                     D = detections_t(i);
+%                 else
+%                     D(count) = detections_t(i);
+%                 end
+%                 Dlist{t} = [Dlist{t} count];
+%                 count = count + 1;
+%             
+%             else
+%                  M{t}(detections_t(i).PixelIdxList) = 0;
+%             end
+%         end
+%     end
 end

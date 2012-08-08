@@ -69,7 +69,6 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	InitializeOpenHeap();
 	//------------------------------------------------------------------
 	RunPropagation();
-	mexPrintf("done with propagation\n");
 	//==================================================================
 	resize();
 	dims[0] = Nx-2; dims[1] = Ny-2;

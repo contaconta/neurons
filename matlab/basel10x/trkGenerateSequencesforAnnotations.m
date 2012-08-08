@@ -13,16 +13,16 @@ G = trkReadImages(TMAX, Gfolder);
 RG = cell(size(R));
 
 for t = 1:TMAX
-%     Ilist = double(R{t}(:));
-%     
-%     [h,x] = hist(Ilist,1000);
-%     cumulative_hist = cumsum(h);
-%     cumulative_hist = cumulative_hist / max(cumulative_hist);
+    Ilist = double(R{t}(:));
+    
+    [h,x] = hist(Ilist,1000);
+    cumulative_hist = cumsum(h);
+    cumulative_hist = cumulative_hist / max(cumulative_hist);
 %     IntThreshold = min(x(cumulative_hist > 0.20));
 %     Ilist = max(R{t}- IntThreshold, 0);
-%     IntThreshold = min(x(cumulative_hist > 0.995));
-%     Ilist = min(Ilist, IntThreshold);
-%     R{t} = uint8(255*mat2gray(double(Ilist)));
+%     IntThreshold = min(x(cumulative_hist > 0.99));
+%     Ilist = min(R{t}, IntThreshold);
+%     R{t} = 255-uint8(255*mat2gray(double(Ilist)));
 %     
 %     
 %     Ilist = double(G{t}(:));
@@ -37,7 +37,7 @@ for t = 1:TMAX
 %     G{t} = uint8(255*mat2gray(double(Ilist)));
     
     R{t} = uint8(255*mat2gray(double(R{t})));
-    G{t} = uint8(255*mat2gray(double(G{t})));
+    G{t} = 255-uint8(255*mat2gray(double(G{t})));
     RG{t} = zeros(size(R{1}, 1), size(R{1}, 2), 3, 'uint8');
     RG{t}(:, :, 1) = R{t};
     RG{t}(:, :, 2) = G{t};
