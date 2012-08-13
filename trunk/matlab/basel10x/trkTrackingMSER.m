@@ -1,111 +1,123 @@
-function G =  trkTrackingMSER(folder, resultsFolder, SeqIndexStr, Sample, params)
+function Green =  trkTrackingMSER(folder, resultsFolder, SeqIndexStr, Sample, params)%#ok
 
 % get the experiment label, data, and assay position
 % [date_txt] = trkGetDateAndLabel(folder);
-date_txt = '';
-label_txt = Sample;
-num_txt = SeqIndexStr;
+% date_txt = '';
+% label_txt = Sample;
+% num_txt = SeqIndexStr;
 
 RECURSIONLIMIT = 5000;
 set(0,'RecursionLimit',RECURSIONLIMIT);
 
+disp(' ======================================== ');
 
-%% PARAMETER SETTING (override from command line, read from param file, or default)
-paramfile = [resultsFolder SeqIndexStr 'params.mat'];
 
-if nargin > 4
-    W_THRESH = params(1);
-    %SOMA_PERCENT_THRESH = params(2);
-    FRANGI_THRESH = params(2);
-    TARGET_NUM_OBJECTS = params(3);
-    SOMA_THRESH = params(4);
-    disp('  OVERRIDING PARAMETERS!');
-else
-    if exist(paramfile, 'file');
-     	load(paramfile);
-        disp(['reading from ' folder 'params.mat']);
-    end
+% get a list of colors to use for display
+% cols = color_list();
+
+% define the folder locations and filenames of the images
+Gfolder = [folder 'green/'];
+Rfolder = [folder 'red/'];
+Gfiles = dir([Gfolder '*.TIF']);
+Rfiles = dir([Rfolder '*.TIF']);
+%experiment1_w2LED red_s1_t26
+
+if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
+if TMAX~=length(Gfiles)
+   disp(['problem with data in directory: ' folder]);
+   Green = [];
+   return;
 end
 
-% default parameters
+% %% important data structures
+% D = [];                     % structure containing nucleus detections
+% Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
+% count = 1;                  % detection counter
 
-if ~exist('WT', 'var');                 WT = 50; end;
-if ~exist('WSH', 'var');                WSH = 40; end;
-if ~exist('W_THRESH', 'var');           W_THRESH = 200; end;
-if ~exist('WIN_SIZE', 'var');           WIN_SIZE = 4; end;
-if ~exist('SPATIAL_DIST_THRESH', 'var');           SPATIAL_DIST_THRESH = 40; end;
-if ~exist('FRANGI_THRESH', 'var');      FRANGI_THRESH = .0000001; end; % FRANGI_THRESH = .0000001; end; FRANGI_THRESH = .0000005; end;
-if ~exist('SOMA_THRESH', 'var');        SOMA_THRESH = 100; end; %250; end;
-if ~exist('MAX_NUCLEUS_AREA', 'var');   MAX_NUCLEUS_AREA = 155; end;%TODO pi*7*7
-if ~exist('MIN_NUCLEUS_AREA', 'var');   MIN_NUCLEUS_AREA = 50; end;%TODO  pi*5*5
-
-% other parameters
-%TMAX = 20;
-MIN_TRACK_LENGTH = 20;               % minimum number of detections for a valid neuron track
-SHOW_FALSE_DETECTS = 0;             % show false detections
-DISPLAY_FIGURES = 0;                % display figure with results
-
-% smoothing parameters
-sigma_red = 2.0;
+%% Load the raw data
+Red = trkReadImages(TMAX, Rfolder);
+Green = trkReadImages(TMAX, Gfolder);
+%% preprocess images
+disp('...preprocessing images');
 
 % frangi parameters
-opt.FrangiScaleRange = [1 1.5];
+opt.FrangiScaleRange = [1 2];
 opt.FrangiScaleRatio = 1;
 opt.FrangiBetaOne = .5;
 opt.FrangiBetaTwo = 15;
 opt.BlackWhite = false;
 opt.verbose = false;
 
-G_MED = 2537;
-G_STD = 28.9134;
-G_MAX = 11234;
-R_MED = 205;
-R_STD = 3.0508;
-R_MAX = 327;
-
-% display important parameters
-disp(' -------------------------------------- ');
-disp([' W_THRESH             = ' num2str(W_THRESH)]);
-disp([' FRANGI_THRESH        = ' num2str(FRANGI_THRESH)]);
-disp([' SOMA_THRESH =        = ' num2str(SOMA_THRESH)]);
-disp(' -------------------------------------- ');
-
-% get a list of colors to use for display
-cols = color_list();
-
-% define the folder locations and filenames of the images
-Gfolder = [folder 'green/'];
-Rfolder = [folder 'red/'];
-Gfiles = dir([Gfolder '*.TIF']);%#ok
-Rfiles = dir([Rfolder '*.TIF']);
-%experiment1_w2LED red_s1_t26
-
-if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
-
-
-%% important data structures
-D = [];                     % structure containing nucleus detections
-Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
-count = 1;                  % detection counter
-
-%% Load the raw data
-R = trkReadImages(TMAX, Rfolder);
-G = trkReadImages(TMAX, Gfolder);
-%% preprocess images
-disp('...preprocessing images');
-tic;
-[Rblur,  J, D, Dlist, M, f, branches, count] = preprocessImagesMSER(R, G, sigma_red, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, D, Dlist, count);
-% [Rblur,  J, D, Dlist, M, f, count] = preprocessImagesMSER(R, G, sigma_red, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, D, Dlist, count, opt);
-dt = toc;
-disp(['computation time for preprocessing and nuclei detection with MSER ' num2str(dt)]);
-
-%% detect the Somata using region growing
-disp('...detecting somata');
 tic
-[Soma, S] = trkDetectSomataGrouped(M, J);
+Tubularity = trkComputeTubularity(Green, opt);
 toc
 
 
+%% Detect Nuclei
+disp('...detecting Nuclei');
+% paramaters
+SIGMA_RED         = 2.0;
+MAX_NUCLEUS_AREA  = 170; %  > pi*7*7
+MIN_NUCLEUS_AREA  =  70; %  < pi*5*5
+MSER_MaxVariation = 0.25;
+MSER_Delta        = 2;
+
+tic
+Nuclei = trkDetectNuclei(Red, SIGMA_RED, MIN_NUCLEUS_AREA, MAX_NUCLEUS_AREA, MSER_MaxVariation, MSER_Delta);
+toc
+
+
+%% detect the Somata using region growing
+disp('...detecting somata');
+
+GEODESIC_DISTANCE_THRESH = 1e-6;
+LENGTH_THRESH = 7;
+STD_MULT_FACTOR = 1.5;
+
+tic
+Somata = trkDetectSomataGlobal(Nuclei, Green, GEODESIC_DISTANCE_THRESH, LENGTH_THRESH, STD_MULT_FACTOR);
+toc
+
+
+%% detect and assign filaments
+disp('...detect filaments and assign them to each somata');
+% paramaters
+GEODESIC_DISTANCE_NEURITE_THRESH = 0.6;
+tic
+[Filaments, Regions] = trkDetectFilamentsGlobalThresh(Somata, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
+toc
+
+%% Gather detections into cells
+disp('...gather detections into cells');
+tic
+[Cells CellsList] = trkGatherNucleiAndSomataDetections(Green, Red, Nuclei, Somata);
+toc
+
+%% Generate graph and track
+disp('...tracking');
+% parameters
+WIN_SIZE = 4;
+WT = 50; 
+WSH = 40;
+W_THRESH = 200;
+MIN_TRACK_LENGTH = 20;
+SPATIAL_DIST_THRESH = 50;
+
+tic
+[Cells, tracks, ~, ~] = trkGenerateNucleiGraphAndTrack(CellsList, Cells, WIN_SIZE, WT, WSH, W_THRESH, MIN_TRACK_LENGTH, SPATIAL_DIST_THRESH);
+toc 
+
+%% render results on the video
+disp('...make movie');
+
+cols = color_list();
+tic
+% mv = trkRenderImages(Green, Nuclei, Somata, Filaments);
+mv = trkRenderImagesAndTracks(Green, Cells, CellsList, tracks, SeqIndexStr, Sample, cols );
+% make a movie of the results
+movfile = SeqIndexStr ;
+trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
+toc
 % SMASK = zeros(size(SL{1}));
 %%
 % mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, branches);
@@ -136,32 +148,17 @@ toc
 % clear J;
 % 
 % 
-%% assign filaments
-%disp('...assigning filament priors');
-disp('...assigning filaments'); 
-tic
-[FIL V L] = assignFilamentsGlobal(S, f);
-toc
 %keyboard;
 % 
 % %%
 % %keyboard;
 % clear g;
-% clear SL;
+% cleaor SL;
 % 
-%% skeletonize filaments
-disp('...skeletonizing filaments');
-% NEURITES_THRESHOLD = 0.00001;
-NEURITES_THRESHOLD = 1e5;
-tic
-FILAMENTS = trkSkeletonize3(FIL, L, S, NEURITES_THRESHOLD);
-toc
 
 
-mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, FILAMENTS);
-% make a movie of the results
-movfile = [SeqIndexStr 'noTRK'];
-trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
+
+
 
 % 
 % %% break filaments into neurites

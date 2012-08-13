@@ -13,7 +13,7 @@ for t = 1:TMAX
         fprintf('|');
     end
     filename = [folder sorted_filenames{t}];
-    I{t} = imread( filename );
+    I{t} = mat2gray( double( imread( filename ) ) );
 end
 
 fprintf('\n');

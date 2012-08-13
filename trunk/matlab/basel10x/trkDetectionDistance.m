@@ -2,28 +2,28 @@ function WD = trkDetectionDistance(d1,d2, WT, WSH)
 
 
 %% Area
-a = abs((d1.Area - d2.Area) / (d1.Area + d2.Area));
+a = abs((d1.NucleusArea- d2.NucleusArea) / (d1.NucleusArea + d2.NucleusArea));
 
 %% MajorAxisLength
-ma = abs((d1.MajorAxisLength - d2.MajorAxisLength) / (d1.MajorAxisLength + d2.MajorAxisLength));
+ma = abs((d1.NucleusMajorAxisLength - d2.NucleusMajorAxisLength) / (d1.NucleusMajorAxisLength + d2.NucleusMajorAxisLength));
 
 %% MinorAxisLength
-na = abs((d1.MinorAxisLength - d2.MinorAxisLength) / (d1.MinorAxisLength + d2.MinorAxisLength));
+na = abs((d1.NucleusMinorAxisLength - d2.NucleusMinorAxisLength) / (d1.NucleusMinorAxisLength + d2.NucleusMinorAxisLength));
 
 %% Eccentricity
-e = abs((d1.Eccentricity - d2.Eccentricity) / (d1.Eccentricity + d2.Eccentricity));
+e = abs((d1.NucleusEccentricity - d2.NucleusEccentricity) / (d1.NucleusEccentricity + d2.NucleusEccentricity));
 
 %% Perimeter
-p = abs((d1.Perimeter - d2.Perimeter) / (d1.Perimeter + d2.Perimeter));
+p = abs((d1.NucleusPerimeter - d2.NucleusPerimeter) / (d1.NucleusPerimeter + d2.NucleusPerimeter));
 
 %% Geometry-Based Shape distance
 geoShape_d = (a + ma + na + e + p) ;
 
 %% Mean Green Intensity
-ig = abs((d1.MeanGreenIntensity - d2.MeanGreenIntensity) / (d1.MeanGreenIntensity + d2.MeanGreenIntensity));
+ig = abs((d1.NucleusMeanGreenIntensity - d2.NucleusMeanGreenIntensity) / (d1.NucleusMeanGreenIntensity + d2.NucleusMeanGreenIntensity));
 
 %% Mean Red Intensity
-ir = abs((d1.MeanRedIntensity - d2.MeanRedIntensity) / (d1.MeanRedIntensity + d2.MeanRedIntensity));
+ir = abs((d1.NucleusMeanRedIntensity - d2.NucleusMeanRedIntensity) / (d1.NucleusMeanRedIntensity + d2.NucleusMeanRedIntensity));
 
 %% Intensity-Based distance
 
@@ -40,6 +40,6 @@ end
 shape_d = geoShape_d + intShape_d - ig;
 
 %% space distance
-space_d = sqrt( (d1.Centroid(1) - d2.Centroid(1))^2 + (d1.Centroid(2) - d2.Centroid(2))^2);
+space_d = sqrt( (d1.NucleusCentroid(1) - d2.NucleusCentroid(1))^2 + (d1.NucleusCentroid(2) - d2.NucleusCentroid(2))^2);
 
 WD = WT*time_d+ WSH*shape_d + space_d;

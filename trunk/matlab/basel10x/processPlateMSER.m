@@ -54,7 +54,7 @@ fclose(FID);
 
 % ------------ process the specified folders --------------
 % matlabpool local
-for i = 9:size(exp_num,1)
+for i = 1:size(exp_num,1)
     
     tic
     folder_n = [folder exp_num(i,:) '/'];
