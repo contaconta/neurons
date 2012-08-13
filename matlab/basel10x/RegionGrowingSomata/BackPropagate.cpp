@@ -1,10 +1,25 @@
+//**********************************************************
+//Copyright 2012 Fethallah Benmansour
+//
+//Licensed under the Apache License, Version 2.0 (the "License"); 
+//you may not use this file except in compliance with the License. 
+//You may obtain a copy of the License at
+//
+//http://www.apache.org/licenses/LICENSE-2.0 
+//
+//Unless required by applicable law or agreed to in writing, software 
+//distributed under the License is distributed on an "AS IS" BASIS, 
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+//See the License for the specific language governing permissions and 
+//limitations under the License.
+//**********************************************************
+
 #include "fm.h"
 
 #define kDead -1
 #define kOpen -2
 #define kFar -3
 #define kBorder -4
-
 
 /* Global variables */
 int nx;			// real size on X
@@ -23,7 +38,6 @@ unsigned int number_of_points = 0;
 unsigned int connectivity_large = 0;
 int* NeighborhoodLarge = NULL;
 
-
 //================================================================
 void InitializeNeighborhoods()
 //================================================================
@@ -31,7 +45,9 @@ void InitializeNeighborhoods()
     connectivity_large = 8;
     NeighborhoodLarge = (int*) mxCalloc(connectivity_large, sizeof(int));
     if(NeighborhoodLarge == NULL)
+    {
         mexErrMsgTxt("Bad memory allocation NeighborhoodLarge");
+    }
 	NeighborhoodLarge[ 0]= -1-Nx;
 	NeighborhoodLarge[ 1]= -1+Nx;
 	NeighborhoodLarge[ 2]= -1   ;
@@ -46,7 +62,7 @@ void InitializeNeighborhoods()
 void InitializeArrays()
 //================================================================
 {
-	int x, y, point;
+    int x, y, point;
 	//copy the weight list and initialize
 	U = (double*) mxCalloc(size, sizeof(double));
 	if(U == NULL)
@@ -78,7 +94,7 @@ void InitializeArrays()
     {
 		x = (int) round(POINTS[2*s]);
 		y = (int) round(POINTS[1+2*s]);
-		END_POINTS[s] = x + y*Nx;
+        END_POINTS[s] = x + y*Nx;
     }
 };
 
@@ -90,14 +106,17 @@ void BackPropagate()
     int k, j, point, npoint, npoint_Umin;
     bool is_smallerNei_found = false;
     
-    for(k = 0; k < number_of_points; k++){
+    for(k = 0; k < number_of_points; k++)
+    {
         point = END_POINTS[k];
         Filaments[point] = true;
-        while(U[point] > 0){
+        while(U[point] > 0)
+        {
             Umin = U[point];
             npoint_Umin = point;
             is_smallerNei_found = false;
-            for (j = 0; j < connectivity_large; j++){
+            for (j = 0; j < connectivity_large; j++)
+            {
                 npoint=point+NeighborhoodLarge[j];
                 if ( U[npoint] < Umin )
                 {
@@ -106,7 +125,8 @@ void BackPropagate()
                     is_smallerNei_found = true;
                 }
             }
-            if(!is_smallerNei_found){
+            if(!is_smallerNei_found)
+            {
                 mexPrintf("Point different of the source and no smaller neighbor, hell!!!! \n");
                 break;
             }
@@ -123,11 +143,14 @@ void resize()
 {
     int x, y, point, Point;
     for(y=0;y<ny;y++)
-        for(x=0;x<nx;x++){
+    {
+        for(x=0;x<nx;x++)
+        {
             point = x+y*nx;
             Point = (x+1)+(y+1)*Nx;
-            Filaments[point] = U[Point];
+            Filaments[point] = Filaments[Point];
         }
+    }
 };
 
 //================================================================
@@ -159,7 +182,7 @@ void mexFunction(	int nlhs, mxArray *plhs[],
         mexErrMsgTxt("Distance map for the back propagation must be a 2D double array AND \n must be of class double") ;
     }
     
-	U = (double*)mxGetPr(prhs[1]);
+	UU = (double*)mxGetPr(prhs[1]);
     nx = mxGetDimensions(prhs[1])[0];
 	ny = mxGetDimensions(prhs[1])[1];
 	Nx = nx+2; Ny = ny+2;
@@ -173,10 +196,10 @@ void mexFunction(	int nlhs, mxArray *plhs[],
 	Filaments = (bool*) mxGetPr(plhs[0]);
 	//==================================================================
 	InitializeNeighborhoods();
-	//------------------------------------------------------------------
+    //------------------------------------------------------------------
 	InitializeArrays();
-	//------------------------------------------------------------------
-	BackPropagate();
+    	//------------------------------------------------------------------
+ 	BackPropagate();
 	//==================================================================
 	resize();
 	dims[0] = Nx-2; dims[1] = Ny-2;
