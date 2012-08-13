@@ -24,11 +24,12 @@ if isempty( strfind(path, [pwd '/../basel/gaimc']) )
     addpath([pwd '/../basel/gaimc']);
 end
 
-addpath('/home/fbenmans/src/neurons/matlab/basel10x/RegionGrowingSomata/');
-addpath('/home/fbenmans/src/WLV/main/');
-addpath('/home/fbenmans/src/WLV/matlab/');
+addpath('/home/fbenmans/src/neurons/matlab/basel10x/RegionGrowing/');
+
 run('~/Downloads/vlfeat-0.9.14/toolbox/vl_setup');
-addpath(genpath('~/Downloads/MatlabFns/'));
+% addpath('/home/fbenmans/src/WLV/main/');
+% addpath('/home/fbenmans/src/WLV/matlab/');
+% addpath(genpath('~/Downloads/MatlabFns/'));
 
 % --------- generate list of folders to process -----------
 count = 1;
@@ -56,7 +57,7 @@ fclose(FID);
 % matlabpool local
 for i = 1:size(exp_num,1)
     
-    tic
+%     tic
     folder_n = [folder exp_num(i,:) '/'];
     G = trkTrackingMSER(folder_n, resultsFolder, exp_num(i,:), Sample);
     a = dir([resultsFolder  exp_num(i,:) '.mat']);
@@ -68,7 +69,7 @@ for i = 1:size(exp_num,1)
 %         save([resultsFolder matFileName], '-struct', 'R');
 %     end
     
-    toc
+%     toc
     disp('');
     disp('=============================================================')
     disp('');
