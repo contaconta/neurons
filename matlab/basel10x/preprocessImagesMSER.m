@@ -73,8 +73,9 @@ parfor  t = 1:TMAX
 %        end
 %        branches{t} = BW;
 %     end
+    pad = 7;
     Mask = ones(size(f{t}));
-    Mask(5:end-5, 5:end-5) = 0;
+    Mask(pad:end-pad, pad:end-pad) = 0;
     f{t}(Mask > 0.5) = min(f{t}(Mask <= 0.5));
 %     branches{t}(Mask > 0.5) = 0;
       branches{t} = zeros(size(R{t}));

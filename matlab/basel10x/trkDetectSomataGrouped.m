@@ -1,5 +1,5 @@
 %% detect somata
-function [Soma, S] = trkDetectSomataGrouped(M, J)
+function [Soma, S] = trkDetectSomataGlobal(M, J, GEODESIC_DISTANCE_THRESH, LENGTH_THRESH)
 
 
 
@@ -12,15 +12,16 @@ multFactor = 1.5;
 S = cell(size(J));
 
 parfor t = 1:TMAX
+    Im = double(J{t});
     mean_std = zeros(2, max(M{t}(:)));
     for i=1:max(M{t}(:))
-       mean_std(1, i) = mean(J{t}(M{t} == i));
-       mean_std(2, i) = std(J{t}(M{t} == i));
+       mean_std(1, i) = mean(Im(M{t} == i));
+       mean_std(2, i) = std(Im(M{t} == i));
     end
-    meanGlobal = mean(M{t}(:));
-    stdGlobal  = std(M{t}(:));
-    [U, V, L] = RegionGrowingSomata(h, J{t}, M{t}, mean_std, multFactor, meanGlobal, stdGlobal);
-    SomaM  	= imfill((U < 0.000002) & (L < 7), 'holes');
+    meanGlobal = mean(Im(:));
+    stdGlobal  = std(Im(:));
+    [U, V, L] = RegionGrowingSomata(h, Im, M{t}, mean_std, multFactor, meanGlobal, stdGlobal);
+    SomaM  	= imfill((U < GEODESIC_DISTANCE_THRESH) & (L < LENGTH_THRESH), 'holes');
     V(~SomaM) = 0;
     S{t} = V;
 end
