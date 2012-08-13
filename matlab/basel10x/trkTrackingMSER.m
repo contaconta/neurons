@@ -1,26 +1,12 @@
-function Green =  trkTrackingMSER(folder, resultsFolder, SeqIndexStr, Sample, params)%#ok
-
-% get the experiment label, data, and assay position
-% [date_txt] = trkGetDateAndLabel(folder);
-% date_txt = '';
-% label_txt = Sample;
-% num_txt = SeqIndexStr;
-
-RECURSIONLIMIT = 5000;
-set(0,'RecursionLimit',RECURSIONLIMIT);
+function Green =  trkTrackingMSER(folder, resultsFolder, SeqIndexStr, Sample)
 
 disp(' ======================================== ');
-
-
-% get a list of colors to use for display
-% cols = color_list();
 
 % define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
 Gfiles = dir([Gfolder '*.TIF']);
 Rfiles = dir([Rfolder '*.TIF']);
-%experiment1_w2LED red_s1_t26
 
 if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 if TMAX~=length(Gfiles)
@@ -29,14 +15,9 @@ if TMAX~=length(Gfiles)
    return;
 end
 
-% %% important data structures
-% D = [];                     % structure containing nucleus detections
-% Dlist = cell(1,TMAX);       % cell containing detections indexes in each time step
-% count = 1;                  % detection counter
-
 %% Load the raw data
-Red = trkReadImages(TMAX, Rfolder);
-Green = trkReadImages(TMAX, Gfolder);
+Red   = trkReadImagesAndNormalize(TMAX, Rfolder);
+Green = trkReadImagesAndNormalize(TMAX, Gfolder);
 %% preprocess images
 disp('...preprocessing images');
 
@@ -70,7 +51,7 @@ toc
 %% detect the Somata using region growing
 disp('...detecting somata');
 
-GEODESIC_DISTANCE_THRESH = 1e-6;
+GEODESIC_DISTANCE_THRESH = 2e-6;
 LENGTH_THRESH = 7;
 STD_MULT_FACTOR = 1.5;
 
@@ -78,20 +59,12 @@ tic
 Somata = trkDetectSomataGlobal(Nuclei, Green, GEODESIC_DISTANCE_THRESH, LENGTH_THRESH, STD_MULT_FACTOR);
 toc
 
-
-%% detect and assign filaments
-disp('...detect filaments and assign them to each somata');
-% paramaters
-GEODESIC_DISTANCE_NEURITE_THRESH = 0.6;
-tic
-[Filaments, Regions] = trkDetectFilamentsGlobalThresh(Somata, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
-toc
-
 %% Gather detections into cells
 disp('...gather detections into cells');
 tic
 [Cells CellsList] = trkGatherNucleiAndSomataDetections(Green, Red, Nuclei, Somata);
 toc
+
 
 %% Generate graph and track
 disp('...tracking');
@@ -107,18 +80,26 @@ tic
 [Cells, tracks, ~, ~] = trkGenerateNucleiGraphAndTrack(CellsList, Cells, WIN_SIZE, WT, WSH, W_THRESH, MIN_TRACK_LENGTH, SPATIAL_DIST_THRESH);
 toc 
 
+%% detect and add filaments to cells
+disp('...detect filaments and assign them to each somata');
+GEODESIC_DISTANCE_NEURITE_THRESH = 0.6;
+
+tic
+[Cells] = trkDetectAndAddFilamentsToCells(Cells, Somata, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
+toc
+
 %% render results on the video
 disp('...make movie');
-
+% parameters
 cols = color_list();
+
 tic
-% mv = trkRenderImages(Green, Nuclei, Somata, Filaments);
 mv = trkRenderImagesAndTracks(Green, Cells, CellsList, tracks, SeqIndexStr, Sample, cols );
 % make a movie of the results
 movfile = SeqIndexStr ;
 trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 toc
-% SMASK = zeros(size(SL{1}));
+
 %%
 % mv = trkRenderImages3(TMAX, G, D, Soma, Dlist, branches);
 % % make a movie of the results
