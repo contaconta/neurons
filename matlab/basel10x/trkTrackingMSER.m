@@ -22,6 +22,7 @@ Green = trkReadImagesAndNormalize(TMAX, Gfolder);
 disp('...preprocessing images');
 
 % frangi parameters
+% opt.FrangiScaleRange = [1 2];
 opt.FrangiScaleRange = [1 2];
 opt.FrangiScaleRatio = 1;
 opt.FrangiBetaOne = .5;
@@ -77,7 +78,7 @@ MIN_TRACK_LENGTH = 20;
 SPATIAL_DIST_THRESH = 50;
 
 tic
-[Cells, tracks, ~, ~] = trkGenerateNucleiGraphAndTrack(CellsList, Cells, WIN_SIZE, WT, WSH, W_THRESH, MIN_TRACK_LENGTH, SPATIAL_DIST_THRESH);
+[Cells, tracks, trkSeq, ~] = trkGenerateNucleiGraphAndTrack(CellsList, Cells, WIN_SIZE, WT, WSH, W_THRESH, MIN_TRACK_LENGTH, SPATIAL_DIST_THRESH);
 toc 
 
 %% detect and add filaments to cells
@@ -88,6 +89,13 @@ tic
 [Cells] = trkDetectAndAddFilamentsToCells(Cells, Somata, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
 toc
 
+%% reorganize data
+disp('...reorganizing data ')
+tic
+Sequence = trkReorganizeDataStructure(Rfiles, Gfiles, Green, Sample, SeqIndexStr, Cells, trkSeq);
+toc
+%%
+save([resultsFolder SeqIndexStr],  'Sequence');
 %% render results on the video
 disp('...make movie');
 % parameters

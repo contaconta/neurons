@@ -1,7 +1,7 @@
 function [Tubularity] = trkComputeTubularity(Green, opt)
 
 TMAX = length(Green);
-pad = 7;
+pad = 3*opt.FrangiScaleRange(2);
 
 Tubularity = cell(size(Green));
 

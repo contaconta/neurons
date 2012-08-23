@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viper xmlns="http://lamp.cfar.umd.edu/viper#" xmlns:data="http://lamp.cfar.umd.edu/viperdata#">
+    <config>
+        <descriptor name="Information" type="FILE">
+            <attribute dynamic="false" name="SOURCETYPE" type="http://lamp.cfar.umd.edu/viperdata#lvalue">
+                <data:lvalue-possibles>
+                    <data:lvalue-enum value="SEQUENCE"/>
+                    <data:lvalue-enum value="FRAMES"/>
+                </data:lvalue-possibles>
+            </attribute>
+            <attribute dynamic="false" name="NUMFRAMES" type="http://lamp.cfar.umd.edu/viperdata#dvalue"/>
+            <attribute dynamic="false" name="FRAMERATE" type="http://lamp.cfar.umd.edu/viperdata#fvalue"/>
+            <attribute dynamic="false" name="H-FRAME-SIZE" type="http://lamp.cfar.umd.edu/viperdata#dvalue"/>
+            <attribute dynamic="false" name="V-FRAME-SIZE" type="http://lamp.cfar.umd.edu/viperdata#dvalue"/>
+        </descriptor>
+        <descriptor name="Cell" type="OBJECT">
+            <attribute dynamic="true" name="location" type="http://lamp.cfar.umd.edu/viperdata#circle"/>
+        </descriptor>
+    </config>
+    <data>
+        <sourcefile filename="file:/E:/Desktop/Sinergia10xOriginalMovies/001Original.mpg">
+            <file id="0" name="Information">
+                <attribute name="SOURCETYPE"/>
+                <attribute name="NUMFRAMES">
+                    <data:dvalue value="96"/>
+                </attribute>
+                <attribute name="FRAMERATE">
+                    <data:fvalue value="1.0"/>
+                </attribute>
+                <attribute name="H-FRAME-SIZE">
+                    <data:dvalue value="704"/>
+                </attribute>
+                <attribute name="V-FRAME-SIZE">
+                    <data:dvalue value="520"/>
+                </attribute>
+            </file>
+            <object framespan="91:96" id="0" name="Cell">
+                <attribute name="location">
+                    <data:circle framespan="91:91" radius="4" x="332" y="360"/>
+                    <data:circle framespan="92:92" radius="5" x="329" y="362"/>
+                    <data:circle framespan="93:93" radius="4" x="331" y="366"/>
+                    <data:circle framespan="94:94" radius="8" x="332" y="368"/>
+                    <data:circle framespan="95:95" radius="8" x="331" y="371"/>
+                    <data:circle framespan="96:96" radius="8" x="334" y="373"/>
+                </attribute>
+            </object>
+            <object framespan="1:22 91:91" id="1" name="Cell">
+                <attribute name="location">
+                    <data:circle framespan="1:1" radius="6" x="392" y="170"/>
+                    <data:circle framespan="2:2" radius="6" x="403" y="171"/>
+                    <data:circle framespan="3:3" radius="7" x="399" y="170"/>
+                    <data:circle framespan="4:4" radius="7" x="403" y="169"/>
+                    <data:circle framespan="5:5" radius="7" x="405" y="169"/>
+                    <data:circle framespan="6:6" radius="6" x="403" y="169"/>
+                    <data:circle framespan="7:7" radius="8" x="399" y="171"/>
+                    <data:circle framespan="8:8" radius="7" x="399" y="177"/>
+                    <data:circle framespan="9:9" radius="7" x="400" y="179"/>
+                    <data:circle framespan="10:10" radius="8" x="400" y="183"/>
+                    <data:circle framespan="11:11" radius="8" x="401" y="185"/>
+                    <data:circle framespan="12:12" radius="8" x="399" y="184"/>
+                    <data:circle framespan="13:13" radius="8" x="400" y="184"/>
+                    <data:circle framespan="14:14" radius="7" x="400" y="183"/>
+                    <data:circle framespan="15:15" radius="7" x="400" y="184"/>
+                    <data:circle framespan="16:16" radius="7" x="404" y="185"/>
+                    <data:circle framespan="17:17" radius="6" x="409" y="187"/>
+                    <data:circle framespan="18:18" radius="8" x="411" y="189"/>
+                    <data:circle framespan="19:19" radius="6" x="410" y="191"/>
+                    <data:circle framespan="20:20" radius="7" x="409" y="192"/>
+                    <data:circle framespan="21:21" radius="7" x="407" y="189"/>
+                    <data:circle framespan="22:22" radius="7" x="408" y="189"/>
+                </attribute>
+            </object>
+        </sourcefile>
+    </data>
+</viper>
