@@ -170,7 +170,7 @@ void mexFunction(	int nlhs, mxArray *plhs[],
     if( (mxGetClassID(prhs[0]) != mxDOUBLE_CLASS) || (mxGetNumberOfDimensions(prhs[0])!= 2) 
 		||    mxGetDimensions(prhs[0])[0] != 2 ) 
 	{
-			mexErrMsgTxt("tforth input shoud be an array containing the [mean_i, std_i] intensities of the nuclei regions") ;
+			mexErrMsgTxt("[x, y]!!") ;
 	}
     
     POINTS = mxGetPr(prhs[0]);

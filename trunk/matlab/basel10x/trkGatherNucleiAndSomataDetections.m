@@ -27,6 +27,7 @@ for t = 1:TMAX
                 currentCell.NucleusMinorAxisLength    = detections_n(i).MinorAxisLength;
                 currentCell.NucleusOrientation        = detections_n(i).Orientation;
                 currentCell.NucleusPerimeter          = detections_n(i).Perimeter;
+                currentCell.NucleusCircularity        = 4*pi*currentCell.NucleusArea / (currentCell.NucleusPerimeter)^2;
                 currentCell.NucleusPixelIdxList       = detections_n(i).PixelIdxList;
                 currentCell.NucleusMeanRedIntensity   = sum(Red{t}(detections_n(i).PixelIdxList))/detections_n(i).Area;
                 currentCell.NucleusMeanGreenIntensity = sum(Green{t}(detections_n(i).PixelIdxList))/detections_n(i).Area;
@@ -38,6 +39,7 @@ for t = 1:TMAX
                 currentCell.SomaMinorAxisLength       = detections_s(i).MinorAxisLength;
                 currentCell.SomaOrientation           = detections_s(i).Orientation;
                 currentCell.SomaPerimeter             = detections_s(i).Perimeter;
+                currentCell.SomaCircularity           = 4*pi*currentCell.SomaArea / (currentCell.SomaPerimeter)^2;
                 currentCell.SomaPixelIdxList          = detections_s(i).PixelIdxList;
                 currentCell.SomaMeanGreenIntensity    = sum(Red{t}(detections_s(i).PixelIdxList))/detections_s(i).Area;
                 % for neurites, the main loop is done later in a faster

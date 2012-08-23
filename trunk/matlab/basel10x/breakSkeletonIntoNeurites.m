@@ -84,7 +84,7 @@ for i = 1:1:length(parents)
     end
 end
 
-branchesLeafs(find(neuriteId==0)) = -1;
+branchesLeafs(neuriteId==0) = -1;
 
 
 
