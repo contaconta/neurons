@@ -1,9 +1,11 @@
-function processListOfPlates(datasets_paths_filename)
+function processListOfPlates(datasets_paths_filename, resolution)
 
 % processListOfPlates from a txt file under the format provided by
 % OpenBis 
 % 
 % This code is specific to the Sinergia project
+%
+% resolution could be '10x' or '20x', it's used to select parameters
 %
 % (c) Fethallah Benmansour, fethallah@gmail.com
 %
@@ -34,5 +36,5 @@ for i= 1:length(C{1})
     if( ~exist(resultsFolder, 'dir') )
         mkdir(resultsFolder);
     end
-    processPlate(inputFolder , resultsFolder, Sample{1}, Identifier{1});
+    processPlate(inputFolder , resultsFolder, Sample{1}, Identifier{1}, resolution);
 end

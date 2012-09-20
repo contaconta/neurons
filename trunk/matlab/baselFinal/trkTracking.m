@@ -1,4 +1,4 @@
-function Green =  trkTrackingMSER(folder, resultsFolder, SeqIndexStr, Sample)
+function Green =  trkTracking(folder, resultsFolder, SeqIndexStr, Sample, resolution)
 
 disp(' ======================================== ');
 
@@ -22,8 +22,13 @@ Green = trkReadImagesAndNormalize(TMAX, Gfolder);
 disp('...preprocessing images');
 
 % frangi parameters
-% opt.FrangiScaleRange = [1 2];
-opt.FrangiScaleRange = [1 2];
+if strcmp(resolution, '10x')
+    opt.FrangiScaleRange = [1 2];
+elseif strcmp(resolution, '20x')
+    opt.FrangiScaleRange = [1 4];
+else
+    error(['Resolution should be wither 10x or 20x but it is ' resolution]);
+end
 opt.FrangiScaleRatio = 1;
 opt.FrangiBetaOne = .5;
 opt.FrangiBetaTwo = 15;
@@ -37,9 +42,16 @@ toc
 %% Detect Nuclei
 disp('...detecting Nuclei');
 % paramaters
+% Smoothing the sigma for the red channel
 SIGMA_RED         = 2.0;
-MAX_NUCLEUS_AREA  = 170; %  > pi*7*7
-MIN_NUCLEUS_AREA  =  70; %  < pi*5*5
+if strcmp(resolution, '10x')
+    MAX_NUCLEUS_AREA  = 170; %  > pi*7*7
+    MIN_NUCLEUS_AREA  =  70; %  < pi*5*5
+elseif strcmp(resolution, '20x')
+    MAX_NUCLEUS_AREA  = 750; %  > pi*15*15
+    MIN_NUCLEUS_AREA  = 300; %  < pi*10*10
+end
+% MaxVariation and Delta are default values from www.vlfeat.org/api/mser_8h.html
 MSER_MaxVariation = 0.25;
 MSER_Delta        = 2;
 
