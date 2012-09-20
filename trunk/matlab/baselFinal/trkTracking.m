@@ -86,7 +86,7 @@ SPATIAL_WINDOWS_SIZE = 50;
 MIN_TRACK_LENGTH     = 20;
 NB_BEST_TRACKS       = 20;
 tic
-[Cells, tracks, trkSeq, ~] = trkTrackKSP(CellsList, Cells, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, MIN_TRACK_LENGTH, NB_BEST_TRACKS);
+[Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, MIN_TRACK_LENGTH, NB_BEST_TRACKS);
 toc
 
 % %% directional non maximum suppression
