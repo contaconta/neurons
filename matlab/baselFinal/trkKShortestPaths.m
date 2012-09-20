@@ -43,4 +43,4 @@ end
 
 
 %% get a list of detections and associated time steps for each track
-[trkSeq, timeSeq] = getTrackSequences(CellsList, tracks, Cells);
+[trkSeq, timeSeq] = trkGetTrackSequences(CellsList, tracks, Cells);
