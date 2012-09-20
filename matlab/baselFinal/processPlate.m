@@ -1,4 +1,4 @@
-function processPlate(folder, resultsFolder, Sample, Identifier)
+function processPlate(folder, resultsFolder, Sample, Identifier, resolution)
 
 
 % processPlate: process one plate containing sub-directories
@@ -59,7 +59,7 @@ fclose(FID);
 for i = 1:size(exp_num,1)
     
     folder_n = [folder exp_num(i,:) '/'];
-    G = trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample);
+    G = trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, resolution);
     a = dir([resultsFolder  exp_num(i,:) '.mat']);
     disp('');
     disp('=============================================================')
