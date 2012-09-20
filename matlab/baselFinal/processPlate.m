@@ -17,17 +17,20 @@ function processPlate(folder, resultsFolder, Sample, Identifier)
 if isempty( strfind(path, [pwd '/../baselFinal/frangi_filter_version2a']) )
     addpath([pwd '/../baselFinal/frangi_filter_version2a']);
 end
-if isempty( strfind(path, [pwd '/../baselFinal/code']) )
-    addpath([pwd '/../baselFinal/code']);
-end
+
 if isempty( strfind(path, [pwd '/../baselFinal/gaimc']) )
     addpath([pwd '/../baselFinal/gaimc']);
 end
 
-addpath('/home/fbenmans/src/neurons/matlab/baselFinal/RegionGrowing/');
-addpath('/home/fbenmans/src/neurons/matlab/baselFinal/ksp/');
+if isempty( strfind(path, [pwd '/../baselFinal/Geodesics']) )
+    addpath([pwd '/../baselFinal/Geodesics']);
+end
 
-run('~/Downloads/vlfeat-0.9.14/toolbox/vl_setup');
+if isempty( strfind(path, [pwd '/../baselFinal/ksp']) )
+    addpath([pwd '/../baselFinal/ksp']);
+end
+
+run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
 
 % --------- generate list of folders to process -----------
 count = 1;
