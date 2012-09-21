@@ -59,8 +59,10 @@ fclose(FID);
 for i = 1:size(exp_num,1)
     
     folder_n = [folder exp_num(i,:) '/'];
-    G = trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, resolution);
-    a = dir([resultsFolder  exp_num(i,:) '.mat']);
+    initime = cputime;
+    trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, resolution);
+    endtime = cputime;
+    fprintf('CPUTIME: %g \n', endtime-initime);
     disp('');
     disp('=============================================================')
     disp('');
