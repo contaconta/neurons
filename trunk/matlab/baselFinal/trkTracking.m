@@ -1,8 +1,5 @@
-function Green =  trkTracking(folder, resultsFolder, SeqIndexStr, Sample, resolution)
-
-disp(' ======================================== ');
-
-% define the folder locations and filenames of the images
+function Sequence =  trkTracking(folder, resultsFolder, SeqIndexStr, Sample, resolution)
+%% define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
 Gfiles = dir([Gfolder '*.TIF']);
@@ -11,7 +8,6 @@ Rfiles = dir([Rfolder '*.TIF']);
 if ~exist('TMAX', 'var'); TMAX =  length(Rfiles); end; % number of time steps
 if TMAX~=length(Gfiles)
    disp(['problem with data in directory: ' folder]);
-   Green = [];
    return;
 end
 
@@ -64,7 +60,11 @@ toc
 disp('...detecting somata');
 
 GEODESIC_DISTANCE_THRESH = 2e-6;
-LENGTH_THRESH = 7;
+if strcmp(resolution, '10x')
+    LENGTH_THRESH = 7;
+elseif strcmp(resolution, '20x')
+    LENGTH_THRESH = 12;
+end
 STD_MULT_FACTOR = 1.5;
 
 tic
@@ -82,7 +82,11 @@ toc
 disp('...tracking');
 % parameters
 TEMPORAL_WIN_SIZE    = 1;
-SPATIAL_WINDOWS_SIZE = 50;
+if strcmp(resolution, '10x')
+    SPATIAL_WINDOWS_SIZE = 50;
+elseif strcmp(resolution, '20x')
+    SPATIAL_WINDOWS_SIZE = 100;
+end
 MIN_TRACK_LENGTH     = 20;
 NB_BEST_TRACKS       = 20;
 tic
@@ -122,7 +126,7 @@ Cells = rmfield(Cells, 'Neurites');
 %% reorganize data
 disp('...reorganizing data ')
 tic
-Sequence = trkReorganizeDataStructure(folder, Rfiles, Gfiles, Green, Red, Sample, SeqIndexStr, Cells, trkSeq);%#ok
+Sequence = trkReorganizeDataStructure(folder, Rfiles, Gfiles, Green, Red, Sample, SeqIndexStr, Cells, trkSeq);
 toc
 %%
 save([resultsFolder SeqIndexStr],  'Sequence');
