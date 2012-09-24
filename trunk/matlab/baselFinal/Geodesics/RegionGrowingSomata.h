@@ -38,11 +38,12 @@ double* W = NULL; // potential
 double* WW = NULL;
 double* Nuclei = NULL;
 
-double* mean_std = NULL;
-unsigned int number_of_regions = 0;
-double multFactor = 0;
-double meanGlobalInt = 0;
-double stdGlobalInt = 0;
+double* mean_std                = NULL;
+unsigned int number_of_regions  = 0;
+double multFactor               = 0;
+double meanGlobalInt            = 0;
+double stdGlobalInt             = 0;
+double Lmax                     = 1e9;
 
 int   connectivity_small;
 int*    NeighborhoodSmall = NULL;
@@ -550,22 +551,25 @@ void RunPropagation()
         if(S[point]!=kOpen)
             mexErrMsgTxt("err");
         S[point]=kDead;
-        //--------------------------------------------------------------
-        for (k=0;k<connectivity_small;k++){
-            npoint = point+NeighborhoodSmall[k];
+        if(L[point] < 2.0*Lmax)
+        {
             //--------------------------------------------------------------
-            if (S[npoint]==kOpen){
-                is_updated = SethianUpdate(npoint);
-                if(is_updated)
-                    Tree_UpdateChange(Tree[npoint]);
+            for (k=0;k<connectivity_small;k++){
+                npoint = point+NeighborhoodSmall[k];
+                //--------------------------------------------------------------
+                if (S[npoint]==kOpen){
+                    is_updated = SethianUpdate(npoint);
+                    if(is_updated)
+                        Tree_UpdateChange(Tree[npoint]);
+                }
+                //--------------------------------------------------------------
+                else if (S[npoint]==kFar){
+                    S[npoint] = kOpen;
+                    SethianUpdate(npoint);
+                    Tree_PushIn(npoint);
+                }
+                //--------------------------------------------------------------
             }
-            //--------------------------------------------------------------
-            else if (S[npoint]==kFar){
-                S[npoint] = kOpen;
-                SethianUpdate(npoint);
-                Tree_PushIn(npoint);
-            }
-            //--------------------------------------------------------------
         }
     }
 };

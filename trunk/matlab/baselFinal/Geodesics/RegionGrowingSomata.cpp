@@ -22,9 +22,9 @@ void mexFunction(	int nlhs, mxArray *plhs[],
     //------------------------------------------------------------------
     /* retrive arguments */
     //------------------------------------------------------------------
-    if( (nrhs!=6) && (nrhs!=7) )
+    if( nrhs!=8 )
     {
-        mexErrMsgTxt("4 or 5 arguments are required.");
+        mexErrMsgTxt("7 arguments are required.");
     }
     //------------------------------------------------------------------
     // first argument : spacing and dimensions
@@ -68,6 +68,7 @@ void mexFunction(	int nlhs, mxArray *plhs[],
     
     meanGlobalInt = mxGetScalar(prhs[5]);
     stdGlobalInt  = mxGetScalar(prhs[6]);
+    Lmax          = mxGetScalar(prhs[7]);
     //------------------------------------------------------------------
     //==================================================================
     // Outputs

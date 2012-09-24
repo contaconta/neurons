@@ -21,9 +21,12 @@
 #include <stdio.h>
 
 KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
-        const mxArray* CellsList,
-        int temporal_windows_size,
-        double spatial_windows_size) {
+                                         const mxArray* CellsList,
+                                         int temporal_windows_size,
+                                         double spatial_windows_size,
+                                         double *imagesize,
+                                         double distanceToBoundary)
+{
     // Declarations
     typedef std::pair<int, int> Edge;
     std::vector< Edge > vEdges; vEdges.clear();
@@ -45,7 +48,7 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     // field indices
     int nuclei_centroid_idx = mxGetFieldNumber(Cells, "NucleusCentroid");
     int nuclei_red_idx      = mxGetFieldNumber(Cells, "NucleusMeanRedIntensity");
-    int nuclei_green_idx    = mxGetFieldNumber(Cells, "NucleusMeanGreenIntensity");
+    int nuclei_green_idx    = mxGetFieldNumber(Cells, "SomaMeanGreenIntensity");
     
     // Filling in the edge array
     // Filling the edges outgoing from the source and incoming to terminal
@@ -77,21 +80,34 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
         vEdges.push_back(e);
         edgeWeights.push_back(0.0);
     }
-    //todo, maybe by taking only close to boundary detections
-    for(int k = 1; k < numberOfFrames-1; k++) {
+    
+    for(int k = 1; k < numberOfFrames-1; k++) 
+    {
         mxArray* currentFrame = mxGetCell(CellsList, k);
         double* currentFrameDetections = mxGetPr(currentFrame);
-        for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) {
+        for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
+        {
             Edge e;
-            e.first  = m_nSrcNodeIndx;
-            e.second = (int) (currentFrameDetections[i]-1);
-            vEdges.push_back(e);
-            edgeWeights.push_back(0.0);
-            
             e.first  = (int) (currentFrameDetections[i]-1);
             e.second = m_nDstNodeIndx;
             vEdges.push_back(e);
             edgeWeights.push_back(0.0);
+            
+            // only for close to boundary detections
+            double distToBoundary = std::min(imagesize[0], imagesize[1]);
+            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
+            for(unsigned int d = 0; d <2; d++)
+            {
+                distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
+                                                                   fabs(currentDetectionCentroid[0] - imagesize[0])));
+            }   
+            if(distToBoundary < distanceToBoundary)
+            {
+                e.first  = m_nSrcNodeIndx;
+                e.second = (int) (currentFrameDetections[i]-1);
+                vEdges.push_back(e);
+                edgeWeights.push_back(0.0);
+            }
         }
     }
     
@@ -101,13 +117,13 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
         int min_t = std::max(0, i - temporal_windows_size);
         for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
             double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
-            double  currentDetectionRed      = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_red_idx));
+            double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
             for( int j = min_t; j < i; j++) {
                 mxArray* previousFrame = mxGetCell(CellsList, j);
                 double*  previousFrameDetections = mxGetPr(previousFrame);
                 for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
                     double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
-                    double  previousDetectionRed      = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_red_idx));
+                    double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
                     // compute distance
                     double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
                     +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
@@ -124,17 +140,17 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
                         else                                        dist_log = log( prob_dist / (1 - prob_dist) );
                         
                         // second color distance
-                        double intensityDiff = (float)fabs(previousDetectionRed - currentDetectionRed);
+                        double intensityDiff = 5*(double)fabs(previousDetectionGreen - currentDetectionGreen);
                         float intensity_log;
                         
                         if ( intensityDiff < MIN_OCCUR_PROB )       intensity_log = min_prob_log;
-                        else if ( intensityDiff > MAX_OCCUR_PROB )  intensity_log = max_prob_log;
+                        else if ( intensityDiff > MAX_OCCUR_PROB )  intensity_log = max_prob_log;//TODO
                         else                                        intensity_log = log( intensityDiff / (1 - intensityDiff) );
                         
                         // thirs, time distance
 //                         float time_log = -float(temporal_windows_size)/2.0 - float(j-i);
                         
-                        edgeWeights.push_back(dist_log+intensity_log);
+                        edgeWeights.push_back(intensity_log);/// todo : dist_log+
                     }
                 }
             }
