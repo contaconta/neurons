@@ -87,7 +87,7 @@ parfor dd = 1:length(Cells)
             listOfNeurites{j} = find(LL==j);
             [parents, numkids] = trkTreeStructureFromBinaryFilament(listOfNeurites{j}, Cells(dd).SomaPixelIdxList, size(Cells(dd).Neurites));
             
-            currentTree                     =  EmptyTree;
+            currentTree                     = EmptyTree;
             currentTree.Parents             = parents;
             currentTree.NumKids             = numkids;
             currentTree.NeuritePixelIdxList = listOfNeurites{j};

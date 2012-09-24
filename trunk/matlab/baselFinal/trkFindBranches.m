@@ -73,17 +73,34 @@ if( ~isempty( BranchesLength ) )
     filament.LengthBranches             = BranchesLength;
     filament.ExtremeLength              = ExtremeLength;
     filament.MaxExtremeLenght           = max(ExtremeLength);
+    
     filament.MeanBranchLength           = mean(BranchesLength);
-    filament.MeanLeafLength             = mean(BranchesLength(logical(BranchesAreLeafs)));
+    filament.MedianBranchLength         = quantile(BranchesLength, 0.5);
+    filament.TwentyFiveBranchLength     = quantile(BranchesLength, 0.25);
+    filament.SeventyFiveBranchLength    = quantile(BranchesLength, 0.75);
+    
+    leafBranchesLength                  = BranchesLength(logical(BranchesAreLeafs));
+    
+    filament.MeanLeafLength             = mean(leafBranchesLength);
+    filament.MedianLeafLength           = quantile(leafBranchesLength, 0.5);
+    filament.TwentyFiveLeafLength       = quantile(leafBranchesLength, 0.25);
+    filament.SeventyFiveLeafLength      = quantile(leafBranchesLength, 0.75);
+    
     filament.TotalCableLength           = sum(BranchesLength);
 else
     filament.Branches                   = [];
     filament.LeafBranches               = [];
     filament.LengthBranches             = [];
     filament.ExtremeLength              = [];
-    filament.MaxExtremeLenght           = 0;
-    filament.MeanBranchLength           = 0;
-    filament.MeanLeafLength             = 0;
-    filament.TotalCableLength           = 0;
+    filament.MaxExtremeLenght           = nan;
+    filament.MeanBranchLength           = nan;
+    filament.MedianBranchLength         = nan;
+    filament.TwentyFiveBranchLength     = nan;
+    filament.SeventyFiveBranchLength    = nan;
+    filament.MeanLeafLength             = nan;
+    filament.MedianLeafLength           = nan;
+    filament.TwentyFiveLeafLength       = nan;
+    filament.SeventyFiveLeafLength      = nan;
+    filament.TotalCableLength           = nan;
 end
 
