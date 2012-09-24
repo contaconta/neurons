@@ -1,9 +1,9 @@
 function [Cells, tracks, trkSeq, timeSeq] = trkKShortestPaths(CellsList, Cells, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE,...
-                                                        MIN_TRACK_LENGTH, NB_BEST_TRACKS)
+                                                        MIN_TRACK_LENGTH, NB_BEST_TRACKS, IMAGE_SIZE, DISTANCE_TO_BOUNDARY)
 
 TMAX = length(CellsList);
 
-tracks = ksp_matlab(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE);
+tracks = ksp_matlab(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, IMAGE_SIZE, DISTANCE_TO_BOUNDARY);
 
 %% pruning the tracks and sorting them according to their MeanGreenIntensity summed over lifetime
 tracks = tracks(1:end-2);
@@ -23,7 +23,7 @@ for i=1:length(scoreTracks)
     
     list_idx = find(tracks == i);
     for j = 1:length(list_idx)
-        scoreTracks(i) = scoreTracks(i) + Cells(list_idx(j)).NucleusMeanGreenIntensity;
+        scoreTracks(i) = scoreTracks(i) + Cells(list_idx(j)).NucleusMeanGreenIntensity * numel(Cells(list_idx(j)).NucleusPixelIdxList);
     end
 end
 

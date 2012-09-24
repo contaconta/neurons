@@ -1,4 +1,4 @@
-function processPlate(folder, resultsFolder, Sample, Identifier, resolution)
+function processPlate(folder, resultsFolder, Sample, Identifier, magnification)
 
 
 % processPlate: process one plate containing sub-directories
@@ -60,7 +60,7 @@ for i = 1:size(exp_num,1)
     
     folder_n = [folder exp_num(i,:) '/'];
     initime = cputime;
-    trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, resolution);
+    trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, magnification);
     endtime = cputime;
     fprintf('CPUTIME: %g \n', endtime-initime);
     disp('');

@@ -14,7 +14,7 @@ parfor t = 1:TMAX
     end
     meanGlobal = mean(Im(:));
     stdGlobal  = std(Im(:));
-    [U, V, L] = RegionGrowingSomata(h, Im, M{t}, mean_std, STD_MULT_FACTOR, meanGlobal, stdGlobal);
+    [U, V, L] = RegionGrowingSomata(h, Im, M{t}, mean_std, STD_MULT_FACTOR, meanGlobal, stdGlobal, LENGTH_THRESH);
     SomaM  	= imfill((U < GEODESIC_DISTANCE_THRESH) & (L < LENGTH_THRESH), 'holes');
     V(~SomaM) = 0;
     Somata{t} = V;

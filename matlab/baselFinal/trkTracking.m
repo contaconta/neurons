@@ -1,4 +1,4 @@
-function Sequence =  trkTracking(folder, resultsFolder, SeqIndexStr, Sample, resolution)
+function Sequence =  trkTracking(folder, resultsFolder, SeqIndexStr, Sample, magnification)
 %% define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
@@ -18,12 +18,12 @@ Green = trkReadImagesAndNormalize(TMAX, Gfolder);
 disp('...preprocessing images');
 
 % frangi parameters
-if strcmp(resolution, '10x')
+if strcmp(magnification, '10x')
     opt.FrangiScaleRange = [1 2];
-elseif strcmp(resolution, '20x')
+elseif strcmp(magnification, '20x')
     opt.FrangiScaleRange = [1 4];
 else
-    error(['Resolution should be wither 10x or 20x but it is ' resolution]);
+    error(['Resolution should be wither 10x or 20x but it is ' magnification]);
 end
 opt.FrangiScaleRatio = 1;
 opt.FrangiBetaOne = .5;
@@ -40,10 +40,10 @@ disp('...detecting Nuclei');
 % paramaters
 % Smoothing the sigma for the red channel
 SIGMA_RED         = 2.0;
-if strcmp(resolution, '10x')
+if strcmp(magnification, '10x')
     MAX_NUCLEUS_AREA  = 170; %  > pi*7*7
     MIN_NUCLEUS_AREA  =  70; %  < pi*5*5
-elseif strcmp(resolution, '20x')
+elseif strcmp(magnification, '20x')
     MAX_NUCLEUS_AREA  = 750; %  > pi*15*15
     MIN_NUCLEUS_AREA  = 300; %  < pi*10*10
 end
@@ -60,9 +60,9 @@ toc
 disp('...detecting somata');
 
 GEODESIC_DISTANCE_THRESH = 2e-6;
-if strcmp(resolution, '10x')
+if strcmp(magnification, '10x')
     LENGTH_THRESH = 7;
-elseif strcmp(resolution, '20x')
+elseif strcmp(magnification, '20x')
     LENGTH_THRESH = 12;
 end
 STD_MULT_FACTOR = 1.5;
@@ -82,15 +82,23 @@ toc
 disp('...tracking');
 % parameters
 TEMPORAL_WIN_SIZE    = 1;
-if strcmp(resolution, '10x')
+if strcmp(magnification, '10x')
     SPATIAL_WINDOWS_SIZE = 50;
-elseif strcmp(resolution, '20x')
+elseif strcmp(magnification, '20x')
     SPATIAL_WINDOWS_SIZE = 100;
 end
 MIN_TRACK_LENGTH     = 20;
 NB_BEST_TRACKS       = 20;
+IMAGE_SIZE           = size(Green{1});
+DISTANCE_TO_BOUNDARY = 30;
 tic
-[Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, MIN_TRACK_LENGTH, NB_BEST_TRACKS);
+[Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, ...
+                                               TEMPORAL_WIN_SIZE, ...
+                                               SPATIAL_WINDOWS_SIZE, ...
+                                               MIN_TRACK_LENGTH, ...
+                                               NB_BEST_TRACKS, ...
+                                               IMAGE_SIZE, ...
+                                               DISTANCE_TO_BOUNDARY);
 toc
 
 % %% directional non maximum suppression

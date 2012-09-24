@@ -52,7 +52,9 @@ class KShorthestPathGraph
   KShorthestPathGraph(const mxArray* Cells,
                       const mxArray* CellsList,
                       int temporal_windows_size,
-                      double spatial_windows_size);
+                      double spatial_windows_size,
+                      double *imagesize,
+                      double distanceToBoundary);
   
   
 	
