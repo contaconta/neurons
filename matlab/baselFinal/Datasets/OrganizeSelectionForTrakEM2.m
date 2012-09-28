@@ -2,19 +2,26 @@ clear all; close all; clc;
 addpath('../');
 %%
 RootDirectorySelectionMovies = '/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection20x/';
-listOfMovies = {'003', '004'};
+AA = dir(RootDirectorySelectionMovies);
+inc = 1;
+for i =1:length(AA)
+    if(length(AA(i).name) >2 && AA(i).isdir)
+        listOfMovies{inc} = AA(i).name;%#ok
+        inc = inc+1;
+    end
+end
 channels = {'red', 'green'};
 OutputRootDirectory = '/Users/feth/Documents/Work/Data/Sinergia/Olivier/20xTrakEM2/';
 numberOfFrames = 97;
-templateFile = 'Template.xml';
+templateFile        = 'Template.xml';
+templateHeaderFile  = 'TemplateHeader.xml';
 
 if(~exist(OutputRootDirectory, 'dir'))
     mkdir(OutputRootDirectory);
 end
 
 for i = 1:length(listOfMovies)
-    
-    
+    disp(i)
     outputdir = [OutputRootDirectory listOfMovies{i} '/'];
     if exist(outputdir, 'dir')
         rmdir(outputdir, 's');
@@ -36,11 +43,11 @@ for i = 1:length(listOfMovies)
         Im = zeros([size(I, 1), size(I, 2), length(listImages)], 'uint16');
         
         if numberOfFrames~=length(listImages)
-            error(['number of frames should be equal to ' num2str(numberOfFrames)]);
+            warning(['number of frames should be equal to ' num2str(numberOfFrames)]);
         end
         
         for k = 1:length(listImages)
-            Im(:, :, k) = imread([dirName '/' listImages{i}]);
+            Im(:, :, k) = imread([dirName '/' listImages{k}]);
         end
         
         writeMultiPageTiff(Im, [outputdir channels{j} '.tif']);
@@ -54,8 +61,24 @@ for i = 1:length(listOfMovies)
     end
     A = xml2struct(templateFile);
     %% Do stuff
-    xmlFileName = [RootDirectorySelectionMovies listOfMovies{i} '/' listOfMovies{i} '.xml'];
-    A2 = A(2);
-    B.trakEMCells = A;
-    struct2xml(A1, xmlFileName);
+    A.trakem2.project.Attributes.title = [listOfMovies{i} '.xml'];
+    for k =1:length(A.trakem2.t2_layer_set.t2_layer)
+        A.trakem2.t2_layer_set.t2_layer{k}.t2_patch{1}.Attributes.max = num2str(maxRed);
+        A.trakem2.t2_layer_set.t2_layer{k}.t2_patch{1}.Attributes.min = num2str(minRed);
+        A.trakem2.t2_layer_set.t2_layer{k}.t2_patch{2}.Attributes.max = num2str(maxGreen);
+        A.trakem2.t2_layer_set.t2_layer{k}.t2_patch{2}.Attributes.min = num2str(minGreen);
+    end
+    %% write to output xmlfile
+    TxmlFileName = [outputdir listOfMovies{i} 'tmp.xml'];
+    xmlFileName  = [outputdir listOfMovies{i} '.xml'];
+    struct2xml(A, TxmlFileName);
+    %% add header
+    cmd_header = ['cat <(head -n1 ' TxmlFileName ') '  templateHeaderFile ' <(tail +2 ' TxmlFileName ') > ' xmlFileName];
+    system(cmd_header);
+    cmd_clean = ['rm ' TxmlFileName];
+    system(cmd_clean);
+%     xmlFileNameNoHeader  = [outputdir listOfMovies{i} 'NoHeader.xml'];
+%     cmd_cleanXMLFromHeader = ['grep -F -x -v -f ' templateHeaderFile ' ' xmlFileName ' >> ' xmlFileNameNoHeader];
+%     system(cmd_cleanXMLFromHeader);
+    
 end
