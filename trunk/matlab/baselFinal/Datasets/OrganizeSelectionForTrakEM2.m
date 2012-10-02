@@ -14,13 +14,13 @@ channels = {'red', 'green'};
 OutputRootDirectory = '/Users/feth/Documents/Work/Data/Sinergia/Olivier/20xTrakEM2/';
 numberOfFrames = 97;
 templateFile        = 'Template.xml';
-templateHeaderFile  = 'TemplateHeader.xml';
+templateHeaderFile  = 'TemplateHeaderSimplified.xml';
 
 if(~exist(OutputRootDirectory, 'dir'))
     mkdir(OutputRootDirectory);
 end
 
-for i = 1:length(listOfMovies)
+for i = 1:10%length(listOfMovies)
     disp(i)
     outputdir = [OutputRootDirectory listOfMovies{i} '/'];
     if exist(outputdir, 'dir')
