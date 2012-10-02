@@ -1,4 +1,6 @@
 function TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile)
+% simplified xml templates are supposed to be used 
+% only nuclei and soma
 
 strIDx = sprintf('%03d', idx);
 xmlFileNameNoHeader =[DataRootDirectory strIDx '/' strIDx 'NoHeader.xml'];
