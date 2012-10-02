@@ -13,7 +13,7 @@ inputImage = [DataRootDirectory strIDx '/red.tif'];
 %%
 I = readMultiPageTiff(inputImage);
 %%
-CellIdx = 4;
+CellIdx = 3;
 for detectiionIdx=1:4
 
     Time =  TrackedCells{CellIdx}.nucleus.listOfObjects.t2_area{detectiionIdx}.Time;
