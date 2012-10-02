@@ -49,6 +49,8 @@ for i = 1:10%length(listOfMovies)
         for k = 1:length(listImages)
             Im(:, :, k) = imread([dirName '/' listImages{k}]);
         end
+        % invert to ease annotations
+        Im = max(Im(:)) - Im;
         
         writeMultiPageTiff(Im, [outputdir channels{j} '.tif']);
         if strcmp(channels{j}, 'red')
@@ -77,8 +79,5 @@ for i = 1:10%length(listOfMovies)
     system(cmd_header);
     cmd_clean = ['rm ' TxmlFileName];
     system(cmd_clean);
-%     xmlFileNameNoHeader  = [outputdir listOfMovies{i} 'NoHeader.xml'];
-%     cmd_cleanXMLFromHeader = ['grep -F -x -v -f ' templateHeaderFile ' ' xmlFileName ' >> ' xmlFileNameNoHeader];
-%     system(cmd_cleanXMLFromHeader);
     
 end
