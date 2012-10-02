@@ -1,5 +1,5 @@
 function TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile)
-% simplified xml templates are supposed to be used 
+% simplified xml templates are supposed to be used
 % only nuclei and soma
 
 strIDx = sprintf('%03d', idx);
@@ -63,47 +63,58 @@ for i =1:numel(TrackedCells)
     for k =1:numel(fieldNames)
         if strcmp(fieldNames{k}, 'nucleus') || strcmp(fieldNames{k}, 'soma')
             currentField = getfield(TrackedCells{i}, fieldNames{k});%#ok
-            if(TrackedCells{i}.LifeTime == 0)
-                TrackedCells{i}.LifeTime = numel(currentField.listOfObjects.t2_area);
-            elseif(TrackedCells{i}.LifeTime ~= numel(currentField.listOfObjects.t2_area))
-                error('annoted soma and nucleus must have the same LifeTime!!');
+            is_t2_area = true;
+            if(~isfield(currentField.listOfObjects, 't2_area'))
+                is_t2_area = false;
+                warning([fieldNames{k} ' object created, but no area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
+            elseif numel(currentField.listOfObjects.t2_area) == 1
+                is_t2_area = false;
+                warning([fieldNames{k} ' object created, only one area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
             end
-            Trasform = currentField.listOfObjects.Attributes.transform;
-            Trasform = Trasform(8:end-1);
-            Trasform = strread(Trasform, '%s', 'delimiter', ',');
-            Tx = str2double(Trasform{end-1});
-            Ty = str2double(Trasform{end});
-            for j=1:numel(currentField.listOfObjects.t2_area)
-                for m =1:Nb_frames
-                    if(strcmp(currentField.listOfObjects.t2_area{j}.Attributes.layer_id, LayerId{m}))
-                        currentField.listOfObjects.t2_area{j}.Time = m;
-                        currentField.listOfObjects.t2_area{j}.XX   = [];
-                        currentField.listOfObjects.t2_area{j}.YY   = [];
-                        if length(currentField.listOfObjects.t2_area{j}.t2_path) > 1
-                            warning('object has multiple boundary patches');%#ok
-                            disp(['cell Id = ' num2str(i) ', ' fieldNames{k} ', at time ' int2str(m)])
-                        end
-                        for kk =1:length(currentField.listOfObjects.t2_area{j}.t2_path)
-                            if(length(currentField.listOfObjects.t2_area{j}.t2_path) > 1)
-                                Loc = currentField.listOfObjects.t2_area{j}.t2_path{kk}.Attributes.d;
-                            else
-                                Loc = currentField.listOfObjects.t2_area{j}.t2_path.Attributes.d;
+            
+            if(is_t2_area)
+                if(TrackedCells{i}.LifeTime == 0)
+                    TrackedCells{i}.LifeTime = numel(currentField.listOfObjects.t2_area);
+                elseif(TrackedCells{i}.LifeTime ~= numel(currentField.listOfObjects.t2_area))
+                    error('annotated soma and nucleus must have the same LifeTime!!');
+                end
+                Trasform = currentField.listOfObjects.Attributes.transform;
+                Trasform = Trasform(8:end-1);
+                Trasform = strread(Trasform, '%s', 'delimiter', ',');
+                Tx = str2double(Trasform{end-1});
+                Ty = str2double(Trasform{end});
+                for j=1:numel(currentField.listOfObjects.t2_area)
+                    for m =1:Nb_frames
+                        if(strcmp(currentField.listOfObjects.t2_area{j}.Attributes.layer_id, LayerId{m}))
+                            currentField.listOfObjects.t2_area{j}.Time = m;
+                            currentField.listOfObjects.t2_area{j}.XX   = [];
+                            currentField.listOfObjects.t2_area{j}.YY   = [];
+                            if length(currentField.listOfObjects.t2_area{j}.t2_path) > 1
+                                warning('object has multiple boundary patches');%#ok
+                                disp(['cell Id = ' num2str(i) ', ' fieldNames{k} ', at time ' int2str(m)])
                             end
-                            Loc = Loc(3:end-2); Loc = ['L ' Loc];%#ok
-                            [XX, YY] = strread(Loc, 'L %s %s', 'delimiter', ' ');
-                            X = zeros(size(XX)); Y = zeros(size(YY));
-                            for l =1:numel(XX)
-                                X(l) = str2double(XX{l}) + Tx+1;% +1 for matlab indexins
-                                Y(l) = str2double(YY{l}) + Ty+1;% +1 for matlab indexins
+                            for kk =1:length(currentField.listOfObjects.t2_area{j}.t2_path)
+                                if(length(currentField.listOfObjects.t2_area{j}.t2_path) > 1)
+                                    Loc = currentField.listOfObjects.t2_area{j}.t2_path{kk}.Attributes.d;
+                                else
+                                    Loc = currentField.listOfObjects.t2_area{j}.t2_path.Attributes.d;
+                                end
+                                Loc = Loc(3:end-2); Loc = ['L ' Loc];%#ok
+                                [XX, YY] = strread(Loc, 'L %s %s', 'delimiter', ' ');
+                                X = zeros(size(XX)); Y = zeros(size(YY));
+                                for l =1:numel(XX)
+                                    X(l) = str2double(XX{l}) + Tx+1;% +1 for matlab indexins
+                                    Y(l) = str2double(YY{l}) + Ty+1;% +1 for matlab indexins
+                                end
+                                currentField.listOfObjects.t2_area{j}.XX = [currentField.listOfObjects.t2_area{j}.XX; X];
+                                currentField.listOfObjects.t2_area{j}.YY = [currentField.listOfObjects.t2_area{j}.YY; Y];
                             end
-                            currentField.listOfObjects.t2_area{j}.XX = [currentField.listOfObjects.t2_area{j}.XX; X];
-                            currentField.listOfObjects.t2_area{j}.YY = [currentField.listOfObjects.t2_area{j}.YY; Y];
+                            continue;
                         end
-                        continue;
                     end
                 end
+                TrackedCells{i} = setfield(TrackedCells{i}, fieldNames{k}, currentField );%#ok
             end
-            TrackedCells{i} = setfield(TrackedCells{i}, fieldNames{k}, currentField );%#ok
             clear currentField;
         end
     end
