@@ -3,7 +3,7 @@ clear all; close all; clc;
 Magnification  = '20x';
 datasets_paths_filename = ['sinergia-datasets-paths-' Magnification '-clean.txt'];
 outputSelectionfile = [Magnification 'Selections.txt'];
-OutputRootDirectory = ['/home/fbenmans/Selection' Magnification '/'];
+OutputRootDirectory = ['/home/fbenmans/SelectionStatic' Magnification '/'];
 inputDataRoot      =  '/raid/data/store/';
 
 nb_randomSelections = 50;
@@ -35,22 +35,27 @@ for i= 1:length(C{1})
         end
     end
     NumOfSequences(i)  = NumOfSequences(i) - 2;
-    if strcmp(Magnification, '20x')
-        if i <=4
-            NumOfSequences(i)  = NumOfSequences(i) - 1;
-        end
-    end
+%     if strcmp(Magnification, '20x')
+%         if i <=4
+%             NumOfSequences(i)  = NumOfSequences(i) - 1;
+%         end
+%     end
     
 end
 %%
 TotalNumberOfSequences = sum(NumOfSequences);
 
 randomPlateSelection = randi(nb_randomSelections, [1, nb_randomSelections]);
-PlateExpIndides = zeros(2, nb_randomSelections);
+PlateExpIndides = zeros(3, nb_randomSelections);
 
 for i = 1:nb_randomSelections
     PlateExpIndides(1, i) = randomPlateSelection(i);
+    Location = C{5}(PlateExpIndides(1, i));
+    plateFolder = [inputDataRoot Location{1} '/original/'];
     PlateExpIndides(2, i) = randi(NumOfSequences(PlateExpIndides(1, i)), 1);
+    sequenceFolder = [plateFolder sprintf('%03d', PlateExpIndides(2, i)) '/red/'];
+    nb_image = numel(dir(sequenceFolder, '*.TIF'));
+    PlateExpIndides(3, i) = randi(NumOfSequences(PlateExpIndides(1, i)), 1);
 end
 %%
 
@@ -66,7 +71,7 @@ for i = 1:nb_randomSelections
         end
     end
     plateFolder = [plateFolder   directoryName '/' ];%#ok<*AGROW>
-    fprintf(FID, '%s \t %d \n', plateFolder, PlateExpIndides(2, i));
+    fprintf(FID, '%s \t %d %d\n', plateFolder, PlateExpIndides(2, i), PlateExpIndides(3, i));
 end
 
 fclose(FID);
@@ -77,7 +82,7 @@ end
 system(['cp ' outputSelectionfile ' ' OutputRootDirectory]);
 
 FID = fopen([OutputRootDirectory outputSelectionfile]);
-C = textscan(FID, '%s %d');
+C = textscan(FID, '%s %d %d');
 fclose(FID);
 
 for i = 1:length(C{1})
@@ -91,7 +96,15 @@ for i = 1:length(C{1})
     else
         mkdir(outputDirExp);
     end
+    RedChannelDirectory     = [inputDir '/red/'];
+    GreenChannelDirectory   = [inputDir '/green/'];
+    Ared        = dir(RedChannelDirectory, '*.TIF');
+    Agreen      = dir(GreenChannelDirectory, '*.TIF');
     
+    RedImageFileName    = [RedChannelDirectory '/' Ared(num2str(C{3}(i))).name];
+    GreenImageFileName  = [GreenChannelDirectory '/' Agreen(num2str(C{3}(i))).name];
+    RedImage    = imread(RedImageFileName);
+    GreenImage  = imread(GreenImageFileName);
     copy_cmd = ['cp -r ' inputDir '/red/ ' outputDirExp '/red/'];
     disp(copy_cmd);
     system(copy_cmd);
