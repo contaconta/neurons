@@ -2,7 +2,7 @@ clear all; close all; clc;
 %%
 Magnification  = '20x';
 datasets_paths_filename = ['sinergia-datasets-paths-' Magnification '-clean.txt'];
-outputSelectionfile = [Magnification 'Selections.txt'];
+outputSelectionfile = [Magnification 'StaticSelections.txt'];
 OutputRootDirectory = ['/home/fbenmans/SelectionStatic' Magnification '/'];
 inputDataRoot      =  '/raid/data/store/';
 
@@ -52,10 +52,18 @@ for i = 1:nb_randomSelections
     PlateExpIndides(1, i) = randomPlateSelection(i);
     Location = C{5}(PlateExpIndides(1, i));
     plateFolder = [inputDataRoot Location{1} '/original/'];
+    a = dir(plateFolder);
+    for j = 1:length(a)
+        if(a(j).isdir && length(a(j).name) > 5)
+            directoryName = a(j).name;
+            break;
+        end
+    end
+    plateFolder = [plateFolder   directoryName '/' ];%#ok<*AGROW>
     PlateExpIndides(2, i) = randi(NumOfSequences(PlateExpIndides(1, i)), 1);
-    sequenceFolder = [plateFolder sprintf('%03d', PlateExpIndides(2, i)) '/red/'];
-    nb_image = numel(dir(sequenceFolder, '*.TIF'));
-    PlateExpIndides(3, i) = randi(NumOfSequences(PlateExpIndides(1, i)), 1);
+    sequenceFolder = [plateFolder sprintf('%d', PlateExpIndides(2, i)) '/red/'];
+    nb_image = numel(dir([sequenceFolder '*.TIF']));
+    PlateExpIndides(3, i) = randi(nb_image, 1);
 end
 %%
 
@@ -93,21 +101,19 @@ for i = 1:length(C{1})
     
     if  exist(outputDirExp, 'dir')
         rmdir(outputDirExp, 's');
-    else
+    end
+    if ~exist(outputDirExp, 'dir')
         mkdir(outputDirExp);
     end
     RedChannelDirectory     = [inputDir '/red/'];
     GreenChannelDirectory   = [inputDir '/green/'];
-    Ared        = dir(RedChannelDirectory, '*.TIF');
-    Agreen      = dir(GreenChannelDirectory, '*.TIF');
+    Ared        = dir([RedChannelDirectory '*.TIF']);
+    Agreen      = dir([GreenChannelDirectory '*.TIF']);
     
-    RedImageFileName    = [RedChannelDirectory '/' Ared(num2str(C{3}(i))).name];
-    GreenImageFileName  = [GreenChannelDirectory '/' Agreen(num2str(C{3}(i))).name];
+    RedImageFileName    = [RedChannelDirectory '/' Ared(C{3}(i)).name];
+    GreenImageFileName  = [GreenChannelDirectory '/' Agreen(C{3}(i)).name];
     RedImage    = imread(RedImageFileName);
     GreenImage  = imread(GreenImageFileName);
-    copy_cmd = ['cp -r ' inputDir '/red/ ' outputDirExp '/red/'];
-    disp(copy_cmd);
-    system(copy_cmd);
-    copy_cmd = ['cp -r ' inputDir '/green/ ' outputDirExp '/green/'];
-    system(copy_cmd);
+    imwrite(RedImage, [outputDirExp '/red.tif']);
+    imwrite(GreenImage, [outputDirExp '/green.tif']);
 end
