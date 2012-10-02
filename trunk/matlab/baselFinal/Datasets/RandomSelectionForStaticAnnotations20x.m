@@ -34,13 +34,7 @@ for i= 1:length(C{1})
             NumOfSequences(i)  = NumOfSequences(i)  +1;
         end
     end
-    NumOfSequences(i)  = NumOfSequences(i) - 2;
-%     if strcmp(Magnification, '20x')
-%         if i <=4
-%             NumOfSequences(i)  = NumOfSequences(i) - 1;
-%         end
-%     end
-    
+    NumOfSequences(i)  = NumOfSequences(i) - 2;    
 end
 %%
 TotalNumberOfSequences = sum(NumOfSequences);
