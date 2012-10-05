@@ -20,7 +20,7 @@ if(~exist(OutputRootDirectory, 'dir'))
     mkdir(OutputRootDirectory);
 end
 
-for i = 11:50%length(listOfMovies)
+for i = 7:7%length(listOfMovies)
     disp(i)
     outputdir = [OutputRootDirectory listOfMovies{i} '/'];
     if exist(outputdir, 'dir')
