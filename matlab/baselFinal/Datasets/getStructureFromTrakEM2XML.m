@@ -66,17 +66,20 @@ for i =1:numel(TrackedCells)
             is_t2_area = true;
             if(~isfield(currentField.listOfObjects, 't2_area'))
                 is_t2_area = false;
-                warning([fieldNames{k} ' object created, but no area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
+                disp([fieldNames{k} ' object created, but no area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
             elseif numel(currentField.listOfObjects.t2_area) == 1
                 is_t2_area = false;
-                warning([fieldNames{k} ' object created, only one area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
+                disp([fieldNames{k} ' object created, only one area_list annotated: ' 'cell Id = ' num2str(i) ', ' fieldNames{k}]);%#ok
             end
             
             if(is_t2_area)
                 if(TrackedCells{i}.LifeTime == 0)
                     TrackedCells{i}.LifeTime = numel(currentField.listOfObjects.t2_area);
                 elseif(TrackedCells{i}.LifeTime ~= numel(currentField.listOfObjects.t2_area))
-                    error('annotated soma and nucleus must have the same LifeTime!!');
+                    disp(['annotated soma and nucleus must have the same LifeTime!! ' ...
+                          ' life time of the Nucleus is ' num2str(TrackedCells{i}.LifeTime) ...
+                          ', life time of the Soma is ' num2str(numel(currentField.listOfObjects.t2_area)) ...
+                          ', current soma Id is ' num2str(currentField.area_list.Attributes.oid)]);
                 end
                 Trasform = currentField.listOfObjects.Attributes.transform;
                 Trasform = Trasform(8:end-1);
@@ -90,8 +93,7 @@ for i =1:numel(TrackedCells)
                             currentField.listOfObjects.t2_area{j}.XX   = [];
                             currentField.listOfObjects.t2_area{j}.YY   = [];
                             if length(currentField.listOfObjects.t2_area{j}.t2_path) > 1
-                                warning('object has multiple boundary patches');%#ok
-                                disp(['cell Id = ' num2str(i) ', ' fieldNames{k} ', at time ' int2str(m)])
+                                disp(['object has multiple boundary patches.' ' Object Id = ' num2str(currentField.area_list.Attributes.oid) ', ' fieldNames{k} ', at time ' int2str(m)])
                             end
                             for kk =1:length(currentField.listOfObjects.t2_area{j}.t2_path)
                                 if(length(currentField.listOfObjects.t2_area{j}.t2_path) > 1)
