@@ -1,24 +1,24 @@
 clear all; close all; clc;
 %%
-idx = 2 ;
+idx = 5;
 strIDx = sprintf('%03d', idx);
 DataRootDirectory = '/Users/feth/tmp/';
 templateHeaderFile  = 'TemplateHeaderSimplified.xml';
 %%
 TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile);
-
-inputImage = [DataRootDirectory strIDx '/red.tif'];
-
-
 %%
+inputImage = [DataRootDirectory strIDx '/green.tif'];
+
 I = readMultiPageTiff(inputImage);
 %%
-CellIdx = 3;
-for detectiionIdx=1:4
+CellIdx = 1;
+for detectiionIdx=1:10
 
-    Time =  TrackedCells{CellIdx}.nucleus.listOfObjects.t2_area{detectiionIdx}.Time;
+    Time =  TrackedCells{CellIdx}.soma.listOfObjects.t2_area{detectiionIdx}.Time;
 %     disp(num2str(Time));
-    figure(1); clf; imshow(I(:,:, Time), []); hold on;
-    plot(TrackedCells{CellIdx}.nucleus.listOfObjects.t2_area{detectiionIdx}.XX, TrackedCells{CellIdx}.nucleus.listOfObjects.t2_area{detectiionIdx}.YY, '-r')
+    currentFrame = I(:,:, Time);
+%     currentFrame(TrackedCells{CellIdx}.soma.listOfObjects.t2_area{detectiionIdx}.PixelIdxList) = max(currentFrame(:));
+    figure(1); clf; imshow(currentFrame, []); hold on;
+    plot(TrackedCells{CellIdx}.soma.listOfObjects.t2_area{detectiionIdx}.XX, TrackedCells{CellIdx}.soma.listOfObjects.t2_area{detectiionIdx}.YY, '-r')
     pause;
 end
