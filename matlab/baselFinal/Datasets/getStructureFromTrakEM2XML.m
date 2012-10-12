@@ -3,15 +3,15 @@ function TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templ
 % only nuclei and soma
 ImageSize = [520, 696];
 strIDx = sprintf('%03d', idx);
-xmlFileNameNoHeader =[DataRootDirectory strIDx '/' strIDx 'NoHeader.xml'];
-xmlFileName  = [DataRootDirectory strIDx '/' strIDx '.xml'];
-if(exist(xmlFileNameNoHeader, 'file'))
-    system(['rm ' xmlFileNameNoHeader]);
+xmlFileNameNoHeader =['"' DataRootDirectory strIDx '/' strIDx 'NoHeader.xml"'];
+xmlFileName  = ['"' DataRootDirectory strIDx '/' strIDx '.xml"'];
+if(exist(xmlFileNameNoHeader(2:end-1), 'file'))
+    delete(xmlFileNameNoHeader(2:end-1));
 end
 cmd_cleanXMLFromHeader = ['grep -F -x -v -f ' templateHeaderFile ' ' xmlFileName ' >> ' xmlFileNameNoHeader];
 system(cmd_cleanXMLFromHeader);
 %%
-ST  = xml2struct(xmlFileNameNoHeader);
+ST  = xml2struct(xmlFileNameNoHeader(2:end-1));
 %% First get the objects
 % Get the number of tracked cells
 TrackedCells = cell(size(ST.trakem2.project.cell));
