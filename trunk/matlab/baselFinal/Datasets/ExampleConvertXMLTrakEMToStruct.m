@@ -1,11 +1,29 @@
 clear all; close all; clc;
 %%
-idx = 5;
-strIDx = sprintf('%03d', idx);
-DataRootDirectory = '/Users/feth/tmp/';
-templateHeaderFile  = 'TemplateHeaderSimplified.xml';
+NumOfTrackedCells = 0;
+NumOfAnnotatedNuclei = 0;
+NumOfAnnotatedSomata = 0;
+
+for idx = 5:8
+    strIDx = sprintf('%03d', idx);
+    disp('========================================')
+    disp(strIDx)
+    disp('========================================')
+    DataRootDirectory = '/Users/feth/Google Drive/Sinergia/GT20x/Dynamic/';
+    templateHeaderFile  = 'TemplateHeaderSimplified.xml';
+    %%
+    TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile);
+    NumOfTrackedCells = NumOfTrackedCells + numel(TrackedCells);
+    for k = 1:numel(TrackedCells)
+        NumOfAnnotatedNuclei = NumOfAnnotatedNuclei + numel(TrackedCells{k}.nucleus.listOfObjects.t2_area);
+        NumOfAnnotatedSomata = NumOfAnnotatedSomata + numel(TrackedCells{k}.soma.listOfObjects.t2_area);
+    end
+end
 %%
-TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile);
+disp(['Nb tracked cells is ' num2str(NumOfTrackedCells)]);
+disp(['Nb tracked Nuclei is ' num2str(NumOfAnnotatedNuclei)]);
+disp(['Nb tracked Somata is ' num2str(NumOfAnnotatedSomata)]);
+
 %%
 inputImage = [DataRootDirectory strIDx '/green.tif'];
 
