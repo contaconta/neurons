@@ -1,0 +1,73 @@
+\newif\ifrgb
+\rgbfalse
+
+\newif\ifdraft
+\draftfalse
+
+\newif\iffig
+\figtrue
+
+\pssilent
+
+\newcommand{\epsfx}[2]
+{
+ \ifdraft 
+  \parbox{#1}{\hspace{#1}} 
+ \else
+  \includegraphics[width=#1,keepaspectratio]{#2} 
+ \fi
+}
+
+\newcommand{\epsfy}[2]
+{
+ \ifdraft 
+  \parbox{#1}{\hspace{#1}} 
+ \else
+  \includegraphics[height=#1,keepaspectratio]{#2} 
+ \fi
+}
+
+\newcommand{\epsfxy}[3]
+{
+ \ifdraft 
+  \parbox{#1}{\hspace{#1}} 
+ \else
+  \includegraphics[width=#1,height=#2]{#3} 
+ \fi
+}
+
+
+
+\newcommand{\epsfxr}[3]
+{
+ \ifdraft \parbox{#1}{\hspace{#1}} \else \parbox{#1}{\ifrgb \psfig{file=#3.ps.rgb,width=#1,angle=#2} \else \psfig{file=#3.ps,width=#1,angle=#2} \fi} \fi
+}
+
+
+
+\newcommand{\epsfyr}[3]
+{
+ \ifdraft \parbox{#1}{\hspace{#1}} \else \parbox{#1}{\ifrgb \psfig{file=#3.ps.rgb,wheight=#1,angle=#2} \else \psfig{file=#3.ps,width=#1,angle=#2} \fi} \fi
+}
+
+\newcommand{\epsfxyr}[4]
+{
+ \ifdraft \parbox{#1}{\vspace{#2}} \else \parbox[t]{#1}{\psfig{file=#4.ps,width=#1,height=#2,angle=#3}} \fi
+}
+
+\newcommand{\figurecaption}[2]
+{
+\caption[]{\parbox[t]{#1}{#2}}
+}
+
+\newcommand{\psdir}[1]
+{
+\def\figurepath{#1}
+}
+
+\renewcommand{\topfraction}{1}
+\renewcommand{\dbltopfraction}{1}
+\renewcommand{\bottomfraction}{1}
+\renewcommand{\textfraction}{.0}
+\renewcommand{\floatpagefraction}{1}
+\renewcommand{\dblfloatpagefraction}{1}

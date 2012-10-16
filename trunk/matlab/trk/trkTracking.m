@@ -214,6 +214,9 @@ disp('...skeletonizing filaments');
 BLANK = zeros(size(mv{1},1), size(mv{1},2));
 FILAMENTS = trkSkeletonize2(D, FIL, BLANK);
 
+
+keyboard;
+
 %% break filaments into neurites
 disp('...breaking skeletons into neurite trees');
 for dd = 1:length(D)
@@ -240,50 +243,49 @@ GlobalMeasures = getGlobalMeasures(date_txt,label_txt, tracks, Dlist, num_txt);
 
 toc;
 
-% % save the parameters in the experiment folder
-% paramfile = [folder 'params.mat'];
-% disp(['...saving parameters to ' paramfile]);
-% save(paramfile, 'NUC_INT_THRESH',...
-%      'NUC_MIN_AREA',...
-%      'WT',...
-%      'WSH',...
-%      'WIN_SIZE',...
-%      'W_THRESH',...
-%      'FRANGI_THRESH',...
-%      'TARGET_NUM_OBJECTS',...
-%      'SOMA_THRESH',...
-%      'rmin',...
-%      'rmax');
-% 
+% save the parameters in the experiment folder
+paramfile = [folder 'params.mat'];
+disp(['...saving parameters to ' paramfile]);
+save(paramfile, 'NUC_INT_THRESH',...
+     'NUC_MIN_AREA',...
+     'WT',...
+     'WSH',...
+     'WIN_SIZE',...
+     'W_THRESH',...
+     'FRANGI_THRESH',...
+     'TARGET_NUM_OBJECTS',...
+     'SOMA_THRESH',...
+     'rmin',...
+     'rmax');
 
-% %% render results on the video
-% disp('...rendering images');
-% mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+
+%% render results on the video
+disp('...rendering images');
+mv = trkRenderImages2(TMAX, G, date_txt, num_txt, label_txt, SMASK, cols, mv, Dlist, BLANK, FILAMENTS, Soma, tracks, D, DISPLAY_FIGURES, SHOW_FALSE_DETECTS);
+
+% make a movie of the results
+movfile = [  date_txt '_' num_txt '.avi'];
+trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
+%makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
+
+
+%% save everything we need for the analysis
+datafile = [resultsFolder date_txt '_' num_txt '.mat'];
+trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
+
+% % put everything into a nice structure for the xml writer
+% Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
 % 
-% % make a movie of the results
-% movfile = [  date_txt '_' num_txt '.avi'];
-% trkMovie(mv, folder, resultsFolder, movfile); fprintf('\n');
-% %makemovie(mv, folder, resultsFolder, [  date_txt '_' num_txt '.avi']); disp('');
-% 
-% 
-% 
-% %% save everything we need for the analysis
-% datafile = [resultsFolder date_txt '_' num_txt '.mat'];
-% trkSaveEssentialData(datafile, D, Dlist, FIL, FILAMENTS, Soma, FrameMeasures, GlobalMeasures, timeSeq, tracks, trkSeq);
-% 
-% % % put everything into a nice structure for the xml writer
-% % Experiment = makeOutputStructure(D, Soma, Dlist, date_txt, label_txt, tracks, FrameMeasures, num_txt);
-% % 
-% % % write the xml file
-% % xmlFileName = [folder num_txt '.xml'];
-% % disp(['...writing ' xmlFileName]);
-% % trkWriteXMLFile(Experiment, xmlFileName);
-% 
-% %matlabpool close;
-% 
-% 
-% %keyboard;
-% 
+% % write the xml file
+% xmlFileName = [folder num_txt '.xml'];
+% disp(['...writing ' xmlFileName]);
+% trkWriteXMLFile(Experiment, xmlFileName);
+
+%matlabpool close;
+
+
+%keyboard;
+
 
 
 

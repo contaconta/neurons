@@ -1,0 +1,81 @@
+
+\documentclass[12pt]{article}
+\usepackage{epsfig}
+\usepackage{a4}
+\usepackage{amsmath}
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{12pt}
+
+\usepackage{rotating}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{sidewaystable}
+  \begin{tabular}{|l||ccc||ccc||ccc||ccc|}
+    \hline
+    & \multicolumn{3}{|c|}{  Control  } &  \multicolumn{3}{|c|}{  RhoA 1  } &
+    \multicolumn{3}{|c|}{   RhoA 2  }   &  \multicolumn{3}{|c|}{   RhoA 3  }  \\
+    \hline
+    & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$
+    & $\%$ & P \\
+    \hline
+    DistToSomaExtremeNeurite &  22.61 & 33 &  1 & 28.61 &  38 & 1e-59&  29.34 & 42&
+    2e-90& 30.99 & 43& 5e-115 \\
+    EccentricityNeurite & 0.82 & 55 & 1 &  0.84 & 62 & 1e-39 &0.84 & 64& 4e-74 &
+    0.83 & 61 & 1e-26 \\
+    DeltaEccentricityNeurite  & 5.7e-2  &33 &1  & 5.3e-2  &31 &2e-7  &5.2e-2 &30
+    &3e-10 &5.4e-2 &31 & 6e-4 \\
+    \hline
+    MaxBranchCountNeurite &14.55  & 32  & 1 &  14.72 &  30 & 0.8  & 16.82   & 33
+    &6e-4 &19.44 & 34 & 1e-6 \\
+    MeanNumberOfNeurites &3.35 &51 &1 & 3.104 & 38 &0.02 &3.36 &43 &0.5 & 3.275 &41 &0.3 \\
+    Filopodia/Neurite &6.7 &30 &1 & 6.5 &27 &0.3 &7.3 &29 &5e-5 &7.98 &32 &4e-11 \\
+    SpeedNuclei &0.31 & 42  & 1 &0.26 & 31 & 2e-9 &0.23 &24  & 2e-64 &0.25 &27 &
+    2e-134 \\
+    \hline \hline
+    & \multicolumn{3}{|c|}{  Control  } &  \multicolumn{3}{|c|}{  Map2K7 1  } &
+    \multicolumn{3}{|c|}{   Map2K7 2  }   &  \multicolumn{3}{|c|}{   Map2K7 3  }  \\
+    \hline
+    & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$
+    & $\%$ & P \\
+    \hline
+    DistToSomaExtremeNeurite  &  22.61 & 33 &  1 &  19.48 & 27 & 2e-42 & 20.71 & 32
+    & 6e-14 & 22.62 & 35 & 1 \\
+    EccentricityNeurite  & 0.82 & 55 & 1 & 0.81 & 53 & 0.02 &  0.82 & 58 & 2e-6
+    &0.81 & 55 & 0.1  \\
+    DeltaEccentricityNeurite & 5.7e-2 &33 &1  & 5.7e-2 &33 &0.9 &5.7e-2 &34 &0.5
+    &5.9e-2 &35 & 0.01\\
+    MeanNumberOfNeurites &3.35 &51 &1 &3.9 &63 &0.001 &3.58 &53 &0.2 &3.82  &64 &2e-4 \\
+    \hline
+    MaxBranchCountNeurite &14.55  & 32 &  1 & 13.49   & 30 &0.1 &13.92  &32 &0.3
+    &18.04 &39 &3e-5 \\
+    Filopodia/Neurite &6.7 &30 &1 &6.43 &29 &0.05 &6.5 &30 &0.3 &7.78 &35 &2e11 \\
+    SpeedNuclei &0.31 & 42 & 1 &0.36 & 46  & 1e-64 & 0.371 & 52 & 9e-102 &0.35  &
+    50  & 6-e64 \\
+    \hline \hline
+    & \multicolumn{3}{|c|}{  Control  } &  \multicolumn{3}{|c|}{  SrGAP2 1  } &
+    \multicolumn{3}{|c|}{   SrGAP2 2  }   &  \multicolumn{3}{|c|}{   SrGAP2 3  }  \\
+    \hline
+    & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$ & $\%$ & P     & $\mu$
+    & $\%$ & P \\
+    \hline
+    DistToSomaExtremeNeurite &  22.61 & 33 &  1  & 22.98 & 35 & 0.2 & 23.72 & 37
+    & 9e-5 & 28.93 & 42 & 3e98 \\
+    EccentricityNeurite  & 0.82 & 55 & 1 & 0.81  & 54 & 2e-3 &  0.82 & 58 & 2e-4
+    & 0.82 & 56 & 4e-3  \\
+    DeltaEccentricityNeurite & 5.7e-2 &33 &1  & 5.8e-2 &34 &0.2 &5.8e-2 &34 &0.4
+    &5.6e-2 &33 & 0.04\\
+    MeanNumberOfNeurites &3.35 &51 &1 &4.05 &67 &3e-6 &4.01 &65 &1e-5 & 3.88 &61 &4e-5 \\
+    \hline
+    MaxBranchCountNeurite &14.55 & 32 & 1 & 17.98 & 39 & 1e-5 & 17.53 & 37 &1e-4
+    &21.39 &40 &8e-14 \\
+    Filopodia/Neurite &6.7 &30 &1 &7.82 &37 &3e-14 &7.5 &32 &4e-18 &8.8 &37 &2e-31 \\
+    SpeedNuclei &0.31 & 42 & 1 & 0.31  & 43 & 7e-4 &0.33 &52 &2e-99 &0.37 &44 &4e-15 \\
+    \hline
+  \end{tabular}
+\end{sidewaystable}
+
+\end{document}
+

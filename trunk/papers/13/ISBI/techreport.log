@@ -1,0 +1,517 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.5.10)  1 JUN 2011 15:33
+entering extended mode
+ %&-line parsing enabled.
+**techreport.tex
+(./techreport.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, loaded.
+(./llncs.cls
+Document Class: llncs 2004/08/17 v2.14 
+ LaTeX document class for Lecture Notes in Computer Science
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf-texlive/tex/latex/tools/multicol.sty
+Package: multicol 2008/12/05 v1.6h multicolumn formatting (FMi)
+\c@tracingmulticols=\count87
+\mult@box=\box26
+\multicol@leftmargin=\dimen103
+\c@unbalance=\count88
+\c@collectmore=\count89
+\doublecol@number=\count90
+\multicoltolerance=\count91
+\multicolpretolerance=\count92
+\full@width=\dimen104
+\page@free=\dimen105
+\premulticols=\dimen106
+\postmulticols=\dimen107
+\multicolsep=\skip43
+\multicolbaselineskip=\skip44
+\partial@page=\box27
+\last@line=\box28
+\mult@rightbox=\box29
+\mult@grightbox=\box30
+\mult@gfirstbox=\box31
+\mult@firstbox=\box32
+\@tempa=\box33
+\@tempa=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\c@columnbadness=\count93
+\c@finalcolumnbadness=\count94
+\last@try=\dimen108
+\multicolovershoot=\dimen109
+\multicolundershoot=\dimen110
+\mult@nat@firstbox=\box50
+\colbreak@box=\box51
+)
+\c@chapter=\count95
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 360.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 361.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 362.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 363.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 364.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 365.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 366.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 367.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 368.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 369.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 370.
+\tocchpnum=\dimen111
+\tocsecnum=\dimen112
+\tocsectotal=\dimen113
+\tocsubsecnum=\dimen114
+\tocsubsectotal=\dimen115
+\tocsubsubsecnum=\dimen116
+\tocsubsubsectotal=\dimen117
+\tocparanum=\dimen118
+\tocparatotal=\dimen119
+\tocsubparanum=\dimen120
+\@tempcntc=\count96
+\fnindent=\dimen121
+\c@@inst=\count97
+\c@@auth=\count98
+\c@auco=\count99
+\instindent=\dimen122
+\authrun=\box52
+\authorrunning=\toks14
+\tocauthor=\toks15
+\titrun=\box53
+\titlerunning=\toks16
+\toctitle=\toks17
+\c@theorem=\count100
+\c@case=\count101
+\c@conjecture=\count102
+\c@corollary=\count103
+\c@definition=\count104
+\c@example=\count105
+\c@exercise=\count106
+\c@lemma=\count107
+\c@note=\count108
+\c@problem=\count109
+\c@property=\count110
+\c@proposition=\count111
+\c@question=\count112
+\c@solution=\count113
+\c@remark=\count114
+\headlineindent=\dimen123
+)
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(/usr/share/texmf-texlive/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count115
+\float@exts=\toks18
+\float@box=\box54
+\@float@everytoks=\toks19
+\@floatcapt=\box55
+)
+(/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks20
+\c@algorithm=\count116
+)
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty
+Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
+
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks21
+)
+\c@ALC@unique=\count117
+\c@ALC@line=\count118
+\c@ALC@rem=\count119
+\c@ALC@depth=\count120
+\ALC@tlm=\skip45
+\algorithmicindent=\skip46
+)
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\@emptytoks=\toks22
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip47
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks23
+\ex@=\dimen124
+))
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen125
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count121
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count122
+\leftroot@=\count123
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count124
+\DOTSCASE@=\count125
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box56
+\strutbox@=\box57
+\big@size=\dimen126
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+
+
+Package amsmath Warning: Unable to redefine math accent \vec.
+
+\macc@depth=\count126
+\c@MaxMatrixCols=\count127
+\dotsspace@=\muskip10
+\c@parentequation=\count128
+\dspbrk@lvl=\count129
+\tag@help=\toks24
+\row@=\count130
+\column@=\count131
+\maxfields@=\count132
+\andhelp@=\toks25
+\eqnshift@=\dimen127
+\alignsep@=\dimen128
+\tagshift@=\dimen129
+\tagwidth@=\dimen130
+\totwidth@=\dimen131
+\lineht@=\dimen132
+\@envbody=\toks26
+\multlinegap=\skip48
+\multlinetaggap=\skip49
+\mathdisplay@stack=\toks27
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+) (/usr/share/texmf-texlive/tex/latex/base/makeidx.sty
+Package: makeidx 2000/03/29 v1.0m Standard LaTeX package
+)
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/url.sty
+\Urlmuskip=\muskip11
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+(/usr/share/texmf-texlive/tex/latex/doublestroke/dsfont.sty
+Package: dsfont 1995/08/01 v0.1 Double stroke roman fonts
+)
+(/usr/share/texmf-texlive/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen133
+\WF@size=\dimen134
+\c@WF@wrappedlines=\count133
+\WF@box=\box58
+\WF@everypar=\toks28
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/share/texmf-texlive/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(/usr/share/texmf-texlive/tex/latex/caption/caption.sty
+Package: caption 2009/10/09 v3.1k Customizing captions (AR)
+
+(/usr/share/texmf-texlive/tex/latex/caption/caption3.sty
+Package: caption3 2009/10/09 v3.1k caption3 kernel (AR)
+\captionmargin=\dimen135
+\captionmargin@=\dimen136
+\captionwidth=\dimen137
+\caption@indent=\dimen138
+\caption@parindent=\dimen139
+\caption@hangindent=\dimen140
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used on input line 1068.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
+p \sbox \@tempboxa {{\bfseries #1.} #2}\ifdim \wd \@tempboxa >\hsize {\bfseries
+ #1.} #2\par \else \global \@minipagefalse \hb@xt@ \hsize {\hfil \box \@tempbox
+a \hfil }\fi \vskip \belowcaptionskip .
+\c@ContinuedFloat=\count134
+Package caption Info: float package is loaded.
+Package caption Info: wrapfig package is loaded.
+)
+\c@KVtest=\count135
+\sf@farskip=\skip50
+\sf@captopadj=\dimen141
+\sf@capskip=\skip51
+\sf@nearskip=\skip52
+\c@subfigure=\count136
+\c@subfigure@save=\count137
+\c@lofdepth=\count138
+\c@subtable=\count139
+\c@subtable@save=\count140
+\c@lotdepth=\count141
+\sf@top=\skip53
+\sf@bottom=\skip54
+) (/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
+\Gread@gobject=\count142
+))
+\Gin@req@height=\dimen142
+\Gin@req@width=\dimen143
+) (./techreport.aux)
+\openout1 = `techreport.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
+LaTeX Info: Redefining \subref on input line 37.
+Package caption Info: End \AtBeginDocument code.
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count143
+\scratchdimen=\dimen144
+\scratchbox=\box59
+\nofMPsegments=\count144
+\nofMParguments=\count145
+\everyMPshowfont=\toks29
+\MPscratchCnt=\count146
+\MPscratchDim=\dimen145
+\MPnumerator=\count147
+\everyMPtoPDFconversion=\toks30
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 90.
+ (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 90.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+) (./abstract.tex)
+(./intro.tex <images/mv1_005.png, id=1, 698.61pt x 521.95pt>
+File: images/mv1_005.png Graphic file (type png)
+
+<use images/mv1_005.png> <images/mv1_008.png, id=2, 698.61pt x 521.95pt>
+File: images/mv1_008.png Graphic file (type png)
+
+<use images/mv1_008.png> <images/mv1_017.png, id=3, 698.61pt x 521.95pt>
+File: images/mv1_017.png Graphic file (type png)
+
+<use images/mv1_017.png> <images/mv1_026.png, id=4, 698.61pt x 521.95pt>
+File: images/mv1_026.png Graphic file (type png)
+
+<use images/mv1_026.png>
+Overfull \hbox (7.0906pt too wide) in paragraph at lines 22--30
+ [][] 
+ []
+
+<images/0_005.png, id=5, 317.185pt x 194.7275pt>
+File: images/0_005.png Graphic file (type png)
+ <use images/0_005.png>
+<images/0_008.png, id=7, 317.185pt x 194.7275pt>
+File: images/0_008.png Graphic file (type png)
+ <use images/0_008.png>
+<images/0_017.png, id=8, 317.185pt x 194.7275pt>
+File: images/0_017.png Graphic file (type png)
+ <use images/0_017.png>
+<images/0_026.png, id=9, 317.185pt x 194.7275pt>
+File: images/0_026.png Graphic file (type png)
+ <use images/0_026.png>
+<images/2_005.png, id=10, 317.185pt x 194.7275pt>
+File: images/2_005.png Graphic file (type png)
+ <use images/2_005.png>
+<images/2_008.png, id=11, 317.185pt x 194.7275pt>
+File: images/2_008.png Graphic file (type png)
+ <use images/2_008.png>
+<images/2_017.png, id=12, 317.185pt x 194.7275pt>
+File: images/2_017.png Graphic file (type png)
+ <use images/2_017.png>
+<images/2_026.png, id=13, 317.185pt x 194.7275pt>
+File: images/2_026.png Graphic file (type png)
+ <use images/2_026.png>
+<images/3_005.png, id=14, 317.185pt x 194.7275pt>
+File: images/3_005.png Graphic file (type png)
+ <use images/3_005.png>
+<images/3_008.png, id=15, 317.185pt x 194.7275pt>
+File: images/3_008.png Graphic file (type png)
+ <use images/3_008.png>
+<images/3_017.png, id=16, 317.185pt x 194.7275pt>
+File: images/3_017.png Graphic file (type png)
+ <use images/3_017.png>
+<images/3_026.png, id=17, 317.185pt x 194.7275pt>
+File: images/3_026.png Graphic file (type png)
+ <use images/3_026.png>
+Overfull \hbox (5.69061pt too wide) in paragraph at lines 31--61
+ [][] 
+ []
+
+[1
+
+
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+
+LaTeX Warning: Text page 2 contains only floats.
+
+
+Overfull \vbox (2.46716pt too high) has occurred while \output is active []
+
+
+[2 <./images/mv1_005.png (PNG copy)> <./images/mv1_008.png (PNG copy)> <./image
+s/mv1_017.png (PNG copy)> <./images/mv1_026.png (PNG copy)> <./images/0_005.png
+> <./images/0_008.png> <./images/0_017.png> <./images/0_026.png> <./images/2_00
+5.png> <./images/2_008.png> <./images/2_017.png> <./images/2_026.png> <./images
+/3_005.png> <./images/3_008.png> <./images/3_017.png> <./images/3_026.png>])
+(./method.tex
+
+pdfTeX warning: pdflatex (file ./images/neurondrawing.pdf): PDF inclusion: foun
+d PDF version <1.5>, but at most version <1.4> allowed
+<images/neurondrawing.pdf, id=45, 523.78192pt x 136.38882pt>
+File: images/neurondrawing.pdf Graphic file (type pdf)
+
+<use images/neurondrawing.pdf> [3]
+Overfull \hbox (1.48235pt too wide) in paragraph at lines 77--86
+\OT1/cmr/m/n/10 The first step in our ap-proach is to ex-tract a set of nu-cleu
+s de-tec-tions $\OMS/cmsy/m/n/10 f\OML/cmm/m/it/10 d[]; [] ; d[]\OMS/cmsy/m/n/1
+0 g$
+ []
+
+[4 <./images/neurondrawing.pdf>]
+
+pdfTeX warning: pdflatex (file ./images/greedytracking.pdf): PDF inclusion: fou
+nd PDF version <1.5>, but at most version <1.4> allowed
+<images/greedytracking.pdf, id=67, 600.5751pt x 133.8712pt>
+File: images/greedytracking.pdf Graphic file (type pdf)
+
+<use images/greedytracking.pdf> [5 <./images/greedytracking.pdf>])
+(./features.tex) (./results.tex
+
+pdfTeX warning: pdflatex (file ./images/DistToSomaExtremeNeurite.pdf): PDF incl
+usion: found PDF version <1.5>, but at most version <1.4> allowed
+<images/DistToSomaExtremeNeurite.pdf, id=202, 439.6425pt x 292.09125pt>
+File: images/DistToSomaExtremeNeurite.pdf Graphic file (type pdf)
+
+<use images/DistToSomaExtremeNeurite.pdf>
+
+pdfTeX warning: pdflatex (file ./images/EccentricityNeuriteDelta.pdf): PDF incl
+usion: found PDF version <1.5>, but at most version <1.4> allowed
+<images/EccentricityNeuriteDelta.pdf, id=204, 424.58624pt x 292.09125pt>
+File: images/EccentricityNeuriteDelta.pdf Graphic file (type pdf)
+
+<use images/EccentricityNeuriteDelta.pdf>
+
+pdfTeX warning: pdflatex (file ./images/SpeedNuclei.pdf): PDF inclusion: found 
+PDF version <1.5>, but at most version <1.4> allowed
+<images/SpeedNuclei.pdf, id=206, 440.64626pt x 292.09125pt>
+File: images/SpeedNuclei.pdf Graphic file (type pdf)
+
+<use images/SpeedNuclei.pdf>
+
+pdfTeX warning: pdflatex (file ./images/MaxBranchCountNeurite.pdf): PDF inclusi
+on: found PDF version <1.5>, but at most version <1.4> allowed
+<images/MaxBranchCountNeurite.pdf, id=208, 433.62pt x 292.09125pt>
+File: images/MaxBranchCountNeurite.pdf Graphic file (type pdf)
+
+<use images/MaxBranchCountNeurite.pdf>
+Overfull \hbox (2.04315pt too wide) in paragraph at lines 6--26
+ [][] 
+ []
+
+[6] [7 <./images/DistToSomaExtremeNeurite.pdf> <./images/EccentricityNeuriteDel
+ta.pdf> <./images/SpeedNuclei.pdf> <./images/MaxBranchCountNeurite.pdf>])
+(./techreport.bbl [8]) [9] (./techreport.aux) ) 
+Here is how much of TeX's memory you used:
+ 3807 strings out of 495061
+ 52289 string characters out of 1182621
+ 119339 words of memory out of 3000000
+ 6909 multiletter control sequences out of 15000+50000
+ 10958 words of font info for 42 fonts, out of 3000000 for 9000
+ 28 hyphenation exceptions out of 8191
+ 44i,11n,42p,1208b,562s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
+cm/cmbx9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10.pf
+b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/
+amsfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
+cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr5.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texm
+f-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fon
+ts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmsy5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pf
+b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/shar
+e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texl
+ive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmti9.pfb>
+Output written on techreport.pdf (9 pages, 3494211 bytes).
+PDF statistics:
+ 390 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
+
