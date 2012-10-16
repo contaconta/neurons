@@ -1,0 +1,133 @@
+MICCAI 2011
+
+Reviews of submission #157: "Automated Quantification of Morphodynamics
+for High-Throughput Live Cell Imaging Datasets"
+
+------------------------ Submission 157, Review 4 ------------------------
+
+Reviewer:           Primary 
+
+------------------------ Submission 157, Review 5 ------------------------
+
+Reviewer:           Secondary
+
+Summary of the reviews
+
+   All the reviewers (and the authors) agree that a key merit of the paper
+   lays in its potential practical application. Almost all agree that the
+   paper is fairly week on technical innovation.
+
+   In this context evaluation is essential, and the paper fails in this
+   respect. 
+
+   The translation from research labs to hospital labs is extremely
+   important, but to be successful it must be thoroughly evaluated in many
+   respects, including its effectiveness and against the existing solutions.
+   The authors are encouraged to take the reviewers' comments in good faith
+   and to work on the aspects identified as weaknesses. After substantial
+   revisions the authors should consider submission to a suitable
+   publication outlet.
+
+------------------------ Submission 157, Review 1 ------------------------
+
+Reviewer:           External
+
+The review
+
+   The authors present a method for automatic tracking and segmentation of
+   entire neurons including the nucleus, soma, neurites and filolopodia. The
+   paper is well written. The combined techniques are not new, and the
+   proposed method is more like a practical tool. There is no validation
+   with existing techniques, which for example available in different
+   software packages (see V3D
+   http://penglab.janelia.org/proj/v3d/V3D/About_V3D.html ). The Latex
+   template is extensively tweaked; the spacing between the section titles,
+   main text and figure captions is much smaller than the one required by
+   the MICCAI Latex template. 
+
+   Minor comments:
+   - the method is “fully automatic”, but how are the numerous thresholds
+   are defined, and how sensitive is the methods to those values. There is
+   not validation of that. 
+   - “While our greedy tracking and probabilistic segmentation algorithms
+   are
+   novel, they are designed to be e_cient and thus are relatively simple.
+   The main
+   contribution”, did you mean to say “greedy tracking and probabilistic
+   segmentation algorithms are NOT novel”, or you would REALLY argue that
+   the mentioned in the paper separate techniques (not the combination) are
+   indeed novel ??
+   -	Fig. 1 is shown before referencing from the main text. Move the figure
+   to the 3rd page.
+   -	Change HeLA to HeLa 
+   -	In the text the detection d_t^k is characterized by an area, etc., BUT
+   at the same time is used in the norm ||u-d^k||, where u is just a 2D
+   point location, how is that possible ?  
+   -	“Thus, the tracking task is to provide a set of neuron detections”,
+   change {X_a^1,…} to {X_a^I,…}, and also in Fig.2 
+   -	in fig. 2 red and green are hardly visible
+   -	caption of Figure 2 repeats the definition and text from Section 2
+   -	abuse of notation, T is a last frame index and a threshold, at the same
+   time.
+   -	Why thresholds for D and w_e are the same (the same T)?
+   -	Mentioning the numerical values for p-value in Fig. 4 is a bit of
+   overkill. One should just indicate if the p-values are smaller or bigger
+   than some significance level. 
+   -	Avoid using “programming language” shortcuts in English, add leading
+   zeros in text while mentioning numbers, for example “.30” should be
+   “0.30”.  
+
+------------------------ Submission 157, Review 2 ------------------------
+
+Reviewer:           External
+
+The review
+
+   The manuscript describes a framework for neuron and sub-compartment
+   segmentation and tracking in video sequences. While the manuscript is
+   well written and understandable, several remarks regarding the
+   bibliography and scope of the contribution remain critical:
+
+    - scope: the contribution is clearly in the image processing field, yet
+   no or little references are given on existing tools for neuron
+   segmentation and/or tracking, be these methods automatic or not (see [1]
+   for a review)
+    - data: the imaging protocol involves 2-color images, yet figures are
+   all grayscale (besides segmentation results). It is therefore confusing
+   for the reader to assess the quality of the presented results (including
+   supp. data)
+    - validation: altough "The sheer number of cells and neurites analyzed
+   helps to average out the noise", the results are not really convincing,
+   even for the supposedly easier task of nuclei segmentation. Validation on
+   simulated or human-segmented data would have been of greater help to
+   assess the performance of the method.
+    - results: the error bars in Fig.4 are indeed quite huge. Could you
+   comment more on that ? Aside from segmentation/tracking errors, how about
+   natural variability in neuron shape and differentiation state ?
+    - availability: is this framework somehow publicly available ? It would
+   be the most straightforward way to show the interested reader the
+   efficiency and usefulness of the method.
+
+   As stated in the concluding sentence, if the paper's scope is not to
+   include biological conclusions, maybe more effort on validating/comparing
+   the proposed approach to the literature would greatly increase the
+   quality of the submitted manuscript.
+
+   [1] E. Meijering. Neuron Tracing in Perspective. Cytometry Part A, vol.
+   77, no. 7, July 2010, pp. 693-704
+
+------------------------ Submission 157, Review 3 ------------------------
+
+Reviewer:           External
+
+The review
+
+   The paper proposes an automated quantification of morphodynamics for
+   high-throughput live cell imaging datasets.
+   The overall system seems convincing and the supplementary data as well.
+   The neurons are known to be difficult to segment and to track.
+   The different algorithms  proposed are efficient and relevant.
+   The literature focused on main paper in main journal in the field.
+   I strongly recommend to accept this paper.
+
+

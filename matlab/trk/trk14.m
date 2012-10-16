@@ -2,12 +2,13 @@
 
 
 %% ICFILER
-folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
-resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/Results/';
+%folder = '/net/cvlabfiler1/home/ksmith/Basel/14-11-2010/';
+%resultsFolder = '/net/cvlabfiler1/home/ksmith/Basel/Results/';
 
 %% kevin's laptop
 %folder = '/home/ksmith/data/Sinergia/Basel/14-11-2010/';
-%resultsFolder = '/home/ksmith/data/Sinergia/Basel/Results/';
+folder = '/home/ksmith/data/basel/ControlScreen/Plate1_10-5-2010';
+resultsFolder = '/home/ksmith/data/basel/ControlScreen/Results/';
 
 
 
@@ -37,7 +38,7 @@ for i = 1:size(exp_num,1)
     matlabpool local
     tic
     folder_n = [folder exp_num(i,:) '/'];
-    trkTracking(folder_n, resultsFolder);
+    %trkTracking(folder_n, resultsFolder);
     toc
     matlabpool close
     disp('');

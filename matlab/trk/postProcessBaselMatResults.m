@@ -20,5 +20,3 @@ for nTrial =14:17
      end
    end
 end
-
- quit

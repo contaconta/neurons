@@ -1,0 +1,45 @@
+\title{Greedy}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amssymb,amsmath}
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\section{Introduction}
+
+%e=(u,v)
+
+A graph $\mathcal{G}=(\mathcal{V},\mathcal{E})$ is created where each node $v \in \mathcal{V}$ is associated to a detection. Graph edges $\mathcal{E}$ are created between detections belonging to a different time frame in a given time window $W$. A cost $c_e$ is assigned to each edge $e \in \mathcal{E}$ according to spatial and temporal distances and shape proximity. The tracking output corresponds to a set of edges $\mathcal{E'} \subset \mathcal{E}$ that minimizes the cost $\sum_{e \in \mathcal{E'}}  c_e$.
+
+In order to minimize this cost function we adopt a greedy selection algorithm described in Table~\ref{algo:greedy} that iteratively selects an edge with minimum cost $\hat c_e$ and add it to the set $\mathcal{E}'$. The algorithm iterates until the minimum cost $\hat c_e$ is greater than a threshold $T$.
+
+%-----------------------------------------------------------------
+\begin{algorithm}[b]
+\caption{Greedy selection algorithm}
+\begin{algorithmic}[1]
+%\STATE A graph $\mathcal{G}=(\mathcal{V},\mathcal{E})$ is created where each node $v \in \mathcal{V}$ is associated to a detection.
+%\STATE Graph edges $(u,v) \in \mathcal{E}$ are created between detections belonging to a different time frame in a given time window $W$.
+%\STATE A weight $c_e$ is assigned to each edge according to spatial and temporal distance and shape.
+\STATE Start with an empty set $\mathcal{E}'$.
+\REPEAT
+\STATE Find edge $\hat e$ with minimum cost $\hat c_e$.
+\STATE Add $\hat e$ to $\mathcal{E}'$.
+\STATE Remove $\hat e$ and its neighbors from $\mathcal{E}$.
+\UNTIL{$\hat c_e > T$}
+\end{algorithmic}
+\label{algo:greedy}
+\end{algorithm}
+%-----------------------------------------------------------------
+
+
+
+\end{document}
+

@@ -48,7 +48,9 @@ end
 
 [pathstr, name, ext] = fileparts(filename); %#ok<NASGU>
 if ~exist(pathstr, 'dir')
-    mkdir(pathstr);
+    if ~isempty(pathstr)
+        mkdir(pathstr);
+    end
 end
 
 set(h, 'InvertHardcopy', 'off');
