@@ -7,7 +7,8 @@
 % for Lecture Notes in Computer Science,
 % version 2.2 for LaTeX2e
 %
-\documentclass{llncs}
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
 %
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -19,6 +20,8 @@
 \usepackage{float}
 \usepackage{subfig}
 \usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{pdfborder={0,0,0}, colorlinks=true, urlcolor=blue}
 
  \graphicspath{{pics/}{figures/}}
 
@@ -36,57 +39,28 @@
 
 \begin{document}
 %
-\frontmatter          % for the preliminaries
+%frontmatter          % for the preliminaries
 %
 %\pagestyle{headings}  % switches on printing of running heads
-\pagestyle{empty}  % switches on printing of running heads
+%\pagestyle{empty}  % switches on printing of running heads
 %
-\mainmatter              % start of your contributions
+%\mainmatter              % start of your contributions
 %
 \title{Automated Quantification of Morphodynamics
-for High-Throughput Live Cell Imaging Datasets}
+for High-Throughput Live Cell Time-Lapse Datasets}
 
-%Automated Tracking and Segmentation of Phase-Contrast siRNA Sequences}
-\titlerunning{Short Title} % abbreviated title (for running head)
+
 %
 %\author{author1\inst{1} \and author2\inst{1,2}  \and author3\inst{3}
-\author{Anonymous submission 
-}
+%\name{Author(s) Name(s)\thanks{Thanks to XYZ agency for funding.}}
+%\address{Author Affiliation(s)}
+\name{German Gonzalez$^{1}$, Ludovico Fusco$^{2}$, Fethallah Benmansour$^{3}$, Olivier Pertz$^{2}$, Kevin Smith$^{4}$}
+\address{$^{1}$ Magnetic Resonance Imaging Group, MIT \hspace{5mm} 
+         $^{2}$ Institute of Biochemistry, University of Basel \\
+         $^{3}$ Computer Vision Lab, EPFL \hspace{5mm} 
+         $^{4}$ Light Microscopy and Screening Center, ETHZ}
 
 
-\authorrunning{-}   % abbreviated author list (for running head)
-%
-%%%% modified list of authors for the TOC (add the affiliations)
-% \tocauthor{author1 (Univesity of Author1),
-% author2 (University of Author2),
-% author3 (University of Author3),
-% }
-\tocauthor{-}
-
-%\institute{Department of
-%  Computer Science, University of Anonymous, UK, \email{author1@univ.edu},
-%  \and
-%  Department of Computer Science,  University of Anonymous2, USA.
-%  \thanks{We are thankful to XYZ}
-%}
-% \institute{Computer Vision Lab, Ecole Polytechnique F\'ed\'erale de
-  % Lausanne, Switzerland \email{engin.turetken@epfl.ch}
-  % \and
-  % Idiap Research Institute, Martigny, Switzerland
-% }
-% anonymous stuff
-%\author{-, -, -}
-%\authorrunning{-}
-%\tocauthor{-}
-%\institute{-}
-%\small{
-% \institute{Computer Vision Lab., Ecole Polytechnique F\'ed\'erale de
-  % Lausanne, Switzerland 
-  % %\email{engin.turetken@epfl.ch}
-  % \and
-% ALBCOM, Universitat Polit\`ecnica de Catalunya, Barcelona, Spain
-% }
-%}
 \newcommand{\comment}[1]{}
 \maketitle              % typeset the title of the contribution
 
@@ -102,27 +76,28 @@ for High-Throughput Live Cell Imaging Datasets}
 %\label{sec:related}
 %\input{related.tex}
 
-\vspace{-3mm}
 \section{High-throughput Tracking and Segmentation}
 \label{sec:method}
 \input{method.tex}
 
-\vspace{-3mm}
 \section{Extracting Morphodynamic Features}
 \label{sec:features}
 \input{features.tex}
 
-\vspace{-3mm}
-\section{Results and Conclusion}
+\section{Results}
 \label{sec:results}
 \input{results.tex}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\input{conclusion.tex}
 
 %\section{Conclusion}
 %\label{sec:discussion}
 %\input{discussion.tex}
 
-\vspace{-4mm}
-\bibliographystyle{splncs}
+
+\bibliographystyle{IEEEbib}
 \footnotesize{
 \bibliography{short,vision,misc,biomed}
 % \bibliography{sample}

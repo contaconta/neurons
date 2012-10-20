@@ -3,16 +3,16 @@
 %----------------------------------------------------------------------------
 \begin{figure}[t!]
   \centering
-       \begin{tabular}{@{\hspace{-2mm}}c@{\hspace{2mm}}c@{}}
+       \begin{tabular}{@{\hspace{-2mm}}c@{\hspace{1mm}}c@{}}
          {\tiny (a) Maximum Distance from Neurite Tip to Soma} &
          {\tiny (b) $\Delta$ Eccentricity of an Ellipse Fitted to Neurite} \\
-        \includegraphics[height = 41mm] {images/DistToSomaExtremeNeurite.pdf} &
-        \includegraphics[height = 41mm] {images/EccentricityNeuriteDelta.pdf} \\ [-1ex]
+        \includegraphics[height = 28mm] {images/DistToSomaExtremeNeurite.pdf} &
+        \includegraphics[height = 28mm] {images/EccentricityNeuriteDelta.pdf} \\ [-1ex]
         {\tiny $\mu m$} & \\
         {\tiny (c) Nucleus Speed} &
         {\tiny (d) Maximum Number of Branches in Neurite} \\ [-1ex]
-        \includegraphics[height = 41mm] {images/SpeedNuclei.pdf} &
-        \includegraphics[height = 41mm] {images/MaxBranchCountNeurite.pdf} \\ [-1ex]
+        \includegraphics[height = 28mm] {images/SpeedNuclei.pdf} &
+        \includegraphics[height = 28mm] {images/MaxBranchCountNeurite.pdf} \\ [-1ex]
         {\tiny $\mu m$/min } & \\ [-2.2ex]
        \end{tabular} 
     \caption{    {\footnotesize   {\it    Quantitative   Morphodynamic
@@ -25,66 +25,84 @@
         data  points  above  the  control's  mean.  Values  under  $P$
         indicate the student-t test $p$-value. See text for details.}}
     \label{fig:quantitative_analysis}
-    \vspace{-7mm}
+    %\vspace{-7mm}
 \end{figure}
-%% by linking nucleus detections  and ``growing'' the
-%%         neuron from the nucleus seed
 %----------------------------------------------------------------------------
 
-
-
-\noindent  {\bf Experimental  Setup and  Methodology --}  We  used our
-method to perform a small-scale siRNA screen in which the functions of
-5  genes were inhibited  with three  goals in  mind: to  reproduce the
-findings of~\cite{Pertz08}, to confirm previous qualitatively observed
-morphodynamics, and  to uncover  new dynamic behaviors.   Three siRNAs
-were applied for each gene  (SrGAP2, MAP2K7, RhoA, Trio, and Net), for
-a  total  of 17  experiments  including  2  controls.  30  videos  per
+\subsection{Experimental Setup}
+We applied our approach to data from a small-scale siRNA screen in which 
+the functions of 5 genes were inhibited: SrGAP2, MAP2K7, RhoA, Trio, and 
+Net. Three siRNAs were applied for each gene, producing a total  of 17  
+experiments  including  2  controls. 30  videos  per
 experiment were obtained over the  course of 3 days, with images taken
-in  10 minute intervals  for a  total of  510 videos,  each containing
-approximately 100 2-channel images  of $696 \times 520$ resolution.  A
-total of 7,298 neurons and 33,213 neurites were tracked and segmented.
-Our method  processes a single video  in 210 seconds on  a Lenovo W510
-notebook computer (2.1  seconds per image), and the  entire screen was
+at 20$\times$ magnification 
+in  10 minute intervals.  A  total of  510 videos were collected,  each containing
+approximately 100 2-channel images  of $696 \times 520$ resolution.
+We tracked and segmented a total of 7,298 neurons (33,213 neurites), 
+extracting morphodynamic features for each. Each video was processed in
+under 210 seconds on  a Lenovo W510 notebook computer. The entire screen was
 processed in parallel in just a few hours using conventional PCs.
 
-%over the course  of 16 to 18 hours,
 
-Our  quantitative  analysis  investigated  the effects  of  inhibiting
-various gene  functions on each  of the 156 morphodynamic  features we
-extracted     from    our     segmentations     as    described     in
-Sec.~\ref{sec:features}.   We  summarize  our  findings below  and  in
-Fig~\ref{fig:quantitative_analysis}. We also  provide a detailed table
-and  video  results in  the  supplementary  material.  Throughout  the
-pipeline, many potential sources of noise exist, including variability
-in   neuron   behavior,   transfection   effects,  mistakes   in   our
-segmentation, and  imaging conditions.  The sheer number  of cells and
-neurites  analyzed  helps  to  average  out the  noise.  Our  findings
-reported  below are statistically  significant, all  having $p$-values
-$<< 0.05$.
 
-\vspace{3mm}
-\noindent {\bf Analysis --} Our analysis confirms the effects found through static image
+
+
+
+
+
+\subsection{Analysis}
+Our goals were to 1) validate our approach by reproducing the findings 
+of~\cite{Pertz08}, 2) quantify previously observed but unmeasured morphodynamics,
+and 3) uncover  new dynamic behaviors.
+A brief summary of our findings is provided below and in 
+Fig~\ref{fig:quantitative_analysis}. Further details can be found in
+our \href{http://www.kev-smith.com/ISBI2013/}{online supplementary tables and videos}.
+All findings reported below have statistically  significant measures,  with 
+a $p$-value $<< 0.05$.
+
+
+%Our analysis investigated  the effects  of  inhibiting
+%various gene  functions on each  of the 156 extracted morphodynamic  features.
+
+
+
+%Our  quantitative  analysis  investigated  the effects  of  inhibiting
+%various gene  functions on each  of the 156 morphodynamic  features we
+%extracted     from    our     segmentations     as    described     in
+%Sec.~\ref{sec:features}.   We  summarize  our  findings below  and  in
+%Fig~\ref{fig:quantitative_analysis}. We also  provide a detailed table
+%and  video  results in  the  supplementary  material.  Throughout  the
+%pipeline, many potential sources of noise exist, including variability
+%in   neuron   behavior,   transfection   effects,  mistakes   in   our
+%segmentation, and  imaging conditions.  The sheer number  of cells and
+%neurites  analyzed  helps  to  average  out the  noise.  Our  findings
+%reported  below are statistically  significant, all  having $p$-values
+%$<< 0.05$.
+
+
+
+Our analysis confirmed several effects previously observed through static image
 analysis  in~\cite{Pertz08}.  In  particular,  RhoA  loss  of  function
 resulted in fewer but longer neurites than the control. SrGap loss was
 found to have longer neurites, and  Map2K7 loss was found to have
-more neurites but with short length.  These findings  were confirmed by dynamic measures in
+more neurites but of shorter length.  These findings  were confirmed by 
+static measures from
 our experiments: the mean longest  neurite length -- control $22.6 \mu
-m$, RhoA-3 $32  \mu m$, SrGap2-1 $28.9 \mu m$,  and Map2K7-1 $19.5 \mu
-m$  (see  Fig.~\ref{fig:quantitative_analysis}a)$^1$;  and  by  a  dynamic
+m$, RhoA-3 $32  \mu$m, SrGap2-1 $28.9 \mu$m,  and Map2K7-1 $19.5 \mu$m  
+(see  Fig.~\ref{fig:quantitative_analysis}a)$^1$;  and  by  a  dynamic
 measure --  the mean  number of neurites  belonging a neuron  over its
 lifetime: control 3.4, RhoA 3.1, and Map2K7-1 3.9.
 
-It  was qualitatively  observed, but  never quantified,  that  loss of
+It  had been previously observed, but  never quantified,  that  loss of
 SrGap2 function  produces a  high number of  filopodia, and  that RhoA
 loss  results  in neurites  that  easily  extend  but have  difficulty
-retracting. These morphodynamics were  confirmed by our analysis. Mean
-number of filopodia detected per  neurite over its lifetime was $6.69$
+retracting. Morphodynamic features from our analysis confirmed these
+observations. Mean number of filopodia detected per  neurite over its lifetime was $6.69$
 in the control  and $8.81$ for SrGap-3$^1$. The  mean change in elongation
 as measured  by an ellipse fitted  to the neurite was  $5.7\%$ for the
 control        and        $5.3\%$        for        RhoA-1        (see
 Fig.~\ref{fig:quantitative_analysis}b)$^1$. While this difference may seem
-small,  it is  significant due  to the  large amount  of  data collected
+small,  it is  statiscially significant due  to the  large amount  of  data collected
 ($p$-value is $2 \times 10^{-7}$).
 
 Our quantitative analysis revealed new morphodynamics which
@@ -100,17 +118,7 @@ neuron    was    14.5,   19.44    for    RhoA-3,    and   21.39    for
 SrGap2-3\footnote{Only neurons containing  the  $10^{th}$  percentile  of
   longest neurites were considered.}.
 
-\vspace{3mm}
-\noindent {\bf Conclusion  --} We have described a  set of algorithms
-which, as a  system, are capable of robustly  tracking and segmenting entire
-neurons  including  the nucleus,  soma,  neurites  and filopodia.  Our
-approach is efficient, and  can analyze high-throughput datasets using
-meaningful dynamic  features extracted from  our segmentations.
-We  validated  our  approach  by  reproducing
-previous findings,  confirming anecdotal findings,  and uncovering new
-dynamic phenotypes. It is beyond the scope of this work to comment on
-the biological significance of these findings, if there is any. We
-leave that for future work.
+
 
 
 %% Our approach
