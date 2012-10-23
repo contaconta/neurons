@@ -19,30 +19,6 @@ n_t^{i,1},F_t^{i,1}), \ldots,(n_t^{i,j},F_t^{i,j}) \}$.  Thus, a complete neuron
 $i$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$ at time step $t$.
 
 
-%----------------------------------------------------------------------------
-\begin{figure}[t]
-  \begin{center}
-       \begin{tabular}{c}
-        \includegraphics[width = 80mm] {images/neurondrawing.pdf}\\ [-2.4ex]
-       \end{tabular} 
-    \caption{  {\footnotesize  {\it Neuron  Tracking  Notation.  }   A
-        neuron $i$  is defined by  a time-series of  neuron detections
-        $\mathcal{X}^i     =     \{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i
-        \}$.  The  tracking returns  a  set  $\mathcal{X}^i$ for  each
-        neuron $i$.  At time $t$ a neuron detection $X_t^i = \{ c_t^i,
-        s_t^i, N_t^i  \}$ contains a nucleus $c_t^i$,  a soma $s_t^i$,
-        and    a  set of   neurite-filopodia    tuples    $N_t^i     =    \{(
-        n_t^{i,1},F_t^{i,1}),   \ldots,(n_t^{i,j},F_t^{i,j}),  \ldots,
-        (n_t^{i,J},F_t^{i,J})  \}$  which  contains $J$  neurites  and
-        their associated  filopodia shown in  red for $j=1$  and green
-        for  $j=2$. A spurious nucleus  detection  $d_1$ is also shown.}}
-    \label{fig:notation}
-  \end{center}
-\vspace{-9mm}
-\end{figure}
-%% by linking nucleus detections  and ``growing'' the
-%%         neuron from the nucleus seed
-%----------------------------------------------------------------------------
 
 \subsection{Nuclei and Somata Detection and Segmentation}
 \label{sec:detection}
@@ -91,8 +67,9 @@ $f(a^k,a^l)  =  {|a^k  -   a^l|}/{|a^k  +  a^l|}$.   The  tracking  solution
 corresponds to a set of  edges $\mathcal{E'} \subset \mathcal{E}$ that minimizes
 the cost $\sum_{e \in \mathcal{E'}} w_e$.
 
-To minimize this  cost function, we adopt a  greedy selection algorithm outlined
-in Table~\ref{algo:greedy} and  summarized in Fig.~\ref{fig:greedytracking} that
+To minimize this  cost function, we adopt a  greedy selection algorithm 
+%outlined in Table~\ref{algo:greedy} and  
+summarized in Fig.~\ref{fig:greedytracking} that
 iteratively selects an edge with minimum cost  $\hat w_e$ and adds it to the set
 $\mathcal{E}'$,  removing  future  and  past  connections  from  the  detections
 $e^{k,l}$ connects. The algorithm iterates  until the minimum cost $\hat w_e$ is
@@ -101,52 +78,35 @@ $\mathcal{E}'$   by  traversing   the  graph   $(\mathcal{G},\mathcal{E}')$  and
 appending linked nucleus detections to $\mathcal{X}^i$.
 
 
-
-
 %----------------------------------------------------------------------------
 \begin{figure}[t]
-  \centering
-       \begin{tabular}{c}
-        \includegraphics[width = 80mm] {images/greedytracking.pdf}\\ [-2.4ex]
+  \begin{center}
+       \begin{tabular}{@{\hspace{-1mm}}c}
+        \includegraphics[width = 87mm] {images/neurondrawing.pdf}\\ [-2.4ex]
        \end{tabular} 
-    \caption{  {\footnotesize {\it Efficient Tracking.}  {\em  (a)} The algorithm begins with each
-        detection fully connected to all future and past detections
-        within  a time  window  $W$.  Above, only  $d^k_t$'s edges  are
-        shown. {\em  (b)} Each iteration,  the edge $\hat{e}^{k,l}$
-        with   minimum  cost   $\hat{w}_e$  is  added  to $\mathcal{E}'$.   Edges  connecting
-        $d^k_t$ to  future detections are  removed from $\mathcal{E}$.
-        {\em  (c)} Edges  connecting  $d^l_t$ to  the past  are
-        removed from $\mathcal{E}$.  The process is repeated until $\hat w_e > T$. }}
-    \label{fig:greedytracking}
-  
-\vspace{-7mm}
+    \caption{ \footnotesize   Neuron  tracking  notation.    A
+        neuron $i$  is defined by  a time-series of  neuron detections
+        $\mathcal{X}^i     =     \{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i
+        \}$.  The  tracking returns  a  set  $\mathcal{X}^i$ for  each
+        neuron $i$.  At time $t$ a neuron detection $X_t^i = \{ c_t^i,
+        s_t^i, N_t^i  \}$ contains a nucleus $c_t^i$,  a soma $s_t^i$,
+        and    a  set of   neurite-filopodia    tuples    $N_t^i     =    \{(
+        n_t^{i,1},F_t^{i,1}),   \ldots,(n_t^{i,j},F_t^{i,j}),  \ldots,
+        (n_t^{i,J},F_t^{i,J})  \}$  which  contains $J$  neurites  and
+        their associated  filopodia shown in  red for $j=1$  and green
+        for  $j=2$. A spurious nucleus  detection  $d_1$ is also shown.}
+    \label{fig:notation}
+  \end{center}
+\vspace{-8mm}
 \end{figure}
+%% by linking nucleus detections  and ``growing'' the
+%%         neuron from the nucleus seed
 %----------------------------------------------------------------------------
 
 
-%-----------------------------------------------------------------
-\begin{algorithm}[b]
-\caption{Tracking association algorithm}
-\footnotesize
-\begin{algorithmic}[100]
-\STATE Start with an empty set $\mathcal{E}'$.
-\REPEAT
-\STATE Find edge $\hat e^{k,l}$ with minimum cost $\hat w_e$.
-\STATE Add $\hat e^{k,l}$ to $\mathcal{E}'$, linking detections $d^k_{t1}$ and $d^l_{t2}$.
-\STATE Remove $\hat e^{k,l}$ from $\mathcal{E}$.
-\IF {$ t1 < t2 $}
-\STATE Remove edges between $d^k_{t1}$ and {\em future} detections (where $t > t1$) from $\mathcal{E}$
-\STATE Remove edges between $d^l_{t2}$ and {\em past} detections (where $t < t2$) from $\mathcal{E}$
-\ELSE
-\STATE Remove edges between $d^k_{t1}$ and {\em past} detections (where $t < t1$) from $\mathcal{E}$
-\STATE Remove edges between $d^l_{t2}$ and {\em future} detections (where $t > t2$) from $\mathcal{E}$
-\ENDIF
-\UNTIL{$\hat w_e > T$}
-\end{algorithmic}
-\normalsize
-\label{algo:greedy}
-\end{algorithm}
-%-----------------------------------------------------------------
+
+
+
 
 
 %\vspace{-3mm}
@@ -162,8 +122,8 @@ using Bayes' rule,
   P(J_t(u)=i|S_t,I_t) = \frac{P(S_t,I_t| J_t(u)=i)}{\sum_{\eta=1}^m P(S_t,I_t|J_t(u)=\eta)},
 \end{equation}
 \noindent where we assume a  uniform distribution on $P(J_t(u))$.  The numerator
-is modeled as the probability of  the path $L$ that connects maximally the voxel
-$u$ to  the soma $s_t^i$,  $ P(S_t,I_t| J_t(u)=i) =  \max_{L:u\rightarrow s_t^i}
+is modeled as the probability of  the path $L$ that connects maximally pixel
+$u$ to  soma $s_t^i$,  $ P(S_t,I_t| J_t(u)=i) =  \max_{L:u\rightarrow s_t^i}
 \prod_{\{l_{r}\} \in L } P(I_t(r)|l_{r}),$ where $l_{r}$ are indicator variables
 for the  locations forming the path $L$.  We chose this model  since it produces
 connected  components and  an  optimal maxima  can  be found  by minimizing  its
@@ -201,5 +161,65 @@ the distance traversed  is less than a threshold  $T_f$, the traversed locations
 are considered to be filopodia.
 
 
+%----------------------------------------------------------------------------
+\begin{figure}[t]
+  \centering
+       \begin{tabular}{@{\hspace{-1mm}}c@{}}
+        \includegraphics[width = 85mm] {images/greedytracking.pdf}\\ [-2.4ex]
+       \end{tabular} 
+    \caption{ \footnotesize Efficient tracking by association.  {\em  (a)} A graph is
+	built by fully connecting each detection to all future and past detections within  a time  window  $W$.
+	In this simplified diagram, only  $d^k_t$'s edges  are
+	shown and $W$=2. {\em  (b)} Each iteration,  the edge $\hat{e}^{k,l}$
+        with   minimum  cost   $\hat{w}_e$  is  added  to $\mathcal{E}'$.   Edges  connecting
+        $d^k_t$ to  future detections are  removed from $\mathcal{E}$.
+        {\em  (c)} Edges  connecting  $d^l_t$ to  the past  are
+        removed from $\mathcal{E}$.  The process is repeated until $\hat w_e > Q$. }
+    \label{fig:greedytracking}
+%\vspace{-4mm}
+\end{figure}
+%----------------------------------------------------------------------------
 
 
+%%----------------------------------------------------------------------------
+%\begin{figure}[t]
+%  \centering
+%       \begin{tabular}{@{\hspace{-1mm}}c@{}}
+%        \includegraphics[width = 85mm] {images/greedytracking.pdf}\\ [-2.4ex]
+%       \end{tabular} 
+%    \caption{ \footnotesize Efficient tracking by association.  {\em  (a)} A graph is
+%	built where each detection is fully connected to all future and past detections 
+%within  a time  window  $W$.  In this diagram, only  $d^k_t$'s edges  are
+%        shown and $W$=2. {\em  (b)} Each iteration,  the edge $\hat{e}^{k,l}$
+%        with   minimum  cost   $\hat{w}_e$  is  added  to $\mathcal{E}'$.   Edges  connecting
+%        $d^k_t$ to  future detections are  removed from $\mathcal{E}$.
+%        {\em  (c)} Edges  connecting  $d^l_t$ to  the past  are
+%        removed from $\mathcal{E}$.  The process is repeated until $\hat w_e > Q$. }
+%    \label{fig:greedytracking}
+%\vspace{-4mm}
+%\end{figure}
+%%----------------------------------------------------------------------------
+
+%%-----------------------------------------------------------------
+%\begin{algorithm}[b]
+%\caption{Tracking association algorithm}
+%\footnotesize
+%\begin{algorithmic}[100]
+%\STATE Start with an empty set $\mathcal{E}'$.
+%\REPEAT
+%\STATE Find edge $\hat e^{k,l}$ with minimum cost $\hat w_e$.
+%\STATE Add $\hat e^{k,l}$ to $\mathcal{E}'$, linking detections $d^k_{t1}$ and $d^l_{t2}$.
+%\STATE Remove $\hat e^{k,l}$ from $\mathcal{E}$.
+%\IF {$ t1 < t2 $}
+%\STATE Remove edges between $d^k_{t1}$ and {\em future} detections (where $t > t1$) from $\mathcal{E}$
+%\STATE Remove edges between $d^l_{t2}$ and {\em past} detections (where $t < t2$) from $\mathcal{E}$
+%\ELSE
+%\STATE Remove edges between $d^k_{t1}$ and {\em past} detections (where $t < t1$) from $\mathcal{E}$
+%\STATE Remove edges between $d^l_{t2}$ and {\em future} detections (where $t > t2$) from $\mathcal{E}$
+%\ENDIF
+%\UNTIL{$\hat w_e > Q$}
+%\end{algorithmic}
+%\normalsize
+%\label{algo:greedy}
+%\end{algorithm}
+%%-----------------------------------------------------------------

@@ -1,32 +1,40 @@
 %% -*- mode: latex; mode: reftex; mode: flyspell; TeX-master: "top.tex"; -*-
 \vspace{-3mm}
 %----------------------------------------------------------------------------
-\begin{figure}[t!]
+\begin{figure*}[t!]
   \centering
-       \begin{tabular}{@{\hspace{-2mm}}c@{\hspace{1mm}}c@{}}
-         {\tiny (a) Maximum Distance from Neurite Tip to Soma} &
-         {\tiny (b) $\Delta$ Eccentricity of an Ellipse Fitted to Neurite} \\
-        \includegraphics[height = 28mm] {images/DistToSomaExtremeNeurite.pdf} &
-        \includegraphics[height = 28mm] {images/EccentricityNeuriteDelta.pdf} \\ [-1ex]
-        {\tiny $\mu m$} & \\
-        {\tiny (c) Nucleus Speed} &
-        {\tiny (d) Maximum Number of Branches in Neurite} \\ [-1ex]
-        \includegraphics[height = 28mm] {images/SpeedNuclei.pdf} &
-        \includegraphics[height = 28mm] {images/MaxBranchCountNeurite.pdf} \\ [-1ex]
-        {\tiny $\mu m$/min } & \\ [-2.2ex]
+       \begin{tabular}{@{}c@{\hspace{2mm}}c@{\hspace{2mm}}c@{}}
+         {\footnotesize (a) Maximum Distance from Neurite Tip to Soma} &
+         {\footnotesize (b) $\Delta$ Neurite Elongation} &
+	 {\footnotesize (c) Nucleus Speed}\\
+%	 {\footnotesize (d) Maximum Number of Branches in Neurite} \\ %[-1ex]
+        \includegraphics[height = 38mm] {images/DistToSomaExtremeNeurite.pdf} &
+        \includegraphics[height = 38mm] {images/EccentricityNeuriteDelta.pdf} &
+        \includegraphics[height = 38mm] {images/SpeedNuclei.pdf} \\ [-1ex]
+%        \includegraphics[height = 38mm] {images/MaxBranchCountNeurite.pdf} \\ [-1ex]
+	{\footnotesize $\mu$m} & Elongation &        
+%        {\footnotesize $\mu$m/min } & {\footnotesize Number of branches} \\ [-2.2ex]
+	{\footnotesize $\mu$m/min } \\ [-2.2ex]
        \end{tabular} 
-    \caption{    {\footnotesize   {\it    Quantitative   Morphodynamic
-          Analysis.}  Four   informative  morphodynamic  features  are
-        plotted, where the control  experiment is marked in gray below
-        the  siRNA  targets.   Black  dots  represent  collected  data
-        points.  Red  bars  indicate  the mean,  green  bars  indicate
-        standard deviation.  The blue line shows the  control's mean for
-        comparison. Values under the $\%$ column are the percentage of
-        data  points  above  the  control's  mean.  Values  under  $P$
-        indicate the student-t test $p$-value. See text for details.}}
+    \caption{ \footnotesize      Quantitative   morphodynamic
+          analysis. Four   informative   features  are
+        plotted. The control is marked in gray.   Black  dots  indicate 
+ 	collected  data points.  Red  bars  indicate  the mean,  green  bars  indicate
+        standard deviation.  The control mean is shown by a blue line.
+ 	Values under the $\%$ column show the percentage of
+        data  points > control  mean.  The P column reports 
+	the statisical signifcance measured by the student-t test $p$-value. 
+	{\em (a)} Our analysis confirmed the finding from~\cite{Pertz08} that
+	RhoA and SrGAP2 loss results in longer neurites, and Map2K7 loss results in
+	shorter neurites. {\em (b)}  The low change in neurite elongation associated with
+	loss of RhoA quantifies the observation that RhoA loss limits the cell's ability
+	to retract neurites. {\em (c)} Our analysis revealed that 
+	loss of Map2K7 and RhoA led to an enhancement/retardation of nucleus speed, which
+	was impossible to observe through static analysis. 
+	}
     \label{fig:quantitative_analysis}
     %\vspace{-7mm}
-\end{figure}
+\end{figure*}
 %----------------------------------------------------------------------------
 
 \subsection{Experimental Setup}
@@ -39,9 +47,9 @@ at 20$\times$ magnification
 in  10 minute intervals.  A  total of  510 videos were collected,  each containing
 approximately 100 2-channel images  of $696 \times 520$ resolution.
 We tracked and segmented a total of 7,298 neurons (33,213 neurites), 
-extracting morphodynamic features for each. Each video was processed in
-under 210 seconds on  a Lenovo W510 notebook computer. The entire screen was
-processed in parallel in just a few hours using conventional PCs.
+extracting morphodynamic features for each. A video took under 210 seconds 
+to process on a notebook computer. The entire screen was
+processed in just a few hours using conventional PCs.
 
 
 
@@ -55,30 +63,11 @@ Our goals were to 1) validate our approach by reproducing the findings
 of~\cite{Pertz08}, 2) quantify previously observed but unmeasured morphodynamics,
 and 3) uncover  new dynamic behaviors.
 A brief summary of our findings is provided below and in 
-Fig~\ref{fig:quantitative_analysis}. Further details can be found in
-our \href{http://www.kev-smith.com/ISBI2013/}{online supplementary tables and videos}.
-All findings reported below have statistically  significant measures,  with 
+Fig~\ref{fig:quantitative_analysis}. Further details can be found in our 
+supplementary tables and videos.
+%\href{http://www.kev-smith.com/ISBI2013/}{online supplementary tables and videos}.
+The findings reported below all have statistically  significant measures,  with 
 a $p$-value $<< 0.05$.
-
-
-%Our analysis investigated  the effects  of  inhibiting
-%various gene  functions on each  of the 156 extracted morphodynamic  features.
-
-
-
-%Our  quantitative  analysis  investigated  the effects  of  inhibiting
-%various gene  functions on each  of the 156 morphodynamic  features we
-%extracted     from    our     segmentations     as    described     in
-%Sec.~\ref{sec:features}.   We  summarize  our  findings below  and  in
-%Fig~\ref{fig:quantitative_analysis}. We also  provide a detailed table
-%and  video  results in  the  supplementary  material.  Throughout  the
-%pipeline, many potential sources of noise exist, including variability
-%in   neuron   behavior,   transfection   effects,  mistakes   in   our
-%segmentation, and  imaging conditions.  The sheer number  of cells and
-%neurites  analyzed  helps  to  average  out the  noise.  Our  findings
-%reported  below are statistically  significant, all  having $p$-values
-%$<< 0.05$.
-
 
 
 Our analysis confirmed several effects previously observed through static image
@@ -89,7 +78,7 @@ more neurites but of shorter length.  These findings  were confirmed by
 static measures from
 our experiments: the mean longest  neurite length -- control $22.6 \mu
 m$, RhoA-3 $32  \mu$m, SrGap2-1 $28.9 \mu$m,  and Map2K7-1 $19.5 \mu$m  
-(see  Fig.~\ref{fig:quantitative_analysis}a)$^1$;  and  by  a  dynamic
+(see  Fig.~\ref{fig:quantitative_analysis}a);  and  by  a  dynamic
 measure --  the mean  number of neurites  belonging a neuron  over its
 lifetime: control 3.4, RhoA 3.1, and Map2K7-1 3.9.
 
@@ -112,7 +101,9 @@ moved at  .30 $\mu  m / min$,  RhoA moved  at .23 $\mu  m /  min$, and
 Map2K7-2     moved     at    .37     $\mu     m     /    min$     (see
 Fig.~\ref{fig:quantitative_analysis}c).  We  also found that  RhoA and
 SrGap  increased the  branching of  the
-neurites (see Fig.~\ref{fig:quantitative_analysis}d).  Over the course
+neurites.
+%(see Fig.~\ref{fig:quantitative_analysis}d).  
+Over the course
 of a  neurites lifetime, the maximum  number of branches  in a control
 neuron    was    14.5,   19.44    for    RhoA-3,    and   21.39    for
 SrGap2-3\footnote{Only neurons containing  the  $10^{th}$  percentile  of
@@ -120,6 +111,59 @@ SrGap2-3\footnote{Only neurons containing  the  $10^{th}$  percentile  of
 
 
 
+
+
+%%----------------------------------------------------------------------------
+%\begin{figure}[t!]
+%  \centering
+%       \begin{tabular}{@{\hspace{-2mm}}c@{\hspace{1mm}}c@{}}
+%         {\tiny (a) Maximum Distance from Neurite Tip to Soma} &
+%         {\tiny (b) $\Delta$ Eccentricity of an Ellipse Fitted to Neurite} \\
+%        \includegraphics[height = 28mm] {images/DistToSomaExtremeNeurite.pdf} &
+%        \includegraphics[height = 28mm] {images/EccentricityNeuriteDelta.pdf} \\ [-1ex]
+%        {\tiny $\mu m$} & \\
+%        {\tiny (c) Nucleus Speed} &
+%        {\tiny (d) Maximum Number of Branches in Neurite} \\ [-1ex]
+%        \includegraphics[height = 28mm] {images/SpeedNuclei.pdf} &
+%        \includegraphics[height = 28mm] {images/MaxBranchCountNeurite.pdf} \\ [-1ex]
+%        {\tiny $\mu m$/min } & \\ [-2.2ex]
+%       \end{tabular} 
+%    \caption{    {\footnotesize   {\it    Quantitative   Morphodynamic
+%          Analysis.}  Four   informative  morphodynamic  features  are
+%        plotted, where the control  experiment is marked in gray below
+%        the  siRNA  targets.   Black  dots  represent  collected  data
+%        points.  Red  bars  indicate  the mean,  green  bars  indicate
+%        standard deviation.  The blue line shows the  control's mean for
+%        comparison. Values under the $\%$ column are the percentage of
+%        data  points  above  the  control's  mean.  Values  under  $P$
+%        indicate the student-t test $p$-value. See text for details.}}
+%    \label{fig:quantitative_analysis}
+%    %\vspace{-7mm}
+%\end{figure}
+%%----------------------------------------------------------------------------
+
+
+
+
+
+
+%Our analysis investigated  the effects  of  inhibiting
+%various gene  functions on each  of the 156 extracted morphodynamic  features.
+
+
+
+%Our  quantitative  analysis  investigated  the effects  of  inhibiting
+%various gene  functions on each  of the 156 morphodynamic  features we
+%extracted     from    our     segmentations     as    described     in
+%Sec.~\ref{sec:features}.   We  summarize  our  findings below  and  in
+%Fig~\ref{fig:quantitative_analysis}. We also  provide a detailed table
+%and  video  results in  the  supplementary  material.  Throughout  the
+%pipeline, many potential sources of noise exist, including variability
+%in   neuron   behavior,   transfection   effects,  mistakes   in   our
+%segmentation, and  imaging conditions.  The sheer number  of cells and
+%neurites  analyzed  helps  to  average  out the  noise.  Our  findings
+%reported  below are statistically  significant, all  having $p$-values
+%$<< 0.05$.
 
 %% Our approach
 %% is designed to be efficient for analyzing high-throughput 
