@@ -33,20 +33,21 @@ dynamics of  these cell types  are relatively simple compared to neurons,
 whose highly deformable  neurites  branch, expand,
 retract, and collapse. 
 
-
-In this paper, we  propose a  fully  automatic method  for  detecting, tracking,  and
-segmenting {\em every component of the neuron} (nucleus,  soma, neurites, and filopodia), and quantifying  their dynamic behaviors in ways that were previously not possible. Our approach first  detects nuclei at each time step.  A greedy  tracking algorithm  associates detected nuclei belonging
-belonging to the same neuron,  forming a list of detections corresponding  
-to that neuron.  Using  the detected nuclei as seed  points, a region-growing
-algorithm segments the neuron's soma.  The somata are used to
-initialize a joint segmentation of the entire structure of all neurons
-appearing in  a image using  a probabilistic method based  on shortest
-path computations.   A  graph describing the  morphology of
-the  neurites is extracted from  this segmentation.  Each neurite 
-tree is tracked by association, and filopodia are detected
-by analyzing the topology of the tracked neurites. Finally, 
-a set of 156 {\em morphodynamic features} is extracted, quantifying
-the behavior of the each neuron in the video.
+%% gg 20121023 - modified greedy, added time-lapse sequence
+In this paper, we propose a  fully automatic method for detecting, tracking, and
+segmenting {\em  every component  of the neuron}  (nucleus, soma,  neurites, and
+filopodia), and quantifying their dynamic behaviors in ways that were previously
+not possible. Our  approach first detects nuclei at each  time step.  A tracking
+algorithm associates  detected nuclei  belonging to the  same neuron  across the
+time-lapse sequence, forming a list  of detections corresponding to that neuron.
+Using the  detected nuclei as  seed points, a region-growing  algorithm segments
+the neuron's  soma.  The somata are  used to initialize a  joint segmentation of
+the entire structure  of all neurons appearing in a  image using a probabilistic
+method based on  shortest path computations.  A graph  describing the morphology
+of  the neurites  is extracted  from this  segmentation.  Each  neurite  tree is
+tracked by association, and filopodia  are detected by analyzing the topology of
+the tracked  neurites.  Finally,  a set of  156 {\em morphodynamic  features} is
+extracted, quantifying the behavior of the each neuron in the video.
 
 
 As   demonstrated  in   Fig.~\ref{fig:video}, 
