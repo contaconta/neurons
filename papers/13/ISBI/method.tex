@@ -19,10 +19,11 @@ n_t^{i,1},F_t^{i,1}), \ldots,(n_t^{i,j},F_t^{i,j}) \}$.  Thus, a complete neuron
 $i$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$ at time step $t$.
 
 
-
+\vspace{-3mm}
 \subsection{Nuclei and Somata Detection and Segmentation}
-\label{sec:detection}
 \vspace{-2mm}
+\label{sec:detection}
+%% \vspace{-2mm}
 The  first  step in  our  approach  is to  extract  a  set of  nucleus
 detections $\{d^1,\ldots,d^K\}$ over the  image series. We worked with
 two-channel  images where the  cytoskeleton  is marked  with
@@ -63,19 +64,29 @@ a shape measure  $w_{e} = \alpha || d^k_{t1}  - d^l_{t2} || + \beta |t1  - t2| +
 and $\nu^k$ is a shape feature vector containing $d^k_t$'s area, perimeter, mean
 intensity, and major  and minor axis lengths of a  fitted ellipse. $f$ evaluates
 differences  between  a  feature  $a$  extracted from  $d^k_t$  and  $d^l_t$  as
-$f(a^k,a^l)  =  {|a^k  -   a^l|}/{|a^k  +  a^l|}$.   The  tracking  solution
-corresponds to a set of  edges $\mathcal{E'} \subset \mathcal{E}$ that minimizes
-the cost $\sum_{e \in \mathcal{E'}} w_e$.
+$f(a^k,a^l) = {|a^k  - a^l|}/{|a^k + a^l|}$. %% gg 20121025
+%%  The  tracking solution corresponds
+%% to a  set of  edges $\mathcal{E'} \subset  \mathcal{E}$ that minimizes  the cost
+%% $\sum_{e \in \mathcal{E'}} w_e$.
+The  tracking solution  corresponds  to  a set  of  edges $\mathcal{E'}  \subset
+\mathcal{E}$  with maximal  edge weight  $Q$ that  forms a  set  of disconnected
+tracks $\mathcal{L}$  and minimizes the cost function  $\sum_{e \in \mathcal{L}}
+w_e$.
 
-To minimize this  cost function, we adopt a  greedy selection algorithm 
-%outlined in Table~\ref{algo:greedy} and  
-summarized in Fig.~\ref{fig:greedytracking} that
-iteratively selects an edge with minimum cost  $\hat w_e$ and adds it to the set
-$\mathcal{E}'$,  removing  future  and  past  connections  from  the  detections
-$e^{k,l}$ connects. The algorithm iterates  until the minimum cost $\hat w_e$ is
-greater  than a  threshold  $Q$. The  track  for neuron  $i$  is extracted  from
-$\mathcal{E}'$   by  traversing   the  graph   $(\mathcal{G},\mathcal{E}')$  and
-appending linked nucleus detections to $\mathcal{X}^i$.
+To minimize this cost function, we adopt a greedy selection algorithm
+%outlined in Table~\ref{algo:greedy} and
+summarized  in Fig.~\ref{fig:greedytracking}  that iteratively  selects  an edge
+with minimum  cost $\hat w_e$  and adds it  to the set % $\mathcal{E}'$, %% gg 20121025
+ $\mathcal{L}$ removing
+future  and  past  connections  from  the  detections  $e^{k,l}$  connects.  The
+algorithm iterates until the minimum cost $\hat w_e$ is greater than a threshold
+$Q$. %% gg 20121025
+ Each track $i$ is then associated with a neuron identity $\mathcal{X}^i$.
+
+%% gg 20121025
+%%  The track for neuron $i$ is extracted from $\mathcal{E}'$ by traversing the
+%% graph  $(\mathcal{G},\mathcal{E}')$ and appending  linked nucleus  detections to
+%% $\mathcal{X}^i$.
 
 
 %----------------------------------------------------------------------------
@@ -109,7 +120,7 @@ appending linked nucleus detections to $\mathcal{X}^i$.
 
 
 
-%\vspace{-3mm}
+\vspace{-3mm}
 \subsection{Neuron Segmentation and Neurite Tree Extraction}
 \label{sec:segmentation}
 \vspace{-2mm}
