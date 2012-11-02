@@ -16,7 +16,7 @@ neurites $\{n_t^{i,1},  \ldots, n_t^{i,j}, \ldots,  n_t^{i,J} \}$, and a  set of
 $L$     filopodia    associated     with    each     neurite     $F_t^{i,j}    =
 \{f_t^{i,j,1},\ldots,f_t^{i,j,l},\ldots,f_t^{i,j,L}  \}$ so  that  $N_t^i =  \{(
 n_t^{i,1},F_t^{i,1}), \ldots,(n_t^{i,j},F_t^{i,j}) \}$.  Thus, a complete neuron
-$i$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$ at time step $t$.
+$i$  at time step $t$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$.
 
 
 \vspace{-3mm}
@@ -28,7 +28,7 @@ The  first  step in  our  approach  is to  extract  a  set of  nucleus
 detections $\{d^1,\ldots,d^K\}$ over the  image series. We worked with
 two-channel  images where the  cytoskeleton  is marked  with
 Lifeact-GFP and  nuclei   are   marked   with
-NLS-mCherry. The nuclie can be reliably detected and segmented
+NLS-mCherry. The nuclei can be reliably detected and segmented
 by simply thresholding  the NLS-mCherry channel and performing  a morphological
 filling operation.  Alternatively, one could apply
 a  fast machine learning detector such  as the  one
@@ -58,10 +58,10 @@ accomplished  by  constructing  a graph  $\mathcal{G}=(\mathcal{D},\mathcal{E})$
 where each  node $d^k_t \in \mathcal{D}$  corresponds to a  detection.  For each
 detection $d^k_t$ in time step $t$, edges $e \in \mathcal{E}$ are formed between
 $d^k_t$ and all  past and future detections within a time  window $W$.  A weight
-$w_e$ is assigned to each edge  according to spatial and temporal distances, and
-a shape measure  $w_{e} = \alpha || d^k_{t1}  - d^l_{t2} || + \beta |t1  - t2| +
-\gamma f(\nu^k_{t1}, \nu^l_{t2})$ where  $e^{k,l}$ connects $d^k_t$ and $d^l_t$,
-and $\nu^k$ is a shape feature vector containing $d^k_t$'s area, perimeter, mean
+$w_e$ is assigned to each edge $e^{k,l}$ connecting $d^k_t$ and $d^l_t$. The weight $w_e$  relates to spatial distances, temporal distances, and
+a shape measure:  $w_{e} = \alpha || d^k_{t1}  - d^l_{t2} || + \beta |t1  - t2| +
+\gamma f(\nu^k_{t1}, \nu^l_{t2})$,  where
+$\nu^k$ is a shape feature vector containing $d^k_t$'s area, perimeter, mean
 intensity, and major  and minor axis lengths of a  fitted ellipse. $f$ evaluates
 differences  between  a  feature  $a$  extracted from  $d^k_t$  and  $d^l_t$  as
 $f(a^k,a^l) = {|a^k  - a^l|}/{|a^k + a^l|}$. %% gg 20121025
@@ -70,12 +70,12 @@ $f(a^k,a^l) = {|a^k  - a^l|}/{|a^k + a^l|}$. %% gg 20121025
 %% $\sum_{e \in \mathcal{E'}} w_e$.
 The  tracking solution  corresponds  to  a set  of  edges $\mathcal{E'}  \subset
 \mathcal{E}$  with maximal  edge weight  $Q$ that  forms a  set  of disconnected
-tracks $\mathcal{L}$  and minimizes the cost function  $\sum_{e \in \mathcal{L}}
+tracks $\mathcal{T}$  and minimizes the cost function  $\sum_{e \in \mathcal{T}}
 w_e$.
 
-To minimize this cost function, we adopt a greedy selection algorithm
+To minimize this cost function, we adopt a greedy selection algorithm,
 %outlined in Table~\ref{algo:greedy} and
-summarized  in Fig.~\ref{fig:greedytracking}  that iteratively  selects  an edge
+summarized  in Fig.~\ref{fig:greedytracking},  that iteratively  selects  an edge
 with minimum  cost $\hat w_e$  and adds it  to the set % $\mathcal{E}'$, %% gg 20121025
  $\mathcal{L}$ removing
 future  and  past  connections  from  the  detections  $e^{k,l}$  connects.  The
@@ -95,17 +95,17 @@ $Q$. %% gg 20121025
        \begin{tabular}{@{\hspace{-1mm}}c}
         \includegraphics[width = 87mm] {images/neurondrawing.pdf}\\ [-2.4ex]
        \end{tabular} 
-    \caption{ \footnotesize   Neuron  tracking  notation.    A
-        neuron $i$  is defined by  a time-series of  neuron detections
-        $\mathcal{X}^i     =     \{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i
-        \}$.  The  tracking returns  a  set  $\mathcal{X}^i$ for  each
-        neuron $i$.  At time $t$ a neuron detection $X_t^i = \{ c_t^i,
+    \caption{ \footnotesize   Neuron  tracking  notation.  At time $t$ a neuron $i$ detection $X_t^i = \{ c_t^i,
         s_t^i, N_t^i  \}$ contains a nucleus $c_t^i$,  a soma $s_t^i$,
         and    a  set of   neurite-filopodia    tuples    $N_t^i     =    \{(
         n_t^{i,1},F_t^{i,1}),   \ldots,(n_t^{i,j},F_t^{i,j}),  \ldots,
         (n_t^{i,J},F_t^{i,J})  \}$  which  contains $J$  neurites  and
         their associated  filopodia shown in  red for $j=1$  and green
-        for  $j=2$. A spurious nucleus  detection  $d_1$ is also shown.}
+        for  $j=2$. A spurious nucleus  detection  $d_1$ is also shown.
+        A neuron $i$  is defined by  a time-series of  neuron detections
+        $\mathcal{X}^i     =     \{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i
+        \}$.  The  tracking returns  a  set  $\mathcal{X}^i$ for  each
+        neuron. }
     \label{fig:notation}
   \end{center}
 \vspace{-8mm}
@@ -126,7 +126,7 @@ $Q$. %% gg 20121025
 \vspace{-2mm}
 Given an  image $I_t$  and the set  of somata  present in it  $S_t=\{s_t^1 \dots
 s_t^m \}$,  our goal is  to associate  to each pixel  $u$ a label  $J_t(u)$ that
-indicates to which neuron (soma) it belongs.   The probability of $J_t(u)$ can be deduced
+indicates to which neuron (soma) it belongs, if any.   The probability of $J_t(u)$ can be deduced
 using Bayes' rule,
 \begin{equation}
   \label{eq:bayes}
@@ -155,7 +155,7 @@ associated with  $i$, $ U_i^t  = \{u \in  U_n^t | J_t(u)  = i\} \cup  s_t^i$. To
 reduce the neurite segmentation to a  tree, we skeletonize the neuron and define
 as  root  node  the pixel  of  the  skeleton  closest  to  the centroid  of  the
 nucleus.  We instantiate  a Minimum  Spanning Tree  from the  root and  create a
-neurite tree when the spanning tree exits the soma.
+neurite tree whenever the spanning tree exits the soma.
 
 
 
@@ -164,7 +164,7 @@ neurite tree when the spanning tree exits the soma.
 \label{sec:neurite}
 \vspace{-2mm}  The identity  of neurites  is tracked  across the  frames  of the
 time-lapse videos by applying the algorithm described in Sec~\ref{sec:tracking},
-but using the centroids of the  neurite trees instead of nucleus centroids, with
+but using the centroids of the  neurite trees instead of the centroids of nuclei, with
 the  additional constraint  that  edges  may only  exist  between neurites  that
 emanate from  the same soma.   Filopodia are detected  by starting at  each leaf
 node in a  neurite and traversing the  tree until a branch point  is reached. If
