@@ -42,7 +42,7 @@ associates nuclei  belonging to the  same neuron  throughout the
 time-lapse sequence.
 Using tracked nuclei as  seed points, a region-growing  algorithm segments
 the neuron's soma.  The somata are  used to initialize a  joint segmentation of
-the entire structure  of all neurons in a  image using a probabilistic
+the entire structure  of all neurons in an  image using a probabilistic
 method based on  shortest path computations.  A graph  describing the morphology
 of  the neurites  is extracted  from this  segmentation.  Each  neurite  tree is
 tracked by association, and filopodia  are detected by analyzing the topology of
@@ -51,7 +51,7 @@ extracted, quantifying the behavior of the each neuron in the video.
 
 
 As   demonstrated  in   Fig.~\ref{fig:video}, 
-our  approach produces reliable  segmentations capable of capturing
+our  approach extracts accurately and reliably neurons' morphology and thus is capable of capturing
 complex  neuron  dynamics. To validate our approach, we analyzed a   
 small-scale  siRNA screen  of 5  genes (3  siRNAs/gene). Our analysis
 confirmed steady-state phenotypes obtained previously using 
@@ -87,7 +87,7 @@ new dynamic behaviors which are only apparant through dynamic analysis.
 	\multicolumn{2}{c}{\footnotesize $t = 260$ min} \\
       \end{tabular} 
     \vspace{-2mm}  
-    \caption{\footnotesize Our approach tracks and segments the entire neuron. The top
+    \caption{\footnotesize Our approach tracks and extracts the morphology the entire neuron. The top
         row contains results from an experiment with inhibited 
 	MAP2K7 functions.    Tracked neurons are marked by a unique color and id.   
 	Nuclei  are denoted  by  filled  ellipsoids, somata  as
