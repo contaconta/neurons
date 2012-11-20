@@ -4,7 +4,7 @@ NumOfTrackedCells = 0;
 NumOfAnnotatedNuclei = 0;
 NumOfAnnotatedSomata = 0;
 
-for idx = 5:8
+for idx = 1:12
     strIDx = sprintf('%03d', idx);
     disp('========================================')
     disp(strIDx)
@@ -16,13 +16,15 @@ for idx = 5:8
     NumOfTrackedCells = NumOfTrackedCells + numel(TrackedCells);
     for k = 1:numel(TrackedCells)
         NumOfAnnotatedNuclei = NumOfAnnotatedNuclei + numel(TrackedCells{k}.nucleus.listOfObjects.t2_area);
-        NumOfAnnotatedSomata = NumOfAnnotatedSomata + numel(TrackedCells{k}.soma.listOfObjects.t2_area);
+        if(isfield(TrackedCells{k}, 'soma'))
+            NumOfAnnotatedSomata = NumOfAnnotatedSomata + numel(TrackedCells{k}.soma.listOfObjects.t2_area);
+        end
     end
 end
 %%
 disp(['Nb tracked cells is ' num2str(NumOfTrackedCells)]);
-disp(['Nb tracked Nuclei is ' num2str(NumOfAnnotatedNuclei)]);
-disp(['Nb tracked Somata is ' num2str(NumOfAnnotatedSomata)]);
+disp(['Nb annotated Nuclei is ' num2str(NumOfAnnotatedNuclei)]);
+disp(['Nb annotated Somata is ' num2str(NumOfAnnotatedSomata)]);
 
 %%
 inputImage = [DataRootDirectory strIDx '/green.tif'];

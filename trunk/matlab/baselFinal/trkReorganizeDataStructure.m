@@ -102,9 +102,21 @@ for i = 1:length(trkSeq)
         listOfSpeeds        = zeros(1, size(listOfDisplacements, 1));
         for k=1:length(listOfSpeeds)
             listOfDistances(k) = norm(listOfDisplacements(k, :));
-            listOfSpeeds(k) = listOfDistances(k) ./ (listOfTimes(k+1) - listOfTimes(k)); 
+            listOfSpeeds(k) = listOfDistances(k) ./ (listOfTimes(k+1) - listOfTimes(k));
+            listOfDisplacements(k, :) = listOfDisplacements(k, :) ./ (listOfTimes(k+1) - listOfTimes(k));
             % get distance traveled since last frame
             currentTrack.TimeStep(k+1).DistanceTraveled = listOfDistances(k);
+            % get the speed
+            currentTrack.TimeStep(k+1).Speed = listOfSpeeds(k);
+        end
+        
+        listOfAccelerationVectors = listOfDisplacements(2:end, :) - listOfDisplacements(1:end-1, :);
+        listOfAccelerations       = zeros(size(listOfAccelerationVectors, 1), 1);
+        for k=1:length(listOfAccelerationVectors)
+            listOfAccelerations(k) = norm(listOfAccelerationVectors(k, :));
+            listOfAccelerations(k) = listOfAccelerations(k) ./ (listOfTimes(k+1) - listOfTimes(k));
+            % get the accelerations
+            currentTrack.TimeStep(k+1).Acceleration = listOfSpeeds(k);
         end
         
         
@@ -115,6 +127,7 @@ for i = 1:length(trkSeq)
         currentTrack.MeanNumNeurites       = mean(listNumberOfNeurites);
         currentTrack.DistanceTraveled      = sum(listOfDistances);
         currentTrack.MeanSpeed             = mean(listOfSpeeds);
+        currentTrack.MeanAcceleration      = mean(listOfAccelerations);
         currentTrack.MeanNeuritesLength    = mean(listOfNeuritesLength);
         currentTrack.MeanNeuritesBranching = mean(listOfNeuritesBranches);
         currentTrack.MeanNeuritesComplexity= mean(listOfNeuritesComplexity);
