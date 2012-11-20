@@ -73,20 +73,23 @@ if( ~isempty( BranchesLength ) )
     filament.LengthBranches             = BranchesLength;
     filament.ExtremeLength              = ExtremeLength;
     filament.MaxExtremeLenght           = max(ExtremeLength);
-    
     filament.MeanBranchLength           = mean(BranchesLength);
-    filament.MedianBranchLength         = quantile(BranchesLength, 0.5);
-    filament.TwentyFiveBranchLength     = quantile(BranchesLength, 0.25);
-    filament.SeventyFiveBranchLength    = quantile(BranchesLength, 0.75);
-    
     leafBranchesLength                  = BranchesLength(logical(BranchesAreLeafs));
-    
     filament.MeanLeafLength             = mean(leafBranchesLength);
-    filament.MedianLeafLength           = quantile(leafBranchesLength, 0.5);
-    filament.TwentyFiveLeafLength       = quantile(leafBranchesLength, 0.25);
-    filament.SeventyFiveLeafLength      = quantile(leafBranchesLength, 0.75);
-    
     filament.TotalCableLength           = sum(BranchesLength);
+    
+    fieldsToQuantile = {'LengthBranches', 'ExtremeLength', 'LeafBranches'};
+    quantilesList    = [0.25, 0.5, 0.75];
+    for i =1:length(fieldsToQuantile)
+        quant = quantile(getfield(filament, fieldsToQuantile{i}), quantilesList);%#ok
+        for j =1:length(quantilesList)
+            newFieldName = [fieldsToQuantile{i} '_q_' int2str(100*quantilesList(j))];
+            filament     = setfield(filament, newFieldName, quant(j));%#ok
+        end
+    end
+    
+    filament.Complexity =  length(filament.LengthBranches) / filament.TotalCableLength;
+    
 else
     filament.Branches                   = [];
     filament.LeafBranches               = [];
@@ -102,5 +105,7 @@ else
     filament.TwentyFiveLeafLength       = nan;
     filament.SeventyFiveLeafLength      = nan;
     filament.TotalCableLength           = nan;
+    filament.Complexity                 = nan;
+    keyboard;
 end
 

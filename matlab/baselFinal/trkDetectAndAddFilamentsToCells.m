@@ -92,19 +92,20 @@ parfor dd = 1:length(Cells)
             currentTree.NumKids             = numkids;
             currentTree.NeuritePixelIdxList = listOfNeurites{j};
             currentTree                     = trkFindBranches(currentTree, size(Cells(dd).Neurites));
-            neuriteComplexity = nan;%#ok
-            if currentTree.TotalCableLength > 0
-                neuriteComplexity  =   length(currentTree.LengthBranches) / currentTree.TotalCableLength;
-                currentTree.Complexity = neuriteComplexity;
-            else
-                keyboard;
-                error('a tree stored at this level should not be empty');
-            end
+%             neuriteComplexity = nan;%#ok
+%             if currentTree.TotalCableLength > 0
+%                 neuriteComplexity  =   length(currentTree.LengthBranches) / currentTree.TotalCableLength;
+%                 currentTree.Complexity = neuriteComplexity;
+%             else
+%                 keyboard;
+%                 error('a tree stored at this level should not be empty');
+%             end
             
             listOfNeuritesComplexity(j)  = neuriteComplexity;
             TotalNeuritesLength          = TotalNeuritesLength   +        currentTree.TotalCableLength;
             TotalNeuritesBranches        = TotalNeuritesBranches + length(currentTree.LengthBranches);
             MaxExtremeLength             = max(MaxExtremeLength  ,        currentTree.MaxExtremeLenght);
+            
             
             filam = [filam currentTree];
         end
