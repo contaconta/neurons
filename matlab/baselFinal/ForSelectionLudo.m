@@ -1,3 +1,3 @@
 clear all; close all; clc;
 %%
-Sequence =  trkTracking('~/Documents/Work/Data/Sinergia/Olivier/SelectionLudo/', '~/Documents/Work/Data/Sinergia/Olivier/SelectionLudo/', '001', '', '20x');
+Sequence =  trkTracking('/cvlabdata1/home/fbenmans/Synergia/SelectionLudo/', '/cvlabdata1/home/fbenmans/Synergia/SelectionLudo/', '1', 'Plate1', '20x');

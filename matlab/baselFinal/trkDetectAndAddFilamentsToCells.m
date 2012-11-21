@@ -10,11 +10,6 @@ for i =1:length(Cells)
         Cells(i).Neurites                   = (Filaments{t} & (Regions{t} == Cells(i).ID) & (~SomataTracked{t}));
         Cells(i).NumberOfNeurites           = 0;
         Cells(i).NeuritesList               = [];
-        
-        Cells(i).TotalNeuritesLength        = 0;
-        Cells(i).TotalNeuritesBranches      = 0;
-        Cells(i).MeanNeuritesComplexity     = nan;
-        Cells(i).MaxNeuritesExtremeLength   = 0;
     end
 end
 
@@ -78,10 +73,6 @@ parfor dd = 1:length(Cells)
         [LL, numberOfNeurites] = bwlabel(Cells(dd).Neurites, NeuriteConnectivity);
         listOfNeurites = cell(1, numberOfNeurites);
         filam   = [];
-        TotalNeuritesLength      = 0;
-        TotalNeuritesBranches    = 0;
-        MaxExtremeLength         = 0;
-        listOfNeuritesComplexity = zeros(1, numberOfNeurites);
         for j =1:numberOfNeurites
             set(0,'RecursionLimit',RECURSIONLIMIT);
             listOfNeurites{j} = find(LL==j);
@@ -92,29 +83,9 @@ parfor dd = 1:length(Cells)
             currentTree.NumKids             = numkids;
             currentTree.NeuritePixelIdxList = listOfNeurites{j};
             currentTree                     = trkFindBranches(currentTree, size(Cells(dd).Neurites));
-%             neuriteComplexity = nan;%#ok
-%             if currentTree.TotalCableLength > 0
-%                 neuriteComplexity  =   length(currentTree.LengthBranches) / currentTree.TotalCableLength;
-%                 currentTree.Complexity = neuriteComplexity;
-%             else
-%                 keyboard;
-%                 error('a tree stored at this level should not be empty');
-%             end
-            
-            listOfNeuritesComplexity(j)  = neuriteComplexity;
-            TotalNeuritesLength          = TotalNeuritesLength   +        currentTree.TotalCableLength;
-            TotalNeuritesBranches        = TotalNeuritesBranches + length(currentTree.LengthBranches);
-            MaxExtremeLength             = max(MaxExtremeLength  ,        currentTree.MaxExtremeLenght);
-            
-            
             filam = [filam currentTree];
         end
-        
         Cells(dd).NumberOfNeurites          = numberOfNeurites;
         Cells(dd).NeuritesList              = filam;
-        Cells(dd).TotalNeuritesLength       = TotalNeuritesLength;
-        Cells(dd).TotalNeuritesBranches     = TotalNeuritesBranches;
-        Cells(dd).MeanNeuritesComplexity    = mean(listOfNeuritesComplexity);
-        Cells(dd).MaxNeuritesExtremeLength  = MaxExtremeLength;
     end
 end
