@@ -71,29 +71,29 @@ if( ~isempty( BranchesLength ) )
     filament.Branches                   = NeuriteBranches;
     filament.LeafBranches               = logical(BranchesAreLeafs');
     filament.LengthBranches             = BranchesLength;
+    leafBranchesLength                  = BranchesLength(logical(BranchesAreLeafs));
+    filament.LeafLengthBranches         = leafBranchesLength;
     filament.ExtremeLength              = ExtremeLength;
     filament.MaxExtremeLenght           = max(ExtremeLength);
     filament.MeanBranchLength           = mean(BranchesLength);
-    leafBranchesLength                  = BranchesLength(logical(BranchesAreLeafs));
+    
     filament.MeanLeafLength             = mean(leafBranchesLength);
     filament.TotalCableLength           = sum(BranchesLength);
-    
-    fieldsToQuantile = {'LengthBranches', 'ExtremeLength', 'LeafBranches'};
-    quantilesList    = [0.25, 0.5, 0.75];
-    for i =1:length(fieldsToQuantile)
-        quant = quantile(getfield(filament, fieldsToQuantile{i}), quantilesList);%#ok
-        for j =1:length(quantilesList)
-            newFieldName = [fieldsToQuantile{i} '_q_' int2str(100*quantilesList(j))];
-            filament     = setfield(filament, newFieldName, quant(j));%#ok
-        end
-    end
+    fieldsToQuantile = {'LengthBranches', 'ExtremeLength', 'LeafLengthBranches'};
+    quantilesList    = [0 0.25, 0.5, 0.75 1];
+    filament         = trkComputeQuantilesAndMean(filament, fieldsToQuantile, quantilesList);
     
     filament.Complexity =  length(filament.LengthBranches) / filament.TotalCableLength;
+    if(isnan(filament.TotalCableLength) || isinf(filament.TotalCableLength) || filament.TotalCableLength <=0 )
+        warning('on', 'problem with filaments total cable length');
+        keyboard;
+    end
     
 else
     filament.Branches                   = [];
     filament.LeafBranches               = [];
     filament.LengthBranches             = [];
+    filament.LeafLengthBranches         = [];
     filament.ExtremeLength              = [];
     filament.MaxExtremeLenght           = nan;
     filament.MeanBranchLength           = nan;
