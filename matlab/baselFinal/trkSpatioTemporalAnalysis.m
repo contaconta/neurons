@@ -2,7 +2,7 @@ function currentTrack = trkSpatioTemporalAnalysis(currentTrack)
 
 listOfCentroids = [];
 listOfTimes     = [];        
-for i =1:length(currentTrack)
+for i =1:length(currentTrack.TimeStep)
     listOfCentroids          = vertcat(listOfCentroids,      currentTrack.TimeStep(i).NucleusCentroid);%#ok
     listOfTimes              = [listOfTimes                  currentTrack.TimeStep(i).Time];%#ok
 end
