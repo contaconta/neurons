@@ -100,7 +100,8 @@ for i = 1:length(trkSeq)
         end
         
         %% speed, displacement and acceleration
-        currentTrack = trkSpatioTemporalAnalysis(currentTrack);
+        
+	currentTrack = trkSpatioTemporalAnalysis(currentTrack);
         %% temporal analysis for other features
         fieldsToAnalyse = {'NucleusArea',...
                            'NucleusEccentricity', ...
