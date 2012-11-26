@@ -30,6 +30,5 @@ for k=1:length(listOfAccelerationVectors)
 end
 
 currentTrack.DistanceTraveled = sum(listOfDistances);
-currentTrack.MeanSpeed             = mean(listOfSpeeds);
-currentTrack.MeanAcceleration      = mean(listOfAccelerations);
-        
+currentTrack.MeanSpeed        = mean(listOfSpeeds);
+currentTrack.MeanAcceleration = mean(listOfAccelerations);
