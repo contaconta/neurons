@@ -12,27 +12,27 @@ function processListOfPlates(datasets_paths_filename, resolution)
 %   Written 4/07/2012
 
 fid = fopen(datasets_paths_filename);
-C = textscan(fid, '%s %s %s %s');
+C = textscan(fid, '%s %s %s %s %s');
 fclose(fid);
 
 inputDataRoot      = '/raid/data/store/';
 outputAnalisysRoot = '/raid/data/analysis/';
 
-for i= 1:length(C)
-    Sample	 = C{1}(i);
-    Identifier = C{3}(i);
-    Location = C{4}(i);
+for i= 1:length(C{1})
+    Sample	 = C{3}(i);
+    Identifier = C{4}(i);
+    Location = C{5}(i);
     inputFolder = [inputDataRoot Location{1} '/original/'];
     a = dir(inputFolder);
     for j = 1:length(a)
-        if(a(j).isdir && length(a(j).name) > 4 && length(regexpi(Identifier{1},a(j).name)) > 0)
+        if(a(j).isdir && strcmpi(a(j).name, Sample{1}))
             directoryName = a(j).name;
             break;
         end
     end
     inputFolder = [inputFolder   directoryName '/' ];%#ok<*AGROW>
     disp(inputFolder);
-    resultsFolder = [outputAnalisysRoot  Identifier{1} '/'];
+    resultsFolder = [outputAnalisysRoot  Sample{1} '/'];
     if( ~exist(resultsFolder, 'dir') )
         mkdir(resultsFolder);
     end
