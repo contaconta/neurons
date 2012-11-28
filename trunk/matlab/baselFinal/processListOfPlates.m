@@ -25,7 +25,7 @@ for i= 1:length(C{1})
     inputFolder = [inputDataRoot Location{1} '/original/'];
     a = dir(inputFolder);
     for j = 1:length(a)
-        if(a(j).isdir && strcmpi(a(j).name, Sample{1}))
+        if( a(j).isdir && length(a(j).name) > 4 && length(regexpi(Sample{1},a(j).name)) > 0 )
             directoryName = a(j).name;
             break;
         end
