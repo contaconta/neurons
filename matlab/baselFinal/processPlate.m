@@ -41,7 +41,7 @@ count = 1;
 listOfDirs = dir(folder);
 for i = 1:length(listOfDirs)
     if listOfDirs(i).isdir && ~isempty(str2num(listOfDirs(i).name))
-        exp_num(count,:) = listOfDirs(i).name; %#ok<*AGROW>
+        exp_num{count} = listOfDirs(i).name; %#ok<*AGROW>
         count  = count + 1;
     end
 end
@@ -60,11 +60,11 @@ fclose(FID);
 
 % ------------ process the specified folders --------------
 % matlabpool local
-for i = 1:size(exp_num,1)
+for i = 1:length(exp_num)
     
-    folder_n = [folder exp_num(i,:) '/'];
+    folder_n = [folder exp_num{i} '/'];
     initime = cputime;
-    trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, magnification);
+    trkTracking(folder_n, resultsFolder, exp_num{i}, Sample, magnification);
     endtime = cputime;
     fprintf('CPUTIME: %g \n', endtime-initime);
     disp('');
