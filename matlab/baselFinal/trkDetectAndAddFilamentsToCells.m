@@ -44,7 +44,7 @@ parfor dd = 1:length(Cells)
                     if(max(LL) > pad)
                         %[~,imax] = findpeaks( LL, 'MINPEAKHEIGHT', pad, 'MINPEAKDISTANCE', min(pad, floor(length(Idx)/2)));
                         TT = fpeak(1:length(LL), LL, pad);
-                        imax = TT(:, 2);
+                        imax = TT(:, 1);
                         Idx = Idx(1+pad:end);
                         imax(imax <=pad) = [];
                         listOfCandidateEndPoints = vertcat(listOfCandidateEndPoints, Idx(imax-pad));%ok

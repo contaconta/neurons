@@ -30,13 +30,18 @@ if isempty( strfind(path, [pwd '/../baselFinal/ksp']) )
     addpath([pwd '/../baselFinal/ksp']);
 end
 
+if isempty( strfind(path, [pwd '/../baselFinal/fpeak']) )
+    addpath([pwd '/../baselFinal/fpeak']);
+end
+
+
 run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
 
 % --------- generate list of folders to process -----------
 count = 1;
 listOfDirs = dir(folder);
 for i = 1:length(listOfDirs)
-    if listOfDirs(i).isdir && length(listOfDirs(i).name) == 3
+    if listOfDirs(i).isdir && ~isempty(str2num(listOfDirs(i).name))
         exp_num(count,:) = listOfDirs(i).name; %#ok<*AGROW>
         count  = count + 1;
     end
@@ -60,7 +65,7 @@ for i = 1:size(exp_num,1)
     
     folder_n = [folder exp_num(i,:) '/'];
     initime = cputime;
-    trkTracking(folder_n, resultsFolder, exp_num(i,:), Sample, magnification);
+    trkTracking(folder_n, resultsFolder, exp_num(i,:), Identifier, magnification);
     endtime = cputime;
     fprintf('CPUTIME: %g \n', endtime-initime);
     disp('');
