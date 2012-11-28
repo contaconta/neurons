@@ -1,9 +1,5 @@
 function peak=fpeak(x,y,s,Range)
-%Author:    Geng Jun
-%           USTB,Beijing,China
-%E-mail:    dr.gengjun@126.com
-%           Write for Dr. Ma Zheng
-%Create:    2003,12,9 17:28
+
 %Brief introduction:Find peak value of datas.
 %Variable:  s is the sensitivity of the function.
 %           Range is the peak value's range
@@ -41,7 +37,7 @@ end
 %-------------------------------------------
 function p=getPeak(Data,i,s)
 %English:Select points by sensitivity
-%Chinese:¸ù¾ÝÁéÃô¶ÈÑ¡¶¨Òª½øÐÐÅÐ¶ÏµÄµã
+%Chinese:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ÏµÄµï¿½
 if i-s<1
     top=1;
 else
@@ -55,19 +51,19 @@ else
 end
 
 %Add solution as an input arguments,then you can write your own solution. 
-%Solution 1£ºAll datas in the range of senstitivity must be <= or >= peak
+%Solution 1ï¿½ï¿½All datas in the range of senstitivity must be <= or >= peak
 %value
-%Solution 1£ºÒªÇóËùÓÐÔÚÁéÃô¶È·¶Î§ÄÚµÄµã¶¼<=»ò>=¼«Öµ
+%Solution 1ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½Î§ï¿½ÚµÄµã¶¼<=ï¿½ï¿½>=ï¿½ï¿½Öµ
 %If tP=1, it's top peak
-%tPÅÐ¶ÏÊÇ·ñÎªÉÏ¼«Öµµã£¬tP=1ÎªÉÏ¼«Öµµã
+%tPï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½Ï¼ï¿½Öµï¿½ã£¬tP=1Îªï¿½Ï¼ï¿½Öµï¿½ï¿½
 %If bP=1, it's bottom peak
-%bPÅÐ¶ÏÊÇ·ñÎªÏÂ¼«Öµµã£¬bP=1ÎªÏÂ¼«Öµµã
+%bPï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½Â¼ï¿½Öµï¿½ã£¬bP=1Îªï¿½Â¼ï¿½Öµï¿½ï¿½
 tP=(sum(y(top:bottom)>=y(i))==1);
 bP=(sum(y(top:bottom)<=y(i))==1);
-if tP==1 | bP==1
+if tP==1
     p=Data(i,:);
 else
     p=[nan,nan];
 end
 
-%Solution 2£º¡£¡£¡£¡£¡£¡£
+%Solution 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
