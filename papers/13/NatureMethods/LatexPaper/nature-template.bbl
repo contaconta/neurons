@@ -1,0 +1,16 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{Held:2010dv}
+\bibinfo{author}{Held, M.} \emph{et~al.}
+\newblock \bibinfo{title}{{CellCognition: time-resolved phenotype annotation in
+  high-throughput live cell imaging.}}
+\newblock \emph{\bibinfo{journal}{Nature methods}}
+  \textbf{\bibinfo{volume}{7}}, \bibinfo{pages}{747--754}
+  (\bibinfo{year}{2010}).
+
+\end{thebibliography}
