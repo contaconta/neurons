@@ -1,23 +1,19 @@
 %!TEX root =  main.tex
-%% Template for a preprint Letter or Article for submission
-%% to the journal Nature.
-%% Written by Peter Czoschke, 26 February 2004
-%%
 
 \documentclass{nature}
 
 %% make sure you have the nature.cls and naturemag.bst files where
-%% LaTeX can find them
 
 \bibliographystyle{naturemag}
 \usepackage{color}
+\newcommand{\comment}[1]{}
 
 \title{Computer vision profiling of neurite outgrowth morphodynamic phenotypes}
 
 %% Notice placement of commas and superscripts and use of &
 %% in the author list
 
-\author{Ludovico Fusco$^{1,6}$, Fethallah Benmansour$^{2. 6}$, Riwal Lefort$^{3, 6}$, Kevin Smith$^{4, 6}$, German Gonzales$^4$,  Catherina Barillari$^5$, Bernd Rinn$^5$, Francois Fleuret$^3$, Pascal Fua$^2$  \& Olivier Pertz$^1$}
+\author{Ludovico Fusco$^{1,7}$, Fethallah Benmansour$^{2, 7}$, Riwal Lefort$^{3, 7}$, Kevin Smith$^{4, 7}$, German Gonzales$^5$,  Catherina Barillari$^6$, Bernd Rinn$^6$, Pascal Fua$^2$, Francois Fleuret$^3$   \& Olivier Pertz$^1$}
 
 
 %======================================================================
@@ -27,24 +23,26 @@
 
 \begin{affiliations}
  \item Institute for Biochemistry and Genetics, Dept. Biomedicine, University of Basel, Mattenstrasse 28, 4058 Basel, Switzerland
- \item 
- \item 
- \item 
- \item 
- \item 
+ \item Computer Vision Laboratory, Dept. I\&C, \'Ecole Polytechnique F\'ed'erale de Lausanne, Station 14, CH-1015 Lausanne, Switzerland
+ \item Idiap Research Institute, Centre du Parc, Rue Marconi 19, 1920 Martigny, Switzerland 
+ \item Light Microscopy and Screening Center, Institute for Biochemistry, Schafmattstrasse 18, ETHZ-Honggerberg, CH-8093 Zurich, Switzerland
+ \item TODO
+\item Center for Information Sciences and Databases, Department of Biosystems Science and Engineering, Maulbeerstrasse, Building 1078, 1st Floor, 4058 Basel, Switzerland
+\item TODO
 \end{affiliations}
 
 
 %======================================================================
 \input{abstract.tex}
 %======================================================================
-test version svn 2
+
 %======================================================================
 \input{intro.tex}
 %======================================================================
 
 %======================================================================
 \begin{results}
+%======================================================================
 
 %======================================================================
 \input{experimental-basel.tex}
@@ -62,17 +60,11 @@ test version svn 2
 \end{results}
 %======================================================================
 
-\bibliographystyle{naturemag}
-\bibliography{biology,vision,ml}
 
-%
-%\begin{thebibliography}{1}
-%\bibitem{Collinet10} No compound references -- only one source per reference.
-%
-%%\bibitem{dummy} Articles are restricted to 50 references, Letters to 30.
-%%\bibitem{dummyb} No compound references -- only one source per reference.
-%\end{thebibliography}
-
+%======================================================================
+%\bibliographystyle{naturemag}
+\bibliography{biblio/biology,biblio/vision,biblio/ml}
+%======================================================================
 
 \begin{addendum}
  \item Put acknowledgements here.
@@ -81,13 +73,16 @@ competing financial interests.
  \item[Correspondence] Phone: +41 61 267 22 03; Fax: +41 61 267 35 66; E-mail : \texttt{olivier.pertz@unibas.ch}.
 \end{addendum}
 
-%%
-%% TABLES
-%%
-%% If there are any tables, put them here.
-%%
-
 \end{document}
+
+
+
+
+
+
+
+
+
 
 
 
