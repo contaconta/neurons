@@ -1,0 +1,147 @@
+% version = 1.08 of naturefem.sty 2003 Mar 6
+% 2003 Mar  6, 1.08: corrected comments
+% 2003 Jan  2, 1.07: neutral mechanism introduced
+% 2002 Dec 12, 1.06: origin
+
+% footnote exchange mechanism in LaTeX for Nature
+
+% This mechanism converts the order given by LaTeX
+% to the one desired by Nature at:
+% http://www.nature.com/nature/submit/gta/index.html
+
+%   Dr. Thomas D. Schneider
+%   National Cancer Institute
+%   Laboratory of Experimental and Computational Biology
+%   Frederick, Maryland  21702-1201
+%   toms@ncifcrf.gov
+%   permanent email: toms@alum.mit.edu (use only if first address fails)
+%   http://www.lecb.ncifcrf.gov/~toms/
+
+% footnote exchange mechanism
+% Lamport p. 195 and p. 196 gives a great example.
+% Guide 190, esp
+
+% To keep the calls but to neutralize them, use:
+% \newcommand{\ftnexchange}[1]{#1}
+% or
+% \renewcommand{\ftnexchange}[1]{#1}
+% if this file has already defined the function.
+
+% needed for doing if-then tests
+\usepackage{ifthen}
+
+% set up the counters
+\newcounter{bubbainput}
+\newcounter{bubbaresult}
+% \newboolean{bubbadouble} % this fails!!!!  A KNOWN LaTeX bug since 1996!!
+\newcounter{bubbadouble}
+\newcounter{bubbaloop}
+\newcounter{ca}
+\newcounter{cb}
+
+% This is a little test function as an example of computation.
+% call this using: \bubbasum{4}{3}%
+\newcommand{\bubbasum}[2]{%
+Bubba says that sum(#1, #2) = %
+\setcounter{ca}{#1}%
+\setcounter{cb}{#2}%
+\setcounter{bubbainput}{\value{ca}}%
+\addtocounter{bubbainput}{\value{cb}}%
+\arabic{bubbainput}
+and in Rome as they say,
+\Roman{bubbainput}, %
+and in footnotation:
+\fnsymbol{ca}+%
+\fnsymbol{cb}=%
+\fnsymbol{bubbainput}.%
+  \ifthenelse{\value{ca} = 3}{ca is 3}{ca is not 3}, %
+\ifthenelse{\value{cb} = 3}{cb is 3}{cb is not 3} %
+}
+
+\newcommand{\subtract}[2]{%
+% make a subtraction function since LaTeX doesn't
+% seem to have one!
+\setcounter{ca}{#1}%
+\setcounter{cb}{#2}%
+subtract result is: %
+%\arabic{cb} %
+\addtocounter{ca}{-\value{cb}} %
+\arabic{ca} %
+}
+
+% This is the exchange function.  Call as:
+% Paul N. Hengen,$^{\ftnexchange{1},\ftnexchange{2}}$
+\newcommand{\ftnexchange}[1]{%
+\setcounter{bubbainput}{#1}%
+%(\arabic{bubbainput}% unearth this comment to see the result
+% compute if we should double the symbol
+\ifthenelse{\value{bubbainput} > 14} %
+  {\textbf{The ftnexchange cannot handle more than 14 footnotes! %
+   You gave it \arabic{bubbainput}.} %
+  }%
+  {%
+   \setcounter{bubbaresult}{\value{bubbainput}}%
+   \ifthenelse{\value{bubbainput} > 7} %
+     {%
+       \setcounter{bubbadouble}{2}
+       \addtocounter{bubbaresult}{-7} % subtract 7
+     }%
+     {%
+       \setcounter{bubbadouble}{1}
+     }%
+   \ifthenelse{\value{bubbainput}=5}{\setcounter{bubbaresult}{6}}{}%
+   \ifthenelse{\value{bubbainput}=6}{\setcounter{bubbaresult}{5}}{}%
+   \ifthenelse{\value{bubbainput}=6}{\setcounter{bubbaresult}{5}}{}%
+%
+   \whiledo {\value{bubbadouble} > 0 } {%
+     \ifthenelse{\value{bubbaresult}=7} %
+     {\#}%
+     {\fnsymbol{bubbaresult}}%
+     \addtocounter{bubbadouble}{-1}% subtract 1
+   }%
+%
+  }%
+%)% unearth this comment to see the result as "(1*)"
+}
+
+\newcommand{\ftnexchangetest}{
+% test the ftnexchange
+\setcounter{ca}{1}%
+\par %
+Test of the ftnexchange function in naturefem.sty \\ %
+\noindent %
+\whiledo {\value{ca} < 16} {%
+  \arabic{ca} %
+  \ftnexchange{\arabic{ca}} \\%
+  \addtocounter{ca}{1}%
+} %
+\par %
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
