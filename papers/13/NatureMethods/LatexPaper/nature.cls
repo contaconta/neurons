@@ -1,4 +1,12 @@
 %% Class nature
+%% 
+%%    version = 2.02 of nature.cls 2007 Aug 15
+%% 2007 Aug 15, 2.02: turn OFF figures - nature formatting guide:
+%%     http://www.nature.com/nature/authors/gta/index.html#a5.8
+%% 2007 Aug 15, 2.01: muck with cite superscripts
+%% 2007 Aug 06, 2.00: turn on figures again.
+%% Modified by Tom Schneider.
+%% 
 %% Written by Peter Czoschke, czoschke@mrl.uiuc.edu
 %% v1.0 24 Feb. 2004
 %%
@@ -40,7 +48,12 @@
 \LoadClass[12pt]{article}
 \RequirePackage{cite}
 \RequirePackage{times}
-\RequirePackage{fullpage}
+
+% \RequirePackage{fullpage}
+%  This package sets all 4 margins to be either 1 inch or 1.5 cm, and
+%  specifies the page style.
+% 2007 aug 6: That messes the margins terribly.  Block it.
+
 \RequirePackage{ifthen}
 
 %% make labels in bibliobraphy be #.
@@ -102,7 +115,7 @@
     \section*{Methods}%
     \setlength{\parskip}{12pt}%
     }{}
-    
+
 \newenvironment{results}{%
     \section*{Results}%
     \setlength{\parskip}{12pt}%
@@ -127,6 +140,9 @@
 
 \newcommand*{\addendumlabel}[1]{\textbf{#1}\hspace{1em}}
 
+%**************************************************************************
+% 2007 Aug 06: block changings to figure and tables
+
 %% Redefine the figure and table environments.
 %% The new figure environment defers printing of all figure captions
 %% until the end of the document and prints them in sans serif font.
@@ -136,22 +152,25 @@
 %% sans serif font.  Tables should all be moved to the end of the document
 %% manually.  
 
-\renewenvironment{figure}{\let\caption\NAT@figcaption}{}
-    
-\newcommand{\NAT@figcaption}[2][]{\AtEndDocument{%
-    \refstepcounter{figure}
-    \ifthenelse{\value{figure}=1}{
-        \newpage\noindent%
-%        \rule{\textwidth}{1pt}
-    }{
-        \par\vfill
-    }
-    \sffamily\noindent\textbf{Figure \arabic{figure}}\hspace{1em}#2}
-    }
-
-\renewenvironment{table}{\@float{table}[p]\sffamily}{\end@float}
+% \renewenvironment{figure}{\let\caption\NAT@figcaption}{}
+%     
+% \newcommand{\NAT@figcaption}[2][]{\AtEndDocument{%
+%     \refstepcounter{figure}
+%     \ifthenelse{\value{figure}=1}{
+%         \newpage\noindent%
+% %        \rule{\textwidth}{1pt}
+%     }{
+%         \par\vfill
+%     }
+%     \sffamily\noindent\textbf{Figure \arabic{figure}}\hspace{1em}#2}
+%     }
+% 
+% \renewenvironment{table}{\@float{table}[p]\sffamily}{\end@float}
 
 %% ignore all \includegraphics commands in the document
+% 2007 Aug 06: why block figures?
+% because of
+% http://www.nature.com/nature/authors/gta/index.html#a5.8
 \AtBeginDocument{\let\includegraphics\NAT@ignore}
 
 \newcommand{\NAT@ignore}[2][]{}
