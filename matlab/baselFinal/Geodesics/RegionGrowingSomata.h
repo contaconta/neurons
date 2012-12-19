@@ -410,7 +410,7 @@ bool SethianUpdate(int point)
     double	  Lr = L[point];
     bool is_updated = false;
     
-    double weightBackground = 1.0 / (1e7* exp((Pc-meanGlobalInt)*(Pc-meanGlobalInt) / (2.0*stdGlobalInt*stdGlobalInt) ) +1);
+    double weightBackground = 1.0 / (1e7* exp((Pc-meanGlobalInt)*(Pc-meanGlobalInt) / (2.0*stdGlobalInt*stdGlobalInt) ) +1);//TODO: improve me
     
     //--------------------------------------------------------------
     // Get the U & L values for each neighbor.
@@ -477,6 +477,8 @@ bool SethianUpdate(int point)
         std::vector<double> lengthPerRegion;
         lengthPerRegion.clear();
         
+        
+        
         for(unsigned int j = 0; j < listOfRegionIdx.size(); j++)
         {
             for (unsigned int i = 0; i< connectivity_small+1; i++)
@@ -497,10 +499,9 @@ bool SethianUpdate(int point)
             double meanInt = mean_std[2*regionIdx];
             double stdInt  = mean_std[2*regionIdx+1];
             double weight = 1.0 / (1e7* exp(-(Pc-meanInt)*(Pc-meanInt) / (2.0*multFactor*multFactor*stdInt*stdInt) ) +1);
-            weight = (weight+ weightBackground) /2.0;
+            weight = (weight + weightBackground) /2.0;
             for(unsigned int i = 0; i < connectivity_small; i++)
             {
-                
                 double Utmp = SethianQuadrant(weight,neighborU[i],neighborU[i+1]);
                 if(Utmp < Ur)
                 {
@@ -548,27 +549,29 @@ void RunPropagation()
     while ( Tree_GetSize()>0 )
     {
         point = Tree_PopHead();
+        
         if(S[point]!=kOpen)
             mexErrMsgTxt("err");
         S[point]=kDead;
         if(L[point] < 2.0*Lmax)
         {
-            //--------------------------------------------------------------
+            //-------------------------------------------------------------
             for (k=0;k<connectivity_small;k++){
+                is_updated = false;
                 npoint = point+NeighborhoodSmall[k];
-                //--------------------------------------------------------------
+                //---------------------------------------------------------
                 if (S[npoint]==kOpen){
                     is_updated = SethianUpdate(npoint);
                     if(is_updated)
                         Tree_UpdateChange(Tree[npoint]);
                 }
-                //--------------------------------------------------------------
+                //---------------------------------------------------------
                 else if (S[npoint]==kFar){
                     S[npoint] = kOpen;
                     SethianUpdate(npoint);
                     Tree_PushIn(npoint);
                 }
-                //--------------------------------------------------------------
+                //---------------------------------------------------------
             }
         }
     }
