@@ -15,7 +15,7 @@ end
 Red   = trkReadImagesAndNormalize(TMAX, Rfolder);
 Green = trkReadImagesAndNormalize(TMAX, Gfolder);
 %% preprocess images
-disp('...preprocessing images');
+disp('...preprocessing');
 
 % frangi parameters
 if strcmp(magnification, '10x')
