@@ -4,12 +4,12 @@ NumOfTrackedCells = 0;
 NumOfAnnotatedNuclei = 0;
 NumOfAnnotatedSomata = 0;
 
-for idx = 1:12
+for idx = 2:2
     strIDx = sprintf('%03d', idx);
     disp('========================================')
     disp(strIDx)
     disp('========================================')
-    DataRootDirectory = '/Users/feth/Google Drive/Sinergia/GT20x/Dynamic/';
+    DataRootDirectory = '/Users/feth/Google Drive/Sinergia/GT10x/Dynamic/';
     templateHeaderFile  = 'TemplateHeaderSimplified.xml';
     %%
     TrackedCells = getStructureFromTrakEM2XML(DataRootDirectory, idx, templateHeaderFile);
@@ -32,7 +32,7 @@ inputImage = [DataRootDirectory strIDx '/green.tif'];
 I = readMultiPageTiff(inputImage);
 %%
 CellIdx = 1;
-for detectiionIdx=1:10
+for detectiionIdx=1:20
 
     Time =  TrackedCells{CellIdx}.soma.listOfObjects.t2_area{detectiionIdx}.Time;
 %     disp(num2str(Time));
