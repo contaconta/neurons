@@ -40,7 +40,7 @@ run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
 count = 1;
 listOfDirs = dir(folder);
 for i = 1:length(listOfDirs)
-    if listOfDirs(i).isdir && ~isempty(str2num(listOfDirs(i).name))
+    if listOfDirs(i).isdir && ~isempty(str2num(listOfDirs(i).name))%#ok
         exp_num{count} = listOfDirs(i).name; %#ok<*AGROW>
         count  = count + 1;
     end
