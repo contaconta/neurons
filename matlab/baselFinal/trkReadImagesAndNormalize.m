@@ -1,6 +1,7 @@
-function I = trkReadImagesAndNormalize(TMAX, folder)
+function [I_normalized, I_original] = trkReadImagesAndNormalize(TMAX, folder)
 
-I = cell(1,TMAX);
+I_normalized = cell(1,TMAX);
+I_original   = cell(1,TMAX);
 
 disp('');
 
@@ -13,7 +14,8 @@ for t = 1:TMAX
         fprintf('|');
     end
     filename = [folder sorted_filenames{t}];
-    I{t} = mat2gray( double( imread( filename ) ) );
+    I_original{t}   = double( imread( filename ) );
+    I_normalized{t} = mat2gray( I_original{t} );
 end
 
 fprintf('\n');

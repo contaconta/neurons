@@ -12,8 +12,8 @@ if TMAX~=length(Gfiles)
 end
 
 %% Load the raw data
-Red   = trkReadImagesAndNormalize(TMAX, Rfolder);
-Green = trkReadImagesAndNormalize(TMAX, Gfolder);
+[Red  , Red_Original]   = trkReadImagesAndNormalize(TMAX, Rfolder);
+[Green, Green_Original] = trkReadImagesAndNormalize(TMAX, Gfolder);
 %% preprocess images
 disp('...preprocessing');
 
@@ -74,7 +74,7 @@ toc
 %% Gather detections into cells
 disp('...gather detections into cells');
 tic
-[Cells CellsList] = trkGatherNucleiAndSomataDetections(Green, Red, Nuclei, Somata);
+[Cells CellsList] = trkGatherNucleiAndSomataDetections(Green_Original, Red_Original, Nuclei, Somata);
 toc
 
 
