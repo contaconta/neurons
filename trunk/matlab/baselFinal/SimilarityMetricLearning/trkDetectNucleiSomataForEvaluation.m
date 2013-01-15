@@ -1,4 +1,4 @@
-function [Nuclei, Somata] =  trkDetectNucleiSomataForEvaluation(folder, magnification)
+function [Nuclei, Somata, Cells, CellsList] =  trkDetectNucleiSomataForEvaluation(folder, magnification)
 %% define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
@@ -12,8 +12,8 @@ if TMAX~=length(Gfiles)
 end
 
 %% Load the raw data
-[Red  , ~]   = trkReadImagesAndNormalize(TMAX, Rfolder);
-[Green, ~] = trkReadImagesAndNormalize(TMAX, Gfolder);
+[Red  , Red_Original  ]   = trkReadImagesAndNormalize(TMAX, Rfolder);
+[Green, Green_Original] = trkReadImagesAndNormalize(TMAX, Gfolder);
 
 %% Detect Nuclei
 disp('...detecting Nuclei');
@@ -49,4 +49,10 @@ STD_MULT_FACTOR = 1.5;
 
 tic
 Somata = trkDetectSomataGlobal(Nuclei, Green, GEODESIC_DISTANCE_THRESH, LENGTH_THRESH, STD_MULT_FACTOR);
+toc
+
+%% Gather detections into cells
+disp('...gather detections into cells');
+tic
+[Cells CellsList] = trkGatherNucleiAndSomataDetections(Green_Original, Red_Original, Nuclei, Somata);
 toc
