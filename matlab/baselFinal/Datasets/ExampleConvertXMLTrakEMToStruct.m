@@ -4,7 +4,7 @@ NumOfTrackedCells = 0;
 NumOfAnnotatedNuclei = 0;
 NumOfAnnotatedSomata = 0;
 
-for idx = 2:2
+for idx = 13:13
     strIDx = sprintf('%03d', idx);
     disp('========================================')
     disp(strIDx)
