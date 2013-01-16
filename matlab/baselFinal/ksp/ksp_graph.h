@@ -1,5 +1,5 @@
 /************************************************************************/
-/* (c) 2009-2011 Ecole Polytechnique Federale de Lausanne               */
+/* (c) 2009-2013 Ecole Polytechnique Federale de Lausanne               */
 /* All rights reserved.                                                 */
 /*                                                                      */
 /* EPFL grants a non-exclusive and non-transferable license for non     */
