@@ -91,23 +91,28 @@ MIN_TRACK_LENGTH     = 20;
 NB_BEST_TRACKS       = 20;
 IMAGE_SIZE           = size(Green{1});
 DISTANCE_TO_BOUNDARY = 30;
+
+KSPGraphParameters.TEMPORAL_WIN_SIZE    = TEMPORAL_WIN_SIZE;
+KSPGraphParameters.SPATIAL_WINDOWS_SIZE = SPATIAL_WINDOWS_SIZE;
+KSPGraphParameters.MIN_TRACK_LENGTH     = MIN_TRACK_LENGTH;
+KSPGraphParameters.NB_BEST_TRACKS       = NB_BEST_TRACKS;
+KSPGraphParameters.IMAGE_SIZE           = IMAGE_SIZE;
+KSPGraphParameters.DISTANCE_TO_BOUNDARY = DISTANCE_TO_BOUNDARY;
+KSPGraphParameters.GRAPH_TYPE           = 'EMD-Based';%only EMD-based or Euclidian 'Dist-Based' are implemented
+
+if(strcmp(KSPGraphParameters.GRAPH_TYPE, 'EMD-Based'))
+    load(['SimilarityMetricLearning/SigmoidParams' magnification]);
+    KSPGraphParameters.SIGMOID_PARAMETERS   = B;
+    clear B;
+end
+
+
 tic
+
 [Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, ...
-                                               TEMPORAL_WIN_SIZE, ...
-                                               SPATIAL_WINDOWS_SIZE, ...
-                                               MIN_TRACK_LENGTH, ...
-                                               NB_BEST_TRACKS, ...
-                                               IMAGE_SIZE, ...
-                                               DISTANCE_TO_BOUNDARY);
+                                               KSPGraphParameters);
+
 toc
-
-% %% directional non maximum suppression
-% disp('... directional non maximum suppression')
-% numberOfDirections = 8;
-% tic
-% DNMS = trkDirectionalNonMaximumSuppression(Green, numberOfDirections);
-% toc
-
 
 %% detect and add filaments to cells
 disp('...detect filaments and assign them to each somata');

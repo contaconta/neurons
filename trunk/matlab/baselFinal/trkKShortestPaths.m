@@ -1,5 +1,13 @@
-function [Cells, tracks, trkSeq, timeSeq] = trkKShortestPaths(CellsList, Cells, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE,...
-                                                        MIN_TRACK_LENGTH, NB_BEST_TRACKS, IMAGE_SIZE, DISTANCE_TO_BOUNDARY)
+function [Cells, tracks, trkSeq, timeSeq] = trkKShortestPaths(CellsList, Cells, ...
+                                                              KSPGraphParameters)  
+
+%% Get the KSP graph parameters
+TEMPORAL_WIN_SIZE           = KSPGraphParameters.TEMPORAL_WIN_SIZE;
+SPATIAL_WINDOWS_SIZE        = KSPGraphParameters.SPATIAL_WINDOWS_SIZE;
+MIN_TRACK_LENGTH            = KSPGraphParameters.MIN_TRACK_LENGTH;
+NB_BEST_TRACKS              = KSPGraphParameters.NB_BEST_TRACKS;
+IMAGE_SIZE                  = KSPGraphParameters.IMAGE_SIZE;
+DISTANCE_TO_BOUNDARY        = KSPGraphParameters.DISTANCE_TO_BOUNDARY;
 
 TMAX = length(CellsList);
 
