@@ -12,7 +12,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     /* check proper input and output */
     if(nrhs != 6)
-        mexErrMsgTxt("2 input required.");
+        mexErrMsgTxt("6 input required.");
     else if(nlhs > 1)
         mexErrMsgTxt("Too many output arguments.");
     else if(!mxIsStruct(prhs[0]))
