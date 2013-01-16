@@ -4,6 +4,10 @@ TMAX  = length(Nuclei);
 Cells = [];
 CellsList = cell(size(Nuclei));
 count = 1;
+minRed   =  1e9;
+maxRed   = -1e9;
+minGreen =  1e9;
+maxGreen = -1e9;
 
 for t = 1:TMAX
     detections_n = regionprops(Nuclei{t}, 'Area', 'Centroid', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Orientation', 'Perimeter', 'PixelIdxList');  %#ok<*MRPBW>
@@ -11,6 +15,12 @@ for t = 1:TMAX
     if length(detections_n) ~= length(detections_s)
        error('the number of detected nuclei and somata should be the same !!') ;
     end
+    
+    minRed      = min(minRed,   min(Red{t}(:)));
+    maxRed      = max(maxRed,   max(Red{t}(:)));
+    minGreen    = min(minGreen, min(Green{t}(:)));
+    maxGreen    = max(maxGreen, max(Green{t}(:)));
+    
     if ~isempty(detections_n)
         for i =1:length(detections_n)
             % todo: improve this condition
@@ -29,6 +39,7 @@ for t = 1:TMAX
                 currentCell.NucleusPerimeter          = detections_n(i).Perimeter;
                 currentCell.NucleusCircularity        = 4*pi*currentCell.NucleusArea / (currentCell.NucleusPerimeter)^2;
                 currentCell.NucleusPixelIdxList       = detections_n(i).PixelIdxList;
+                currentCell.NucleusRedIntensities     = Red{t}(currentCell.NucleusPixelIdxList);
                 currentCell.NucleusMeanRedIntensity   = sum(Red{t}(detections_n(i).PixelIdxList))/detections_n(i).Area;
                 currentCell.NucleusMeanGreenIntensity = sum(Green{t}(detections_n(i).PixelIdxList))/detections_n(i).Area;
                 % copy data for the soma
@@ -41,6 +52,7 @@ for t = 1:TMAX
                 currentCell.SomaPerimeter             = detections_s(i).Perimeter;
                 currentCell.SomaCircularity           = 4*pi*currentCell.SomaArea / (currentCell.SomaPerimeter)^2;
                 currentCell.SomaPixelIdxList          = detections_s(i).PixelIdxList;
+                currentCell.SomaGreenIntensities      = Green{t}(currentCell.SomaPixelIdxList);
                 currentCell.SomaMeanGreenIntensity    = sum(Green{t}(detections_s(i).PixelIdxList))/detections_s(i).Area;
                 % for neurites, the main loop is done later in a faster
                 % parfor loop
@@ -58,3 +70,8 @@ for t = 1:TMAX
         
     end
 end
+
+Cells(end).MinRed   = minRed;
+Cells(end).MaxRed   = maxRed;
+Cells(end).MinGreen = minGreen;
+Cells(end).MaxGreen = maxGreen;
