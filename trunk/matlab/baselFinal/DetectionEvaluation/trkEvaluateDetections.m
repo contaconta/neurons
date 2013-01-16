@@ -1,4 +1,5 @@
-function [detectedGT, FalsePositives] = trkEvaluateDetections(Cells, CellsList, AnnotatedTrackedCells, overlappingTolerance)
+function [detectedGT, FalsePositives, detectedGTTracksId, detectedGTTime] = ...
+    trkEvaluateDetections(Cells, CellsList, AnnotatedTrackedCells, overlappingTolerance)
 
 
 NbGtCells = 0;
@@ -6,7 +7,11 @@ for i = 1:length(AnnotatedTrackedCells)
     NbGtCells = NbGtCells + AnnotatedTrackedCells{i}.LifeTime;
 end
 
-detectedGT = zeros(1, NbGtCells);
+detectedGT          = zeros(1, NbGtCells);
+detectedGTTracksId  = zeros(1, NbGtCells);
+detectedGTTime      = zeros(1, NbGtCells);
+
+
 FalsePositives = CellsList;
 for i =1:length(FalsePositives)
     FalsePositives{i} = 0*FalsePositives{i};
@@ -23,7 +28,9 @@ for i = 1:length(AnnotatedTrackedCells)
            currentDetectedNucleus = currentDetectedCell.NucleusPixelIdxList;
            overlapping = numel(intersect(currentDetectedNucleus, currentNucleusGT)) / min( numel( currentNucleusGT ), numel(currentDetectedNucleus) );
            if overlapping > overlappingTolerance
-               detectedGT(idxCell) = k;
+               detectedGT(idxCell)              = k;
+               detectedGTTracksId(idxCell)      = i;
+               detectedGTTime(idxCell)          = currentTime;
                FalsePositives{currentTime}(inc) = 1;
            end
            inc = inc + 1;
