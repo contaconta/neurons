@@ -174,7 +174,7 @@ for i = 1:length(trkSeq)
             end
         end
         
-        currentTrack.ListOnNeuriteTracks        = ListOfNeuriteTracksAssociatedToCellTrack;
+        currentTrack.ListOfNeuriteTracks        = ListOfNeuriteTracksAssociatedToCellTrack;
         currentTrack.NumberOfTrackedNeurites    = length(ListOfNeuriteTracksAssociatedToCellTrack);
         
         Sequence.TrackedCells = [Sequence.TrackedCells currentTrack];
