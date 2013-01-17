@@ -1,4 +1,4 @@
-clear all; close all; clc;
+clear all; close all; %clc;
 %%
 addpath(genpath('../'));
 %%
@@ -24,7 +24,7 @@ if ~isDetectionDone
 end
 %% Given the ground truth and the detection, Train
 FastEMD_parameters.NUMBER_OF_BINS      = 64;
-FastEMD_parameters.THRESHOLD_BINS_DIST = 1;
+FastEMD_parameters.THRESHOLD_BINS_DIST = 5;
 save('FastEMDParams', 'FastEMD_parameters');
 
 load('FastEMDParams');
