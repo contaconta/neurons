@@ -53,6 +53,7 @@ for t = 1:TMAX
                 currentCell.SomaCircularity           = 4*pi*currentCell.SomaArea / (currentCell.SomaPerimeter)^2;
                 currentCell.SomaPixelIdxList          = detections_s(i).PixelIdxList;
                 currentCell.SomaGreenIntensities      = Green{t}(currentCell.SomaPixelIdxList);
+                currentCell.SomaHistGreen             = [];% just so that the parfor works well afterwards
                 currentCell.SomaMeanGreenIntensity    = sum(Green{t}(detections_s(i).PixelIdxList))/detections_s(i).Area;
                 % for neurites, the main loop is done later in a faster
                 % parfor loop
