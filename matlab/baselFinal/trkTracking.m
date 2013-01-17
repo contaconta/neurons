@@ -170,7 +170,7 @@ Cells = rmfield(Cells, 'Neurites');
 %% reorganize data
 disp('...reorganizing data ')
 tic
-Sequence = trkReorganizeDataStructure(folder, Rfiles, Gfiles, Green, Red, Sample, SeqIndexStr, Cells, trkSeq);
+Sequence = trkReorganizeDataStructure(folder, Rfiles, Gfiles, Green_Original, Red_Original, Sample, SeqIndexStr, Cells, trkSeq, TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq);
 toc
 %%
 save([resultsFolder SeqIndexStr],  'Sequence');
