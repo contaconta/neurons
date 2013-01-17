@@ -20,7 +20,7 @@ CXXFLAGS=-fPIC -O3 -msse2 -mfpmath=sse -I/usr/local/MATLAB/R2011b/extern/include
 
 all: ksp 
 
-ksp: ksp_graph.o ksp_computer.o ksp_EMD_weights.o ksp_euclidean_dist_weights.o
+ksp: ksp_graph.o ksp_computer.o ksp_EMD_weights.o ksp_euclidean_dist_weights.o ksp_color_dist_weights.o
 #	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:

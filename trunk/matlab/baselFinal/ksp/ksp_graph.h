@@ -49,12 +49,31 @@ class KShorthestPathGraph
                       int nNodeNeighborhoodSize,
                       std::vector<int> &pnSrcAndDstNeighIndices);
   
+  // Graph constructor with weights based on the Euclidean distance 
   KShorthestPathGraph(const mxArray* Cells,
                       const mxArray* CellsList,
                       int temporal_windows_size,
                       double spatial_windows_size,
                       double *imagesize,
                       double distanceToBoundary);
+  // Graph constructor with weights based on color distance between SomaMeanGreen intensities
+  KShorthestPathGraph(const mxArray* Cells,
+                      const mxArray* CellsList,
+                      int temporal_windows_size,
+                      double spatial_windows_size,
+                      double *imagesize,
+                      double distanceToBoundary,
+                      double* intensityRange);
+  
+  // Graph constructor with weights based on the EMD distance (using the FastEMD code)
+  KShorthestPathGraph(const mxArray* Cells,
+                      const mxArray* CellsList,
+                      int temporal_windows_size,
+                      double spatial_windows_size,
+                      double *imagesize,
+                      double distanceToBoundary,
+                      const mxArray* penaltyMatrix,
+                      double *sigmoidParams);
   
   
 	

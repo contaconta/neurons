@@ -11,8 +11,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         int nrhs, const mxArray *prhs[] ) {
     
     /* check proper input and output */
-    if(nrhs != 8)
-        mexErrMsgTxt("8 input required.");
+    if(nrhs != 7)
+        mexErrMsgTxt("7 input required.");
     else if(nlhs > 1)
         mexErrMsgTxt("Too many output arguments.");
     else if(!mxIsStruct(prhs[0]))
@@ -20,14 +20,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
     else if(!mxIsCell(prhs[1]))
         mexErrMsgTxt("Second Input must be a cell.");
     /* get input arguments */
-    const mxArray* Cells            = prhs[0];
-    const mxArray* CellsList        = prhs[1];
-    double  temporal_windows_sz     = mxGetScalar(prhs[2]);
-    double  spatial_windows_sz      = mxGetScalar(prhs[3]);
-    double *imagesize               = mxGetPr(prhs[4]);
-    double  distanceToBoundary      = mxGetScalar(prhs[5]);
-    const mxArray *penaltyMatrix    = prhs[6];
-    double *sigmoidParams           = mxGetPr(prhs[7]);
+    const mxArray* Cells       = prhs[0];
+    const mxArray* CellsList   = prhs[1];
+    double  temporal_windows_sz= mxGetScalar(prhs[2]);
+    double  spatial_windows_sz = mxGetScalar(prhs[3]);
+    double *imagesize          = mxGetPr(prhs[4]);
+    double  distanceToBoundary = mxGetScalar(prhs[5]);
+    double *intensityRange     = mxGetPr(prhs[6]);
     /* construct the graph */
     fflush(stdout);
     KShorthestPathGraph ksp_graph(Cells,
@@ -36,8 +35,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
                                   spatial_windows_sz,
                                   imagesize, 
                                   distanceToBoundary,
-                                  penaltyMatrix,
-                                  sigmoidParams );
+                                  intensityRange);
     /* run the ksp optimization */
     mwSize dims[2] = {1, ksp_graph.GetNoOfVertices()};
     plhs[0] = mxCreateNumericArray(2, dims, mxUINT8_CLASS, mxREAL );
