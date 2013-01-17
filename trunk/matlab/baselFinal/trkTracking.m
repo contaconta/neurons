@@ -101,16 +101,15 @@ KSPGraphParameters.DISTANCE_TO_BOUNDARY = DISTANCE_TO_BOUNDARY;
 KSPGraphParameters.INTENSITY_RANGE      = [Cells(end).MinRed Cells(end).MaxRed Cells(end).MinGreen Cells(end).MaxGreen];
 KSPGraphParameters.GRAPH_TYPE           = 'EMD-Based';%possibilities are: EMD-based, 'Dist-Based', 'Color-Based'
 
+
+tic
 if(strcmp(KSPGraphParameters.GRAPH_TYPE, 'EMD-Based'))
     load(['SimilarityMetricLearning/SigmoidParams' magnification]);
     KSPGraphParameters.SIGMOID_PARAMETERS   = B;
     clear B;
     % compute the pernalty matrix
     load('SimilarityMetricLearning/FastEMDParams');
-    tic
-    disp('...computing histograms of Somata green intensities ...');
     Cells = trkComputeIntensityHistograms(Cells, FastEMD_parameters.NUMBER_OF_BINS);
-    toc
     
     
     NUMBER_OF_BINS   = FastEMD_parameters.NUMBER_OF_BINS;
@@ -125,7 +124,7 @@ if(strcmp(KSPGraphParameters.GRAPH_TYPE, 'EMD-Based'))
     KSPGraphParameters.PENALTY_MATRIX = penaltyMatrix;
 end
 
-tic
+
 disp('...computing EMD Distances and ksp tracking ');
 [Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, ...
                                                KSPGraphParameters);
