@@ -8,10 +8,20 @@ MIN_TRACK_LENGTH            = KSPGraphParameters.MIN_TRACK_LENGTH;
 NB_BEST_TRACKS              = KSPGraphParameters.NB_BEST_TRACKS;
 IMAGE_SIZE                  = KSPGraphParameters.IMAGE_SIZE;
 DISTANCE_TO_BOUNDARY        = KSPGraphParameters.DISTANCE_TO_BOUNDARY;
-
+INTENSITY_RANGE             = KSPGraphParameters.INTENSITY_RANGE;
 TMAX = length(CellsList);
 
-tracks = ksp_matlab(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, IMAGE_SIZE, DISTANCE_TO_BOUNDARY);
+GRAPH_TYPE = KSPGraphParameters.GRAPH_TYPE;
+
+if strcmp(GRAPH_TYPE, 'Dist-Based')
+    tracks = ksp_euclidean_dist_weights(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, IMAGE_SIZE, DISTANCE_TO_BOUNDARY);
+elseif strcmp(GRAPH_TYPE, 'EMD-Based')
+    tracks = ksp_EMD_weights(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, IMAGE_SIZE, DISTANCE_TO_BOUNDARY, ...
+                                            KSPGraphParameters.PENALTY_MATRIX, ...
+                                            KSPGraphParameters.SIGMOID_PARAMETERS);
+elseif strcmp(GRAPH_TYPE, 'Color-Based')
+    tracks = ksp_color_dist_weights(Cells, CellsList, TEMPORAL_WIN_SIZE, SPATIAL_WINDOWS_SIZE, IMAGE_SIZE, DISTANCE_TO_BOUNDARY, INTENSITY_RANGE);
+end
 
 %% pruning the tracks and sorting them according to their MeanGreenIntensity summed over lifetime
 tracks = tracks(1:end-2);
