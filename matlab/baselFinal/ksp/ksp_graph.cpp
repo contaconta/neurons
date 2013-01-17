@@ -441,11 +441,8 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
                         // Here, call EMD distance stuff
                         mxArray *rhs[4], *lhs[1];
                         rhs[0] = mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), soma_greenHist_idx);
-//                         mexPrintf("%d\n", mxGetN(rhs[0])); mexPrintf("%d\n", mxGetM(rhs[0]));
                         rhs[1] = mxGetFieldByNumber(Cells, int(currentFrameDetections[k] -1), soma_greenHist_idx);
-//                         mexPrintf("%d\n", mxGetN(rhs[1])); mexPrintf("%d\n", mxGetM(rhs[1]));
                         rhs[2] = const_cast<mxArray* >( penaltyMatrix );
-//                         mexPrintf("%d\n", mxGetN(rhs[2])); mexPrintf("%d\n", mxGetM(rhs[2]));
                         rhs[3] = minusOne;
                         if ( mexCallMATLAB(1, lhs, 4, rhs, "emd_hat_gd_metric_mex"))
                             mexErrMsgTxt("Problem calling EMD distance. Make sure FastEMD has been compiled !!");
@@ -455,7 +452,6 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
                             min_emd_dist = emd_dist;
                         if(emd_dist > max_emd_dist)
                             max_emd_dist = emd_dist;
-                        
                         
                         double prob_emd = 1.0 / (1.0 + exp(-(sigmoidParams[0] + sigmoidParams[1]*emd_dist)));
                         double emd_weight = 0.0;
@@ -469,9 +465,6 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
             }
         }
     }
-    
-    mexPrintf("%f\n", min_emd_dist);
-    mexPrintf("%f\n", max_emd_dist);
     
     nNoOfEdges = vEdges.size();
     float *pfEdgeWeights = new float[nNoOfEdges];
