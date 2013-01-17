@@ -34,6 +34,12 @@ if isempty( strfind(path, [pwd '/../baselFinal/fpeak']) )
     addpath([pwd '/../baselFinal/fpeak']);
 end
 
+if isempty( strfind(path, [pwd '/../baselFinal/FastEMD']) )
+    addpath([pwd '/../baselFinal/FastEMD']);
+end
+
+
+
 run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
 
 % --------- generate list of folders to process -----------
