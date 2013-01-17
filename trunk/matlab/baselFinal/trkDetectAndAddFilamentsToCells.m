@@ -85,6 +85,9 @@ parfor dd = 1:length(Cells)
             currentTree.NumKids             = numkids;
             currentTree.NeuritePixelIdxList = listOfNeurites{j};
             currentTree                     = trkFindBranches(currentTree, size(Cells(dd).Neurites));
+            currentTree.isTracked           = false;
+            currentTree.NeuriteTrackId      = -1;
+            currentTree.Time                = t;
             filam = [filam currentTree];
         end
         Cells(dd).NumberOfNeurites          = numberOfNeurites;
