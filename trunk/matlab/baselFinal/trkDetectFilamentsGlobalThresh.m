@@ -9,6 +9,7 @@ Regions = cell(size(Somata));
 L = cell(size(Somata));
 
 parfor t = 1:TMAX
-    [U{t}, Regions{t}, L{t}] = RegionGrowingNeurites([1;1], Tubularity{t}, double(Somata{t}));
-    Filaments{t} = bwmorph(U{t} < GEODESIC_DISTANCE_NEURITE_THRESH, 'skel', Inf);
+    [UU, Regions{t}, L{t}] = RegionGrowingNeurites([1;1], Tubularity{t}, double(Somata{t}));
+    Filaments{t} = bwmorph(UU < GEODESIC_DISTANCE_NEURITE_THRESH, 'skel', Inf);
+    U{t} = UU;
 end
