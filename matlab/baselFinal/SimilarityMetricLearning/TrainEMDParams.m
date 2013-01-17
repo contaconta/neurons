@@ -10,7 +10,7 @@ overlappingTolerance = 0.5;
 isDetectionDone = true;
 extractSamples  = true;
 %%
-Magnification = '20x';
+Magnification = '10x';
 dataRootDirectory    = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic/'];
 ConvertedGTRootDir   = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic_matlab/'];
 RawRootDataDirectory = ['/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection' Magnification '/'];
@@ -23,9 +23,9 @@ if ~isDetectionDone
     PreprocessAndSaveCellBodyDetections(Magnification, dataRootDirectory, RawRootDataDirectory, DetectionDirectory);
 end
 %% Given the ground truth and the detection, Train
-% FastEMD_parameters.NUMBER_OF_BINS      = 32;
-% FastEMD_parameters.THRESHOLD_BINS_DIST = 3;
-% save('FastEMDParams', FastEMD_parameters);
+FastEMD_parameters.NUMBER_OF_BINS      = 64;
+FastEMD_parameters.THRESHOLD_BINS_DIST = 1;
+save('FastEMDParams', 'FastEMD_parameters');
 
 load('FastEMDParams');
 
@@ -40,3 +40,9 @@ save(FileNameSigmoidParams, 'B');
 listOfNegToUse = randi(numel(NegativeEMDs), numel(PositiveEMDs), 1);
 X = [PositiveEMDs; NegativeEMDs(listOfNegToUse)];
 Z = Logistic(B(1) + X * (B(2)));
+%%
+delta = 0.1;
+XX = 0:delta:4000;
+ZZ = Logistic(B(1) + XX * (B(2)));
+figure; plot(XX, ZZ)
+
