@@ -74,7 +74,7 @@ if( ~isempty( BranchesLength ) )
     leafBranchesLength                  = BranchesLength(logical(BranchesAreLeafs));
     filament.LeafLengthBranches         = leafBranchesLength;
     filament.ExtremeLength              = ExtremeLength;
-    filament.MaxExtremeLenght           = max(ExtremeLength);
+    filament.MaxExtremeLength           = max(ExtremeLength);
     filament.MeanBranchLength           = mean(BranchesLength);
     
     filament.MeanLeafLength             = mean(leafBranchesLength);
@@ -95,7 +95,7 @@ else
     filament.LengthBranches             = [];
     filament.LeafLengthBranches         = [];
     filament.ExtremeLength              = [];
-    filament.MaxExtremeLenght           = nan;
+    filament.MaxExtremeLength           = nan;
     filament.MeanBranchLength           = nan;
     filament.MedianBranchLength         = nan;
     filament.TwentyFiveBranchLength     = nan;

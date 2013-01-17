@@ -74,6 +74,22 @@ for i = 1:length(trkNSeq)
                 error('cell trk id problem in neurites track');
             end
         end
+        
+        ListOfNeuritesInTrack(1).DelatTotalCableLength     = [];
+        ListOfNeuritesInTrack(1).DeltaLengthBranchesMean   = [];
+        ListOfNeuritesInTrack(1).DeltaMaxExtremeLength     = [];
+        ListOfNeuritesInTrack(1).DeltaExtremeLengthMean    = [];
+        ListOfNeuritesInTrack(1).DeltaMeanLeafLength       = [];
+        ListOfNeuritesInTrack(1).DeltaNbBranches           = [];
+        for j = 2:length(trkNSeq{i})
+            ListOfNeuritesInTrack(j).DelatTotalCableLength   = ListOfNeuritesInTrack(j).TotalCableLength   - ListOfNeuritesInTrack(j-1).TotalCableLength;%#ok
+            ListOfNeuritesInTrack(j).DeltaLengthBranchesMean = ListOfNeuritesInTrack(j).LengthBranchesMean - ListOfNeuritesInTrack(j-1).LengthBranchesMean;%#ok
+            ListOfNeuritesInTrack(j).DeltaMaxExtremeLength   = ListOfNeuritesInTrack(j).MaxExtremeLength   - ListOfNeuritesInTrack(j-1).MaxExtremeLength;%#ok
+            ListOfNeuritesInTrack(j).DeltaExtremeLengthMean  = ListOfNeuritesInTrack(j).ExtremeLengthMean  - ListOfNeuritesInTrack(j-1).ExtremeLengthMean;%#ok
+            ListOfNeuritesInTrack(j).DeltaMeanLeafLength     = ListOfNeuritesInTrack(j).MeanLeafLength     - ListOfNeuritesInTrack(j-1).MeanLeafLength;%#ok
+            ListOfNeuritesInTrack(j).DeltaNbBranches         = length(ListOfNeuritesInTrack(j).Branches)   - length(ListOfNeuritesInTrack(j-1).Branches);%#ok
+        end
+        
         NeuritesTrack.Neurites     = ListOfNeuritesInTrack;
         NeuritesTrack.CellTrackIdx = CellTrackIdx;
         listOfNeuriteTracks{NeuriteTrackId} = NeuritesTrack;
