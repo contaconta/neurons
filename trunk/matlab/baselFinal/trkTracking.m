@@ -98,20 +98,37 @@ KSPGraphParameters.MIN_TRACK_LENGTH     = MIN_TRACK_LENGTH;
 KSPGraphParameters.NB_BEST_TRACKS       = NB_BEST_TRACKS;
 KSPGraphParameters.IMAGE_SIZE           = IMAGE_SIZE;
 KSPGraphParameters.DISTANCE_TO_BOUNDARY = DISTANCE_TO_BOUNDARY;
-KSPGraphParameters.GRAPH_TYPE           = 'EMD-Based';%only EMD-based or Euclidian 'Dist-Based' are implemented
+KSPGraphParameters.INTENSITY_RANGE      = [Cells(end).MinRed Cells(end).MaxRed Cells(end).MinGreen Cells(end).MaxGreen];
+KSPGraphParameters.GRAPH_TYPE           = 'EMD-Based';%possibilities are: EMD-based, 'Dist-Based', 'Color-Based'
 
 if(strcmp(KSPGraphParameters.GRAPH_TYPE, 'EMD-Based'))
     load(['SimilarityMetricLearning/SigmoidParams' magnification]);
     KSPGraphParameters.SIGMOID_PARAMETERS   = B;
     clear B;
+    % compute the pernalty matrix
+    load('SimilarityMetricLearning/FastEMDParams');
+    tic
+    disp('...computing histograms of Somata green intensities ...');
+    Cells = trkComputeIntensityHistograms(Cells, FastEMD_parameters.NUMBER_OF_BINS);
+    toc
+    
+    
+    NUMBER_OF_BINS   = FastEMD_parameters.NUMBER_OF_BINS;
+    THRESH_BINS_DIST = FastEMD_parameters.THRESHOLD_BINS_DIST;
+    penaltyMatrix = ones(NUMBER_OF_BINS, NUMBER_OF_BINS);
+    for i = 1:NUMBER_OF_BINS
+        for j = 1:NUMBER_OF_BINS
+            penaltyMatrix(i,j) = abs(i-j);
+        end
+    end
+    penaltyMatrix = min(THRESH_BINS_DIST, penaltyMatrix);
+    KSPGraphParameters.PENALTY_MATRIX = penaltyMatrix;
 end
 
-
 tic
-
+disp('...computing EMD Distances and ksp tracking ');
 [Cells, tracks, trkSeq, ~] = trkKShortestPaths(CellsList, Cells, ...
                                                KSPGraphParameters);
-
 toc
 
 %% detect and add filaments to cells
@@ -120,6 +137,21 @@ GEODESIC_DISTANCE_NEURITE_THRESH = 0.6;
 
 tic
 [Cells] = trkDetectAndAddFilamentsToCells(Cells, Somata, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
+toc
+
+%% track nascent neurites
+disp('...tracking nascent neurites');
+if strcmp(magnification, '10x')
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 30;
+elseif strcmp(magnification, '20x')
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 60;
+end
+
+W_THRESH = 400;
+MIN_TRACK_LENGTH = 10;
+
+tic
+[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH);
 toc
 
 %% render results on the video
