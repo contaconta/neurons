@@ -34,7 +34,10 @@ while min_W < W_THRESH
     
     % find the minimum weight
     [min_W, min_ind] = min(Wr(:));
-    if isinf(min_W) | isempty(min_W)
+    if isempty(min_W)
+        continue;
+    end
+    if isinf(min_W)
         continue;
     end
     [rr,cr] = ind2sub(size(Wr), min_ind);
