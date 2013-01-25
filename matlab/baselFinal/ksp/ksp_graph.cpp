@@ -85,62 +85,71 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     for(int k = 1; k < numberOfFrames-1; k++) 
     {
         mxArray* currentFrame = mxGetCell(CellsList, k);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
+        if(currentFrame != NULL)
         {
-            Edge e;
-            e.first  = (int) (currentFrameDetections[i]-1);
-            e.second = m_nDstNodeIndx;
-            vEdges.push_back(e);
-            edgeWeights.push_back(0.0);
-            
-            // only for close to boundary detections
-            double distToBoundary = std::min(imagesize[0], imagesize[1]);
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
-            for(unsigned int d = 0; d <2; d++)
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
             {
-                distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
-                                                                   fabs(currentDetectionCentroid[0] - imagesize[0])));
-            }   
-            if(distToBoundary < distanceToBoundary)
-            {
-                e.first  = m_nSrcNodeIndx;
-                e.second = (int) (currentFrameDetections[i]-1);
+                Edge e;
+                e.first  = (int) (currentFrameDetections[i]-1);
+                e.second = m_nDstNodeIndx;
                 vEdges.push_back(e);
                 edgeWeights.push_back(0.0);
+
+                // only for close to boundary detections
+                double distToBoundary = std::min(imagesize[0], imagesize[1]);
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
+                for(unsigned int d = 0; d <2; d++)
+                {
+                    distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
+                                                                       fabs(currentDetectionCentroid[0] - imagesize[0])));
+                }   
+                if(distToBoundary < distanceToBoundary)
+                {
+                    e.first  = m_nSrcNodeIndx;
+                    e.second = (int) (currentFrameDetections[i]-1);
+                    vEdges.push_back(e);
+                    edgeWeights.push_back(0.0);
+                }
             }
         }
     }
     
     for( int i = 1; i < numberOfFrames; i++) {
         mxArray* currentFrame = mxGetCell(CellsList, i);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        int min_t = std::max(0, i - temporal_windows_size);
-        for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
-            double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
-            for( int j = min_t; j < i; j++) {
-                mxArray* previousFrame = mxGetCell(CellsList, j);
-                double*  previousFrameDetections = mxGetPr(previousFrame);
-                for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
-                    double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
-                    double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
-                    // compute distance
-                    double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
-                    +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
-                    if(distance < spatial_windows_size) {
-                        Edge e;
-                        e.first  = (int) (previousFrameDetections[l]-1);
-                        e.second = (int) (currentFrameDetections[k] -1);
-                        vEdges.push_back(e);
-                        // first spatial distance
-                        float prob_dist = distance / spatial_windows_size;
-                        float dist_log;
-                        if ( prob_dist < MIN_OCCUR_PROB )           dist_log = min_prob_log;
-                        else if ( prob_dist > MAX_OCCUR_PROB )      dist_log = max_prob_log;
-                        else                                        dist_log = log( prob_dist / (1 - prob_dist) );
+        if(currentFrame != NULL)
+        {
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            int min_t = std::max(0, i - temporal_windows_size);
+            for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
+                double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
+                for( int j = min_t; j < i; j++) {
+                    mxArray* previousFrame = mxGetCell(CellsList, j);
+                    if(previousFrame != NULL)
+                    {
+                        double*  previousFrameDetections = mxGetPr(previousFrame);
+                        for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
+                            double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
+                            double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
+                            // compute distance
+                            double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
+                            +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
+                            if(distance < spatial_windows_size) {
+                                Edge e;
+                                e.first  = (int) (previousFrameDetections[l]-1);
+                                e.second = (int) (currentFrameDetections[k] -1);
+                                vEdges.push_back(e);
+                                // first spatial distance
+                                float prob_dist = distance / spatial_windows_size;
+                                float dist_log;
+                                if ( prob_dist < MIN_OCCUR_PROB )           dist_log = min_prob_log;
+                                else if ( prob_dist > MAX_OCCUR_PROB )      dist_log = max_prob_log;
+                                else                                        dist_log = log( prob_dist / (1 - prob_dist) );
 
-                        edgeWeights.push_back(dist_log);//
+                                edgeWeights.push_back(dist_log);//
+                            }
+                        }
                     }
                 }
             }
@@ -231,64 +240,73 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     for(int k = 1; k < numberOfFrames-1; k++) 
     {
         mxArray* currentFrame = mxGetCell(CellsList, k);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
+        if(currentFrame != NULL)
         {
-            Edge e;
-            e.first  = (int) (currentFrameDetections[i]-1);
-            e.second = m_nDstNodeIndx;
-            vEdges.push_back(e);
-            edgeWeights.push_back(0.0);
-            
-            // only for close to boundary detections
-            double distToBoundary = std::min(imagesize[0], imagesize[1]);
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
-            for(unsigned int d = 0; d <2; d++)
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
             {
-                distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
-                                                                   fabs(currentDetectionCentroid[0] - imagesize[0])));
-            }   
-            if(distToBoundary < distanceToBoundary)
-            {
-                e.first  = m_nSrcNodeIndx;
-                e.second = (int) (currentFrameDetections[i]-1);
+                Edge e;
+                e.first  = (int) (currentFrameDetections[i]-1);
+                e.second = m_nDstNodeIndx;
                 vEdges.push_back(e);
                 edgeWeights.push_back(0.0);
+
+                // only for close to boundary detections
+                double distToBoundary = std::min(imagesize[0], imagesize[1]);
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
+                for(unsigned int d = 0; d <2; d++)
+                {
+                    distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
+                                                                       fabs(currentDetectionCentroid[0] - imagesize[0])));
+                }   
+                if(distToBoundary < distanceToBoundary)
+                {
+                    e.first  = m_nSrcNodeIndx;
+                    e.second = (int) (currentFrameDetections[i]-1);
+                    vEdges.push_back(e);
+                    edgeWeights.push_back(0.0);
+                }
             }
         }
     }
     
     for( int i = 1; i < numberOfFrames; i++) {
         mxArray* currentFrame = mxGetCell(CellsList, i);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        int min_t = std::max(0, i - temporal_windows_size);
-        for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
-            double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
-            for( int j = min_t; j < i; j++) {
-                mxArray* previousFrame = mxGetCell(CellsList, j);
-                double*  previousFrameDetections = mxGetPr(previousFrame);
-                for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
-                    double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
-                    double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
-                    // compute distance
-                    double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
-                    +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
-                    if(distance < spatial_windows_size) {
-                        Edge e;
-                        e.first  = (int) (previousFrameDetections[l]-1);
-                        e.second = (int) (currentFrameDetections[k] -1);
-                        vEdges.push_back(e);
-                        
-                        // color distance
-                        double intensityDiff = 10.0*(double)fabs(previousDetectionGreen - currentDetectionGreen) / (intensityRange[3] - intensityRange[2]);
-                        float intensity_log;
-                        
-                        if ( intensityDiff < MIN_OCCUR_PROB )       intensity_log = min_prob_log;
-                        else if ( intensityDiff > MAX_OCCUR_PROB )  intensity_log = max_prob_log;//TODO
-                        else                                        intensity_log = log( intensityDiff / (1 - intensityDiff) );
-                        
-                        edgeWeights.push_back(intensity_log);//
+        if(currentFrame != NULL)
+        {
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            int min_t = std::max(0, i - temporal_windows_size);
+            for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
+                double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
+                for( int j = min_t; j < i; j++) {
+                    mxArray* previousFrame = mxGetCell(CellsList, j);
+                    if(previousFrame != NULL)
+                    {
+                        double*  previousFrameDetections = mxGetPr(previousFrame);
+                        for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
+                            double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
+                            double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
+                            // compute distance
+                            double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
+                            +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
+                            if(distance < spatial_windows_size) {
+                                Edge e;
+                                e.first  = (int) (previousFrameDetections[l]-1);
+                                e.second = (int) (currentFrameDetections[k] -1);
+                                vEdges.push_back(e);
+
+                                // color distance
+                                double intensityDiff = 10.0*(double)fabs(previousDetectionGreen - currentDetectionGreen) / (intensityRange[3] - intensityRange[2]);
+                                float intensity_log;
+
+                                if ( intensityDiff < MIN_OCCUR_PROB )       intensity_log = min_prob_log;
+                                else if ( intensityDiff > MAX_OCCUR_PROB )  intensity_log = max_prob_log;//TODO
+                                else                                        intensity_log = log( intensityDiff / (1 - intensityDiff) );
+
+                                edgeWeights.push_back(intensity_log);//
+                            }
+                        }
                     }
                 }
             }
@@ -389,29 +407,32 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     for(int k = 1; k < numberOfFrames-1; k++) 
     {
         mxArray* currentFrame = mxGetCell(CellsList, k);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
+        if(currentFrame != NULL)
         {
-            Edge e;
-            e.first  = (int) (currentFrameDetections[i]-1);
-            e.second = m_nDstNodeIndx;
-            vEdges.push_back(e);
-            edgeWeights.push_back(0.0);
-            
-            // only for close to boundary detections
-            double distToBoundary = std::min(imagesize[0], imagesize[1]);
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
-            for(unsigned int d = 0; d <2; d++)
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            for(int i = 0; i < mxGetNumberOfElements(currentFrame); i++) 
             {
-                distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
-                                                                   fabs(currentDetectionCentroid[0] - imagesize[0])));
-            }   
-            if(distToBoundary < distanceToBoundary)
-            {
-                e.first  = m_nSrcNodeIndx;
-                e.second = (int) (currentFrameDetections[i]-1);
+                Edge e;
+                e.first  = (int) (currentFrameDetections[i]-1);
+                e.second = m_nDstNodeIndx;
                 vEdges.push_back(e);
                 edgeWeights.push_back(0.0);
+
+                // only for close to boundary detections
+                double distToBoundary = std::min(imagesize[0], imagesize[1]);
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[i]-1), nuclei_centroid_idx));
+                for(unsigned int d = 0; d <2; d++)
+                {
+                    distToBoundary = std::min(distToBoundary, std::min(fabs(currentDetectionCentroid[0]),
+                                                                       fabs(currentDetectionCentroid[0] - imagesize[0])));
+                }   
+                if(distToBoundary < distanceToBoundary)
+                {
+                    e.first  = m_nSrcNodeIndx;
+                    e.second = (int) (currentFrameDetections[i]-1);
+                    vEdges.push_back(e);
+                    edgeWeights.push_back(0.0);
+                }
             }
         }
     }
@@ -419,47 +440,54 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     double max_emd_dist  = -1e9;
     for( int i = 1; i < numberOfFrames; i++) {
         mxArray* currentFrame = mxGetCell(CellsList, i);
-        double* currentFrameDetections = mxGetPr(currentFrame);
-        int min_t = std::max(0, i - temporal_windows_size);
-        for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) {
-            double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
-            double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
-            for( int j = min_t; j < i; j++) {
-                mxArray* previousFrame = mxGetCell(CellsList, j);
-                double*  previousFrameDetections = mxGetPr(previousFrame);
-                for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
-                    double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
-                    double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
-                    // compute distance
-                    double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
-                    +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
-                    if(distance < spatial_windows_size) {
-                        Edge e;
-                        e.first  = (int) (previousFrameDetections[l]-1);
-                        e.second = (int) (currentFrameDetections[k]-1);
-                        vEdges.push_back(e);
-                        // Here, call EMD distance stuff
-                        mxArray *rhs[4], *lhs[1];
-                        rhs[0] = mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), soma_greenHist_idx);
-                        rhs[1] = mxGetFieldByNumber(Cells, int(currentFrameDetections[k] -1), soma_greenHist_idx);
-                        rhs[2] = const_cast<mxArray* >( penaltyMatrix );
-                        rhs[3] = minusOne;
-                        if ( mexCallMATLAB(1, lhs, 4, rhs, "emd_hat_gd_metric_mex"))
-                            mexErrMsgTxt("Problem calling EMD distance. Make sure FastEMD has been compiled !!");
-                        
-                        double emd_dist = mxGetScalar(lhs[0]);
-                        if(emd_dist < min_emd_dist)
-                            min_emd_dist = emd_dist;
-                        if(emd_dist > max_emd_dist)
-                            max_emd_dist = emd_dist;
-                        
-                        double prob_emd = 1.0 / (1.0 + exp(-(sigmoidParams[0] + sigmoidParams[1]*emd_dist)));
-                        double emd_weight = 0.0;
-                        if      ( prob_emd < MIN_OCCUR_PROB )       emd_weight = min_prob_log;
-                        else if ( prob_emd > MAX_OCCUR_PROB )       emd_weight = max_prob_log;
-                        else                                        emd_weight= -log( prob_emd / (1 - prob_emd) );
-                        
-                        edgeWeights.push_back(emd_weight);
+        if(currentFrame != NULL)
+        {
+            double* currentFrameDetections = mxGetPr(currentFrame);
+            int min_t = std::max(0, i - temporal_windows_size);
+            for( int k = 0; k < mxGetNumberOfElements(currentFrame); k++) 
+            {
+                double* currentDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_centroid_idx));
+                double  currentDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(currentFrameDetections[k]-1), nuclei_green_idx));
+                for( int j = min_t; j < i; j++) {
+                    mxArray* previousFrame = mxGetCell(CellsList, j);
+                    if(previousFrame != NULL)
+                    {
+                        double*  previousFrameDetections = mxGetPr(previousFrame);
+                        for( int l = 0; l < mxGetNumberOfElements(previousFrame); l++) {
+                            double* previousDetectionCentroid = mxGetPr(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_centroid_idx));
+                            double  previousDetectionGreen    = mxGetScalar(mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), nuclei_green_idx));
+                            // compute distance
+                            double distance = sqrt((currentDetectionCentroid[0]-previousDetectionCentroid[0])*(currentDetectionCentroid[0]-previousDetectionCentroid[0])
+                            +(currentDetectionCentroid[1]-previousDetectionCentroid[1])*(currentDetectionCentroid[1]-previousDetectionCentroid[1]));
+                            if(distance < spatial_windows_size) {
+                                Edge e;
+                                e.first  = (int) (previousFrameDetections[l]-1);
+                                e.second = (int) (currentFrameDetections[k]-1);
+                                vEdges.push_back(e);
+                                // Here, call EMD distance stuff
+                                mxArray *rhs[4], *lhs[1];
+                                rhs[0] = mxGetFieldByNumber(Cells, int(previousFrameDetections[l]-1), soma_greenHist_idx);
+                                rhs[1] = mxGetFieldByNumber(Cells, int(currentFrameDetections[k] -1), soma_greenHist_idx);
+                                rhs[2] = const_cast<mxArray* >( penaltyMatrix );
+                                rhs[3] = minusOne;
+                                if ( mexCallMATLAB(1, lhs, 4, rhs, "emd_hat_gd_metric_mex"))
+                                    mexErrMsgTxt("Problem calling EMD distance. Make sure FastEMD has been compiled !!");
+
+                                double emd_dist = mxGetScalar(lhs[0]);
+                                if(emd_dist < min_emd_dist)
+                                    min_emd_dist = emd_dist;
+                                if(emd_dist > max_emd_dist)
+                                    max_emd_dist = emd_dist;
+
+                                double prob_emd = 1.0 / (1.0 + exp(-(sigmoidParams[0] + sigmoidParams[1]*emd_dist)));
+                                double emd_weight = 0.0;
+                                if      ( prob_emd < MIN_OCCUR_PROB )       emd_weight = min_prob_log;
+                                else if ( prob_emd > MAX_OCCUR_PROB )       emd_weight = max_prob_log;
+                                else                                        emd_weight= -log( prob_emd / (1 - prob_emd) );
+
+                                edgeWeights.push_back(emd_weight);
+                            }
+                        }
                     }
                 }
             }
