@@ -11,6 +11,34 @@ function processListOfPlates(datasets_paths_filename, resolution)
 %
 %   Written 4/07/2012
 
+% ------------------- set the paths -----------------------
+if isempty( strfind(path, [pwd '/../baselFinal/frangi_filter_version2a']) )
+    addpath([pwd '/../baselFinal/frangi_filter_version2a']);
+end
+
+if isempty( strfind(path, [pwd '/../baselFinal/gaimc']) )
+    addpath([pwd '/../baselFinal/gaimc']);
+end
+
+if isempty( strfind(path, [pwd '/../baselFinal/Geodesics']) )
+    addpath([pwd '/../baselFinal/Geodesics']);
+end
+
+if isempty( strfind(path, [pwd '/../baselFinal/ksp']) )
+    addpath([pwd '/../baselFinal/ksp']);
+end
+
+if isempty( strfind(path, [pwd '/../baselFinal/fpeak']) )
+    addpath([pwd '/../baselFinal/fpeak']);
+end
+
+if isempty( strfind(path, [pwd '/../baselFinal/FastEMD']) )
+    addpath([pwd '/../baselFinal/FastEMD']);
+end
+
+run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
+
+% -------- get the list of plates and process -----------
 fid = fopen(datasets_paths_filename);
 C = textscan(fid, '%s %s %s %s %s');
 fclose(fid);
