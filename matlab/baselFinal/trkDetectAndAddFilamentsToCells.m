@@ -5,6 +5,7 @@ function [Cells] = trkDetectAndAddFilamentsToCells(Cells, Somata, Tubularity, GE
 [Filaments, Regions, U, Length] = trkDetectFilamentsGlobalThresh(SomataTracked, Tubularity, GEODESIC_DISTANCE_NEURITE_THRESH);
 
 for i =1:length(Cells)
+    Cells(i).Neurites = [];
     if Cells(i).ID > 0
         t = Cells(i).Time;
         Cells(i).Neurites                   = (Filaments{t} & (Regions{t} == Cells(i).ID) & (~SomataTracked{t}));
