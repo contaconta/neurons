@@ -59,10 +59,21 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     mxArray* firstFrame = mxGetCell(CellsList, 0);
     mxArray* lastFrame  = mxGetCell(CellsList, numberOfFrames-1);
     
-    int numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
-    int numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
+    int numberOfDetectionsFirst = 0;
+    int numberOfDetectionsLast  = 0;
+    double* firstFrameDetections= NULL;
+    double* lastFrameDetections = NULL;
+    if(firstFrame != NULL)
+    {
+        numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
+        firstFrameDetections    = mxGetPr(firstFrame);
+    }
+    if(lastFrame != NULL)
+    {
+        numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
+        lastFrameDetections     = mxGetPr(lastFrame);
+    }
     
-    double* firstFrameDetections = mxGetPr(firstFrame);
     for(int i = 0; i < numberOfDetectionsFirst; i++) {
         Edge e;
         e.first  = m_nSrcNodeIndx;
@@ -73,7 +84,7 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
         vEdges.push_back(e);
         edgeWeights.push_back(0.0);
     }
-    double* lastFrameDetections = mxGetPr(lastFrame);
+    
     for(int i = 0; i < numberOfDetectionsLast; i++) {
         Edge e;
         e.first  = (int) (lastFrameDetections[i]-1);
@@ -214,10 +225,21 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     mxArray* firstFrame = mxGetCell(CellsList, 0);
     mxArray* lastFrame  = mxGetCell(CellsList, numberOfFrames-1);
     
-    int numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
-    int numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
+    int numberOfDetectionsFirst = 0;
+    int numberOfDetectionsLast  = 0;
+    double* firstFrameDetections= NULL;
+    double* lastFrameDetections = NULL;
+    if(firstFrame != NULL)
+    {
+        numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
+        firstFrameDetections    = mxGetPr(firstFrame);
+    }
+    if(lastFrame != NULL)
+    {
+        numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
+        lastFrameDetections     = mxGetPr(lastFrame);
+    }
     
-    double* firstFrameDetections = mxGetPr(firstFrame);
     for(int i = 0; i < numberOfDetectionsFirst; i++) {
         Edge e;
         e.first  = m_nSrcNodeIndx;
@@ -228,7 +250,6 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
         vEdges.push_back(e);
         edgeWeights.push_back(0.0);
     }
-    double* lastFrameDetections = mxGetPr(lastFrame);
     for(int i = 0; i < numberOfDetectionsLast; i++) {
         Edge e;
         e.first  = (int) (lastFrameDetections[i]-1);
@@ -380,11 +401,20 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
     double *ptr = mxGetPr(minusOne);
     ptr[0] = -1;
     // done with dummy minusOne
-    
-    int numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
-    int numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
-    
-    double* firstFrameDetections = mxGetPr(firstFrame);
+    int numberOfDetectionsFirst = 0;
+    int numberOfDetectionsLast  = 0;
+    double* firstFrameDetections= NULL;
+    double* lastFrameDetections = NULL;
+    if(firstFrame != NULL)
+    {
+        numberOfDetectionsFirst = mxGetNumberOfElements(firstFrame);
+        firstFrameDetections    = mxGetPr(firstFrame);
+    }
+    if(lastFrame != NULL)
+    {
+        numberOfDetectionsLast  = mxGetNumberOfElements(lastFrame);
+        lastFrameDetections     = mxGetPr(lastFrame);
+    }
     for(int i = 0; i < numberOfDetectionsFirst; i++) {
         Edge e;
         e.first  = m_nSrcNodeIndx;
@@ -395,7 +425,7 @@ KShorthestPathGraph::KShorthestPathGraph(const mxArray* Cells,
         vEdges.push_back(e);
         edgeWeights.push_back(0.0);
     }
-    double* lastFrameDetections = mxGetPr(lastFrame);
+    
     for(int i = 0; i < numberOfDetectionsLast; i++) {
         Edge e;
         e.first  = (int) (lastFrameDetections[i]-1);
