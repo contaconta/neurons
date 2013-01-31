@@ -1,0 +1,355 @@
+%!TEX root =  main.tex
+
+\documentclass{article}
+
+%% make sure you have the nature.cls and naturemag.bst files where
+\usepackage{amsmath,graphicx}
+\usepackage{url}
+\bibliographystyle{naturemag}
+\usepackage{color}
+\newcommand{\comment}[1]{}
+
+\title{Computer vision profiling of neurite outgrowth morphodynamic phenotypes}
+
+%% Notice placement of commas and superscripts and use of &
+%% in the author list
+
+%\author{Ludovico Fusco$^{1,7}$, Fethallah Benmansour$^{2, 7}$, Riwal Lefort$^{3, 7}$, Kevin Smith$^{4, 7}$, German Gonzales$^5$,  Catherina Barillari$^6$, Bernd Rinn$^6$, Pascal Fua$^2$, Francois Fleuret$^3$   \& Olivier Pertz$^1$}
+
+
+%======================================================================
+\begin{document}
+
+\maketitle
+
+In this supplementary document, we describe and evaluate the computer vision pipeline that allowed to automatically segment and track the soma and neurites in each frame of the timelapse datasets.
+
+%Our approach first detects nuclei and associated somata at each time step. The nucleus of each neuron is detected as a Maximally Stable Extremal Region (MSER)~\cite{Nister:2008} from the Cherry channel. Using the detected nuclei as seed points, a region-growing algorithm segments the neuronÕs soma. Next, the implemented multi-objects tracking algorithm~\cite{BerclazTPAMI2011} searches through the full set of nuclei and somata detections to extract the best K-shortest paths according to a similarity measure between two detections. The proposed similarity measure is derived from the Earth MoverÕs Distance~\cite{Pele-iccv2009} between the intensity histograms of the detected somata regions (in the supplementary note 3, we show that this distance provides a good tradeoff between efficiency and precision).  Neurons are detected and tracked at an accuracy of (TODO 95\%) (still waiting for the GT to be completed for number crunching); ÉFinally, the tracked somata are used to initialize a neurite segmentation and association algorithm based on shortest path computation and Voronoi tessellation. Comparison to manually annotated data demonstrates that É(URGENT TODO: crunch the numbers: still waiting for the GT)É
+%======================================================
+\section{Data description and ground truth}
+%======================================================
+%----------------------------------------------------------------------------
+\subsection{Input data description and notations}
+%----------------------------------------------------------------------------
+The  input to  our approach  is a  series of  $T$ images  $\mathcal{I}  = \{I_1,
+\ldots,  I_t,  \ldots, I_T\}$  from  which  we  extract $K$  nucleus  detections
+$d_t^k$.   The  tracking step  described  in Sec.~\ref{sec:tracking}  associates
+valid detections  across time steps  while rejecting spurious  detections. Since
+each neuron  contains only  one nucleus, there  is a one-to-one  mapping between
+each valid  nucleus detection $c_t^i$ and  a neuron $X_t^i$.  Thus, the tracking
+task   is   to  provide   a   set   of   neuron  detections   $\mathcal{X}^i   =
+\{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i \}$ defining an individual neuron $i$ from
+time  $t=a$  to $t=b$.   As  depicted  in  Fig.~\ref{fig:notation}, each  neuron
+detection $X_t^i$ is composed of a nucleus $c_t^i$, a soma $s_t^i$, a set of $J$
+neurites $\{n_t^{i,1},  \ldots, n_t^{i,j}, \ldots,  n_t^{i,J} \}$, and a  set of
+$L$     filopodia    associated     with    each     neurite     $F_t^{i,j}    =
+\{f_t^{i,j,1},\ldots,f_t^{i,j,l},\ldots,f_t^{i,j,L}  \}$ so  that  $N_t^i =  \{(
+n_t^{i,1},F_t^{i,1}), \ldots,(n_t^{i,j},F_t^{i,j}) \}$.  Thus, a complete neuron
+$i$  at time step $t$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$.
+
+%----------------------------------------------------------------------------
+\begin{figure}[!h]
+  \begin{center}
+       \begin{tabular}{@{\hspace{-1mm}}c}
+        \includegraphics[width = 0.8\linewidth] {images/neurondrawing.pdf}\\ [-2.4ex]
+       \end{tabular} 
+    \caption{ \footnotesize   Neuron  tracking  notation.  At time $t$ a neuron $i$ detection $X_t^i = \{ c_t^i,
+        s_t^i, N_t^i  \}$ contains a nucleus $c_t^i$,  a soma $s_t^i$,
+        and    a  set of   neurite-filopodia    tuples    $N_t^i     =    \{(
+        n_t^{i,1},F_t^{i,1}),   \ldots,(n_t^{i,j},F_t^{i,j}),  \ldots,
+        (n_t^{i,J},F_t^{i,J})  \}$  which  contains $J$  neurites  and
+        their associated  filopodia shown in  red for $j=1$  and green
+        for  $j=2$. A spurious nucleus  detection  $d_1$ is also shown.
+        A neuron $i$  is defined by  a time-series of  neuron detections
+        $\mathcal{X}^i     =     \{X_{a}^i,\ldots,X_t^i,\ldots,X_{b}^i
+        \}$.  The  tracking returns  a  set  $\mathcal{X}^i$ for  each
+        neuron. }
+    \label{fig:notation}
+  \end{center}
+\vspace{-8mm}
+\end{figure}
+%% by linking nucleus detections  and ``growing'' the
+%%         neuron from the nucleus seed
+%----------------------------------------------------------------------------
+
+
+
+%----------------------------------------------------------------------------
+\subsection{Ground truth}
+%----------------------------------------------------------------------------
+In order to evaluate our automatic algorithm, we manually annotated cell bodies and neurites using appropriate tools as described hereinafter.
+We clearly distinguished between two annotation tasks: 
+\begin{itemize}
+\item segmentation and tracking of nuclei and somata from dynamic sequences,
+\item segmentation of neurite trees from static images.
+\end{itemize}
+We clearly made this distinction because we could not find an appropriate semi-automatic or manual software for tracking the neurites. Therefore, even if our automatic pipeline is able to track neurites, only the quality of neurite trees at a given time frame will we assessed.
+
+Our computer vision pipeline have been applied to two different sets of sequences acquired using two different magnifications: \texttt{10x} and \texttt{20x}. Therefore, we made random selections from each magnification set, and conducted our evaluation on each of them independently.
+ 
+\subsubsection{Cell body ground truth}
+To manually segment and track nuclei and somata from dynamic sequences, we used \texttt{TrakEM2}\footnote{publicly available at \url{http://www.ini.uzh.ch/~acardona/trakem2.html}}, a plugin of FIJI / ImageJ. To ease the annotation step, the input sequences have been encoded in a single multipage tiff file for each channel, and an xml file have been generated for each sequence to encode the segmentation and tracking data structure (see supplemental material).
+\begin{itemize}
+\item 12 sequences have been randomly selected from the \texttt{20x} dataset. From these sequences, 79 cells have been tracked, representing 4709 annotated nuclei and somata.
+\item 3 sequences have been randomly selected from the \texttt{10x} dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
+\end{itemize}
+
+
+\subsubsection{Neurite ground truth}
+To segment neurite trees from static images, we used an improved version of the Simple Neurite Tracer (SNT) plugin. The SNT plugin\footnote{\url{http://fiji.sc/wiki/index.php/Simple_Neurite_Tracer}}, a FIJI plugin, is a semi-automatic tool meant to reduce user' interaction for neuronal tree tracing . Recently, an improved version of SNT have been released \url{http://cvlab.epfl.ch/software/delin/index.php}, allowing a better description of the neurite branches, including their width estimate and more accurate centeline extraction as shown in figure~\ref{fig:annotations}.
+
+Similarly to the dynamic dataset, we randomly selected images from the two different magnification sets, and annotated all visible neurite trees:
+\begin{itemize}
+\item 30 images from the 20x dataset have been randomly selected. 223 neurite trees or neurite branches have been annotated.
+\item 27 images from the 10x dataset have been randomly selected. 257 neurite trees or neurite branches have been annotated.
+\end{itemize}
+
+Filopodia have been annotated only on images from the 20x dataset.
+%----------------------------------------------------------------------------
+\begin{figure}[!t]
+  \begin{center}
+       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c}
+        \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example.png} & \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example2.png}\\
+                \includegraphics[width = 0.5\textwidth] {images/SNT_015_Or.png} & \includegraphics[width = 0.5\textwidth] {images/SNT_015_Seg.png}\\ 
+       \end{tabular} 
+    \caption{ \footnotesize  Ground truth annotation. First row, neuron tracking annotation using the \texttt{TrakEM2} plugin. Two different time frames are displayed. 
+    Second row, Neurite trees annotation using the Simple Neurite Tracer plugin. On the left, the original image, and on the right the manual annotation overlaid on the image.}
+    \label{fig:annotations}
+  \end{center}
+\end{figure}
+%----------------------------------------------------------------------------
+
+
+%======================================================
+\section{Nuclei and somata segmentation}\label{sec:nuc}
+%======================================================
+\subsection{Nuclei Detection}
+The  first  step in  our  approach  is to  extract  a  set of  nucleus
+detections $\{d^1,\ldots,d^K\}$ over the  image series. We worked with
+two-channel  images where the  cytoskeleton  is marked  with Lifeact-GFP and  nuclei   are   marked   with
+NLS-mCherry. The nuclei can be reliably detected as a Maximally Stable Extremal Region (MSER)~\cite{Nister:2008} of the NLS-mCherry channel, and performing a morphological filling operation. The MSER detector finds regions that are stable over a wide range of thresholds of a gray-scale image. For that, we used the \texttt{VLFeat} implementation of MSER\footnote{publicly available at \url{http://www.vlfeat.org/}}. Default parameters of the MSER were used to segment the nuclei except the minimal and maximal size of a nuclei at the given resolution.  The main advantage of MSER compared to the thresholding approach \cite{Pertzs11} is its robustness and insensitivity to contrast variations.  
+
+\subsection{Somata detection}
+%----------------------------------------------------------------------------
+\begin{figure}[!b]
+  \begin{center}
+       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c@{\hspace{1mm}}c}
+        \includegraphics[width = 0.32\textwidth] {images/OriginalRed.png} & \includegraphics[width = 0.32\textwidth] {images/NucleiGTRed.png} & \includegraphics[width = 0.32\textwidth] {images/NucleiDetectionRed.png}\\ 
+	\includegraphics[width = 0.32\textwidth] {images/OriginalGreen.png} & \includegraphics[width = 0.32\textwidth] {images/SomataGTGreen.png} & \includegraphics[width = 0.32\textwidth] {images/SomataDetectionGreen.png}\\ 
+       \end{tabular} 
+    \caption{ \footnotesize  Cell body detection. On the first row, nuclei detections overlaid on top of the NLS-mCherry channel. On the second row, somata detections overlaid on top of the Lifeact-GFP channel. From left to right: the original image, the manual annotations, and the automatic detections.}
+    \label{fig:cellBDetection}
+  \end{center}
+\end{figure}
+%----------------------------------------------------------------------------
+
+
+Using the nuclei as seed points, somata are segmented using a region growing and region competition algorithm on the Lifeact-GFP channel.
+This is done by launching a propagating front from all the detected nuclei simultaneously. 
+For a given image frame, let $\{d^1, \cdots, d^p \}$ be the set of detected nuclei.
+To segment the semata, we first compute a solution of the Eikonal equation 
+\begin{equation}\label{eq:eikonal}
+\|\nabla \mathcal{U} \| = \mathcal{P} \text{~~~~such that~~~~} \mathcal{U}(d^k) = 0,
+\end{equation}
+where 
+\begin{equation}\label{eq:potential}
+\mathcal{P}(x) = \frac{1}{A \exp\left(- \frac{(I(x) - \mu_k)^2}{2 \beta^2 \sigma_k^2}\right) + 1},
+\end{equation}
+$k$ being the index of the closest nuclei detection $d_k$ to the pixel location $x$, and $I(x)$ being the associated green intensity, $\mu_k$ and $\sigma_k$ being the mean and standard deviation of the green intensities of pixels describung $d_k$.
+
+$\mathcal{U}$ defines a distance to the detections $d^k$. It combines the local intensity differences and the euclidean distance. From equation \ref{eq:potential}, one can see that the more the green intensity of a pixel $I(x)$ is different from the mean intensity of the closest detected nuclei $\mu_k$, the higher the potential $\mathcal{P}$ would be, and from equation \ref{eq:eikonal}, the higher $\mathcal{U}$ would be. 
+
+The somata segmentations are finally obtained by thresholding both $\mathcal{U}$ and the euclidean distance to the nuclei (those 2 shresholds are denoted $\mathcal{T}_g$ and $\mathcal{T}_e$ repectivelly). An example for nuclei and somata segmentation is depicted on figure \ref{fig:cellBDetection}. For all our experiments, we took $A = 1e7$, $\beta = 1.5$, $\mathcal{T}_g = 2e-6$ and $\mathcal{T}_e = 7$ for the 10x magnification and $
+\mathcal{T}_e = 12$ for the 20x magnification.
+
+\subsection{Evaluation}
+
+
+A detection, either a nucleus or a somata, is considered positive if there exist a ground truth object (of the same kind) overlapping sufficiently with it.  More formally, a detection $d$ is considered as a positive detection if there exist a ground truth object $g$ such that $\displaystyle \frac{g\cap d}{g\cup d} > 80\%$.
+
+\begin{itemize}
+\item On the 10x dataset, and over the 3 annotated sequences, only 28 nuclei have not been detected. That represents {\bf{1.3\%}} of miss detections.
+\item On the 20x dataset,  and over the 12 annotated sequences, 101 nuclei have not been detected. That represents {\bf{2.14\%}} of miss detections.
+\end{itemize}
+
+Since the ground truth is not complete, in other words, some visible cells have not been annotated, then we do not the false positive detections. 
+
+%======================================================
+%\section{Somata segmentation}\label{sec:soma}
+%======================================================
+
+%======================================================
+\section{Cell body tracking}\label{sec:tracking}
+%======================================================
+In this section, we describe the cell body tracking step.
+
+\subsection{Similarity measure}
+\subsection{K-shortest path}
+
+%======================================================
+\section{Neurites detection}\label{sec:neurite}
+%======================================================
+
+%======================================================
+\section{Neurites tracking}\label{sec:neuriteTrk}
+%======================================================
+
+
+%======================================================
+\section{Filopodia detection}\label{sec:filo}
+%======================================================
+
+%%======================================================================
+%\input{abstract.tex}
+%%======================================================================
+%
+%%======================================================================
+%\input{intro.tex}
+%%======================================================================
+%
+%%======================================================================
+%%\begin{results}
+%%======================================================================
+%
+%%======================================================================
+%\input{experimental-basel.tex}
+%%======================================================================
+%
+%%======================================================================
+%\input{vision-cvlab.tex}
+%%======================================================================
+%
+%%======================================================================
+%\input{analysis-idiap.tex}
+%%======================================================================
+
+%======================================================================
+%\end{results}
+%======================================================================
+
+
+%======================================================================
+%\bibliographystyle{naturemag}
+\bibliography{vision}
+%======================================================================
+
+%\begin{addendum}
+% \item Put acknowledgements here.
+% \item[Competing Interests] The authors declare that they have no
+%competing financial interests.
+% \item[Correspondence] Phone: +41 61 267 22 03; Fax: +41 61 267 35 66; E-mail : \texttt{olivier.pertz@unibas.ch}.
+%\end{addendum}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%======================================================================
+
+%% Example Figure commented
+%FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+%\begin{figure}
+%\caption{Each figure legend should begin with a brief title for
+%the whole figure and continue with a short description of each
+%panel and the symbols used. For contributions with methods
+%sections, legends should not contain any details of methods, or
+%exceed 100 words (fewer than 500 words in total for the whole
+%paper). In contributions without methods sections, legends should
+%be fewer than 300 words (800 words or fewer in total for the whole
+%paper).}
+%\end{figure}
+%FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+%Figures
+%Figure 1. Global pipeline to analyze neurite outgrowth morphodynamic phenotypes. (olivier and Ludo)
+%Figure 2. Computer vision segmentation of neuronal morphodynamics feature extraction.
+%(Fethallah and Kevin)
+%Figure 3.  Description of morphodynamic features.
+%(Fethallah and Kevin)
+%Figure 4. Morphodynamic phenotype feature selection
+%(Riwal)
+%try to make a  series of schemes that explain the different steps in feature selection,
+%vector distance, assessment of interplate and siRNA induced noise.
+%
+%Figure 5.  Morphodynamic phenotype description.
+%(Riwal, Olivier, Ludo)
+% this will consist of a color-coded map of the different features extracted for each gene perturbation, we will then focus on more specific aspects of what we learned.
+%
+% 
+%Supplementary Figures.
+%
+%Figure S1. Experimental controls lifeact-GFP/NLS-mCherry reporter and siRNA transfection.
+%(a) Structure of the Lifeact-GFP IRES NLS-mCherry expression vector. (b) Effect of Lifeact-GFP expression on neurite outgrowth.
+%(ludo and olivier)
+%
+%
+%Figure S2. Feature selection on synthetic data produced by mixing videos from different known sources to test the ability of the algorithm to appropriately identify different morphodynamic signatures (Riwal)
+%
+%
+%
+%?
+%
+%Supplementary tables.
+%
+%Table S1. Definition of static features.
+%Table S2. Definition of dynamic features.
+%
+%
+%
+%?
+%Supplementary notes
+%
+%Supplementary note 1. Description of RNA interference experiments.
+%
+%Olivier and ludo
+%
+%Supplementary note 2. Description of microscope setup used for high content acquisition.
+%Olivier and ludo
+%
+%
+%Supplementary note 3. In depth description of computer vision segmentation and evaluation of the method by comparison with ground truth.
+%
+%Fethallah and Kevin
+%
+%
+%Supplementary note 4. Description of html format in which the cell trajectories are described
+%
+%Fethallah and Kevin
+%
+%?
+%Supplementary movies.
+%
+%Supplementary movie 1. Representative timelapse movie of N1E-115 cells expressing the GFP-lifeact-IRES-NLS-mcherry construct with the 10x PlanApo objective.
+%
+%Supplementary movie 2. Representative timelapse movie of N1E-115 cells expressing the GFP-lifeact-IRES-NLS-mcherry construct with the 20x PlanApo objective.
+%
+%Supplementary movie 3.
+%
+%
+%
+%
+%
+% 
+%References
+%
+%1.	B. Snijder, R. Sacher, P. Ramo et al., Nature 461 (7263), 520 (2009).
+%2.	C. Collinet, M. Stoter, C. R. Bradshaw et al., Nature 464 (7286), 243 (2010).
+%3.	M. Held, M. H. Schmitz, B. Fischer et al., Nature methods 7 (9), 747 (2010).
+%4.	D. Loerke, Q. le Duc, I. Blonk et al., Science signaling 5 (231), rs5 (2012).
+%5.	J. Riedl, A. H. Crevenna, K. Kessenbrock et al., Nature methods 5 (7), 605 (2008).
+
