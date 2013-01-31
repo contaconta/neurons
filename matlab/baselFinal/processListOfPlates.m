@@ -44,7 +44,7 @@ C = textscan(fid, '%s %s %s %s %s');
 fclose(fid);
 
 inputDataRoot      = '/raid/data/store/';
-outputAnalisysRoot = '/raid/data/analysis/';
+outputAnalisysRoot = '/raid/data/analysis/ProcessingRiwal/';
 
 matlabpool local
 
