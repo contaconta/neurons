@@ -35,7 +35,6 @@ fclose(FID);
 
 
 % ------------ process the specified folders --------------
-% matlabpool local
 for i = 1:length(exp_num)
     
     folder_n = [folder exp_num{i} '/'];
@@ -47,13 +46,3 @@ for i = 1:length(exp_num)
     disp('=============================================================')
     disp('');
 end
-
-%matlabpool close
-
-
-
-% kill the matlab pool
-%matlabpool close force
-
-
-

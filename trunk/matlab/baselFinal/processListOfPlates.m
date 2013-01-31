@@ -46,6 +46,8 @@ fclose(fid);
 inputDataRoot      = '/raid/data/store/';
 outputAnalisysRoot = '/raid/data/analysis/';
 
+matlabpool local
+
 for i= 1:length(C{1})
     Sample	 = C{3}(i);
     Identifier = C{4}(i);
@@ -66,3 +68,5 @@ for i= 1:length(C{1})
     end
     processPlate(inputFolder , resultsFolder, Sample{1}, Identifier{1}, resolution);
 end
+
+matlabpool close;
