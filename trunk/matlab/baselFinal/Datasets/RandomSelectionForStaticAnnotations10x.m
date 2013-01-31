@@ -1,12 +1,12 @@
 clear all; close all; clc;
 %%
-Magnification  = '20x';
+Magnification  = '10X';
 datasets_paths_filename = ['PathsToDatasets-' Magnification '-28112012.txt'];
 outputSelectionfile = [Magnification 'StaticSelections.txt'];
 OutputRootDirectory = ['/home/fbenmans/SelectionStatic' Magnification '/'];
 inputDataRoot      =  '/raid/data/store/';
 
-nb_randomSelections = 50;
+nb_randomSelections = 27;
 %%
 FID = fopen(datasets_paths_filename);
 C = textscan(FID, '%s %s %s %s %s');
