@@ -63,6 +63,9 @@ for i= 1:length(C{1})
     inputFolder = [inputFolder   directoryName '/' ];%#ok<*AGROW>
     disp(inputFolder);
     resultsFolder = [outputAnalisysRoot  Sample{1} '/'];
+    if( exist(resultsFolder, 'dir') )
+        rmdir(resultsFolder, 's');
+    end
     if( ~exist(resultsFolder, 'dir') )
         mkdir(resultsFolder);
     end
