@@ -16,7 +16,7 @@
 ########################################################################
 
 LDFLAGS=
-CXXFLAGS=-fPIC -O3 -msse2 -mfpmath=sse -I/Applications/MATLAB_R2010a.app/extern/include/
+CXXFLAGS=-fPIC -O3 -msse2 -mfpmath=sse -I/usr/local/MATLAB/R2011b/extern/include/
 
 all: ksp 
 
