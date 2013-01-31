@@ -12,31 +12,31 @@ function processListOfPlates(datasets_paths_filename, resolution)
 %   Written 4/07/2012
 
 % ------------------- set the paths -----------------------
-if isempty( strfind(path, [pwd '/../baselFinal/frangi_filter_version2a']) )
-    addpath([pwd '/../baselFinal/frangi_filter_version2a']);
+if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
+    addpath([pwd '/frangi_filter_version2a']);
 end
 
-if isempty( strfind(path, [pwd '/../baselFinal/gaimc']) )
-    addpath([pwd '/../baselFinal/gaimc']);
+if isempty( strfind(path, [pwd '/gaimc']) )
+    addpath([pwd '/gaimc']);
 end
 
-if isempty( strfind(path, [pwd '/../baselFinal/Geodesics']) )
-    addpath([pwd '/../baselFinal/Geodesics']);
+if isempty( strfind(path, [pwd '/Geodesics']) )
+    addpath([pwd '/Geodesics']);
 end
 
-if isempty( strfind(path, [pwd '/../baselFinal/ksp']) )
-    addpath([pwd '/../baselFinal/ksp']);
+if isempty( strfind(path, [pwd '/ksp']) )
+    addpath([pwd '/ksp']);
 end
 
-if isempty( strfind(path, [pwd '/../baselFinal/fpeak']) )
-    addpath([pwd '/../baselFinal/fpeak']);
+if isempty( strfind(path, [pwd '/fpeak']) )
+    addpath([pwd '/fpeak']);
 end
 
-if isempty( strfind(path, [pwd '/../baselFinal/FastEMD']) )
-    addpath([pwd '/../baselFinal/FastEMD']);
+if isempty( strfind(path, [pwd '/FastEMD']) )
+    addpath([pwd '/FastEMD']);
 end
 
-run([pwd '/../baselFinal/vlfeat-0.9.14/toolbox/vl_setup']);
+run([pwd '/vlfeat-0.9.14/toolbox/vl_setup']);
 
 % -------- get the list of plates and process -----------
 fid = fopen(datasets_paths_filename);
