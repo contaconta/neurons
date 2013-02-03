@@ -1,17 +1,23 @@
 %% -*- mode: latex; mode: reftex; mode: flyspell; TeX-master: "top.tex"; -*-
-\vspace{-3mm} Our neuron tracking,  segmentation and delineation method produces  sets of
-graphs linking  detections, contours, and trees to  define each neuron
-over  time.  This  data   structure  is  not  immediately  useful  for
-quantifying dynamic behaviors.  To facilitate the analysis, we extract
-a  set of {\em  156 meaningful  features} from  our data  structure to
-quantify morphodynamics, which  are too numerous to list  here.  A few
-examples  for   the  nucleus   and  soma  include:   area,  perimeter,
-Lifeact-GFP  intensity,  NLS-mCherry  intensity, speed,  acceleration,
-total distance  traveled, time spent  expanding/contracting, frequency
-of expansion.  For neurites: number  of branches, distance from tip to
-soma, filopodia  length, number of  filopodia, major axis,  minor axis
-and eccentricity of an ellipse fitted to the neurite, total length, time
-spent expanding/contracting, frequency of expansion. We also compute
-change-over-time for each of the features mentioned above 
-(denoted by $\Delta$).
+\vspace{-3mm} Our neuron tracking, segmentation
+and delineation method produces sets of graphs
+linking detections, contours, and trees to define
+each neuron over time.  This data structure is not
+immediately useful for quantifying dynamic
+behaviors.  To facilitate the analysis, we extract
+a set of {\em 156 informative features} from our
+data structure to quantify morphodynamics, which
+are too numerous to list here.  A few examples for
+the nucleus and soma include: area, perimeter,
+Lifeact-GFP intensity, NLS-mCherry intensity,
+speed, acceleration, total distance traveled, time
+spent expanding/contracting, frequency of
+expansion.  For neurites: number of branches,
+distance from tip to soma, filopodia length,
+number of filopodia, major axis, minor axis and
+eccentricity of an ellipse fitted to the neurite,
+total length, time spent expanding/contracting,
+frequency of expansion. We also compute
+change-over-time for each of the features
+mentioned above (denoted by $\Delta$).
 

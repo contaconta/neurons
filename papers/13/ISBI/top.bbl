@@ -14,27 +14,22 @@ C.~Collinet and et~al.,
 
 \bibitem{Held10}
 M.~Held and et~al.,
-\newblock ``{CellCognition: time-resolved phenotype annotation in
-  high-throughput live cell imaging.},''
+\newblock ``{Cellcognition: Time-Resolved Phenotype Annotation in
+  High-Throughput Live Cell Imaging},''
 \newblock {\em Nature Methods}, vol. 9, no. 7, pp. 747--754, 2010.
 
 \bibitem{Neumann10}
-B.~Neumann and et~al,
-\newblock ``{Phenotypic profiling of the human genome by time-lapse microscopy
-  reveals cell division genes},''
+B.~Neumann and E.~Al,
+\newblock ``{Phenotypic Profiling of the Human Genome by Time-Lapse Microscopy
+  Reveals Cell Division Genes},''
 \newblock {\em Nature}, vol. 464, pp. 721--727, 2010.
 
-\bibitem{Zhu05}
-C.~Zhu and et. al,
-\newblock ``{Functional analysis of human microtubule-based motor proteins, the
-  kinesins and dyneins, in mitosis/cytokinesis using RNA interference},''
-\newblock {\em Cell}, vol. 16, pp. 3187--3199, 2005.
-
 \bibitem{Pertz08}
-O.~Pertz and et~al,
+O.C. Pertz, Y.~Wang, F.~Yang, W.~Wang, L.J. Gay, M.A. Gristenko, T.R. Clauss,
+  D.J. Anderson, T.~Liu, K.J. Auberry, D.G. Camp, R.D. Smith, and R.L. Klemke,
 \newblock ``{Spatial Mapping of the Neurite and Soma Proteomes Reveals a
-  Functional Cdc42/Rac Regulatory Network},''
-\newblock {\em Proc. Natl. Acad. Sci.}, vol. 105, pp. 1931--1936, 2008.
+  Functional Cdc42/rac Regulatory Network},''
+\newblock vol. 105, pp. 1931--1936, 2008.
 
 \bibitem{Smith09}
 K.~Smith, A.~Carleton, and V.~Lepetit,
@@ -42,7 +37,7 @@ K.~Smith, A.~Carleton, and V.~Lepetit,
 \newblock in {\em ICCV}, 2009, pp. 397--404.
 
 \bibitem{Frangi98}
-Alejandro~F. Frangi, Wiro~J. Niessen, Koen~L. Vincken, and Max~A. Viergever,
+A.F. Frangi, W.J. Niessen, K.L. Vincken, and M.A. Viergever,
 \newblock ``{Multiscale Vessel Enhancement Filtering},''
 \newblock {\em Lecture Notes in Computer Science}, vol. 1496, pp. 130--137,
   1998.
