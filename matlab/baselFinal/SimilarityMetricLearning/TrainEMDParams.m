@@ -1,4 +1,4 @@
-clear all; close all; %clc;
+clear all; close all; clc;
 %%
 addpath(genpath('../'));
 %%
@@ -7,14 +7,14 @@ if 0
     matlabpool local; %#ok
 end
 overlappingTolerance = 0.5;
-isDetectionDone = true;
+isDetectionDone = false;
 extractSamples  = true;
 %%
 Magnification = '10x';
 dataRootDirectory    = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic/'];
 ConvertedGTRootDir   = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic_matlab/'];
-RawRootDataDirectory = ['/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection' Magnification '/'];
-DetectionDirectory   = ['/Users/feth/Documents/Work/Data/Sinergia/Olivier/Detections' Magnification '/'];
+RawRootDataDirectory = ['/Users/feth/Documents/Work/Data/Synergia/Selection' Magnification '/'];
+DetectionDirectory   = ['/Users/feth/Documents/Work/Data/Synergia/Detections' Magnification '/'];
 if(~exist(DetectionDirectory, 'dir'))
     mkdir(DetectionDirectory);
 end
@@ -23,7 +23,7 @@ if ~isDetectionDone
     PreprocessAndSaveCellBodyDetections(Magnification, dataRootDirectory, RawRootDataDirectory, DetectionDirectory);
 end
 %% Given the ground truth and the detection, Train
-FastEMD_parameters.NUMBER_OF_BINS      = 64;
+FastEMD_parameters.NUMBER_OF_BINS      = 32;
 FastEMD_parameters.THRESHOLD_BINS_DIST = 5;
 save('FastEMDParams', 'FastEMD_parameters');
 
@@ -42,7 +42,7 @@ X = [PositiveEMDs; NegativeEMDs(listOfNegToUse)];
 Z = Logistic(B(1) + X * (B(2)));
 %%
 delta = 0.1;
-XX = 0:delta:4000;
+XX = 0:delta:4;
 ZZ = Logistic(B(1) + XX * (B(2)));
 figure; plot(XX, ZZ)
 
