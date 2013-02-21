@@ -17,7 +17,7 @@ cd(folder);
 
 cmd_webm      = ['ffmpeg -v 0 -loglevel 0 -y -r 10 -i %03d.png -acodec libvorbis -b 2048k -y -s 696x520 -r 10 ' resultsFolder filename '.webm'];
 % system(cmd_webm);
-cmd_mp4       = ['ffmpeg -v 0 -loglevel 0 -y -r 10 -i %03d.png  -vcodec libx264 -b 2048k  -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
+cmd_mp4       = ['ffmpeg -v 0 -loglevel 0 -y -r 10 -i %03d.png  -vcodec libx264 -b 2048k -pix_fmt yuv420p -y -s 696x520 -r 10 ' resultsFolder filename '.mp4'];
 cmd_mpg       = ['ffmpeg -v 0 -loglevel 0 -y -f image2 -i %03d.png -b:v 2000k -q 1  ' resultsFolder filename '.mpg'];
 system(cmd_mp4);
 %system(cmd_mpg);
