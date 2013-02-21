@@ -7,7 +7,7 @@ end
 overlappingTolerance = 0.5;
 isDetectionDone = true;
 %%
-Magnification = '20x';
+Magnification = '10x';
 dataRootDirectory    = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic/'];
 ConvertedGTRootDir   = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic_matlab/'];
 RawRootDataDirectory = ['/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection' Magnification '/'];
@@ -38,7 +38,7 @@ for i = 1:length(listOfGTSeq)
 %        disp(['Annotation file: ' GTFileName]);
        load(GTFileName);
        
-       [TruePositives, FalsePositives] = trkEvaluateDetections(Cells, CellsList, AnnotatedTrackedCells, overlappingTolerance);
+       [TruePositives, FalsePositives] = trkEvaluateDetectionsSomata(Cells, CellsList, AnnotatedTrackedCells, overlappingTolerance);
        FalsePositivesPerImage{seqIdx}  = FalsePositives;%#ok
        TruePositivesPerImage{seqIdx}   = TruePositives;%#ok
        seqIdx = seqIdx + 1;
@@ -70,8 +70,46 @@ for image_index = 1:97
     [~, num] = bwlabel(FalseNegatives);
     nb_FN_perFrame(image_index) = num;%#ok
 end
-%%
+%% code for macking figures
+image_index = 1;
+Im = load_image_from_sequence(inputSeqDirToProcess, 'green', image_index);
+Im = max(Im(:)) - Im;
 
+[Im, GT, Detections, TruePositives, FalsePositives, FalseNegatives] = trkRenderImageAndSomataDetections(Im, Cells, CellsList, AnnotatedTrackedCells, TruePositivesPerImage{seqIdx}, FalsePositivesPerImage{seqIdx},  image_index);
+
+figure(1); clf; 
+imshow(Im, [], 'InitialMagnification', 200);
+pause;
+print2im('OriginalGreen.png');
+
+
+figure(1); clf; 
+
+imshow(Im, [], 'InitialMagnification', 200);
+blue = cat(3, zeros(size(Im)), zeros(size(Im)), ones(size(Im)));
+hold on;
+h = imshow(blue);
+hold off;
+set(h, 'AlphaData', 0.5*GT);
+pause;
+print2im('SomataGTGreen.png');
+
+figure(1); clf; 
+
+imshow(Im, [], 'InitialMagnification', 200);
+magenta = cat(3, ones(size(Im)), zeros(size(Im)), ones(size(Im)));
+hold on;
+h = imshow(magenta);
+hold off;
+set(h, 'AlphaData', 0.5*Detections);
+    
+pause;
+print2im('SomataDetectionGreen.png');
+
+
+
+
+%%
 for image_index                   = 1:53;
     Im = load_image_from_sequence(inputSeqDirToProcess, 'red', image_index);
     Im = max(Im(:)) - Im;
