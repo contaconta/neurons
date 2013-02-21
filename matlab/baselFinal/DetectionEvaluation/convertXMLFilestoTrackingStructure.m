@@ -1,4 +1,4 @@
-clear all; close all; clc
+clear all; close all; %clc
 %%
 templateHeaderFile  = '../Datasets/TemplateHeaderSimplified.xml';
 addpath('../Datasets/')
@@ -13,7 +13,12 @@ end
 %%
 listOfGTSeq = dir(dataRootDirectory);
 
-for i = 5:5%length(listOfGTSeq)
+Nb_trkPerSeq = [];
+Nb_ObjPerSequence = [];
+idxSeq = 1;
+
+
+for i = 1:length(listOfGTSeq)
    if(listOfGTSeq(i).isdir && ~isempty(str2num(listOfGTSeq(i).name)) ) %#ok
        currentXMLFile = [dataRootDirectory listOfGTSeq(i).name '/' listOfGTSeq(i).name '.xml'];
        disp('========================================')
@@ -22,5 +27,15 @@ for i = 5:5%length(listOfGTSeq)
        AnnotatedTrackedCells = getStructureFromTrakEM2XML(dataRootDirectory, str2num(listOfGTSeq(i).name), templateHeaderFile);%#ok
        outputMatlbFile = [OutputDir listOfGTSeq(i).name];
        save(outputMatlbFile, 'AnnotatedTrackedCells');
+       
+       Nb_trkPerSeq(idxSeq) = numel(AnnotatedTrackedCells);%#ok
+       nb_annot_obj = 0;
+       for k = 1:numel(AnnotatedTrackedCells)
+           nb_annot_obj = nb_annot_obj + AnnotatedTrackedCells{k}.LifeTime;
+       end
+       
+       Nb_ObjPerSequence(idxSeq) = nb_annot_obj;%#ok
+       
+       idxSeq = idxSeq + 1;
    end
 end
