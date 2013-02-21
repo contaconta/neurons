@@ -6,5 +6,7 @@ parfor i=1:numel(Cells)
                                    linspace(lastCell.MinGreen, ...
                                             lastCell.MaxGreen, ...
                                             NUMBER_OF_BINS)          );%#ok
+	% normalize the histogram to a probability
+	Cells(i).SomaHistGreen = Cells(i).SomaHistGreen / sum(Cells(i).SomaHistGreen);
 end
 
