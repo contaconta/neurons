@@ -33,7 +33,7 @@ shape_d = a+ma+na+e+p+i;
 
 c1 = d1.NucleusCentroid;
 c2 = d2.NucleusCentroid;
-space_d = distance(c1, c2);
+space_d = sqrt((c1(1) - c2(1))^2 + (c1(2) - c2(2))^2);
 
 
 %disp(' ');
