@@ -1,10 +1,10 @@
-function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH)
+function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, TEMPORAL_WINDOWS_SIZE)
 
 % extracting neurites
 [Neurites NeuritesList]  = getNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD);
 
 % make and adjacency matrix of neurites
-A = make_adjacency(NeuritesList, Neurites, 1);
+A = make_adjacency(NeuritesList, Neurites, TEMPORAL_WINDOWS_SIZE);
 
 % fill out all the distances in the adjacency matrix
 edges = find(A == 1);
