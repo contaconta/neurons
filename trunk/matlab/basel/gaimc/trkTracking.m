@@ -113,7 +113,7 @@ FrangiOpt.BlackWhite = false;
 FrangiOpt.verbose = false;
 
 NeuriteDetectionParams.GEODESIC_DISTANCE_NEURITE_THRESH = 0.0001;
-NeuriteDetectionParams.KeyPointDetectionParam           = 3;
+NeuriteDetectionParams.KeyPointDetectionParam           = 5;
 %%%%%%%%%%% This is the neurites detection parameter %%%%%%%%%%
 %%%%%%%%%%% It should take values between 0 and 1 strictly.
 NeuriteDetectionParams.NeuriteProbabilityThreshold      = 0.2;
