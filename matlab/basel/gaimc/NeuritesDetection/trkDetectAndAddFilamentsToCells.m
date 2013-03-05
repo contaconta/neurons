@@ -75,13 +75,13 @@ parfor dd = 1:length(Cells)
                     LL = Length{t}(Idx);%#ok
                     LL = smooth(LL, pad);
                     if(max(LL) > pad)
-                        [~,imax] = findpeaks( LL, 'MINPEAKHEIGHT', pad, 'MINPEAKDISTANCE', min(pad, floor(length(Idx)/2)));
+                      [~,imax] = findpeaks( LL, 'MINPEAKHEIGHT', pad, 'MINPEAKDISTANCE', min(pad, floor(length(Idx)/2)));
+                      listOfCandidateEndPoints = vertcat(listOfCandidateEndPoints, Idx(imax));%ok
 %                         TT = fpeak(LL, 1:length(LL), pad);
 %                         imax = TT(:, 2);
 %                         Idx = Idx(1+pad:end);
 %                         imax(imax <=pad) = [];
 %                         listOfCandidateEndPoints = vertcat(listOfCandidateEndPoints, Idx(imax-pad));%ok
-                        listOfCandidateEndPoints = vertcat(listOfCandidateEndPoints, Idx(imax));%ok
                     end
                 end
             end

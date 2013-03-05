@@ -48,6 +48,14 @@ if isempty( strfind(path, [pwd '/NeuritesDetection']) )
     addpath([pwd '/NeuritesDetection']);
 end
 
+if isempty( strfind(path, [pwd '/NeuritesTracking']) )
+    addpath([pwd '/NeuritesTracking']);
+end
+
+if isempty( strfind(path, [pwd '/FeaturesExtraction']) )
+    addpath([pwd '/FeaturesExtraction']);
+end
+
 if isempty( strfind(path, [pwd '/frangi_filter_version2a']) )
     addpath([pwd '/frangi_filter_version2a']);
 end

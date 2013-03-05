@@ -126,6 +126,20 @@ tic
 [Cells] = trkDetectAndAddFilamentsToCells(Green, Cells, Somata, FrangiOpt, IntensityAjustmentGreen, NeuriteDetectionParams);
 toc
 
+%% track neurites
+disp('...tracking neurites');
+if strcmp(magnification, '10x')
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 30;
+elseif strcmp(magnification, '20x')
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 60;
+end
+
+W_THRESH = 400;
+MIN_TRACK_LENGTH = 10;
+
+tic
+[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH);
+toc
 
 %% render results on the video
 disp('...make movie');
@@ -138,3 +152,13 @@ mv = trkRenderImagesAndTracks(Green, Cells, CellsList, tracks, SeqIndexStr, Samp
 movfile = SeqIndexStr ;
 trkMovie(mv, resultsFolder, resultsFolder, movfile); fprintf('\n');
 toc
+
+Cells = rmfield(Cells, 'Neurites');
+
+%% reorganize data
+disp('...reorganizing data ')
+tic
+Sequence = trkReorganizeDataStructure(folder, Rfiles, Gfiles, Green_Original, Red_Original, Sample, SeqIndexStr, Cells, trkSeq, TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq);
+toc
+%%
+save([resultsFolder SeqIndexStr],  'Sequence');
