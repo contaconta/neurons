@@ -21,10 +21,6 @@ if isempty( strfind(path, [pwd '/IO']) )
     addpath([pwd '/IO']);
 end
 
-if isempty( strfind(path, [pwd '/fpeak']) )
-    addpath([pwd '/fpeak']);
-end
-
 if isempty( strfind(path, [pwd '/Geodesics']) )
     addpath([pwd '/Geodesics']);
 end
