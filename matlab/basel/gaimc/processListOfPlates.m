@@ -13,11 +13,6 @@ function processListOfPlates(datasets_paths_filename, resolution)
 
 % ------------------- set the paths -----------------------
 
-
-% if isempty( strfind(path, [pwd '/gaimc']) )
-%     addpath([pwd '/gaimc']);
-% end
-
 if isempty( strfind(path, [pwd '/Common']) )
     addpath([pwd '/Common']);
 end
@@ -63,16 +58,6 @@ end
 if isempty( strfind(path, [pwd '/gaimc']) )
     addpath([pwd '/gaimc']);
 end
-% 
-% if isempty( strfind(path, [pwd '/fpeak']) )
-%     addpath([pwd '/fpeak']);
-% end
-% 
-% if isempty( strfind(path, [pwd '/FastEMD']) )
-%     addpath([pwd '/FastEMD']);
-% end
-
-
 
 
 % some environement variables:

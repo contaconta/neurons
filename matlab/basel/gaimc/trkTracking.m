@@ -60,11 +60,6 @@ toc
 
 %% Gather detections into cells
 disp('...gather detections into cells');
-% if strcmp(magnification, '10x')
-%     CellsFilteringParameters.DISTANCE_TO_BOUNDARY = 15;
-% elseif strcmp(magnification, '20x')
-%     CellsFilteringParameters.DISTANCE_TO_BOUNDARY = 30;
-% end
 
 CellsFilteringParameters.DISTANCE_TO_BOUNDARY = 10;
 CellsFilteringParameters.MAX_ECCENTRICITY     = 0.85;
