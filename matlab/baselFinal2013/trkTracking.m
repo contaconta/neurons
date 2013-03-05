@@ -135,7 +135,7 @@ W_THRESH = 400;
 MIN_TRACK_LENGTH = 10;
 
 tic
-[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH);
+[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, GreedyTrackingParameters.TEMPORAL_WINDOWS_SIZE);
 toc
 
 %% render results on the video
