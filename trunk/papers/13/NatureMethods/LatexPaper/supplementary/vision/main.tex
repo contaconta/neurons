@@ -3,6 +3,8 @@
 \documentclass{article}
 
 %% make sure you have the nature.cls and naturemag.bst files where
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{amsmath,graphicx}
 \usepackage{url}
 \bibliographystyle{naturemag}
@@ -66,7 +68,6 @@ $i$  at time step $t$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$.
         neuron. }
     \label{fig:notation}
   \end{center}
-\vspace{-8mm}
 \end{figure}
 %% by linking nucleus detections  and ``growing'' the
 %%         neuron from the nucleus seed
@@ -181,18 +182,178 @@ Since the ground truth is not complete, in other words, some visible cells have 
 %======================================================
 \section{Cell body tracking}\label{sec:tracking}
 %======================================================
-In this section, we describe the cell body tracking step.
 
-\subsection{Similarity measure}
-\subsection{K-shortest path}
+\subsection{Fast Greedy Tracking of Nucleus Detections}
+\label{sec:tracking}
+%some detections are thrown away!
+
+The tracking algorithm searches through the full set of nuclei detections
+and iteratively associates the most similar  pairs of detections, returning
+lists of valid detections corresponding to each neuron $\mathcal{X}^i$.
+This is accomplished by constructing a graph 
+$\mathcal{G}=(\mathcal{D},\mathcal{E})$  where each
+node $d^k_t  \in \mathcal{D}$  corresponds to  a detection. 
+For each detection $d^k_t$ in time step $t$, edges $e \in \mathcal{E}$ are formed between
+$d^k_t$ and all past and future detections within a time window $W$.
+A weight $w_e$ is assigned to each edge according to spatial and 
+temporal distances, and a shape measure 
+$w_{e} = \alpha || d^k_{t1} - d^l_{t2} ||
++ \beta |t1 - t2| + \gamma f(\nu^k_{t1}, \nu^l_{t2})$
+where $e^{k,l}$ connects  $d^k_t$ and $d^l_t$, and $\nu^k$  is a shape
+feature vector  containing $d^k_t$'s area,  perimeter, mean intensity,
+and major  and minor axis lengths  of a fitted  ellipse. $f$ evaluates
+differences between  a feature $a$ extracted from  $d^k_t$ and $d^l_t$
+as  $f(a^k,a^l) =  \frac{|a^k  - a^l|}{|a^k  +  a^l|}$.  The  tracking
+solution  corresponds   to  a  set  of   edges  $\mathcal{E'}  \subset
+\mathcal{E}$ that minimizes the cost $\sum_{e \in \mathcal{E'}} w_e$.
+
+%( f(a^k,a^l) + f(ma^k,ma^l) + f(mn^k,mn^l) + f(ec^k,ec^l) + f(p^k,p^l) + 
+%f(\hat{I}(d^k), \hat{I}(d^l) )$
+
+%detections found in past $t-W \ldots t-1$ and future
+%$t+1 \ldots t$ time steps.
+
+%Edges $\mathcal{E}$ fully connect detections between time steps
+
+%%  Graph edges
+%% $\mathcal{E}$ are created between  detections belonging to a different
+%% time frame  in a given  time window $W$.  A cost $c_e$ is  assigned to
+%% each  edge  $e \in  \mathcal{E}$  according  to  spatial and  temporal
+%% distances and  shape proximity. The  tracking output corresponds  to a
+%% set  of edges  $\mathcal{E'} \subset  \mathcal{E}$ that  minimizes the
+%% cost $\sum_{e \in \mathcal{E'}} c_e$.
+
+To minimize this cost function,  we adopt a greedy selection algorithm
+outlined     in    Table~\ref{algo:greedy}    and     summarized    in
+Fig.~\ref{fig:greedytracking}  that iteratively  selects an  edge with
+minimum  cost  $\hat w_e$  and  adds  it  to the  set  $\mathcal{E}'$,
+removing  future   and  past   connections  from  the   detections  $e^{k,l}$
+connects. The algorithm iterates until  the minimum cost $\hat w_e$ is
+greater than  a threshold $T$. The  track for neuron  $i$ is extracted
+from       $\mathcal{E}'$      by      traversing       the      graph
+$(\mathcal{G},\mathcal{E}')$  and appending linked  nucleus detections
+to $\mathcal{X}^i$.
+
+%~\cite{Berclaz11}
+
+%-----------------------------------------------------------------
+\begin{algorithm}[h!]
+\caption{Greedy tracking association algorithm}
+\begin{algorithmic}[100]
+%\STATE A graph $\mathcal{G}=(\mathcal{V},\mathcal{E})$ is created where each node $v \in \mathcal{V}$ is associated to a detection.
+%\STATE Graph edges $(u,v) \in \mathcal{E}$ are created between detections belonging to a different time frame in a given time window $W$.
+%\STATE A weight $c_e$ is assigned to each edge according to spatial and temporal distance and shape.
+\STATE Start with an empty set $\mathcal{E}'$.
+\REPEAT
+\STATE Find edge $\hat e^{k,l}$ with minimum cost $\hat w_e$.
+\STATE Add $\hat e^{k,l}$ to $\mathcal{E}'$, linking detections $d^k_{t1}$ and $d^l_{t2}$.
+\STATE Remove $\hat e^{k,l}$ from $\mathcal{E}$.
+\IF {$ t1 < t2 $}
+\STATE Remove edges between $d^k_{t1}$ and {\em future} detections (where $t > t1$) from $\mathcal{E}$
+\STATE Remove edges between $d^l_{t2}$ and {\em past} detections (where $t < t2$) from $\mathcal{E}$
+\ELSE
+\STATE Remove edges between $d^k_{t1}$ and {\em past} detections (where $t < t1$) from $\mathcal{E}$
+\STATE Remove edges between $d^l_{t2}$ and {\em future} detections (where $t > t2$) from $\mathcal{E}$
+\ENDIF
+\UNTIL{$\hat w_e > T$}
+\end{algorithmic}
+\label{algo:greedy}
+\end{algorithm}
+%-----------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------
+\begin{figure}[t]
+  \centering
+       \begin{tabular}{c}
+        \includegraphics[width = 100mm] {images/greedytracking.pdf}\\ [-2.4ex]
+       \end{tabular} 
+    \caption{  {\footnotesize {\it Greedy  Tracking.}  {\em  (a)} The algorithm begins with each
+        detection fully connected to all future and past detections
+        within  a time  window  $W$.  Above, only  $d^k_t$'s edges  are
+        shown. {\em  (b)} Each iteration,  the edge $\hat{e}^{k,l}$
+        with   minimum  cost   $\hat{w}_e$  is  added  to $\mathcal{E}'$.   Edges  connecting
+        $d^k_t$ to  future detections are  removed from $\mathcal{E}$.
+        {\em  (c)} Edges  connecting  $d^l_t$ to  the past  are
+        removed from $\mathcal{E}$.  The process is repeated until $\hat w_e > T$. }}
+    \label{fig:greedytracking}
+  
+\end{figure}
+
+
+
+\subsection{Evaluation: TODO}
 
 %======================================================
 \section{Neurites detection}\label{sec:neurite}
 %======================================================
+\subsection{Probabilistic Neuron Segmentation and Neurite Tree Extraction}
+\label{sec:segmentation}
+\vspace{-2mm}
+Given an  image $I_t$  and the set  of somata  present in it  $S_t=\{s_t^1 \dots
+s_t^m \}$,  our goal is  to associate  to each pixel  $u$ a label  $J_t(u)$ that
+indicates to which soma it belongs.   The probability of $J_t(u)$ can be deduced
+using Bayes' rule,
+%\vspace{-1mm}
+\begin{equation}
+  \label{eq:bayes}
+  P(J_t(u)=i|S_t,I_t) = \frac{P(S_t,I_t| J_t(u)=i)}{\sum_{\eta=1}^m P(S_t,I_t|J_t(u)=\eta)},
+\end{equation}
+\noindent  where we  have assumed  a uniform  distribution on  $P(J_t(u))$.  The
+numerator  is modeled  as the  probability of the path $L$ that connects maximally 
+the voxel $u$ to the soma $s_t^i$,
+%% \begin{equation}
+%%   \label{eq:shortestpath}
+$  P(S_t,I_t| J_t(u)=i) = \max_{L:u\rightarrow  s_t^i}   \prod_{\{l_{r}\}
+    \in L  } P(I_t(r)|l_{r}),$
+%\end{equation}
+where $l_{r}$ are indicator  variables for the locations forming the
+path $L$. We chose this model  since an optimal maxima can be found
+by minimizing its  negative likelihood using geodesic shortest  path \cite{Cohen96} and because
+it produces connected components.
+
+To optimize this function, we first compute geodesic distances from the tracked somata using the fast marching algorithm \cite{Sethian99,Cohen96}, applied on $P(I_t(v)|v)$, where $P(I_t(v)|v)$ represents the probability that a  neurite traverses a node $v$ and is
+obtained  by  applying  a  sigmoid  function  to  the  output  of  the
+tubularity filter  of~\cite{Frangi98}.  The parameters  of the sigmoid
+function are  estimated using  maximum likelihood. 
+
+Finally,  we define the set  of neurite pixels $U_n^t$  as those that connect  to any soma
+with a higher probability than $\epsilon$.  We predict their labels as
+the  ones  that  maximize   Eq.~\ref{eq:bayes}.   The  set  of  pixels
+associated to neuron $X_t^i$ is the union of the neurites and the soma
+associated  with $i$, $  U_i^t =  \{u \in  U_n^t |  J_t(u) =  i\} \cup
+s_t^i$. To reduce  the neurite segmentation to a  tree, we skeletonize
+the neuron and  define as root node the pixel  of the skeleton closest
+to the centroid of the nucleus. We instantiate a Minimum Spanning Tree
+from the  root and create a  neurite tree every time the  the spanning tree
+exits the soma.
+
+%----------------------------------------------------------------------------
+\begin{figure}[!b]
+  \begin{center}
+       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c@{\hspace{1mm}}c}
+        \includegraphics[width = 0.32\textwidth] {images/SomataDetected.png} & \includegraphics[width = 0.32\textwidth] {images/SomataTracked.png} & \includegraphics[width = 0.32\textwidth] {images/LocalProb.png}\\ 
+	\includegraphics[width = 0.32\textwidth] {images/GeodesicDistance.png} & \includegraphics[width = 0.32\textwidth] {images/Voronoi.png} & \includegraphics[width = 0.32\textwidth] {images/KeyPoints.png}\\ 
+       \end{tabular} 
+    \caption{ \footnotesize  TODO.}
+    \label{fig:NeuritesDetection}
+  \end{center}
+\end{figure}
+%----------------------------------------------------------------------------
+
+
+\subsection{Evaluation: TODO}
 
 %======================================================
-\section{Neurites tracking}\label{sec:neuriteTrk}
+\section{Neurite Tracking and Filopodia Detection}\label{sec:neurite}
 %======================================================
+
+Neurites are tracked by applying the algorithm described in Sec~\ref{sec:tracking} using
+the centroids of the neurite trees instead of nucleus centroids, with the additional 
+constraint that edges may only exist between neurites that emanate from the same soma.
+Filopodia are detected by starting at each leaf node in a neurite and traversing the tree until a branch
+point is reached. If the distance traversed is less than a threshold $T_f$, the traversed locations
+are considered to be filopodia.
 
 
 %======================================================
