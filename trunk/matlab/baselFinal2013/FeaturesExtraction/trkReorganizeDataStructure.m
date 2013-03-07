@@ -61,12 +61,14 @@ for i = 1:length(trkNSeq)
     if ~isempty(trkNSeq{i})
         ListOfNeuritesInTrack = [];
         for j = 1:length(trkNSeq{i})
-            currentNeurite                                           = TrackedNeurites(trkNSeq{i}(j));
-            CellIdx                                                  = currentNeurite.CellIdx;
-            NeuriteIdx                                               = currentNeurite.NeuriteIdx;
-            Cells(CellIdx).NeuritesList(NeuriteIdx).isTracked        = true;
-            Cells(CellIdx).NeuritesList(NeuriteIdx).NeuriteTrackId   = NeuriteTrackId;
-            currentNeurite                                           = Cells(CellIdx).NeuritesList(NeuriteIdx);
+            currentNeurite                                  = TrackedNeurites(trkNSeq{i}(j));
+            currentNeurite.isTracked                        = true;
+            currentNeurite.NeuriteTrackId                   = NeuriteTrackId;
+            % update at the cell level
+            CellIdx                                         = currentNeurite.CellIdx;
+            NeuriteIdx                                      = currentNeurite.NeuriteIdx;
+            Cells(CellIdx).NeuritesList(NeuriteIdx)         = currentNeurite;
+            % done
             ListOfNeuritesInTrack = [ListOfNeuritesInTrack, currentNeurite];%#ok
             if j ==1
                 CellTrackIdx                                             = currentNeurite.CellTrackId;
