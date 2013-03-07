@@ -1,7 +1,7 @@
-function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, TEMPORAL_WINDOWS_SIZE)
+function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, TEMPORAL_WINDOWS_SIZE)
 
 % extracting neurites
-[Neurites NeuritesList]  = getNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD);
+[Neurites NeuritesList]  = getNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD);
 
 % make and adjacency matrix of neurites
 A = make_adjacency(NeuritesList, Neurites, TEMPORAL_WINDOWS_SIZE);
@@ -22,7 +22,7 @@ T = trkGreedyConnect2(W,A,Neurites,W_THRESH);
 
 % assign NeuriteTrack ID's to each neurite
 for n = 1:length(Neurites)
-    Neurites(n).NeuriteTrack = ntracks(n);
+    Neurites(n).NeuriteTrackId = ntracks(n);
 end
 
 TrackedNeurites      = Neurites;
@@ -34,11 +34,10 @@ TrackedNeuritesList  = NeuritesList;
 end
 
 %% =========================================================================
-function [Neurites NeuritesList] = getNeurites(Green_Original, Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD)
+function [Neurites NeuritesList] = getNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD)
 
 NeuritesList = cell(size(CellsList));
 Neurites     = [];
-sz           = size(Green_Original{1});
 
 count = 1;
 
@@ -47,23 +46,6 @@ for i =1:length(Cells)
         for j =1:length(Cells(i).NeuritesList)
             if Cells(i).NeuritesList(j).TotalCableLength > NEURITE_STABILITY_LENGTH_THRESHOLD
                 currentNeurite                      = Cells(i).NeuritesList(j);
-                currentNeurite.CellTrackId          = Cells(i).ID;
-                currentNeurite.Time                 = Cells(i).Time;
-                currentNeurite.NeuriteIdx           = j;
-                currentNeurite.CellIdx              = i;
-                %
-                [r,c]                               = ind2sub(sz, currentNeurite.NeuritePixelIdxList);
-                Centroid                            = mean([c, r]);
-                currentNeurite.Centroid             = Centroid;
-                currentNeurite.MeanGreenIntensities = mean(Green_Original{currentNeurite.Time}(currentNeurite.NeuritePixelIdxList));
-                currentNeurite.CentroidOffset       = Centroid - Cells(i).NucleusCentroid;
-                
-                
-                idxSomaContact                      = currentNeurite.NeuritePixelIdxList(currentNeurite.Parents == -1);
-                if(numel(idxSomaContact) ~= 1)      keyboard; end;%#ok
-                [r, c]                              = ind2sub(sz, idxSomaContact);
-                currentNeurite.SomaContact          = [c, r];
-                %
                 Neurites                            = [Neurites currentNeurite];%#ok
                 NeuritesList{currentNeurite.Time}   = [NeuritesList{currentNeurite.Time} count];
                 count = count + 1;
@@ -106,7 +88,7 @@ for i = 1:max(tracks(:))
 
     for t = 1:length(Nlist)
         detections = Nlist{t};
-        ids = [N(detections).NeuriteTrack];
+        ids = [N(detections).NeuriteTrackId];
 
         n = detections(find(ids == i,1));
 
