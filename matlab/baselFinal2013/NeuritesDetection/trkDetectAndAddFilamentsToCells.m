@@ -58,6 +58,8 @@ GEODESIC_DISTANCE_NEURITE_THRESH = NeuriteDetectionParams.GEODESIC_DISTANCE_NEUR
 pad                              = NeuriteDetectionParams.KeyPointDetectionParam;
 ProbThresh                       = NeuriteDetectionParams.NeuriteProbabilityThreshold;
 
+sz = size(Green{1});
+
 %%
 parfor dd = 1:length(Cells)
     if Cells(dd).ID > 0
@@ -118,9 +120,25 @@ parfor dd = 1:length(Cells)
             currentTree.NumKids             = numkids;
             currentTree.NeuritePixelIdxList = listOfNeurites{j};
             currentTree                     = trkFindBranches(currentTree, size(Cells(dd).Neurites));
-            currentTree.isTracked           = false;
-            currentTree.NeuriteTrackId      = -1;
-            currentTree.Time                = t;
+            % now fill the neurite with its base informations
+            currentTree.isTracked            = false;
+            currentTree.NeuriteTrackId       = -1;
+            currentTree.Time                 = t;
+            currentTree.CellTrackId          = Cells(dd).ID;
+            currentTree.NeuriteIdx           = j;
+            currentTree.CellIdx              = dd;
+            
+            [r,c]                            = ind2sub(sz, currentTree.NeuritePixelIdxList);
+            Centroid                         = mean([c, r]);
+            currentTree.Centroid             = Centroid;
+            currentTree.MeanGreenIntensities = mean(Green{currentTree.Time}(currentTree.NeuritePixelIdxList)); %#ok
+            currentTree.CentroidOffset       = Centroid - Cells(dd).NucleusCentroid;
+            
+            idxSomaContact                   = currentTree.NeuritePixelIdxList(currentTree.Parents == -1);
+            if(numel(idxSomaContact) ~= 1)      keyboard; end;%#ok
+            [r, c]                              = ind2sub(sz, idxSomaContact);
+            currentTree.SomaContact          = [c, r];
+            %done
             filam = [filam currentTree];
         end
         Cells(dd).NumberOfNeurites          = numberOfNeurites;
