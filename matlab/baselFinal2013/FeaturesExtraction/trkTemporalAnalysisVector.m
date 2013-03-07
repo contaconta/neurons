@@ -26,8 +26,8 @@ end
 expContractVector(1) = expContractVector(2);
 if(expContractVector(1) == 1)
     timeExpanding = timeExpanding+1;
-else
-    timeContracting = timeContracting + 1;  
+elseif(expContractVector(1) == -1)
+    timeContracting = timeContracting + 1;
 end
 
 for i = 1:length(v)-1
