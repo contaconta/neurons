@@ -79,13 +79,13 @@ elseif strcmp(magnification, '20x')
     SPATIAL_WINDOWS_SIZE = 100;
 end
 
-GreedyTrackingParameters.TEMPORAL_WINDOWS_SIZE = 4;
-GreedyTrackingParameters.SPATIAL_WINDOWS_SIZE  = SPATIAL_WINDOWS_SIZE;
-GreedyTrackingParameters.MIN_TRACK_LENGTH      = 20;
-GreedyTrackingParameters.NB_BEST_TRACKS        = 40;
-GreedyTrackingParameters.WT                    = 50;
-GreedyTrackingParameters.WSH                   = 40;
-GreedyTrackingParameters.W_THRESH              = 200;
+GreedyTrackingParameters.TEMPORAL_WINDOWS_SIZE = 4; % do not touch
+GreedyTrackingParameters.SPATIAL_WINDOWS_SIZE  = SPATIAL_WINDOWS_SIZE; % do not touch
+GreedyTrackingParameters.MIN_TRACK_LENGTH      = 20; % si durrée de vie < 20, pas pris en compte
+GreedyTrackingParameters.NB_BEST_TRACKS        = 40; % on prend les 40 meilleurs tracks en fonction de l'intensité
+GreedyTrackingParameters.WT                    = 50; % do not touch
+GreedyTrackingParameters.WSH                   = 40; % do not touch
+GreedyTrackingParameters.W_THRESH              = 200; % do not touch
 
 tic
 [Cells, tracks, trkSeq, timeSeq] = trkTrackCellsGreedy(CellsList, Cells, GreedyTrackingParameters);%#ok
@@ -106,14 +106,14 @@ elseif strcmp(magnification, '20x')
 else
     error(['Resolution should be wither 10x or 20x but it is ' magnification]);
 end
-FrangiOpt.FrangiScaleRatio = 1;
-FrangiOpt.FrangiBetaOne = .5;
-FrangiOpt.FrangiBetaTwo = 15;
+FrangiOpt.FrangiScaleRatio = 1; % do not touch
+FrangiOpt.FrangiBetaOne = .5; % do not touch
+FrangiOpt.FrangiBetaTwo = 15; % do not touch
 FrangiOpt.BlackWhite = false;
 FrangiOpt.verbose = false;
 
-NeuriteDetectionParams.GEODESIC_DISTANCE_NEURITE_THRESH = 0.0001;
-NeuriteDetectionParams.KeyPointDetectionParam           = 5;
+NeuriteDetectionParams.GEODESIC_DISTANCE_NEURITE_THRESH = 0.0001; % do not touch
+NeuriteDetectionParams.KeyPointDetectionParam           = 5; % do not touch
 %%%%%%%%%%% This is the neurites detection parameter %%%%%%%%%%
 %%%%%%%%%%% It should take values between 0 and 1 strictly.
 NeuriteDetectionParams.NeuriteProbabilityThreshold      = 0.2;
@@ -126,14 +126,14 @@ toc
 %% track neurites
 disp('...tracking neurites');
 if strcmp(magnification, '10x')
-    NEURITE_STABILITY_LENGTH_THRESHOLD = 30;
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 30; % do not touch
 elseif strcmp(magnification, '20x')
-    NEURITE_STABILITY_LENGTH_THRESHOLD = 60;
+    NEURITE_STABILITY_LENGTH_THRESHOLD = 60; % do not touch
 end
 
 NeuriteTrackingParams.NEURITE_STABILITY_LENGTH_THRESHOLD = NEURITE_STABILITY_LENGTH_THRESHOLD;
 NeuriteTrackingParams.W_THRESH                           = 800;
-NeuriteTrackingParams.MIN_TRACK_LENGTH                   = 10;
+NeuriteTrackingParams.MIN_TRACK_LENGTH                   = 10; % do not touch
 
 tic
 [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, timeSeq, NeuriteTrackingParams);
