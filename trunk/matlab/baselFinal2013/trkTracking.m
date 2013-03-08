@@ -131,11 +131,12 @@ elseif strcmp(magnification, '20x')
     NEURITE_STABILITY_LENGTH_THRESHOLD = 60;
 end
 
-W_THRESH = 400;
-MIN_TRACK_LENGTH = 10;
+NeuriteTrackingParams.NEURITE_STABILITY_LENGTH_THRESHOLD = NEURITE_STABILITY_LENGTH_THRESHOLD;
+NeuriteTrackingParams.W_THRESH                           = 800;
+NeuriteTrackingParams.MIN_TRACK_LENGTH                   = 10;
 
 tic
-[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, GreedyTrackingParameters.TEMPORAL_WINDOWS_SIZE);
+[TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, timeSeq, NeuriteTrackingParams);
 toc
 
 %% render results on the video
