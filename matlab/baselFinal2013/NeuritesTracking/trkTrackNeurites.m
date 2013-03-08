@@ -1,10 +1,15 @@
-function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD, W_THRESH, MIN_TRACK_LENGTH, TEMPORAL_WINDOWS_SIZE)
+function [TrackedNeurites, TrackedNeuritesList, trkNSeq, timeNSeq] = trkTrackNeurites(Cells, CellsList, timeSeq, NeuriteTrackingParams)
+
+
+NEURITE_STABILITY_LENGTH_THRESHOLD = NeuriteTrackingParams.NEURITE_STABILITY_LENGTH_THRESHOLD;
+W_THRESH                           = NeuriteTrackingParams.W_THRESH;
+MIN_TRACK_LENGTH                   = NeuriteTrackingParams.MIN_TRACK_LENGTH;
 
 % extracting neurites
 [Neurites NeuritesList]  = getNeurites(Cells, CellsList, NEURITE_STABILITY_LENGTH_THRESHOLD);
 
 % make and adjacency matrix of neurites
-A = make_adjacency(NeuritesList, Neurites, TEMPORAL_WINDOWS_SIZE);
+A = make_adjacency(NeuritesList, Neurites, timeSeq);
 
 % fill out all the distances in the adjacency matrix
 edges = find(A == 1);
@@ -57,18 +62,20 @@ end
 end
 
 %% =========================================================================
-function A = make_adjacency(NeuritesList, Neurites, TEMPORTAL_WINDOW_SIZE)
+function A = make_adjacency(NeuritesList, Neurites, timeSeq)
 Ndetection = length(Neurites);
 A = zeros(Ndetection);
 for t = 2:length(NeuritesList)
     for d = 1:length(NeuritesList{t})
         n_i         = NeuritesList{t}(d);              % neurite index
         nuc_i       = Neurites(n_i).CellTrackId;       % neurite's nucleus track
-        
-        min_t = max(1, t-TEMPORTAL_WINDOW_SIZE);
-        for p = min_t:t-1
-            for dp = 1:length(NeuritesList{p})
-                n_p     = NeuritesList{p}(dp);             % past neurite index
+        time_i      = Neurites(n_i).Time;              % neurite frame time
+        indexOfNextTime = find(timeSeq{nuc_i} == time_i);
+        if(indexOfNextTime > 1)
+            indexOfPreviousTime = indexOfNextTime - 1;
+            time_j              = timeSeq{nuc_i}(indexOfPreviousTime);
+            for dp = 1:length(NeuritesList{time_j})
+                n_p     = NeuritesList{time_j}(dp);    % past neurite index
                 nuc_p   = Neurites(n_p).CellTrackId;   % past neurite's nucleus
                 if (nuc_i == nuc_p)
                     A(n_i, n_p) = 1;
