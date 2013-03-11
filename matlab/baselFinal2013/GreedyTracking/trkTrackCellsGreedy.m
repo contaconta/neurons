@@ -34,11 +34,12 @@ for k = 1:max(tracks)
     end
 end
 utracks = unique(tracks);
-for i = 2:length(utracks)
-    tracks(tracks == utracks(i)) = i-1;
+utracks = setdiff(utracks, 0);
+for i = 1:length(utracks)
+    tracks(tracks == utracks(i)) = i;
 end
 
-scoreTracks = zeros(1, length(utracks)-1);
+scoreTracks = zeros(1, length(utracks));
 for i=1:length(scoreTracks)
     
     list_idx = find(tracks == i);
