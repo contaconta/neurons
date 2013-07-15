@@ -1,7 +1,7 @@
 clear all; close all; clc;
 addpath('../');
 %%
-RootDirectorySelectionMovies = '/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection20x/';
+RootDirectorySelectionMovies = '/Users/feth/Documents/Work/Data/Sinergia/Olivier/Selection10x/';
 AA = dir(RootDirectorySelectionMovies);
 inc = 1;
 for i =1:length(AA)
