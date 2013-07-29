@@ -1,0 +1,10 @@
+For the sake of reproducibility, an AWS(*) has been allocated for the neurite evaluation.
+To connect to the AWS(*) server, you first need to get the private key connection file.
+The get the key connection file, please contact F. Benmansour, at fethallah@gmail.com
+
+The file name is : NeuritesEvaluation.pem
+to connect to the server:
+>> chmod 400 NeuriteEvaluation.pem
+>> ssh -i NeuritesEvaluation.pem ubuntu@ec2-54-213-92-172.us-west-2.compute.amazonaws.com
+
+(*) Amazon Web Service
