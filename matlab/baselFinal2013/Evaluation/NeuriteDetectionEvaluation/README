@@ -23,30 +23,41 @@ These images have been preprocessed using Oriented Flux filtering and organised 
 * The preprocessed images are stored at:
 /Google Drive/Sinergia/GT10x/StaticNeurites/%03d/ with d = 1 to 27
 
-* Biologists from Pertz's Lab (namely, Francesca, Guillaume and Andrea) have been asked to annotate the neurites. The neurites have been saved in SWC format at the same location, at:
+* Biologists from Pertz's Lab (namely, Andrea , Francesca and Guillaume) have been asked to annotate the neurites. The neurites have been saved in SWC format at the same location, at:
 /Google Drive/Sinergia/GT10x/StaticNeurites/%03d/ with d = 1 to 27
 
-If an image directory does not contain SWC files, then the associated image does not contain neurites.
+Remark: If an image directory does not contain SWC files, then the associated image does not contain neurites.
 
 ==================================================
 Evaluation Methodology
 ==================================================
 Comparing a detected tree (or set of trees) against a ground truth tree is not an easy task.
-Besides the "Diadem Metric" tentative, and the recently published "NetMets metric", there is no consensus on tree or network evaluation. We choose the NetMets metric since the obtained scores are intuitive, providing False Positive Ratios(FPR) and False Negative Ratios(FNR) for both the geometry and the connectivity of the trees.
+Besides the "Diadem Metric" tentative, and the recently published "NetMets metric", there is no consensus on trees or networks evaluation. We choose the NetMets metric since the obtained scores are intuitive, providing False Positive Ratios(FPR) and False Negative Ratios(FNR) for both the geometry and the connectivity of the trees.
 
 The paper describing the NetMets metric and the associated source code are available at:
 http://davidmayerich.com/software-NetMets.html
 
-The NetMets binary takes as input SWC files or "Alias/Wavefront OBJ" file format. Since an image may contain multiple neurite trees (and hence multiple SWC files), it is more convenient to merge all the SWC files into a single OBJ file. That avoids the tree association problem.
+The NetMets binary takes as input SWC files or "Alias/Wavefront OBJ" file format. Since an image may contain multiple neurite trees (and hence multiple SWC files), it is more convenient to merge all the SWC files into a single OBJ file. That helps avoiding the tree association problem, which done by the NetMets metric.
 
-Therefore, the first step consists on simplifying the acquired ground truth trees, and merging them into single files.
+Therefore, the first step consists on simplifying the acquired ground truth trees (SWC files), and merging them into single files (OBJ file format).
 
-In addition, for a given image, the detected trees will be saved into SWC file format. Hence, the same simplification process will be applied to the detected neurite trees as well.
+In addition, for a given image, the detected trees will be saved into SWC file format. Hence, the same simplification procedure will be applied to the detected neurite trees as well.
 
-Once the GT OBJ file and the detection file are generated, one can run the NetMets Binary to obtain the scores.
-For the sake of reproducibility, an "Amazon Web Service" server has been allocated for this task. Please, read AWS_Server/README
+Once the GT and the detection OBJ files are generated, one can run the NetMets Binary to obtain the scores.
+For the sake of reproducibility, an "Amazon Web Service" (AWS) server has been allocated for this task. Please, read AWS_Server/README
 
 
 In the following, we will first describe the "SWC files to OBJ file" simplification procedure and it's associated code. Then, the detection procedure is described.
 The evaluation with the NetMets binary is then run on the AWS server on the obtained OBJ files.
-  
+
+----------------------------------------------------------
+"SWC files to OBJ file"
+----------------------------------------------------------
+Transforming the GT SWC files to a single OBJ files is done, in the matlab script "Evaluation/NeuriteDetectionEvaluation/" as follows:
+1) Transform the swc files from "World Coordinate System" to "Image Coordinate System". 
+2) down-sample the swc files
+3) merging the swc files into an OBJ file
+
+----------------------------------------------------------
+Code for detection of neurite tress from static images
+----------------------------------------------------------
