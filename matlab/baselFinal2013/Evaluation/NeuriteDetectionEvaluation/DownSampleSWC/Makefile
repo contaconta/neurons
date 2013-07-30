@@ -6,4 +6,4 @@ DEPS = SWCFileIO.h SWCTreeDownsampler.h SWCTreeSmoother.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 DownSample.exe: main.o SWCFileIO.o SWCTreeDownsampler.o SWCTreeSmoother.o
-	c++ -o main.exe main.o SWCFileIO.o SWCTreeDownsampler.o SWCTreeSmoother.o -I.  
+	c++ -o DownSample.exe main.o SWCFileIO.o SWCTreeDownsampler.o SWCTreeSmoother.o -I.  
