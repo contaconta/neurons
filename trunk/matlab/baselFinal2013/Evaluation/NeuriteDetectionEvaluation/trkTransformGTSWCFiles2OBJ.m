@@ -1,19 +1,22 @@
 clear all; close all; clc;
 %%
 
-
+%%
 isGTRescalingDone   = false;
 isGTDownSamplingDone= false;
 isGTConvertionDone  = false;
-%%
+
+%% trees toolbox needed.
+run('ThirdPartyCode/TREES1.15/start_trees.m')
+
+
+%% Define the magnification and the data directories
 Magnification = '10x';
 RawRootDataDirectory = ['/Users/feth/Google Drive/Sinergia/StaticSelection' Magnification '/'];
 GTDataDirectory      = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/StaticNeurites/'];
 ConvertedGTRootDir   = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/StaticNeurites_obj/'];
 
-if(~exist(DetectionDirectory, 'dir'))
-    mkdir(DetectionDirectory);
-end
+
 %%
 listOfGTimg = dir(GTDataDirectory);
 disp('========================================')

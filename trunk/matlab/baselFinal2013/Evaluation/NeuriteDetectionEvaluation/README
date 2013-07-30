@@ -53,6 +53,10 @@ The evaluation with the NetMets binary is then run on the AWS server on the obta
 ----------------------------------------------------------
 "SWC files to OBJ file"
 ----------------------------------------------------------
+Prerequisite: the Trees toolbox code is needed. One can download it from http://www.treestoolbox.org/download.html
+and uncompress it in the ThirdPartyCode directory
+Used version is TREES1.15
+
 Transforming the GT SWC files to a single OBJ files is done, in the matlab script "Evaluation/NeuriteDetectionEvaluation/" as follows:
 1) Transform the swc files from "World Coordinate System" to "Image Coordinate System". 
 2) down-sample the swc files
