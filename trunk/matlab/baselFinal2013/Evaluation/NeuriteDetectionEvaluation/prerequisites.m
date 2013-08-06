@@ -6,28 +6,28 @@ if isempty( strfind(path, [pwd '/ConvertSWCFilesToOBJ/']) )
     addpath([pwd '/ConvertSWCFilesToOBJ/']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/IO']) )
-    addpath([pwd '/../../../baselFinal/IO']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/IO']) )
+    addpath([pwd '/../../baselFinal2013/IO']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/frangi_filter_version2a']) )
-    addpath([pwd '/../../../baselFinal/frangi_filter_version2a']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/frangi_filter_version2a']) )
+    addpath([pwd '/../../baselFinal2013/frangi_filter_version2a']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/gaimc']) )
-    addpath([pwd '/../../../baselFinal/gaimc']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/gaimc']) )
+    addpath([pwd '/../../baselFinal2013/gaimc']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/Geodesics']) )
-    addpath([pwd '/../../../baselFinal/Geodesics']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/Geodesics']) )
+    addpath([pwd '/../../baselFinal2013/Geodesics']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/ksp']) )
-    addpath([pwd '/../../../baselFinal/ksp']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/ksp']) )
+    addpath([pwd '/../../baselFinal2013/ksp']);
 end
 
-if isempty( strfind(path, [pwd '/../../../baselFinal/fpeak']) )
-    addpath([pwd '/../../../baselFinal/fpeak']);
+if isempty( strfind(path, [pwd '/../../baselFinal2013/fpeak']) )
+    addpath([pwd '/../../baselFinal2013/fpeak']);
 end
 
 run('../../vlfeat-0.9.16/toolbox/vl_setup');
