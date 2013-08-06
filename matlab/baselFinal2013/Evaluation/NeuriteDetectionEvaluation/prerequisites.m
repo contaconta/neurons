@@ -1,6 +1,4 @@
-if isempty( strfind(path, [pwd '/../../']) )
-    addpath(addpath(genpath([pwd '/../../'])));
-end
+addpath(addpath(genpath([pwd '/../../'])));
 
 if isempty( strfind(path, [pwd '/ConvertSWCFilesToOBJ/']) )
     addpath([pwd '/ConvertSWCFilesToOBJ/']);
