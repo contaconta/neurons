@@ -1,6 +1,6 @@
 function mv = loadMovie(Gfolder)
 
-
+fprintf('loading movie from %s\n', Gfolder);
 Gfiles = dir([Gfolder '*.TIF']);
 IntensityAjustmentGreen.MED = 2537;
 IntensityAjustmentGreen.STD = 28.9134;
