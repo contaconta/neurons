@@ -22,7 +22,7 @@ function varargout = annotation_tool(varargin)
 
 % Edit the above text to modify the response to help annotation_tool
 
-% Last Modified by GUIDE v2.5 05-Aug-2013 00:52:17
+% Last Modified by GUIDE v2.5 05-Aug-2013 19:26:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -391,6 +391,8 @@ set(handles.slider_GT,'sliderstep',sliderstep, 'max', GTid,'min',min_GTid);
 str = sprintf('GT %d/%d', GTid, max_GTid);
 set(handles.txt_GT, 'String', str);
 
+handles = show_current_image(handles);
+handles = updateAxes2(handles);
 guidata(hObject, handles);
 
 
@@ -574,6 +576,39 @@ GT = handles.GT;
 fprintf('saving GT to %s\n', handles.gt_filename);
 save(handles.gt_filename, 'GT');
 
+
+% --- Executes on button press in button_RemoveGT.
+function button_RemoveGT_Callback(hObject, eventdata, handles)
+% hObject    handle to button_RemoveGT (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+GTid = get(handles.slider_GT, 'Value');
+
+
+
+handles.GT(GTid) = [];
+
+max_GTid = get(handles.slider_GT, 'Max');
+min_GTid = get(handles.slider_GT, 'Min');
+new_max_GTid = max_GTid -1;
+set(handles.slider_GT, 'Max', new_max_GTid);
+fprintf('removed GTid = %d\n', GTid);
+
+if GTid > new_max_GTid
+    GTid = new_max_GTid;
+end
+
+set(handles.slider_GT, 'Value', GTid);
+sliderstep(1) = 1/(max_GTid - min_GTid); sliderstep(2) = sliderstep(1);
+set(handles.slider_GT,'sliderstep',sliderstep, 'max', GTid,'min',min_GTid);
+
+str = sprintf('GT %d/%d', GTid, new_max_GTid);
+set(handles.txt_GT, 'String', str);
+
+handles = show_current_image(handles);
+handles = updateAxes2(handles);
+guidata(hObject, handles);
 
 
 
