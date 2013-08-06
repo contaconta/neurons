@@ -6,6 +6,10 @@ if isempty( strfind(path, [pwd '/ConvertSWCFilesToOBJ/']) )
     addpath([pwd '/ConvertSWCFilesToOBJ/']);
 end
 
+if isempty( strfind(path, [pwd '/../../../baselFinal/IO']) )
+    addpath([pwd '/../../../baselFinal/IO']);
+end
+
 if isempty( strfind(path, [pwd '/../../../baselFinal/frangi_filter_version2a']) )
     addpath([pwd '/../../../baselFinal/frangi_filter_version2a']);
 end
