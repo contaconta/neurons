@@ -58,10 +58,16 @@ and uncompress it in the ThirdPartyCode directory
 Used version is TREES1.15
 
 Transforming the GT SWC files to a single OBJ files is done, in the matlab script "Evaluation/NeuriteDetectionEvaluation/" as follows:
-1) Transform the swc files from "World Coordinate System" to "Image Coordinate System". 
-2) down-sample the swc files
-3) merging the swc files into an OBJ file
+1) Transform the swc files from "World Coordinate System" to "Image Coordinate System": rescaleSWCFilesDir.m
+2) down-sample the swc files: DownSampleSWCFilesDir
+3) merging the swc files into an OBJ file: convertSWCDir2Obj
 
 ----------------------------------------------------------
 Code for detection of neurite tress from static images
 ----------------------------------------------------------
+ToDo: The neurite detection should be done on the whole sequence
+Same for the cell body detections.
+
+-- Do the code
+
+-- Talk with Riwal. 

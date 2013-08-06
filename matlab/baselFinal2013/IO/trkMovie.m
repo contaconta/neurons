@@ -28,7 +28,7 @@ A = imread([resultsFolder filename '.png']);
 imwrite(A, [resultsFolder filename '.jpg']);
 
 if rmFileFlag
-	cmd = ['rm *.png']; 
+	cmd = 'rm *.png'; 
     system(cmd);
 end
 
