@@ -1,4 +1,4 @@
-
+% 
 % seq         = '001';
 % est_folder  = '/home/ksmith/data/sinergia_evaluation/Detections10x/';
 % gt_folder   = '/home/ksmith/data/sinergia_evaluation/annotations/';
@@ -26,10 +26,16 @@
 % 
 
 
-figure; hold on;
+figure('Position', [1926 446 1044 780+135]); hold on; 
+% set(gcf, 'Position', [1926 446 round(696*1.5) round(520*1.5)]);
 axis([0 C 0 R]);
-coverage_threshold = .33;
+imagesc(mv{1});
+% pos = get(gcf, 'Position');
+% set(gcf, 'Position', [pos(1) pos(2) round(1.5 * [696 520])]);
+% keyboard;
 
+
+coverage_threshold = .33;
 FPcount = 0;
 FNcount = 0;
 MTcount = 0;
@@ -37,9 +43,11 @@ MOcount = 0;
 OKGTcount = 0;
 OKESTcount = 0;
 GTperT  = zeros(Tmax,1);
+newmv = {};
 
 for t = 1:Tmax
     cla; gtp = []; estp = [];
+    set(gca, 'Position', [0 0 1 1]);
     
     % make the configuration map
     coverage_raw = zeros(numel(EST), numel(GT));
@@ -57,7 +65,7 @@ for t = 1:Tmax
     
     % show the image
     imagesc(mv{t});
-    set(gca, 'Position', [0 0 1 1]);
+    
     
     
     % determine status of each ground truth
@@ -79,16 +87,16 @@ for t = 1:Tmax
             switch GT(i).P(t).status
                 case 'FN'
                     gtp(i) = patch(GT(i).P(t).x, GT(i).P(t).y, 1, 'FaceColor', [1 0 0], 'FaceAlpha', .5, 'EdgeColor', [0 0 0], 'EdgeAlpha', .5);
-                    str = sprintf('gt%d (FN)',i);
-                    text(GT(i).P(t).x(1), GT(i).P(t).y(1)-10, str, 'Color', [1 0 0]);
+                    str = sprintf('%dgt FN',i);
+                    text(max(GT(i).P(t).x)+5, min(GT(i).P(t).y(1)), str, 'Color', [1 0 0]);
                 case 'OK'
                     gtp(i) = patch(GT(i).P(t).x, GT(i).P(t).y, 1, 'FaceColor', [.5 .5 .5], 'FaceAlpha', .5, 'EdgeColor', [0 0 0], 'EdgeAlpha', .5);
-                    str = sprintf('gt%d',i);
-                    text(GT(i).P(t).x(1), GT(i).P(t).y(1)-10, str);
+                    str = sprintf('%dgt',i);
+                    text(max(GT(i).P(t).x)+5, min(GT(i).P(t).y(1)), str);
                 case 'MT'
                     gtp(i) = patch(GT(i).P(t).x, GT(i).P(t).y, 1, 'FaceColor', [1 0 0], 'FaceAlpha', .5, 'EdgeColor', [0 0 0], 'EdgeAlpha', .5);
-                    str = sprintf('gt%d (MT)',i);
-                    text(GT(i).P(t).x(1), GT(i).P(t).y(1)-10, str, 'Color', [1 0 0]);
+                    str = sprintf('%dgt MT',i);
+                    text(max(GT(i).P(t).x)+5, min(GT(i).P(t).y(1)), str, 'Color', [1 0 0]);
             end
         else
             GT(i).P(t).status = [];
@@ -113,16 +121,16 @@ for t = 1:Tmax
             switch EST(i).P(t).status
                 case 'FP'
                     estp(i) = patch(EST(i).P(t).x, EST(i).P(t).y, 1, 'FaceColor', [1 0 1], 'FaceAlpha', .5, 'EdgeColor', 'none');
-                    str = sprintf('est%d (FP)',i);
-                    text(EST(i).P(t).x(1), EST(i).P(t).y(1)+10, str,'Color', [1 0 1]);
+                    str = sprintf('%dest FP',i);
+                    text(max(EST(i).P(t).x)+5, max(EST(i).P(t).y-5), str,'Color', [1 0 1]);
                 case 'OK'
                     estp(i) = patch(EST(i).P(t).x, EST(i).P(t).y, 1, 'FaceColor', [0 0 1], 'FaceAlpha', .5, 'EdgeColor', 'none');
-                    str = sprintf('est%d',i);
-                    text(EST(i).P(t).x(1), EST(i).P(t).y(1)+10, str);
+                    str = sprintf('%dest',i);
+                    text(max(EST(i).P(t).x)+5, max(EST(i).P(t).y)-5, str, 'Color', [.3 .3 1]);
                 case 'MO'
                     estp(i) = patch(EST(i).P(t).x, EST(i).P(t).y, 1, 'FaceColor', [1 0 1], 'FaceAlpha', .5, 'EdgeColor', 'none');
-                    str = sprintf('est%d (MO)',i);
-                    text(EST(i).P(t).x(1), EST(i).P(t).y(1)+10, str,'Color', [1 0 1]);
+                    str = sprintf('%dest MO',i);
+                    text(max(EST(i).P(t).x)+5, max(EST(i).P(t).y-5), str,'Color', [1 0 1]);
             end
             
             
@@ -131,8 +139,27 @@ for t = 1:Tmax
         end
     end
     
+    
+    % display the current error count
+    text(10, 10, sprintf('%04d  Correct', OKGTcount));
+    text(10, 20, sprintf('%04d  FP', FPcount));
+    text(10, 30, sprintf('%04d  FN', FNcount));
+    text(10, 40, sprintf('%04d  MT', MTcount));
+    text(10, 50, sprintf('%04d  MO', MOcount));
+    
+    
+    
+    
+    pause(.1);
+    refresh;
     drawnow;
     pause(0.1);
+
+    
+    set(gcf, 'Position', [1937 262 696 520]);
+    F = getframe(gcf);
+    I = F.cdata;
+    newmv{t} = I;
 end
 
 
@@ -145,6 +172,15 @@ error_rate = (FNcount + FPcount + MTcount + MOcount) / (FNcount + FPcount + MTco
 % fprintf('EST_error_rate = %1.3f   %d FN  %d MT  %d OK\n', ESTerror_rate, FPcount, MOcount, OKESTcount);
 
 fprintf('error_rate = %1.3f   %d FN  %d FP  %d MT  %d MO  %d OK\n', error_rate, FNcount, FPcount, MTcount, MOcount, OKGTcount+OKESTcount);
+
+
+
+
+outputFolder = '/home/ksmith/data/sinergia_evaluation/output/';
+movfile = sprintf('eval%03d', seq);
+trkMovie(newmv, outputFolder, outputFolder, movfile); fprintf('\n');
+fprintf('wrote to %s%s.mp4\n', outputFolder,movfile);
+
 
 
 % maxGT = max(GTperT);

@@ -4,7 +4,9 @@ function S = convert_GT_to_S(GT)
 % clockwise vertices, start point = end point
 Tmax = size(GT{1},1);
 num_tracks_GT = numel(GT);
+fprintf('converting GT to S');
 for i = 1:num_tracks_GT
+    fprintf('.');
     for t = 1:Tmax
         cmin = GT{i}(t,1);
         rmin = GT{i}(t,2);
@@ -20,3 +22,4 @@ for i = 1:num_tracks_GT
         end
     end
 end
+fprintf('\n');

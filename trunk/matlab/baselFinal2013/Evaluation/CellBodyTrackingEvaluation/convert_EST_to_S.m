@@ -6,8 +6,11 @@ R           = 520;
 % clockwise vertices, start point = end point
 Tmax = 97;
 num_tracks = numel(EST.TrackedCells);
+fprintf('converting EST to S');
+
 
 for i = 1:num_tracks
+    fprintf('.');
     
     tList = [EST.TrackedCells(i).TimeStep(:).Time];
     for t = 1:Tmax
@@ -38,5 +41,5 @@ for i = 1:num_tracks
         end
     end
 end
-
+fprintf('\n');
 
