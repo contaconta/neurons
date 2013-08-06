@@ -18,7 +18,11 @@ while ischar(tline)
     disp(tline)
     C = textscan(tline, '%s \t %d %d');
     directoryName = [C{1}{1} num2str(C{2}) '/'];
-    trkTracking(directoryName, OutputFolder, num2str(i), 'Eval', Magnification);
+    try
+        trkTracking(directoryName, OutputFolder, num2str(i), 'Eval', Magnification);
+    catch err
+        disp(err);
+    end
     tline = fgets(fid);
     i = i + 1;
 end
