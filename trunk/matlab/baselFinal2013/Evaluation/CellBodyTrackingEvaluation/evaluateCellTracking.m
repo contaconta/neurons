@@ -3,7 +3,7 @@ function evaluateCellTracking(seq_num)
 
 seq         = sprintf('%03d', seq_num);  %'001';
 est_folder  = '/home/ksmith/data/sinergia_evaluation/Detections10x/';
-gt_folder   = '/home/ksmith/data/sinergia_evaluation/annotations/';
+gt_folder   = '/home/ksmith/data/sinergia_evaluation/annotations/somatool/';
 C           = 696;
 R           = 520;
 Tmax        = 97;
@@ -157,7 +157,7 @@ for t = 1:Tmax
                 % not the tracker we want
                 switch EST(i).P(t).status
                     case 'OK'
-                        EST(ind).P(t).status = 'FI';
+                        EST(i).P(t).status = 'FI';
                         FIcount(t) = FIcount(t) + 1;
                     otherwise
                         % do nothing
@@ -273,7 +273,9 @@ end
 
 
 
-
+filename = sprintf('%sannotation%s.mat', '/home/ksmith/data/sinergia_evaluation/annotations/celltracking/', seq);
+fprintf('saving %s\n', filename);
+save(filename, 'GT', 'EST', 'FNcount', 'FPcount', 'MTcount', 'MOcount', 'FIcount', 'OKGTcount', 'OKESTcount');
 
 
 error_rate = sum(FNcount + FPcount + MTcount + MOcount + FIcount) / sum(FNcount + FPcount + MTcount + MOcount + OKGTcount + OKESTcount + FIcount);

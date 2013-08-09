@@ -144,7 +144,7 @@ set(handles.slider_TR,'sliderstep',sliderstep, 'max', TRmax,'min', TRmin,'Value'
 
 
 % load the GT data / or generate from TR
-gt_folder = '/home/ksmith/data/sinergia_evaluation/annotations/';
+gt_folder = '/home/ksmith/data/sinergia_evaluation/annotations/somatool/';
 handles.gt_filename = sprintf('%s%s.mat', gt_folder,handles.seq);
 if exist(handles.gt_filename, 'file');
     fprintf('loading GT from %s\n', handles.gt_filename);
@@ -541,9 +541,18 @@ function button_GTadd_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 t = round(get(handles.tslider,'Value'));
+Tmax = get(handles.tslider, 'Max');
 GTid = get(handles.slider_GT, 'Value');
 R = size(handles.I,1); C = size(handles.I,2);
-rect = [C/2 R/2 50 50];
+tdist = abs((1:Tmax) - t);
+empty_GT = handles.GT{GTid}(:,1) == 0;
+tdist(empty_GT) = Inf;
+[val,ind] = min(tdist); %#ok<ASGLU>
+if handles.GT{GTid}(ind,1) ~= 0
+    rect = handles.GT{GTid}(ind,:);
+else
+    rect = [C/2 R/2 50 50];
+end
 handles.GT{GTid}(t,:) = rect;
 handles = show_current_image(handles);
 handles = updateAxes2(handles);
