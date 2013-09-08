@@ -86,7 +86,7 @@ system(['cp ' outputSelectionfile ' ' OutputRootDirectory]);
 FID = fopen([OutputRootDirectory outputSelectionfile]);
 C = textscan(FID, '%s %d %d');
 fclose(FID);
-
+%%
 for i = 1:length(C{1})
     plateDirName = C{1}(i);
     plateDirName = plateDirName{1};
