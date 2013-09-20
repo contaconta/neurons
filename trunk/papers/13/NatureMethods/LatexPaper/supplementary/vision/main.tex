@@ -349,6 +349,16 @@ A set of instructions was given to 3 different experts to annotate the data:
 
 Three sequences have been randomly selected from our dataset dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
 
+
+A detected object, either a nucleus or a soma, is considered positive if there exist a ground truth object (of the same kind) overlapping sufficiently with it.  More formally, a detection $d$ is considered as a positive detection if there exist a ground truth object $g$ such that $\displaystyle \frac{g\cap d}{g\cup d} > 80\%$.
+
+
+On our ground truth dataset, and over the 3 annotated sequences, only 28 nuclei have not been detected,  representing {\bf{1.3\%}} of miss detections.
+%\begin{itemize}
+%\item On the 10x dataset, and over the 3 annotated sequences, only 28 nuclei have not been detected. That represents {\bf{1.3\%}} of miss detections.
+%\item On the 20x dataset,  and over the 12 annotated sequences, 101 nuclei have not been detected. That represents {\bf{2.14\%}} of miss detections.
+%\end{itemize}
+
 %\begin{itemize}
 %\item 12 sequences have been randomly selected from the \texttt{20x} dataset. From these sequences, 79 cells have been tracked, representing 4709 annotated nuclei and somata.
 %\item 3 sequences have been randomly selected from the \texttt{10x} dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
