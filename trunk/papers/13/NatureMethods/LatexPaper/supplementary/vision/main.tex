@@ -68,53 +68,6 @@ $i$  at time step $t$ is described by $X_t^i = \{ c_t^i, s_t^i, N_t^i \}$.
 %%         neuron from the nucleus seed
 %----------------------------------------------------------------------------
 
-
-
-%%----------------------------------------------------------------------------
-%\subsection{Ground truth}
-%%----------------------------------------------------------------------------
-%In order to evaluate our automatic algorithm, we manually annotated cell bodies and neurites using appropriate tools as described hereinafter.
-%We clearly distinguished between two annotation tasks: 
-%\begin{itemize}
-%\item segmentation and tracking of nuclei and somata from dynamic sequences,
-%\item segmentation of neurite trees from static images.
-%\end{itemize}
-%We clearly made this distinction because we could not find an appropriate semi-automatic or manual software for tracking the neurites. Therefore, even if our automatic pipeline is able to track neurites, only the quality of neurite trees at a given time frame will we assessed.
-%
-%Our computer vision pipeline have been applied to two different sets of sequences acquired using two different magnifications: \texttt{10x} and \texttt{20x}. Therefore, we made random selections from each magnification set, and conducted our evaluation on each of them independently.
-% 
-%\subsubsection{Cell body ground truth}
-%To manually segment and track nuclei and somata from dynamic sequences, we used \texttt{TrakEM2}\footnote{publicly available at \url{http://www.ini.uzh.ch/~acardona/trakem2.html}}, a plugin of FIJI / ImageJ. To ease the annotation step, the input sequences have been encoded in a single multipage tiff file for each channel, and an xml file have been generated for each sequence to encode the segmentation and tracking data structure (see supplemental material).
-%\begin{itemize}
-%\item 12 sequences have been randomly selected from the \texttt{20x} dataset. From these sequences, 79 cells have been tracked, representing 4709 annotated nuclei and somata.
-%\item 3 sequences have been randomly selected from the \texttt{10x} dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
-%\end{itemize}
-%
-%
-%\subsubsection{Neurite ground truth}
-%To segment neurite trees from static images, we used an improved version of the Simple Neurite Tracer (SNT) plugin. The SNT plugin\footnote{\url{http://fiji.sc/wiki/index.php/Simple_Neurite_Tracer}}, a FIJI plugin, is a semi-automatic tool meant to reduce user' interaction for neuronal tree tracing . Recently, an improved version of SNT have been released \url{http://cvlab.epfl.ch/software/delin/index.php}, allowing a better description of the neurite branches, including their width estimate and more accurate centeline extraction as shown in figure~\ref{fig:annotations}.
-%
-%Similarly to the dynamic dataset, we randomly selected images from the two different magnification sets, and annotated all visible neurite trees:
-%\begin{itemize}
-%\item 30 images from the 20x dataset have been randomly selected. 223 neurite trees or neurite branches have been annotated.
-%\item 27 images from the 10x dataset have been randomly selected. 257 neurite trees or neurite branches have been annotated.
-%\end{itemize}
-%
-%Filopodia have been annotated only on images from the 20x dataset.
-%%----------------------------------------------------------------------------
-%\begin{figure}[!t]
-%  \begin{center}
-%       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c}
-%        \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example.png} & \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example2.png}\\
-%                \includegraphics[width = 0.5\textwidth] {images/SNT_015_Or.png} & \includegraphics[width = 0.5\textwidth] {images/SNT_015_Seg.png}\\ 
-%       \end{tabular} 
-%    \caption{ \footnotesize  Ground truth annotation. First row, neuron tracking annotation using the \texttt{TrakEM2} plugin. Two different time frames are displayed. 
-%    Second row, Neurite trees annotation using the Simple Neurite Tracer plugin. On the left, the original image, and on the right the manual annotation overlaid on the image.}
-%    \label{fig:annotations}
-%  \end{center}
-%\end{figure}
-%%----------------------------------------------------------------------------
-
 %======================================================
 \section{Neuron segmentation and tracking}\label{sec:neuronSeg}
 %======================================================
@@ -146,11 +99,11 @@ The somata segmentations are finally obtained by thresholding both $\mathcal{U}$
 %----------------------------------------------------------------------------
 \begin{figure}[!b]
   \begin{center}
-       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c@{\hspace{1mm}}c}
-        \includegraphics[width = 0.32\textwidth] {images/OriginalRed.png} & \includegraphics[width = 0.32\textwidth] {images/NucleiGTRed.png} & \includegraphics[width = 0.32\textwidth] {images/NucleiDetectionRed.png}\\ 
-	\includegraphics[width = 0.32\textwidth] {images/OriginalGreen.png} & \includegraphics[width = 0.32\textwidth] {images/SomataGTGreen.png} & \includegraphics[width = 0.32\textwidth] {images/SomataDetectionGreen.png}\\ 
+       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c}
+        \includegraphics[width = 0.49\textwidth] {images/OriginalRed.png} & \includegraphics[width = 0.49\textwidth] {images/NucleiDetectionRed.png}\\ 
+	\includegraphics[width = 0.49\textwidth] {images/OriginalGreen.png} & \includegraphics[width = 0.49\textwidth] {images/SomataDetectionGreen.png}\\ 
        \end{tabular} 
-    \caption{ \footnotesize  Cell body detection. On the first row, nuclei detections overlaid on top of the NLS-mCherry channel. On the second row, somata detections overlaid on top of the Lifeact-GFP channel. From left to right: the original image, the manual annotations, and the automatic detections.}
+    \caption{ \footnotesize  Cell body detection. On the first row, nuclei detections overlaid on top of the NLS-mCherry channel. On the second row, somata detections overlaid on top of the Lifeact-GFP channel. From left to right: the original image, and the automatic detections.}
     \label{fig:cellBDetection}
   \end{center}
 \end{figure}
@@ -358,7 +311,7 @@ Parameters of the neurite detection algorithm are as follows:
 
 Neurites are tracked by applying the algorithm described in Sec~\ref{sec:tracking} using
 the centroids of the neurite trees instead of nucleus centroids, with the additional 
-constraint that edges may only exist between neurites that emanate from the same soma. The weight $w_e$ of an edge connecting two neurites $N^i_t$ and $N^j_{t'}$is assigned according to spatial distance and a shape measure $w_e = w_{TCL}f(\text{TotalCableLenght}(N^i_t), \text{TotalCableLenght}(N^j_{t'})) + w_{\text{Centroid}} \|\text{Centroid}(N^i_{t}) - \text{Centroid}(N^j_{t'})\| + w_{\text{SomaContact}} \|\text{SomaContact}(N^i_{t}) - \text{SomaContact}(N^j_{t'})\|$, where $w_{TCL} = 50$, $w_{\text{Centroid}}  = 10$, $w_{\text{SomaContact}}  = 5$, $\text{TotalCableLength}(N)$ is the total cable length of a neurite $N$, $\text{Cenrtoid}(N)$ is its centroid, $\text{SomaContact}(N)$ is its contact point with the soma, and $f(a^k,a^l) =  \frac{|a^k  - a^l|}{|a^k  +  a^l|}$.
+constraint that edges may only exist between neurites that emanate from the same tracked soma and only from consecutive time detections. The weight $w_e$ of an edge connecting two neurites $N^i_t$ and $N^j_{t'}$is assigned according to spatial distance and a shape measure $w_e = w_{TCL}f(\text{TotalCableLenght}(N^i_t), \text{TotalCableLenght}(N^j_{t'})) + w_{\text{Centroid}} \|\text{Centroid}(N^i_{t}) - \text{Centroid}(N^j_{t'})\| + w_{\text{SomaContact}} \|\text{SomaContact}(N^i_{t}) - \text{SomaContact}(N^j_{t'})\|$, where $w_{TCL} = 50$, $w_{\text{Centroid}}  = 10$, $w_{\text{SomaContact}}  = 5$, $\text{TotalCableLength}(N)$ is the total cable length of a neurite $N$, $\text{Cenrtoid}(N)$ is its centroid, $\text{SomaContact}(N)$ is its contact point with the soma, and $f(a^k,a^l) =  \frac{|a^k  - a^l|}{|a^k  +  a^l|}$. As opposed  to the weights used for cell body tracking, the weights used here for neurites tracking do not include a temporal distance because the neurites are associated to already tracked cell bodies.
 
 During the neurite tracking stage, only neurites that are considered stable have been taken into account.
 Neurites are considered stable if their total cable length is above 30 pixels. The threshold parameter of the tracking algorithm (Algorithm 1), have been adapted to neurites by taking $T = 800$.
@@ -367,10 +320,80 @@ Neurites are considered stable if their total cable length is above 30 pixels. T
 \section{Evaluation}
 %======================================================
 
-Intro::: TODO
+The image processing pipeline, described in section \ref{sec:neuronSeg}, segments and tracks cell bodies and neurites.
+Questions one could raise to evaluate the quality of the segmentation results are:
+\begin{enumerate}
+\item What is the quality of the cell body components segmentation. More precisely, what is the quality of the nuclei and the somata segmentations. (Static evaluation)
+\item What is the quality of the cell body tracking (cell identity assignment). In other words, does the algorithm track accurately the moving cells? and is it able not to switch identities of two neighbouring moving cells? (Dynamic evaluation)
+\item Are the neurites segmented accurately? Neurite trees are complex structures, and are critical to our phenotypic study. How can we asses their quality is a crucial question to answer (Static evaluation)
+\item Are the neurites tracked properly? or a simpler question could be : how accurate is the "neurite to cell body" assignment step? (Dynamic/Static evaluation ?)
+\end{enumerate}
+
+In order to evaluate our algorithm in a fair manner, one should bear in mind that, at detection time, we made the choice not to detect and track all visible cells and neurites. For instance, a neurone that enters the field of view for a short period of time (say during 5 frames, for instance) is not kept in the final set of tracks. In addition, as described in section \ref{sec:tracking}, tracked cells are sorted according to their cumulated green intensity, and only the 20 best tracks are kept. We made this choice to favours cell body tracks that are bright with a long lifetime. This choice is also justified by the fact that the moving neurons appears with very different contrast: some are very bright and others are quite faint. Assuming that the algorithm will be able to segment and track accurately all the moving neurons is not realistic, and we preferred to focus our efforts in segmenting and tracking accurately the most robust neurons. 
+
+In order to evaluate the different critical components of our processing pipeline we need to annotate \textit{ground truth} data. If one annotates all visible moving neurones, then our segmentation results will be penalised by the objects that have been purposefully ignored by the algorithm. Hence, evaluation scores obtained using such an over complete ground truth would not reflect the quality of the segmentation and tracking results. To sumup, a special care must be made for the ground truth annotation step and for the quantitative evaluation. 
+
+In the next sections, we will describe the ground truth annotation protocol and the evaluation methodology for each of the critical  steps of our processing pipeline.
+
 %======================================================
 \subsection{Evaluating Cell body detection }
 %======================================================
+To manually segment nuclei and somata from dynamic sequences, we used \texttt{TrakEM2}\footnote{publicly available at \url{http://www.ini.uzh.ch/~acardona/trakem2.html}}, a plugin of \texttt{FIJI/ImageJ}\footnote{\url{http://fiji.sc/Fiji}}. To ease the annotation step, the input sequences have been encoded in a single multipage tiff file for each channel, and an xml file have been generated for each sequence to encode the segmentation and tracking data structure.
+
+A set of instructions was given to 3 different experts to annotate the data:
+\begin{itemize}
+\item segment and track only cell bodies that are bright and that have a long enough lifetime
+\item segment carefully the nuclei and the somata
+\item keep track of the identities of the segmented cell bodies
+\end{itemize}
+
+Three sequences have been randomly selected from our dataset dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
+
+%\begin{itemize}
+%\item 12 sequences have been randomly selected from the \texttt{20x} dataset. From these sequences, 79 cells have been tracked, representing 4709 annotated nuclei and somata.
+%\item 3 sequences have been randomly selected from the \texttt{10x} dataset. From these sequences, 29 cells have been tracked, representing 2152 annotated nuclei and somata.
+%\end{itemize}
+%%----------------------------------------------------------------------------
+%\subsection{Ground truth}
+%%----------------------------------------------------------------------------
+%In order to evaluate our automatic algorithm, we manually annotated cell bodies and neurites using appropriate tools as described hereinafter.
+%We clearly distinguished between two annotation tasks: 
+%\begin{itemize}
+%\item segmentation and tracking of nuclei and somata from dynamic sequences,
+%\item segmentation of neurite trees from static images.
+%\end{itemize}
+%We clearly made this distinction because we could not find an appropriate semi-automatic or manual software for tracking the neurites. Therefore, even if our automatic pipeline is able to track neurites, only the quality of neurite trees at a given time frame will we assessed.
+%
+%Our computer vision pipeline have been applied to two different sets of sequences acquired using two different magnifications: \texttt{10x} and \texttt{20x}. Therefore, we made random selections from each magnification set, and conducted our evaluation on each of them independently.
+% 
+%\subsubsection{Cell body ground truth}
+
+
+%
+%\subsubsection{Neurite ground truth}
+%To segment neurite trees from static images, we used an improved version of the Simple Neurite Tracer (SNT) plugin. The SNT plugin\footnote{\url{http://fiji.sc/wiki/index.php/Simple_Neurite_Tracer}}, a FIJI plugin, is a semi-automatic tool meant to reduce user' interaction for neuronal tree tracing . Recently, an improved version of SNT have been released \url{http://cvlab.epfl.ch/software/delin/index.php}, allowing a better description of the neurite branches, including their width estimate and more accurate centeline extraction as shown in figure~\ref{fig:annotations}.
+%
+%Similarly to the dynamic dataset, we randomly selected images from the two different magnification sets, and annotated all visible neurite trees:
+%\begin{itemize}
+%\item 30 images from the 20x dataset have been randomly selected. 223 neurite trees or neurite branches have been annotated.
+%\item 27 images from the 10x dataset have been randomly selected. 257 neurite trees or neurite branches have been annotated.
+%\end{itemize}
+%
+%Filopodia have been annotated only on images from the 20x dataset.
+%%----------------------------------------------------------------------------
+%\begin{figure}[!t]
+%  \begin{center}
+%       \begin{tabular}{@{\hspace{1mm}}c@{\hspace{1mm}}c}
+%        \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example.png} & \includegraphics[width = 0.5\textwidth] {images/TrakEM2_Example2.png}\\
+%                \includegraphics[width = 0.5\textwidth] {images/SNT_015_Or.png} & \includegraphics[width = 0.5\textwidth] {images/SNT_015_Seg.png}\\ 
+%       \end{tabular} 
+%    \caption{ \footnotesize  Ground truth annotation. First row, neuron tracking annotation using the \texttt{TrakEM2} plugin. Two different time frames are displayed. 
+%    Second row, Neurite trees annotation using the Simple Neurite Tracer plugin. On the left, the original image, and on the right the manual annotation overlaid on the image.}
+%    \label{fig:annotations}
+%  \end{center}
+%\end{figure}
+%%----------------------------------------------------------------------------
+
 
 %======================================================
 \subsection{Evaluating Cell body tracking}
@@ -384,6 +407,10 @@ Intro::: TODO
 \subsection{Evaluating Neurites association}
 %======================================================
 
+%======================================================
+\section{Data structure }
+%======================================================
+TODO
 
 %======================================================================
 %\bibliographystyle{naturemag}
