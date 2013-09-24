@@ -24,7 +24,7 @@
 
 \maketitle
 We developed an image processing pipeline to segments nuclei, somata and neurites and to track them from Time-Lapse High-Content Screens. In the following, we first describe the data and introduce some notations, then we give a detailed description of our processing pipeline. Finally, we describe our evaluation methodology to  assess the quality of the segmentation results.   
-%Our approach first detects nuclei and associated somata at each time step. The nucleus of each neuron is detected as a Maximally Stable Extremal Region (MSER)~\cite{Nister:2008} from the Cherry channel. Using the detected nuclei as seed points, a region-growing algorithm segments the neuron’s soma. Next, the implemented multi-objects tracking algorithm~\cite{BerclazTPAMI2011} searches through the full set of nuclei and somata detections to extract the best K-shortest paths according to a similarity measure between two detections. The proposed similarity measure is derived from the Earth Mover’s Distance~\cite{Pele-iccv2009} between the intensity histograms of the detected somata regions (in the supplementary note 3, we show that this distance provides a good tradeoff between efficiency and precision).  Neurons are detected and tracked at an accuracy of (TODO 95\%) (still waiting for the GT to be completed for number crunching); …Finally, the tracked somata are used to initialize a neurite segmentation and association algorithm based on shortest path computation and Voronoi tessellation. Comparison to manually annotated data demonstrates that …(URGENT TODO: crunch the numbers: still waiting for the GT)…
+%Our approach first detects nuclei and associated somata at each time step. The nucleus of each neuron is detected as a Maximally Stable Extremal Region (MSER)~\cite{MSER_BMVC2002} from the Cherry channel. Using the detected nuclei as seed points, a region-growing algorithm segments the neuron’s soma. Next, the implemented multi-objects tracking algorithm~\cite{BerclazTPAMI2011} searches through the full set of nuclei and somata detections to extract the best K-shortest paths according to a similarity measure between two detections. The proposed similarity measure is derived from the Earth Mover’s Distance~\cite{Pele-iccv2009} between the intensity histograms of the detected somata regions (in the supplementary note 3, we show that this distance provides a good tradeoff between efficiency and precision).  Neurons are detected and tracked at an accuracy of (TODO 95\%) (still waiting for the GT to be completed for number crunching); …Finally, the tracked somata are used to initialize a neurite segmentation and association algorithm based on shortest path computation and Voronoi tessellation. Comparison to manually annotated data demonstrates that …(URGENT TODO: crunch the numbers: still waiting for the GT)…
 %======================================================
 \section{Data description and notations}
 %======================================================
@@ -76,25 +76,63 @@ A three stage neurone segmentation and tracking approach is proposed. First, as 
 \subsection{Nuclei and Somata segmentation}\label{sec:nuc}
 %----------------------------------------------------------------------------
 The  first  step in  our  approach  is to  extract  a  set of  nucleus detections $\{d^1,\ldots,d^K\}$ over the  image series. We worked with two-channel  images where the  cytoskeleton  is marked  with Lifeact-GFP and  nuclei   are   marked   with
-NLS-mCherry. The nuclei can be reliably detected as a Maximally Stable Extremal Region (MSER)~\cite{Nister:2008} of the NLS-mCherry channel, and performing a morphological filling operation. The MSER detector finds regions that are stable over a wide range of thresholds of a gray-scale image. For that, we used the \texttt{VLFeat} implementation of MSER\footnote{publicly available at \url{http://www.vlfeat.org/}}. Default parameters of the MSER were used to segment the nuclei except the minimal and maximal size of a nuclei at the given resolution, which were fixed to 70 and 170~~\footnote{Nuclei are considered to have circular shapes with radius varying between 4 and 8 pixels}.  The main advantage of MSER compared to the thresholding approach \cite{Pertzs11} is its robustness and insensitivity to contrast change.  
+NLS-mCherry. The nuclei can be reliably detected as a Maximally Stable Extremal Region (MSER)~\cite{MSER_BMVC2002} of the NLS-mCherry channel, and performing a morphological filling operation. The MSER detector finds regions that are stable over a wide range of thresholds of a gray-scale image. Assuming that the pixels below a given threshold are "black" and all those above or equal are "white"; if we are shown a sequence of thresholded images $I_\tau$ with frame $\tau$ corresponding to threshold $\tau$, we would see first a white image, then "black" spots corresponding to local intensity minima will appear then grow larger. These "black" spots will eventually merge, until the whole image is black. The set of all connected components in the sequence is the set of all extremal regions. Once the extremal regions are extracted, a maximality criterion is defined and only a few extremal regions are kept, which are the Maximally Stable Extremal Regions. 
+
+To extract the Maximally Stable Extremal Regions form the NLS-mCherry channel, we used the \texttt{VLFeat} implementation of MSER\footnote{publicly available at \url{http://www.vlfeat.org/}}. Default parameters of the \texttt{VLFeat} implementation were used to segment the nuclei, except the minimal and maximal size of a nuclei at the given resolution, which were fixed to 70 and 170~~\footnote{Nuclei are considered to have circular shapes with radius varying between 4 and 8 pixels}.  The main advantage of MSER compared to the thresholding approach \cite{Pertzs11} is its robustness and insensitivity to contrast change.  
 
 
-Using the nuclei as seed regions, somata are segmented using a region growing and region competition algorithm on the Lifeact-GFP channel, called the \textit{green} channel.
-This is done by launching a propagating front from all the detected nuclei simultaneously. 
-For a given image frame, let $\{d^1, \cdots, d^K \}$ be the set of detected nuclei.
-To segment the somata, we first compute a solution of the Eikonal equation 
-\begin{equation}\label{eq:eikonal}
-\|\nabla \mathcal{U} \| = \mathcal{P} \text{~~~~such that~~~~} \mathcal{U}(d^k) = 0,
+Using the nuclei as seed regions, somata are segmented using a region growing and region competition algorithm on the Lifeact-GFP channel, called the \textit{green} channel. This is done by computing geodesic distances from each nucleus based on the difference of image intensities. 
+For a given image frame $I$, let $\{d^1, \cdots, d^K \}$ be the set of detected nuclei. For each detected nucleus $d^k$ we define a potential as follows:
+\begin{equation}\label{eq:potentialSomata}
+\mathcal{P}_k(x) = \frac{1}{A \exp\left(- \frac{(I(x) - \mu_k)^2}{2 \beta^2 \sigma_k^2}\right) + 1},
 \end{equation}
-where $\nabla \mathcal{U}$ is the gradient of a distance $\mathcal{U}$ to be computed and
-\begin{equation}\label{eq:potential}
+$\mu_k$ and $\sigma_k$ are respectively the mean and standard deviation of the green intensities of the pixels describing $d^k$.
+Parameter $\beta$, is a multiplicative factor of the intensity standard deviation $\sigma_k$, and represents a tolerance of variation between the local foreground (soma) intensities and the local background intensities.
+
+The geodesic distance $\mathcal{U}_k$ associated to the nucleus $d^k$ is defined as the solution of the Eikonal equation 
+\begin{equation}\label{eq:eikonal}
+\|\nabla \mathcal{U}_k \| = \mathcal{P}_k \text{~~~~such that~~~~} \mathcal{U}_k(d^k) = 0.
+\end{equation}
+From equation \ref{eq:potentialSomata}, one can see that the more the green intensity of a pixel $I(x)$ is different from the mean intensity $\mu_k$ of the detected nuclei , the higher the potential $\mathcal{P}_k$ would be, and from equation \ref{eq:eikonal}, the higher $\mathcal{U}_k$ would be. 
+%
+%This is done by launching a propagating front from all the detected nuclei simultaneously. 
+%For a given image frame, let $\{d^1, \cdots, d^K \}$ be the set of detected nuclei.
+%To segment the somata, we first compute a solution of the Eikonal equation 
+%\begin{equation}\label{eq:eikonal}
+%\|\nabla \mathcal{U} \| = \mathcal{P} \text{~~~~such that~~~~} \mathcal{U}(d^k) = 0,
+%\end{equation}
+%where $\nabla \mathcal{U}$ is the gradient of a distance $\mathcal{U}$ to be computed and
+%\begin{equation}\label{eq:potential}
+%\mathcal{P}(x) = \frac{1}{A \exp\left(- \frac{(I(x) - \mu_k)^2}{2 \beta^2 \sigma_k^2}\right) + 1},
+%\end{equation}
+%$k$ being the index of the closest nuclei detection $d_k$ to the pixel location $x$, and $I(x)$ being the associated green intensity, $\mu_k$ and $\sigma_k$ being respectively the mean and standard deviation of the green intensities of the pixels describing $d_k$. 
+
+The algorithm to compute the geodesic distances $\mathcal{U}_k$, is the Fast Marching algorithm \cite{Cohen96,Sethian99}.
+Our first approach to segment the somata regions consists  on thresholding the geodesic distances $s^k = \{\mathcal{U}_k < \mathcal{T}_g\}$. However, as this requires computing all the $K$ distances $\mathcal{U}_k$, the complexity depends on the number of detected cells, and may yield to intersecting somata regions (which was happening as well with the region growing approach proposed in \cite{Pertzs11}).
+
+
+Instead, we used a more efficient approach that computes the geodesic distance from all the detected nuclei simultaneously by launching a region growing and region competition algorithm which complexity does not depend on the number of cells but only on the size of the image, and for which the obtained somata segmentations do not intersect.  For that, we define a distance map to all the detected nuclei $d^k$ as:
+\begin{equation}\label{eq:distanceNuclei}
+\mathcal{U}(x) = \min_{k=1, \cdots, K} \mathcal{U}_k(x).
+\end{equation}
+
+The distance map $\mathcal{U}$ can be approximated by computing the solution of
+\begin{equation}\label{eq:eikonalGlobal}
+\|\nabla \mathcal{U} \| = \mathcal{P} \text{~~~~such that~~~~} \mathcal{U}(d^k) = 0, \text{ for all $k$},
+\end{equation}  
+ where 
+ \begin{equation}\label{eq:potentialGlobal}
 \mathcal{P}(x) = \frac{1}{A \exp\left(- \frac{(I(x) - \mu_k)^2}{2 \beta^2 \sigma_k^2}\right) + 1},
 \end{equation}
-$k$ being the index of the closest nuclei detection $d_k$ to the pixel location $x$, and $I(x)$ being the associated green intensity, $\mu_k$ and $\sigma_k$ being respectively the mean and standard deviation of the green intensities of the pixels describing $d_k$. Parameter $\beta$, is a multiplicative factor of the intensity standard deviation $\sigma_k$, and represents a tolerance of variation between the local foreground (somata) intensities and the local background intensities.
+and where the index of the closest region $k$, is decided during the propagation of a variant of the Fast Marching algorithm which was introduced in \cite{BenmansourC09}. The main difference between this variant of the Fast Marching algorithm and the original one in \cite{Cohen96,Sethian99}, is that the potential values (more precisely the $k$ index for our case) is not fixed before starting the propagation but is rather decided during the propagation.
+Computed that way, $\mathcal{U}$ defines an approximate geodesic distance to the detections $d^k$. It combines the local intensity differences and the euclidean distance. 
+The somata segmentations are finally obtained by thresholding both $\mathcal{U}$ and the euclidean distance to the nuclei (those 2 shresholds are denoted $\mathcal{T}_g$ and $\mathcal{T}_e$ repectivelly). Formally, if $\{R^k\}$ is the Voronoi tessellation associated to $\mathcal{U}$ and the set of nuclei $\{d^k\}$ and if the euclidian distance to the set of nuclei is denoted $\mathcal{D}$ then the soma $s^k$ associated to a detection $d^k$ is defined as follows:
+ \begin{equation}\label{eq:somaDef}
+s^k = R^k\cap \{\mathcal{U} < \mathcal{T}_g\} \cap \{\mathcal{D} < \mathcal{T}_e\}.
+\end{equation}
+Once this intersection is obtained, a morphological filling operation is applied to guarantee that a soma does not contain holes.
 
-$\mathcal{U}$ defines a geodesic distance to the detections $d^k$. It combines the local intensity differences and the euclidean distance. From equation \ref{eq:potential}, one can see that the more the green intensity of a pixel $I(x)$ is different from the mean intensity of the closest detected nuclei $\mu_k$, the higher the potential $\mathcal{P}$ would be, and from equation \ref{eq:eikonal}, the higher $\mathcal{U}$ would be. The algorithm to compute the geodesic distance $\mathcal{U}$, is a variant of the Fast Marching algorithm \cite{Cohen96,Sethian99} introduced in \cite{BenmansourC09}.
-
-The somata segmentations are finally obtained by thresholding both $\mathcal{U}$ and the euclidean distance to the nuclei (those 2 shresholds are denoted $\mathcal{T}_g$ and $\mathcal{T}_e$ repectivelly). An example for nuclei and somata segmentation is depicted on figure \ref{fig:cellBDetection}. For all our experiments, we took $A = 1e7$, $\beta = 1.5$, $\mathcal{T}_g = 2e-6$ and $\mathcal{T}_e = 7$.
+ An example for nuclei and somata segmentation is depicted on figure \ref{fig:cellBDetection}. For all our experiments, we took $A = 1e7$, $\beta = 1.5$, $\mathcal{T}_g = 2e-6$ and $\mathcal{T}_e = 7$.
 
 %----------------------------------------------------------------------------
 \begin{figure}[!b]
@@ -109,7 +147,7 @@ The somata segmentations are finally obtained by thresholding both $\mathcal{U}$
 \end{figure}
 %----------------------------------------------------------------------------
 
-At this point, cell body detections $d_t^i = (c_t^i, s_t^i)$ have been obtained form the whole sequence. A filtering step is applied to these detections to keep only the most reliable ones. First, detections that are too close to the image boundary (with distance less than 10 pixels) are ignored. Second, the minimal tolerated circularity is 0.2. Finally, the maximal accepted eccentricity is 0.85. 
+At this point, cell body detections $d_t^i = (c_t^i, s_t^i)$ have been obtained form the whole sequence. A filtering step is applied to these detections to keep only the most reliable ones. First, detections that are too close to the image boundary (with distance form the centroid of the nucleus detection less than 10 pixels) are ignored. Second, the minimal tolerated circularity is 0.2. Finally, the maximal accepted eccentricity is 0.85. Those last 2 criteria are applied to the nuclei detections. 
 
 
 %----------------------------------------------------------------------------
@@ -209,7 +247,7 @@ to $\mathcal{X}^i$.
 
 The parameters of this algorithm have been fixed empirically as follows: $W = 4$, $\alpha = 1$, $\beta = 50$, $\gamma = 40$ and $T = 200$. Only tracks containing at east 20 frames are kept. In addition to these parameters, a spatial connection constraint is applied during the construction of the graph $\mathcal{G}$. In fact, only detections that are at distance less than 50 pixels are connected to create the set of edges $\mathcal{E}$.
 
-Once the tracking is achieved, tracks are sorted according to their total cumulated green intensities, and only the 20 best tracks are kept.
+Once the tracking is achieved, tracks are sorted according to their total cumulated green intensities, and only the 40 best tracks are kept, as this is a reasonable number of stained enough moving cells which are quite visible for an experienced human eye.
 
 %----------------------------------------------------------------------------
 \subsection{Neurites segmentation and association}\label{sec:neurites}
@@ -240,11 +278,11 @@ it produces connected components.
 
 The extraction of neurites from a time frame $I_t$ proceeds in the following stages:
 \begin{itemize}
-\item Compute tubularity measure $T_t$ as in \cite{Frangi98}. In addition, detected but not tracked somata are ignored.
-\item Estimate the parameters of a sigmoid functions which is applied to the tubularity measure to obtain a potential $P_t$ that drives the Fast Marching algorithm \cite{Cohen96,Sethian99}.
-\item Launch simultaneously the front propagation Fast Marching algorithm from all the tracked somata. This is done by solving the Eikonal equation $\|\nabla \mathcal{U}_t \| = P_t$. That yields a geodesic distance map $\mathcal{U}_t$ and the associated tessellation $\mathcal{V}_t$. The complexity of the algorithm, at this stage, does not depend on the number of tracked somata but depends only on the size of the image. 
-\item Threshold the geodesic distance with a soft threshold $\mathcal{T}_s$, and then extract local maxima of $\mathcal{U}_t$ in each thresholded region\footnote{the local maxima are obtained using the Matlab function \texttt{imregionalmax}}
-\item Using the Geodesic distance $\mathcal{U}_t$, back-propagate from all the local maxima, by keeping only points for which the value is above a hard threshold $\mathcal{T}_h$
+\item Compute tubularity measure $T_t$ as in \cite{Frangi98}. In addition, detected but not tracked somata are ignored, that is the minimal tubularity value is assigned to "detected but not tracked" somata regions, in order to avoid segmenting their boundaries as neurites. 
+\item Estimate the parameters of a sigmoid functions which is applied to the tubularity measure to obtain a potential $P_t$ that drives the Fast Marching algorithm \cite{Cohen96,Sethian99}.  The parameters  of the sigmoid function are  estimated using  maximum likelihood. 
+\item Launch simultaneously the front propagation Fast Marching algorithm from all the tracked somata. This is done by solving the Eikonal equation $\|\nabla \mathcal{U}_t \| = P_t$ and $\|\nabla \mathcal{L}_t \| =1$. That yields a geodesic distance map $\mathcal{U}_t$, the associated tessellation $\mathcal{V}_t$, and the map of the Euclidian lengths $\mathcal{L}$ of the geodesics . The complexity of the algorithm, at this stage, does not depend on the number of tracked somata but depends only on the size of the image. 
+\item Threshold the geodesic distance with a soft threshold $\mathcal{T}_s$, and then extract local maxima of $\mathcal{L}_t$ in each thresholded region\footnote{the local maxima are obtained using the Matlab function \texttt{imregionalmax}}. We took local maxima of $\mathcal{L}_t$ as they likely correspond to continuations of elongated shapes (typically neurites). In fact, at a given threshold value of $\mathcal{U}_t$, elongated structures, such as neurites, has higher $\mathcal{L}_t$ values than their surrounding points. Here, we prefer to use a soft threshold and to eliminate the spurious branched in the next step using the hard threshold
+\item Using the Geodesic distance $\mathcal{U}_t$, back-propagate from all the local maxima of $\mathcal{L}_t$, by keeping only points for which the $\mathcal{U}_t$ value is above a hard threshold $\mathcal{T}_h$. The idea is that even if the candidate endpoints detected in the previous step are not necessarily all correct, they will quickly converge to interesting elongated structures during the back propagation. %This is inspired from the geodesic density concept proposed in \cite{RouchdyC13}
 \item Finally, we instantiate a Minimum Spanning Tree from each root touching a soma, and create the associated neurite tree.
 \end{itemize}
 
