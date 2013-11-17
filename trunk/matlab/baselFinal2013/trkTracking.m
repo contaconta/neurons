@@ -81,8 +81,8 @@ end
 
 GreedyTrackingParameters.TEMPORAL_WINDOWS_SIZE = 4; % do not touch
 GreedyTrackingParameters.SPATIAL_WINDOWS_SIZE  = SPATIAL_WINDOWS_SIZE; % do not touch
-GreedyTrackingParameters.MIN_TRACK_LENGTH      = 20; % si durrée de vie < 20, pas pris en compte
-GreedyTrackingParameters.NB_BEST_TRACKS        = 40; % on prend les 40 meilleurs tracks en fonction de l'intensité
+GreedyTrackingParameters.MIN_TRACK_LENGTH      = 20; % si durr??e de vie < 20, pas pris en compte
+GreedyTrackingParameters.NB_BEST_TRACKS        = 40; % on prend les 40 meilleurs tracks en fonction de l'intensit??
 GreedyTrackingParameters.WT                    = 50; % do not touch
 GreedyTrackingParameters.WSH                   = 40; % do not touch
 GreedyTrackingParameters.W_THRESH              = 200; % do not touch
@@ -118,6 +118,7 @@ NeuriteDetectionParams.KeyPointDetectionParam           = 5; % do not touch
 %%%%%%%%%%% It should take values between 0 and 1 strictly.
 NeuriteDetectionParams.NeuriteProbabilityThreshold      = 0.2;
 %%%%%%%%%%% This is the neurites detection parameter %%%%%%%%%%
+NeuriteDetectionParams.NeuritePruningLengthThreshold    = 10;
 
 tic
 [Cells] = trkDetectAndAddFilamentsToCells(Green_Original, Cells, Somata, FrangiOpt, IntensityAjustmentGreen, NeuriteDetectionParams);    
