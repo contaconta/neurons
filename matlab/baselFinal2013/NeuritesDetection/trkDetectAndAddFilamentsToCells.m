@@ -121,11 +121,15 @@ parfor dd = 1:length(Cells)
             PixelIndicesOfPrunedBranches    = trkPruneShortBranches( currentTree, size(Cells(dd).Neurites), PruningThreshold );
             Cells(dd).Neurites(PixelIndicesOfPrunedBranches) = false;
         end
-        lastNumberOfNeurites = numberOfNeurites;
+
         [LL, numberOfNeurites] = bwlabel(Cells(dd).Neurites, NeuriteConnectivity);
-        if(numberOfNeurites ~= lastNumberOfNeurites)
-            error('something wrong happend when pruning');
+        for j =1:numberOfNeurites
+            if(numel(find(LL==j)) < PruningThreshold)
+                Cells(dd).Neurites(LL==j) = false;
+            end
         end
+        
+        [LL, numberOfNeurites] = bwlabel(Cells(dd).Neurites, NeuriteConnectivity);
         listOfNeurites = cell(1, numberOfNeurites);
         filam   = [];
         for j =1:numberOfNeurites
