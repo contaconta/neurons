@@ -57,11 +57,12 @@ minimalSizeOfNeurite             = NeuriteDetectionParams.minimalSizeOfNeurite;
 GEODESIC_DISTANCE_NEURITE_THRESH = NeuriteDetectionParams.GEODESIC_DISTANCE_NEURITE_THRESH;
 pad                              = NeuriteDetectionParams.KeyPointDetectionParam;
 ProbThresh                       = NeuriteDetectionParams.NeuriteProbabilityThreshold;
+PruningThreshold                 = NeuriteDetectionParams.NeuritePruningLengthThreshold;
 
 sz = size(Green{1});
 
 %%
-for dd = 1:length(Cells)
+parfor dd = 1:length(Cells)
     if Cells(dd).ID > 0
         t = Cells(dd).Time;
         RR = (U{t} < -log(GEODESIC_DISTANCE_NEURITE_THRESH)) & (U{t} > 0) & (Regions{t} == Cells(dd).ID);%#ok
@@ -108,6 +109,23 @@ for dd = 1:length(Cells)
 
         %% extract tree topology and start measurments
         [LL, numberOfNeurites] = bwlabel(Cells(dd).Neurites, NeuriteConnectivity);
+        % do neurite pruning by removing short end branches
+        for j =1:numberOfNeurites
+            set(0,'RecursionLimit',RECURSIONLIMIT);
+            listOfNeurites{j} = find(LL==j);
+            [parents, numkids] = trkTreeStructureFromBinaryFilament(listOfNeurites{j}, Cells(dd).SomaPixelIdxList, size(Cells(dd).Neurites));
+            currentTree                     = EmptyTree;
+            currentTree.Parents             = parents;
+            currentTree.NumKids             = numkids;
+            currentTree.NeuritePixelIdxList = listOfNeurites{j};
+            PixelIndicesOfPrunedBranches    = trkPruneShortBranches( currentTree, size(Cells(dd).Neurites), PruningThreshold );
+            Cells(dd).Neurites(PixelIndicesOfPrunedBranches) = false;
+        end
+        lastNumberOfNeurites = numberOfNeurites;
+        [LL, numberOfNeurites] = bwlabel(Cells(dd).Neurites, NeuriteConnectivity);
+        if(numberOfNeurites ~= lastNumberOfNeurites)
+            error('something wrong happend when pruning');
+        end
         listOfNeurites = cell(1, numberOfNeurites);
         filam   = [];
         for j =1:numberOfNeurites
