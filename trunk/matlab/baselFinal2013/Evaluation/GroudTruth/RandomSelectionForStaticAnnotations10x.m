@@ -1,12 +1,12 @@
 clear all; close all; clc;
 %%
 Magnification  = '10X';
-datasets_paths_filename = ['PathsToDatasets-' Magnification '-28112012.txt'];
+datasets_paths_filename = ['PathsToDatasets-' Magnification '-20-11-2013.txt'];
 outputSelectionfile = [Magnification 'StaticSelections.txt'];
-OutputRootDirectory = ['/home/fbenmans/SelectionStatic' Magnification '/'];
+OutputRootDirectory = ['/home/fbenmans/SelectionNeuriteEvaluation' Magnification '/'];
 inputDataRoot      =  '/raid/data/store/';
 
-nb_randomSelections = 27;
+nb_randomSelections = 100;
 %%
 FID = fopen(datasets_paths_filename);
 C = textscan(FID, '%s %s %s %s %s');
@@ -87,11 +87,20 @@ FID = fopen([OutputRootDirectory outputSelectionfile]);
 C = textscan(FID, '%s %d %d');
 fclose(FID);
 %%
+ComplteSequencesSubDir = [OutputRootDirectory 'ComplteSequences/'];
+SelectedFramesSubDir   = [OutputRootDirectory 'SelectedFrames/'];
+if ~exist(ComplteSequencesSubDir, 'dir')
+    mkdir(ComplteSequencesSubDir);
+end
+if ~exist(SelectedFramesSubDir, 'dir')
+    mkdir(SelectedFramesSubDir);
+end
+
 for i = 1:length(C{1})
     plateDirName = C{1}(i);
     plateDirName = plateDirName{1};
     inputDir = [plateDirName num2str(C{2}(i))];
-    outputDirExp = [OutputRootDirectory sprintf('%03d', i) '/'];
+    outputDirExp = [SelectedFramesSubDir sprintf('%03d', i) '/'];
     
     if  exist(outputDirExp, 'dir')
         rmdir(outputDirExp, 's');
@@ -110,4 +119,15 @@ for i = 1:length(C{1})
     GreenImage  = imread(GreenImageFileName);
     imwrite(RedImage, [outputDirExp '/red.tif']);
     imwrite(GreenImage, [outputDirExp '/green.tif']);
+    
+    outputDirExp = [ComplteSequencesSubDir sprintf('%03d', i) '/'];
+    if  exist(outputDirExp, 'dir')
+        rmdir(outputDirExp, 's');
+    end
+    if ~exist(outputDirExp, 'dir')
+        mkdir(outputDirExp);
+    end
+    disp('Copying the complete sequence')
+    system(['cp -r' RedChannelDirectory  ' ' outputDirExp]);
+    system(['cp -r' GreenChannelDirectory  ' ' outputDirExp]);
 end
