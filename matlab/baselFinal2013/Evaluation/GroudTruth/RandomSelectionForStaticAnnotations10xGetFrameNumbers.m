@@ -23,3 +23,7 @@ for i = 1:length(C{1})
         disp('what ever !!');
     end
 end
+%% /raid/data/store/1/C5E670E7-CF20-403C-8169-27047AFD1E9F/e1/98/d7/20121122201559351-5091/original/plate4-G6/33/red//experiment1_w2LED red_s33_t72.TIF
+STR = '/raid/data/store/1/C5E670E7-CF20-403C-8169-27047AFD1E9F/e1/98/d7/20121122201559351-5091/original/plate4-G6/33/red//experiment1_w2LED red_s33_t72.TIF';
+findstr(STR, '_t')
+[a, b, c] = sscanf(STR, '%s %s_t%d.TIF');
