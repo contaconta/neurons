@@ -14,11 +14,13 @@ for i = 1:length(C{1})
     try
         RedImageFileName    = [RedChannelDirectory '/' Ared(C{3}(i)).name];
         GreenImageFileName  = [GreenChannelDirectory '/' Agreen(C{3}(i)).name];
-        disp(RedImageFileName);
-        disp(GreenImageFileName);
-        textsc(RedImageFileName, '%* _t%d.TIF', num);
+        %disp(RedImageFileName);
+        %disp(GreenImageFileName);
+        start = findstr(RedImageFileName, '_t') + 2;
+	eend  = findstr(RedImageFileName, '.TIF');
+	num = str2num(RedImageFileName(start:eend));
         disp(num)
-        disp('-------------');
+        %disp('-------------');
     catch err
         disp('what ever !!');
     end
