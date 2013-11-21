@@ -8,10 +8,10 @@ overlappingTolerance = 0.5;
 isDetectionDone = true;
 %%
 Magnification = '10x';
-dataRootDirectory    = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic/'];
-ConvertedGTRootDir   = ['/Users/feth/Google Drive/Sinergia/GT' Magnification '/Dynamic_matlab/'];
-RawRootDataDirectory = ['/Users/feth/Google Drive/Sinergia/Selection' Magnification '/'];
-DetectionDirectory   = ['/Users/feth/Google Drive/Sinergia/Detections' Magnification '/'];
+dataRootDirectory    = ['/Users/feth/GoogleDrive/Sinergia/GT' Magnification '/Dynamic/'];
+ConvertedGTRootDir   = ['/Users/feth/GoogleDrive/Sinergia/GT' Magnification '/Dynamic_matlab/'];
+RawRootDataDirectory = ['/Users/feth/GoogleDrive/Sinergia/Selection' Magnification '/'];
+DetectionDirectory   = ['/Users/feth/GoogleDrive/Sinergia/Detections' Magnification '/'];
 if(~exist(DetectionDirectory, 'dir'))
     mkdir(DetectionDirectory);
 end
