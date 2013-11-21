@@ -8,21 +8,8 @@ inputDataRoot      =  '/raid/data/store/';
 
 nb_randomSelections = 100;
 %%
-FID = fopen(outputSelectionfile, 'w');
-for i = 1:nb_randomSelections
-    Location = C{5}(PlateExpIndides(1, i));
-    plateFolder = [inputDataRoot Location{1} '/original/'];
-    a = dir(plateFolder);
-    for j = 1:length(a)
-        if(a(j).isdir && length(a(j).name) > 5)
-            directoryName = a(j).name;
-            break;
-        end
-    end
-    plateFolder = [plateFolder   directoryName '/' ];%#ok<*AGROW>
-    fprintf(FID, '%s \t %d %d\n', plateFolder, PlateExpIndides(2, i), PlateExpIndides(3, i));
-end
-
+FID = fopen([OutputRootDirectory outputSelectionfile]);
+C = textscan(FID, '%s %d %d');
 fclose(FID);
 %%
 
