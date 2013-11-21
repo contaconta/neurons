@@ -39,7 +39,7 @@ end
 %%
 TotalNumberOfSequences = sum(NumOfSequences);
 
-randomPlateSelection = randi(nb_randomSelections, [1, nb_randomSelections]);
+randomPlateSelection = randi(numel(C{1}), [1, nb_randomSelections]);
 PlateExpIndides = zeros(3, nb_randomSelections);
 
 for i = 1:nb_randomSelections
@@ -128,6 +128,6 @@ for i = 1:length(C{1})
         mkdir(outputDirExp);
     end
     disp('Copying the complete sequence')
-    system(['cp -r' RedChannelDirectory  ' ' outputDirExp]);
-    system(['cp -r' GreenChannelDirectory  ' ' outputDirExp]);
+    system(['cp -r ' RedChannelDirectory  ' ' outputDirExp]);
+    system(['cp -r ' GreenChannelDirectory  ' ' outputDirExp]);
 end
