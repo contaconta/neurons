@@ -29,6 +29,9 @@ Wr = tril(Wr);
 Wr(Wr == 0) = Inf;
 
 %keyboard;
+if isempty(Wr)
+    return;
+end
 
 while min_W < W_THRESH
     
