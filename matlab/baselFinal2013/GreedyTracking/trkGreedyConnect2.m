@@ -30,7 +30,7 @@ Wr(Wr == 0) = Inf;
 
 %keyboard;
 
-while numel(Wr) > 0 && min_W < W_THRESH
+while( (numel(Wr) > 0) && (min_W < W_THRESH))
 
     % find the minimum weight
     [min_W, min_ind] = min(Wr(:));
