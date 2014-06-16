@@ -1,4 +1,4 @@
-function Sequence =  trkFigures(folder, SeqIndexStr, Sample, magnification)
+function Sequence =  trkFigures(folder, SeqIndexStr, Sample, magnification, cellIDs)
 %% define the folder locations and filenames of the images
 Gfolder = [folder 'green/'];
 Rfolder = [folder 'red/'];
@@ -142,27 +142,28 @@ tic
 toc
 
 
-% %% render green and red channels
-% disp('...make channel1, channel2');
-% mv_green = trkConvertTo8bit(Green,1);
-% resultsFolder = [folder 'channel1/'];
-% movfile = sprintf('mov%s', SeqIndexStr);
-% trkMovie2(mv_green, resultsFolder, movfile); 
-% 
-% mv_red = trkConvertTo8bit(Red,1);
-% resultsFolder = [folder 'channel2/'];
-% movfile = sprintf('mov%s', SeqIndexStr);
-% trkMovie2(mv_red, resultsFolder, movfile); 
-% 
-% %% render the tubularity filter response
-% disp('...make calibrated filter response');
-% mv_tube = trkConvertNoCrop(P,1);
-% resultsFolder = [folder 'tubularity/'];
-% movfile = sprintf('mov%s', SeqIndexStr);
-% trkMovie2(mv_tube, resultsFolder, movfile); 
+%% render green and red channels
+disp('...make channel1, channel2');
+mv_green = trkConvertTo8bit(Green,1);
+resultsFolder = [folder 'channel1/'];
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_green, resultsFolder, movfile); 
+
+mv_red = trkConvertTo8bit(Red,1);
+resultsFolder = [folder 'channel2/'];
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_red, resultsFolder, movfile); 
+
+%% render the tubularity filter response
+disp('...make calibrated filter response');
+mv_tube = trkConvertNoCrop(P,1);
+resultsFolder = [folder 'tubularity/'];
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_tube, resultsFolder, movfile); 
 
 
-cols3 = color_list(3);
+% cols3 = color_list(3);
+load cols3.mat;
 
 %% render nulceus detections
 resultsFolder = [folder 'nuclei_labeled/'];
@@ -170,7 +171,6 @@ mv_detect_label = trkRenderFancy(Red, Cells, CellsList, tracks, cols3, 7);
 movfile = sprintf('mov%s', SeqIndexStr);
 trkMovie2(mv_detect_label, resultsFolder, movfile); fprintf('\n');
 
-keyboard;
 
 %% render the probability of being neuron
 disp('...make thresholded neuron probability');
@@ -197,12 +197,30 @@ mv_prob_label = trkRenderFancy(mv_prob, Cells, CellsList, tracks, cols3, 2);
 movfile = sprintf('mov%s', SeqIndexStr);
 trkMovie2(mv_prob_label, resultsFolder, movfile); fprintf('\n');
 
+
+%% render the cell segmentation
+resultsFolder = [folder 'cell_assignment/'];
+mv_whole = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 4);
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_whole, resultsFolder, movfile); fprintf('\n');
+
+%% render the cell segmentation + candidate endpoints
+resultsFolder = [folder 'candidate_endpoints/'];
+mv_whole = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 10);
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_whole, resultsFolder, movfile); fprintf('\n');
+
 %% render the whole cell segmentation
 resultsFolder = [folder 'whole_cell/'];
 mv_whole = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 5);
 movfile = sprintf('mov%s', SeqIndexStr);
 trkMovie2(mv_whole, resultsFolder, movfile); fprintf('\n');
 
+%% render the backtracing
+resultsFolder = [folder 'neurite_backtracing/'];
+mv_whole = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 11);
+movfile = sprintf('mov%s', SeqIndexStr);
+trkMovie2(mv_whole, resultsFolder, movfile); fprintf('\n');
 
 %% render final results
 resultsFolder = [folder 'final/'];
@@ -222,9 +240,15 @@ mv_final = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 6);
 movfile = sprintf('mov%s', SeqIndexStr);
 trkMovie2(mv_final, resultsFolder, movfile); fprintf('\n');
 
-%% render colored segmentation sequence
-resultsFolder = [folder 'binary_colored/'];
-mv_final = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 8);
+% %% render colored segmentation sequence
+% resultsFolder = [folder 'binary_colored/'];
+% mv_final = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 8);
+% movfile = sprintf('mov%s', SeqIndexStr);
+% trkMovie2(mv_final, resultsFolder, movfile); fprintf('\n');
+
+%% render binary soma_only sequence
+resultsFolder = [folder 'binary_soma_only/'];
+mv_final = trkRenderFancy(Green, Cells, CellsList, tracks, cols3, 9);
 movfile = sprintf('mov%s', SeqIndexStr);
 trkMovie2(mv_final, resultsFolder, movfile); fprintf('\n');
 
@@ -241,6 +265,21 @@ fprintf('saving %s...', filename);
 save(filename,  '-v7.3', 'Sequence', 'Cells', 'cols3');
 fprintf('\n');
 
+resultsFolder = [folder 'plots/'];
+plot_property([cellIDs], 'DistanceTraveled', Sequence, cols3,resultsFolder,1);
+plot_property([cellIDs], 'Speed', Sequence, cols3,resultsFolder,1);
+plot_property([cellIDs], 'NbBranchesPerNeuriteMean', Sequence, cols3,resultsFolder,0);
+plot_property([cellIDs], 'ComplexityPerNeuriteMean', Sequence, cols3,resultsFolder,0);
+plot_property([cellIDs], 'NumberOfNeurites', Sequence, cols3,resultsFolder,0);
+plot_property([cellIDs], 'TotalNeuritesBranches', Sequence, cols3,resultsFolder,0);
+plot_property([cellIDs], 'SomaMajorAxisLength', Sequence, cols3,resultsFolder,1);
+plot_property([cellIDs], 'TotalNeuritesLength', Sequence, cols3,resultsFolder,1);
+
+close all;
+
+resultsFolder = [folder 'csv/'];
+measurements = {'DistanceTraveled','Speed','NbBranchesPerNeuriteMean','ComplexityPerNeuriteMean','NumberOfNeurites','TotalNeuritesBranches','SomaMajorAxisLength','TotalNeuritesLength'};
+make_csv([cellIDs], measurements, Sequence, resultsFolder,0);
 
 keyboard;
 
