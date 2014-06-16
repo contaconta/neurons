@@ -9,10 +9,15 @@ end
 % mode 2    no neurites, no text
 % mode 3    no neurites, no text, blue fill
 % mode 4    cell body fill
-% mode 5    cell body with candidate endpoints
+% mode 5    cell body with candidate endpoints + neurites
 % mode 6    binary b&w segmentation
 % mode 7    nuclei detections only, red fill
 % mode 8    binary b&w segmentation but with cell colors
+% mode 9    binary b&w segmentation, no neurites
+% mode 10   cell body with candidate endpoints
+% mode 11   neurite backtracing
+% mode 12   soma growth, red fill
+
 fprintf('rendering mode %d\n', mode);
 
 SomaFaceAlpha = .25;
@@ -21,6 +26,7 @@ NucleusFaceAlpha = 1;
 NucleusEdgeAlpha = 0;
 WholeFaceAlpha = .25;
 WholeEdgeAlpha = 1;
+EDGEWIDTH = 1;
 
 
 
@@ -43,7 +49,7 @@ for t = 1:TMAX
     end
     
     switch mode
-        case {6,8}
+        case {6,8,9}
             I = ones(size(I));
             Ir = I; Ig = I; Ib = I;
     end
@@ -137,7 +143,7 @@ for t = 1:TMAX
             currentCell = Cells(detect_ind);
             color = cols(tracks(detect_ind),:);
             switch mode
-                case 6
+                case {6,9}
                     color = [0 0 0];
             end
             SomaFaceColor = color;
@@ -150,13 +156,23 @@ for t = 1:TMAX
                 case 7
                      % patch for nucleus
                     NucleusColor = [1 0 0];
-                    nucp = patch(Nuc(d).x, Nuc(d).y, 1, 'FaceColor', NucleusColor, 'FaceAlpha', 1, 'EdgeColor', NucleusColor, 'EdgeAlpha', 1);
-                otherwise
+                    nucp = patch(Nuc(d).x, Nuc(d).y, 1, 'FaceColor', NucleusColor, 'FaceAlpha', 1, 'EdgeColor', NucleusColor, 'EdgeAlpha', 1, 'LineWidth', .5);
+                case 12
+                    NucleusColor = [1 0 0];
+                    SomaFaceColor = [1 0 0];
+                    SomaEdgeColor = [1 0 0];
                     % patch for soma interior
-                    somap = patch(Soma(d).x, Soma(d).y, 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', SomaFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', SomaEdgeAlpha); %'none');
+                    somap = patch(Soma(d).x, Soma(d).y, 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', SomaFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', SomaEdgeAlpha, 'LineWidth', EDGEWIDTH); %'none');
 
                     % patch for nucleus
-                    nucp = patch(Nuc(d).x, Nuc(d).y, 1, 'FaceColor', NucleusColor, 'FaceAlpha', 1, 'EdgeColor', NucleusColor, 'EdgeAlpha', 1);
+                    nucp = patch(Nuc(d).x, Nuc(d).y, 1, 'FaceColor', NucleusColor, 'FaceAlpha', 1, 'EdgeColor', NucleusColor, 'EdgeAlpha', 1,'LineWidth', .5);
+
+                otherwise
+                    % patch for soma interior
+                    somap = patch(Soma(d).x, Soma(d).y, 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', SomaFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', SomaEdgeAlpha, 'LineWidth', EDGEWIDTH); %'none');
+
+                    % patch for nucleus
+                    nucp = patch(Nuc(d).x, Nuc(d).y, 1, 'FaceColor', NucleusColor, 'FaceAlpha', 1, 'EdgeColor', NucleusColor, 'EdgeAlpha', 1,'LineWidth', .5);
             end
            
             
@@ -171,22 +187,19 @@ for t = 1:TMAX
             
             % whole body segmentation and candidate endpoints
             if d < length(Whole)
-            switch mode
-                case 4
-                    % patch for whole body
-                    wholep = patch(Whole(d).x, Whole(d).y, ones(size(Whole(d).x)), 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', WholeFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', WholeEdgeAlpha);
-                case 5
-                    % patch for whole body
-                    wholep = patch(Whole(d).x, Whole(d).y, ones(size(Whole(d).x)), 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', WholeFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', WholeEdgeAlpha);
-
-                otherwise
-            end
+                switch mode
+                    case {4,5,10}
+                        % patch for whole body
+                        wholep = patch(Whole(d).x, Whole(d).y, ones(size(Whole(d).x)), 1, 'FaceColor', SomaFaceColor, 'FaceAlpha', WholeFaceAlpha, 'EdgeColor', SomaEdgeColor, 'EdgeAlpha', WholeEdgeAlpha,'LineWidth', EDGEWIDTH);
+                        
+                    otherwise
+                end
             end
             
             % whole body segmentation and candidate endpoints
             if d < length(Whole)
             switch mode
-                case 5          
+                case {5,10,11}          
                     % candidate endpoints
                     for i = 1:size(currentCell.CandidateEndPoints,1)
                         r1 = currentCell.CandidateEndPoints(i,1);
@@ -229,13 +242,13 @@ for t = 1:TMAX
 
             NeuriteColor = round(color*255);
             switch mode
-                case {5,6}
+                case {5,6,9}
                     NeuriteColor = [0 0 0];
             end
             
             % color neurites or the cell body
             switch mode
-                case {0,1,5,6,8}
+                case {0,1,5,6,8,11}
                     FILMASK = currentCell.Neurites; 
                     Ir(FILMASK) = NeuriteColor(1);
                     Ig(FILMASK) = NeuriteColor(2);

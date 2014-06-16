@@ -46,24 +46,29 @@ folder_n = '/home/ksmith/data/basel_figure/031/';
 exp_num = 'mov031';
 magnification = '10x';
 Sample = 'PLATEX-GX-10X';
-trkFigures(folder_n, exp_num, Sample, magnification);
+cellIDs = [1 5];
+trkFigures(folder_n, exp_num, Sample, magnification, cellIDs);
+
 
 % folder_n = '/home/ksmith/data/basel_figure/041/';
 % exp_num = 'mov041';
 % magnification = '10x';
 % Sample = 'PLATEX-GX-10X';
-% trkFigures(folder_n, exp_num, Sample, magnification);
-% 
+% cellIDs = [1 2];
+% trkFigures(folder_n, exp_num, Sample, magnification, cellIDs);
+ 
 % folder_n = '/home/ksmith/data/basel_figure/132/';
 % exp_num = 'mov132';
 % magnification = '10x';
 % Sample = 'PLATEX-GX-10X';
-% trkFigures(folder_n, exp_num, Sample, magnification);
-% 
+% cellIDs = [1 4 14];
+% trkFigures(folder_n, exp_num, Sample, magnification, cellIDs);
+
 % folder_n = '/home/ksmith/data/basel_figure/168/';
 % exp_num = 'mov168';
 % magnification = '10x';
 % Sample = 'PLATEX-GX-10X';
-% trkFigures(folder_n, exp_num, Sample, magnification);
+% cellIDs = [4 5 6];
+% trkFigures(folder_n, exp_num, Sample, magnification, cellIDs);
 
 %matlabpool close
